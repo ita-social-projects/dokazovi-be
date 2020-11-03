@@ -30,10 +30,6 @@ import java.util.Set;
 
 @Entity(name = "users")
 @Table(name = "users")
-@TypeDef(
-		name = "pgsql_enum",
-		typeClass = PostgreSQLPostStatusEnumType.class
-)
 public class User implements Serializable {
 
 	@Id
@@ -54,7 +50,6 @@ public class User implements Serializable {
 	private String phone;
 
 	@Lob
-	@Basic(fetch = FetchType.LAZY)
 	private String bio;
 
 	@Enumerated(EnumType.STRING)

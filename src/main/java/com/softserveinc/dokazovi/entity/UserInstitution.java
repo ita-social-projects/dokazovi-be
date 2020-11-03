@@ -3,7 +3,6 @@ package com.softserveinc.dokazovi.entity;
 import com.softserveinc.dokazovi.entity.embeddables.UserInstitutionId;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

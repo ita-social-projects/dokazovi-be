@@ -19,7 +19,7 @@ public class PostgreSQLSourceTypeEnumType extends EnumType {
 		else {
 			st.setObject(
 					index,
-					((Enum) value).name().toLowerCase(),
+					value.toString().toLowerCase(),
 					Types.OTHER
 			);
 		}
