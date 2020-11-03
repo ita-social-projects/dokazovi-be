@@ -37,8 +37,6 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core'
 	implementation "org.mapstruct:mapstruct:${mapstruct}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct}"
-	compileOnly "org.projectlombok:lombok"
-	annotationProcessor "org.projectlombok:lombok"
 	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct}"
 
 	runtimeOnly 'org.postgresql:postgresql'
