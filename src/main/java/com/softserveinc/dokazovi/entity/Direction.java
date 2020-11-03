@@ -23,7 +23,6 @@ public class Direction implements Serializable {
 	@Column(name = "direction_id")
 	private Integer id;
 
-	@Column(nullable = false)
 	private String name;
 
 	@OneToMany(mappedBy = "mainDirection", fetch = FetchType.EAGER)

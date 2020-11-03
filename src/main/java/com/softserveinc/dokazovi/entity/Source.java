@@ -28,7 +28,6 @@ public class Source implements Serializable {
 	private Integer id;
 
 	@Enumerated(EnumType.STRING)
-	@Column
 	@Type(type = "com.softserveinc.dokazovi.entity.enumerations.PostgreSQLSourceTypeEnumType")
 	private SourceType type;
 

@@ -22,7 +22,6 @@ public class Region implements Serializable {
 	@Column(name = "region_id")
 	private Integer id;
 
-	@Column(name = "name", nullable = false)
 	private String name;
 
 	@OneToMany(mappedBy = "region", fetch = FetchType.EAGER)

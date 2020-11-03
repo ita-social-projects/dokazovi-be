@@ -21,7 +21,6 @@ public class PostType implements Serializable {
 	@Column(name = "type_id")
 	private Integer id;
 
-	@Column(name = "name", nullable = false)
 	private String name;
 
 	@OneToMany(mappedBy = "type", fetch = FetchType.EAGER)

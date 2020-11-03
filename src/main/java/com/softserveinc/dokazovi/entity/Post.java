@@ -70,13 +70,13 @@ public class Post implements Serializable {
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
-			name = "post_tags",
+			name = "posts_tags",
 			joinColumns = {@JoinColumn(name = "post_id")},
 			inverseJoinColumns = {@JoinColumn(name = "tag_id")}
 	)
 	private Set<Tag> tags = new HashSet<>();
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_sources",
 			joinColumns = {@JoinColumn(name = "source_id")},

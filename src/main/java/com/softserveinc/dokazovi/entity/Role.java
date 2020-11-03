@@ -22,7 +22,7 @@ public class Role implements Serializable {
 	@Column(name = "role_id")
 	private Integer id;
 
-	@Column(name = "role_name", nullable = false)
+	@Column(name = "role_name")
 	private String name;
 
 	@ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)

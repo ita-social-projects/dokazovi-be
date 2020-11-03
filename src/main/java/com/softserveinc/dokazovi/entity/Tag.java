@@ -22,8 +22,7 @@ public class Tag implements Serializable {
 	@Column(name = "tag_id")
 	private Integer id;
 
-	@Column(name = "tag", nullable = false)
-	private String name;
+	private String tag;
 
 	@ManyToMany(mappedBy = "tags", fetch = FetchType.EAGER)
 	private Set<Post> posts = new HashSet<>();
@@ -31,8 +30,8 @@ public class Tag implements Serializable {
 	public Tag() {
 	}
 
-	public Tag(String name) {
-		this.name = name;
+	public Tag(String tag) {
+		this.tag = tag;
 	}
 
 	public Integer getId() {
@@ -43,12 +42,12 @@ public class Tag implements Serializable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getTag() {
+		return tag;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
 
 	public Set<Post> getPosts() {
@@ -63,7 +62,7 @@ public class Tag implements Serializable {
 	public String toString() {
 		return "Tag{" +
 				"id=" + id +
-				", name='" + name + '\'' +
+				", tag='" + tag + '\'' +
 				'}';
 	}
 
@@ -79,12 +78,12 @@ public class Tag implements Serializable {
 		Tag other = (Tag) o;
 
 		return Objects.equals(other.id, id) &&
-				Objects.equals(other.name, name);
+				Objects.equals(other.tag, tag);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name);
+		return Objects.hash(id, tag);
 	}
 
 }

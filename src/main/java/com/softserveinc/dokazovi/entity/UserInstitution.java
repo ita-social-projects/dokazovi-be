@@ -6,6 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -17,18 +18,18 @@ import java.util.Objects;
 public class UserInstitution implements Serializable {
 
     @EmbeddedId
-    @Column(name = "id")
     private UserInstitutionId id = new UserInstitutionId();
 
     @ManyToOne
     @MapsId("userId")
+    @JoinColumn(name="user_id", insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
     @MapsId("institutionId")
+    @JoinColumn(name="institution_id", insertable = false, updatable = false)
     private Institution institution;
 
-    @Column(name = "is_primary", nullable = false)
     @ColumnDefault("false")
     private boolean isPrimary;
 
