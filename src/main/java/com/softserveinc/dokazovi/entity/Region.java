@@ -24,7 +24,7 @@ public class Region implements Serializable {
 
 	private String name;
 
-	@OneToMany(mappedBy = "region", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "region")
 	private Set<Institution> institutions = new HashSet<>();
 
 	public Region() {

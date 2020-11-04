@@ -1,12 +1,9 @@
 package com.softserveinc.dokazovi.entity;
 
-import com.softserveinc.dokazovi.entity.enumerations.PostgreSQLPostStatusEnumType;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -49,18 +45,20 @@ public class User implements Serializable {
 
 	private String phone;
 
-	@Lob
+	@Column(name = "bio", columnDefinition = "TEXT")
 	private String bio;
 
 	@Enumerated(EnumType.STRING)
 	@Type(type = "com.softserveinc.dokazovi.entity.enumerations.PostgreSQLUserStatusEnumType")
 	private UserStatus status;
 
-	@OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "author")
 	private Set<Post> posts = new HashSet<>();
 
+	@OneToMany(mappedBy = "author")
+	private Set<Charity> charities = new HashSet<>();
+
 	@OneToMany(
-			fetch = FetchType.EAGER,
 			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
 			mappedBy = "user",
 			orphanRemoval = true

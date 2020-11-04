@@ -33,7 +33,7 @@ public class Source implements Serializable {
 
 	private String value;
 
-	@ManyToMany(mappedBy = "sources", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "sources")
 	private Set<Post> posts = new HashSet<>();
 
 	@ManyToMany(mappedBy = "sources")

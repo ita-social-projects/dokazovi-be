@@ -23,7 +23,7 @@ public class PostType implements Serializable {
 
 	private String name;
 
-	@OneToMany(mappedBy = "type", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "type")
 	private Set<Post> posts;
 
 	public PostType() {

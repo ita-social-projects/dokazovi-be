@@ -36,7 +36,6 @@ public class Institution implements Serializable {
 	private String address;
 
 	@OneToMany(
-			fetch = FetchType.EAGER,
 			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
 			mappedBy = "institution",
 			orphanRemoval = true

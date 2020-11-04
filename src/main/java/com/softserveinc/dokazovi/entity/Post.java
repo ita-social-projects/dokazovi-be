@@ -17,7 +17,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -60,7 +59,7 @@ public class Post implements Serializable {
 	@Type(type = "com.softserveinc.dokazovi.entity.enumerations.PostgreSQLPostStatusEnumType")
 	private PostStatus status;
 
-	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinTable(
 			name = "posts_directions",
 			joinColumns = {@JoinColumn(name = "post_id")},
@@ -68,7 +67,7 @@ public class Post implements Serializable {
 	)
 	private Set<Direction> directions = new HashSet<>();
 
-	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinTable(
 			name = "posts_tags",
 			joinColumns = {@JoinColumn(name = "post_id")},
@@ -76,7 +75,7 @@ public class Post implements Serializable {
 	)
 	private Set<Tag> tags = new HashSet<>();
 
-	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinTable(
 			name = "posts_sources",
 			joinColumns = {@JoinColumn(name = "source_id")},

@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -25,7 +24,7 @@ public class Charity implements Serializable {
 	@Column(name = "charity_id")
 	private Integer id;
 
-	@Lob
+	@Column(name = "body", columnDefinition = "TEXT")
 	private String body;
 
 	@ManyToOne

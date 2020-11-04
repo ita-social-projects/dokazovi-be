@@ -25,13 +25,13 @@ public class Direction implements Serializable {
 
 	private String name;
 
-	@OneToMany(mappedBy = "mainDirection", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "mainDirection")
 	private Set<Post> mainPostsDirections = new HashSet<>();
 
-	@ManyToMany(mappedBy = "directions", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "directions")
 	private Set<Post> posts = new HashSet<>();
 
-	@ManyToMany(mappedBy = "directions", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "directions")
 	private Set<User> users = new HashSet<>();
 
 	public Direction() {

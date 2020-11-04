@@ -24,7 +24,7 @@ public class Tag implements Serializable {
 
 	private String tag;
 
-	@ManyToMany(mappedBy = "tags", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "tags")
 	private Set<Post> posts = new HashSet<>();
 
 	public Tag() {
