@@ -38,6 +38,7 @@ dependencies {
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct}"
 	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct}"
 
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	runtimeOnly 'org.postgresql:postgresql'
 
 	testImplementation "com.h2database:h2"

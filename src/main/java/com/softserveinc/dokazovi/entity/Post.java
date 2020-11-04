@@ -38,7 +38,7 @@ public class Post implements Serializable {
 
 	private String title;
 
-	@Lob
+	@Column(name = "content", columnDefinition = "TEXT")
 	private String content;
 
 	@ColumnDefault("false")
