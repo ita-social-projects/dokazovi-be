@@ -11,6 +11,7 @@ import java.sql.Types;
 
 public class PostgreSQLSourceTypeEnumType extends EnumType {
 
+	@Override
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 		if(value == null) {
