@@ -37,6 +37,8 @@ dependencies {
 	implementation "org.mapstruct:mapstruct:${mapstruct}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct}"
 	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct}"
+	compileOnly "org.projectlombok:lombok"
+	annotationProcessor "org.projectlombok:lombok"
 
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	runtimeOnly 'org.postgresql:postgresql'

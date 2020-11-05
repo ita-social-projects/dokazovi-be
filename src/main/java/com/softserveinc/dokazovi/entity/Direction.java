@@ -1,8 +1,12 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,9 +15,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
+@Data
+@NoArgsConstructor
 @Entity(name = "directions")
 @Table(name = "directions")
 public class Direction implements Serializable {
@@ -26,86 +31,22 @@ public class Direction implements Serializable {
 	private String name;
 
 	@OneToMany(mappedBy = "mainDirection")
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
 	private Set<Post> mainPostsDirections = new HashSet<>();
 
 	@ManyToMany(mappedBy = "directions")
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
 	private Set<Post> posts = new HashSet<>();
 
 	@ManyToMany(mappedBy = "directions")
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
 	private Set<User> users = new HashSet<>();
-
-	public Direction() {
-	}
 
 	public Direction(String name) {
 		this.name = name;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Set<Post> getMainPostsDirections() {
-		return mainPostsDirections;
-	}
-
-	public void setMainPostsDirections(Set<Post> mainPostsDirections) {
-		this.mainPostsDirections = mainPostsDirections;
-	}
-
-	public Set<Post> getPosts() {
-		return posts;
-	}
-
-	public void setPosts(Set<Post> posts) {
-		this.posts = posts;
-	}
-
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
-
-	@Override
-	public String toString() {
-		return "Direction{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				'}';
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof Direction)) {
-			return false;
-		}
-
-		Direction other = (Direction) o;
-
-		return Objects.equals(other.id, id) &&
-				Objects.equals(other.name, name);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, name);
-	}
 }

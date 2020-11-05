@@ -1,6 +1,8 @@
 package com.softserveinc.dokazovi.entity;
 
 import com.softserveinc.dokazovi.entity.embeddables.UserInstitutionId;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.EmbeddedId;
@@ -10,8 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Objects;
 
+@Data
+@NoArgsConstructor
 @Entity(name = "users_institutions")
 @Table(name = "users_institutions")
 public class UserInstitution implements Serializable {
@@ -32,64 +35,10 @@ public class UserInstitution implements Serializable {
     @ColumnDefault("false")
     private boolean isPrimary;
 
-    public UserInstitution() {
-    }
-
     public UserInstitution(User user, Institution institution, boolean isPrimary) {
         this.user = user;
         this.institution = institution;
         this.isPrimary = isPrimary;
     }
 
-    public UserInstitutionId getId() {
-        return id;
-    }
-
-    public void setId(UserInstitutionId id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Institution getInstitution() {
-        return institution;
-    }
-
-    public void setInstitution(Institution institution) {
-        this.institution = institution;
-    }
-
-    public boolean isPrimary() {
-        return isPrimary;
-    }
-
-    public void setPrimary(boolean primary) {
-        isPrimary = primary;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof UserInstitution)) {
-            return false;
-        }
-
-        UserInstitution other = (UserInstitution) o;
-
-        return Objects.equals(other.id, id) &&
-                Objects.equals(other.isPrimary, isPrimary);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, isPrimary);
-    }
 }
