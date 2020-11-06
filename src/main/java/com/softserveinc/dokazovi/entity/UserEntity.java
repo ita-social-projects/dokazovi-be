@@ -30,7 +30,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "user_entity")
 @Table(name = "users")
-public class User implements Serializable {
+public class UserEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,12 +58,12 @@ public class User implements Serializable {
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Post> posts = new HashSet<>();
+	private Set<PostEntity> postEntities = new HashSet<>();
 
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Charity> charities = new HashSet<>();
+	private Set<CharityEntity> charities = new HashSet<>();
 
 	@OneToMany(
 			fetch = FetchType.EAGER,
@@ -83,7 +83,7 @@ public class User implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Role> roles = new HashSet<>();
+	private Set<RoleEntity> roleEntities = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -93,7 +93,7 @@ public class User implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Direction> directions = new HashSet<>();
+	private Set<DirectionEntity> directionEntities = new HashSet<>();
 
 	@ManyToMany
 	@JoinTable(
@@ -103,12 +103,12 @@ public class User implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Source> sources = new HashSet<>();
+	private Set<SourceEntity> sourceEntities = new HashSet<>();
 
 	@CreationTimestamp
 	private Timestamp createdAt;
 
-	public User(String firstName, String lastName, String email, String password, String qualification,
+	public UserEntity(String firstName, String lastName, String email, String password, String qualification,
 			String phone, String bio, UserStatus status) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -120,14 +120,14 @@ public class User implements Serializable {
 		this.status = status;
 	}
 
-	public void addRole(Role role) {
-		roles.add(role);
-		role.getUsers().add(this);
+	public void addRole(RoleEntity roleEntity) {
+		roleEntities.add(roleEntity);
+		roleEntity.getUserEntities().add(this);
 	}
 
-	public void removeRole(Role role) {
-		roles.remove(role);
-		role.getUsers().remove(this);
+	public void removeRole(RoleEntity roleEntity) {
+		roleEntities.remove(roleEntity);
+		roleEntity.getUserEntities().remove(this);
 	}
 
 }

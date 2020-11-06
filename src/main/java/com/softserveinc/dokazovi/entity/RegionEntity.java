@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -19,33 +18,23 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "direction_entity")
-@Table(name = "directions")
-public class Direction implements Serializable {
+@Entity(name = "region_entity")
+@Table(name = "regions")
+public class RegionEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "direction_id")
+	@Column(name = "region_id")
 	private Integer id;
 
 	private String name;
 
-	@OneToMany(mappedBy = "mainDirection")
+	@OneToMany(mappedBy = "region")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Post> mainPostsDirections = new HashSet<>();
+	private Set<InstitutionEntity> institutionEntities = new HashSet<>();
 
-	@ManyToMany(mappedBy = "directions")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<Post> posts = new HashSet<>();
-
-	@ManyToMany(mappedBy = "directions")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<User> users = new HashSet<>();
-
-	public Direction(String name) {
+	public RegionEntity(String name) {
 		this.name = name;
 	}
 

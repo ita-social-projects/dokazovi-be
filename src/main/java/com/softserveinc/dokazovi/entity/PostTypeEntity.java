@@ -19,7 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "post_type_entity")
 @Table(name = "post_types")
-public class PostType implements Serializable {
+public class PostTypeEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +31,9 @@ public class PostType implements Serializable {
 	@OneToMany(mappedBy = "type")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Post> posts;
+	private Set<PostEntity> postEntities;
 
-	public PostType(String name) {
+	public PostTypeEntity(String name) {
 		this.name = name;
 	}
 

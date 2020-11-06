@@ -32,7 +32,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "post_entity")
 @Table(name = "posts")
-public class Post implements Serializable {
+public class PostEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,15 +49,15 @@ public class Post implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "author_id")
-	private User author;
+	private UserEntity author;
 
 	@ManyToOne
 	@JoinColumn(name = "type_id")
-	private PostType type;
+	private PostTypeEntity type;
 
 	@ManyToOne
 	@JoinColumn(name = "direction_id")
-	private Direction mainDirection;
+	private DirectionEntity mainDirectionEntity;
 
 	@Enumerated(EnumType.STRING)
 	private PostStatus status;
@@ -70,7 +70,7 @@ public class Post implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Direction> directions = new HashSet<>();
+	private Set<DirectionEntity> directionEntities = new HashSet<>();
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -80,7 +80,7 @@ public class Post implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Tag> tags = new HashSet<>();
+	private Set<TagEntity> tagEntities = new HashSet<>();
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -90,7 +90,7 @@ public class Post implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Source> sources = new HashSet<>();
+	private Set<SourceEntity> sourceEntities = new HashSet<>();
 
 	@CreationTimestamp
 	private Timestamp createdAt;
@@ -98,14 +98,14 @@ public class Post implements Serializable {
 	@UpdateTimestamp
 	private Timestamp modifiedAt;
 
-	public Post(String title, String content, boolean important, User author,
-			PostType type, Direction mainDirection, PostStatus status) {
+	public PostEntity(String title, String content, boolean important, UserEntity author,
+			PostTypeEntity type, DirectionEntity mainDirectionEntity, PostStatus status) {
 		this.title = title;
 		this.content = content;
 		this.important = important;
 		this.author = author;
 		this.type = type;
-		this.mainDirection = mainDirection;
+		this.mainDirectionEntity = mainDirectionEntity;
 		this.status = status;
 	}
 

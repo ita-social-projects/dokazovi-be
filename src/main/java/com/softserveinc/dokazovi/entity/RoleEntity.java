@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -18,23 +18,24 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "region_entity")
-@Table(name = "regions")
-public class Region implements Serializable {
+@Entity(name = "role_entity")
+@Table(name = "roles")
+public class RoleEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "region_id")
+	@Column(name = "role_id")
 	private Integer id;
 
+	@Column(name = "role_name")
 	private String name;
 
-	@OneToMany(mappedBy = "region")
+	@ManyToMany(mappedBy = "roles")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Institution> institutions = new HashSet<>();
+	private Set<UserEntity> userEntities = new HashSet<>();
 
-	public Region(String name) {
+	public RoleEntity(String name) {
 		this.name = name;
 	}
 

@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.entity;
 
-import com.softserveinc.dokazovi.entity.enumerations.SourceType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -8,12 +7,11 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -21,33 +19,34 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "source_entity")
-@Table(name = "sources")
-public class Source implements Serializable {
+@Entity(name = "direction_entity")
+@Table(name = "directions")
+public class DirectionEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "source_id")
+	@Column(name = "direction_id")
 	private Integer id;
 
-	@Enumerated(EnumType.STRING)
-	private SourceType type;
+	private String name;
 
-	private String value;
-
-	@ManyToMany(mappedBy = "sources")
+	@OneToMany(mappedBy = "mainDirection")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Post> posts = new HashSet<>();
+	private Set<PostEntity> mainPostsDirections = new HashSet<>();
 
-	@ManyToMany(mappedBy = "sources")
+	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<User> users = new HashSet<>();
+	private Set<PostEntity> postEntities = new HashSet<>();
 
-	public Source(SourceType type, String value) {
-		this.type = type;
-		this.value = value;
+	@ManyToMany(mappedBy = "directions")
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
+	private Set<UserEntity> userEntities = new HashSet<>();
+
+	public DirectionEntity(String name) {
+		this.name = name;
 	}
 
 }

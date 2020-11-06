@@ -23,7 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "institution_entity")
 @Table(name = "institutions")
-public class Institution implements Serializable {
+public class InstitutionEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class Institution implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "region_id", nullable = false)
-	private Region region;
+	private RegionEntity regionEntity;
 
 	@Column(name = "address", nullable = false)
 	private String address;
@@ -49,9 +49,9 @@ public class Institution implements Serializable {
 	@ToString.Exclude
 	private Set<UserInstitution> users = new HashSet<>();
 
-	public Institution(Region region, String name, String address) {
+	public InstitutionEntity(RegionEntity regionEntity, String name, String address) {
 		this.name = name;
-		this.region = region;
+		this.regionEntity = regionEntity;
 		this.address = address;
 	}
 }

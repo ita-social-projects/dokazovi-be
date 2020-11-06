@@ -25,19 +25,19 @@ public class UserInstitution implements Serializable {
 	@ManyToOne
 	@MapsId("userId")
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
-	private User user;
+	private UserEntity userEntity;
 
 	@ManyToOne
 	@MapsId("institutionId")
 	@JoinColumn(name = "institution_id", insertable = false, updatable = false)
-	private Institution institution;
+	private InstitutionEntity institutionEntity;
 
 	@ColumnDefault("false")
 	private boolean isPrimary;
 
-	public UserInstitution(User user, Institution institution, boolean isPrimary) {
-		this.user = user;
-		this.institution = institution;
+	public UserInstitution(UserEntity userEntity, InstitutionEntity institutionEntity, boolean isPrimary) {
+		this.userEntity = userEntity;
+		this.institutionEntity = institutionEntity;
 		this.isPrimary = isPrimary;
 	}
 

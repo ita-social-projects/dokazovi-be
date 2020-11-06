@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Entity(name = "charity_entity")
 @Table(name = "charities")
-public class Charity implements Serializable {
+public class CharityEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Charity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "author_id")
-	private User author;
+	private UserEntity author;
 
 	@CreationTimestamp
 	private Timestamp createdAt;
@@ -40,7 +40,7 @@ public class Charity implements Serializable {
 	@UpdateTimestamp
 	private Timestamp modifiedAt;
 
-	public Charity(String body, User author) {
+	public CharityEntity(String body, UserEntity author) {
 		this.body = body;
 		this.author = author;
 	}
