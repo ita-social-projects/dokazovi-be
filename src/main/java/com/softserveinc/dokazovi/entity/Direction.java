@@ -19,7 +19,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "directions")
+@Entity(name = "direction_entity")
 @Table(name = "directions")
 public class Direction implements Serializable {
 

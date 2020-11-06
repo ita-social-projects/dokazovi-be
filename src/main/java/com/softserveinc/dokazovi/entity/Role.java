@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "roles")
+@Entity(name = "role_entity")
 @Table(name = "roles")
 public class Role implements Serializable {
 

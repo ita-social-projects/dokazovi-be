@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "charities")
+@Entity(name = "charity_entity")
 @Table(name = "charities")
 public class Charity implements Serializable {
 

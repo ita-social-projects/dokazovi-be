@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
@@ -31,7 +30,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "posts")
+@Entity(name = "post_entity")
 @Table(name = "posts")
 public class Post implements Serializable {
 
@@ -61,13 +60,9 @@ public class Post implements Serializable {
 	private Direction mainDirection;
 
 	@Enumerated(EnumType.STRING)
-	@Type(type = "com.softserveinc.dokazovi.entity.enumerations.PostgreSQLPostStatusEnumType")
 	private PostStatus status;
 
-	@ManyToMany(
-			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-			fetch = FetchType.EAGER
-	)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_directions",
 			joinColumns = {@JoinColumn(name = "post_id")},
@@ -77,10 +72,7 @@ public class Post implements Serializable {
 	@ToString.Exclude
 	private Set<Direction> directions = new HashSet<>();
 
-	@ManyToMany(
-			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-			fetch = FetchType.EAGER
-	)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_tags",
 			joinColumns = {@JoinColumn(name = "post_id")},
@@ -90,10 +82,7 @@ public class Post implements Serializable {
 	@ToString.Exclude
 	private Set<Tag> tags = new HashSet<>();
 
-	@ManyToMany(
-			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-			fetch = FetchType.EAGER
-	)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_sources",
 			joinColumns = {@JoinColumn(name = "source_id")},

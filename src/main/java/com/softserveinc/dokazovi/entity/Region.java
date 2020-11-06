@@ -7,7 +7,6 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +18,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "regions")
+@Entity(name = "region_entity")
 @Table(name = "regions")
 public class Region implements Serializable {
 

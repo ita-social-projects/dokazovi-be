@@ -17,7 +17,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "post_types")
+@Entity(name = "post_type_entity")
 @Table(name = "post_types")
 public class PostType implements Serializable {
 

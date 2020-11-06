@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,7 +28,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "users")
+@Entity(name = "user_entity")
 @Table(name = "users")
 public class User implements Serializable {
 
@@ -54,7 +53,6 @@ public class User implements Serializable {
 	private String bio;
 
 	@Enumerated(EnumType.STRING)
-	@Type(type = "com.softserveinc.dokazovi.entity.enumerations.PostgreSQLUserStatusEnumType")
 	private UserStatus status;
 
 	@OneToMany(mappedBy = "author")
