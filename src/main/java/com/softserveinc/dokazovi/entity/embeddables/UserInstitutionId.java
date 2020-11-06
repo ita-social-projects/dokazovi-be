@@ -9,8 +9,8 @@ import java.io.Serializable;
 @Embeddable
 public class UserInstitutionId implements Serializable {
 
-    private Integer institutionId;
+	private Integer institutionId;
 
-    private Integer userId;
+	private Integer userId;
 
 }

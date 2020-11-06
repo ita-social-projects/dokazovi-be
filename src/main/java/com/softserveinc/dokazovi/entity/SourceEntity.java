@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,9 +21,9 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "sources")
+@Entity(name = "source_entity")
 @Table(name = "sources")
-public class Source implements Serializable {
+public class SourceEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +31,6 @@ public class Source implements Serializable {
 	private Integer id;
 
 	@Enumerated(EnumType.STRING)
-	@Type(type = "com.softserveinc.dokazovi.entity.enumerations.PostgreSQLSourceTypeEnumType")
 	private SourceType type;
 
 	private String value;
@@ -40,14 +38,14 @@ public class Source implements Serializable {
 	@ManyToMany(mappedBy = "sources")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Post> posts = new HashSet<>();
+	private Set<PostEntity> posts = new HashSet<>();
 
 	@ManyToMany(mappedBy = "sources")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<User> users = new HashSet<>();
+	private Set<UserEntity> users = new HashSet<>();
 
-	public Source(SourceType type, String value) {
+	public SourceEntity(SourceType type, String value) {
 		this.type = type;
 		this.value = value;
 	}

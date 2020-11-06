@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
-import com.softserveinc.dokazovi.entity.Post;
+import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.service.PostService;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<Post> findAll(Pageable pageable) {
+	public Page<PostEntity> findAll(Pageable pageable) {
 		return postRepository.findAll(pageable);
 	}
 }

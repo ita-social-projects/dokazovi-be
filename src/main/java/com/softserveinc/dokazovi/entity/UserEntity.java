@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,9 +28,9 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "users")
+@Entity(name = "user_entity")
 @Table(name = "users")
-public class User implements Serializable {
+public class UserEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,18 +53,17 @@ public class User implements Serializable {
 	private String bio;
 
 	@Enumerated(EnumType.STRING)
-	@Type(type = "com.softserveinc.dokazovi.entity.enumerations.PostgreSQLUserStatusEnumType")
 	private UserStatus status;
 
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Post> posts = new HashSet<>();
+	private Set<PostEntity> posts = new HashSet<>();
 
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Charity> charities = new HashSet<>();
+	private Set<CharityEntity> charities = new HashSet<>();
 
 	@OneToMany(
 			fetch = FetchType.EAGER,
@@ -75,7 +73,7 @@ public class User implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserInstitution> institutions = new HashSet<>();
+	private Set<UserInstitutionEntity> institutions = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -85,7 +83,7 @@ public class User implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Role> roles = new HashSet<>();
+	private Set<RoleEntity> roles = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -95,7 +93,7 @@ public class User implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Direction> directions = new HashSet<>();
+	private Set<DirectionEntity> directions = new HashSet<>();
 
 	@ManyToMany
 	@JoinTable(
@@ -105,12 +103,12 @@ public class User implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Source> sources = new HashSet<>();
+	private Set<SourceEntity> sources = new HashSet<>();
 
 	@CreationTimestamp
 	private Timestamp createdAt;
 
-	public User(String firstName, String lastName, String email, String password, String qualification,
+	public UserEntity(String firstName, String lastName, String email, String password, String qualification,
 			String phone, String bio, UserStatus status) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -122,12 +120,12 @@ public class User implements Serializable {
 		this.status = status;
 	}
 
-	public void addRole(Role role) {
+	public void addRole(RoleEntity role) {
 		roles.add(role);
 		role.getUsers().add(this);
 	}
 
-	public void removeRole(Role role) {
+	public void removeRole(RoleEntity role) {
 		roles.remove(role);
 		role.getUsers().remove(this);
 	}

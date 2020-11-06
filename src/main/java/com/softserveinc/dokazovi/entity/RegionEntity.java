@@ -13,27 +13,28 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "post_types")
-@Table(name = "post_types")
-public class PostType implements Serializable {
+@Entity(name = "region_entity")
+@Table(name = "regions")
+public class RegionEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "type_id")
+	@Column(name = "region_id")
 	private Integer id;
 
 	private String name;
 
-	@OneToMany(mappedBy = "type")
+	@OneToMany(mappedBy = "region")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Post> posts;
+	private Set<InstitutionEntity> institutions = new HashSet<>();
 
-	public PostType(String name) {
+	public RegionEntity(String name) {
 		this.name = name;
 	}
 

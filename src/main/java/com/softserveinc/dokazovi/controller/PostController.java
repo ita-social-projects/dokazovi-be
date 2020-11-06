@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
-import com.softserveinc.dokazovi.entity.Post;
+import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.service.PostService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ public class PostController {
 	@ApiOperation(value = "Get posts by page")
 	@ApiPageable
 	@GetMapping("/")
-	public ResponseEntity<Page<Post>> findAll(Pageable pageable) {
+	public ResponseEntity<Page<PostEntity>> findAll(Pageable pageable) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findAll(pageable));
