@@ -33,7 +33,7 @@ public class RoleEntity implements Serializable {
 	@ManyToMany(mappedBy = "roles")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> userEntities = new HashSet<>();
+	private Set<UserEntity> users = new HashSet<>();
 
 	public RoleEntity(String name) {
 		this.name = name;

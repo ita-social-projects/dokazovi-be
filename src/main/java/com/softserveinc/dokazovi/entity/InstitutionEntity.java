@@ -35,7 +35,7 @@ public class InstitutionEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "region_id", nullable = false)
-	private RegionEntity regionEntity;
+	private RegionEntity region;
 
 	@Column(name = "address", nullable = false)
 	private String address;
@@ -47,11 +47,11 @@ public class InstitutionEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserInstitution> users = new HashSet<>();
+	private Set<UserInstitutionEntity> users = new HashSet<>();
 
-	public InstitutionEntity(RegionEntity regionEntity, String name, String address) {
+	public InstitutionEntity(RegionEntity region, String name, String address) {
 		this.name = name;
-		this.regionEntity = regionEntity;
+		this.region = region;
 		this.address = address;
 	}
 }

@@ -38,12 +38,12 @@ public class SourceEntity implements Serializable {
 	@ManyToMany(mappedBy = "sources")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> postEntities = new HashSet<>();
+	private Set<PostEntity> posts = new HashSet<>();
 
 	@ManyToMany(mappedBy = "sources")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> userEntities = new HashSet<>();
+	private Set<UserEntity> users = new HashSet<>();
 
 	public SourceEntity(SourceType type, String value) {
 		this.type = type;

@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**As a** <roleEntity> **I want to** <....> **so that** <...>
+**As a** <role> **I want to** <....> **so that** <...>
 
 **Description**
 Describe feature functionality

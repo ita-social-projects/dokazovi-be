@@ -38,7 +38,7 @@ public class DirectionEntity implements Serializable {
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> postEntities = new HashSet<>();
+	private Set<PostEntity> posts = new HashSet<>();
 
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude

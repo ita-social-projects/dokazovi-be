@@ -32,7 +32,7 @@ public class RegionEntity implements Serializable {
 	@OneToMany(mappedBy = "region")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<InstitutionEntity> institutionEntities = new HashSet<>();
+	private Set<InstitutionEntity> institutions = new HashSet<>();
 
 	public RegionEntity(String name) {
 		this.name = name;

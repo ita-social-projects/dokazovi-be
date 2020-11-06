@@ -17,7 +17,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity(name = "user_institution_entity")
 @Table(name = "users_institutions")
-public class UserInstitution implements Serializable {
+public class UserInstitutionEntity implements Serializable {
 
 	@EmbeddedId
 	private UserInstitutionId id = new UserInstitutionId();
@@ -25,19 +25,19 @@ public class UserInstitution implements Serializable {
 	@ManyToOne
 	@MapsId("userId")
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
-	private UserEntity userEntity;
+	private UserEntity user;
 
 	@ManyToOne
 	@MapsId("institutionId")
 	@JoinColumn(name = "institution_id", insertable = false, updatable = false)
-	private InstitutionEntity institutionEntity;
+	private InstitutionEntity institution;
 
 	@ColumnDefault("false")
 	private boolean isPrimary;
 
-	public UserInstitution(UserEntity userEntity, InstitutionEntity institutionEntity, boolean isPrimary) {
-		this.userEntity = userEntity;
-		this.institutionEntity = institutionEntity;
+	public UserInstitutionEntity(UserEntity user, InstitutionEntity institution, boolean isPrimary) {
+		this.user = user;
+		this.institution = institution;
 		this.isPrimary = isPrimary;
 	}
 

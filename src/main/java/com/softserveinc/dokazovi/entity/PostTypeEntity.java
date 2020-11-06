@@ -31,7 +31,7 @@ public class PostTypeEntity implements Serializable {
 	@OneToMany(mappedBy = "type")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> postEntities;
+	private Set<PostEntity> posts;
 
 	public PostTypeEntity(String name) {
 		this.name = name;

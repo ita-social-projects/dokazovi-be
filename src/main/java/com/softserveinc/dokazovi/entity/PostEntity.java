@@ -57,7 +57,7 @@ public class PostEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "direction_id")
-	private DirectionEntity mainDirectionEntity;
+	private DirectionEntity mainDirection;
 
 	@Enumerated(EnumType.STRING)
 	private PostStatus status;
@@ -70,7 +70,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<DirectionEntity> directionEntities = new HashSet<>();
+	private Set<DirectionEntity> directions = new HashSet<>();
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -80,7 +80,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<TagEntity> tagEntities = new HashSet<>();
+	private Set<TagEntity> tags = new HashSet<>();
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -90,7 +90,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<SourceEntity> sourceEntities = new HashSet<>();
+	private Set<SourceEntity> sources = new HashSet<>();
 
 	@CreationTimestamp
 	private Timestamp createdAt;
@@ -99,13 +99,13 @@ public class PostEntity implements Serializable {
 	private Timestamp modifiedAt;
 
 	public PostEntity(String title, String content, boolean important, UserEntity author,
-			PostTypeEntity type, DirectionEntity mainDirectionEntity, PostStatus status) {
+			PostTypeEntity type, DirectionEntity mainDirection, PostStatus status) {
 		this.title = title;
 		this.content = content;
 		this.important = important;
 		this.author = author;
 		this.type = type;
-		this.mainDirectionEntity = mainDirectionEntity;
+		this.mainDirection = mainDirection;
 		this.status = status;
 	}
 

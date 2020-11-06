@@ -32,7 +32,7 @@ public class TagEntity implements Serializable {
 	@ManyToMany(mappedBy = "tags")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> postEntities = new HashSet<>();
+	private Set<PostEntity> posts = new HashSet<>();
 
 	public TagEntity(String tag) {
 		this.tag = tag;

@@ -58,7 +58,7 @@ public class UserEntity implements Serializable {
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> postEntities = new HashSet<>();
+	private Set<PostEntity> posts = new HashSet<>();
 
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
@@ -73,7 +73,7 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserInstitution> institutions = new HashSet<>();
+	private Set<UserInstitutionEntity> institutions = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -83,7 +83,7 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<RoleEntity> roleEntities = new HashSet<>();
+	private Set<RoleEntity> roles = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -93,7 +93,7 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<DirectionEntity> directionEntities = new HashSet<>();
+	private Set<DirectionEntity> directions = new HashSet<>();
 
 	@ManyToMany
 	@JoinTable(
@@ -103,7 +103,7 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<SourceEntity> sourceEntities = new HashSet<>();
+	private Set<SourceEntity> sources = new HashSet<>();
 
 	@CreationTimestamp
 	private Timestamp createdAt;
@@ -120,14 +120,14 @@ public class UserEntity implements Serializable {
 		this.status = status;
 	}
 
-	public void addRole(RoleEntity roleEntity) {
-		roleEntities.add(roleEntity);
-		roleEntity.getUserEntities().add(this);
+	public void addRole(RoleEntity role) {
+		roles.add(role);
+		role.getUsers().add(this);
 	}
 
-	public void removeRole(RoleEntity roleEntity) {
-		roleEntities.remove(roleEntity);
-		roleEntity.getUserEntities().remove(this);
+	public void removeRole(RoleEntity role) {
+		roles.remove(role);
+		role.getUsers().remove(this);
 	}
 
 }
