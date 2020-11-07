@@ -4,6 +4,7 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'idea'
+	id 'checkstyle'
 }
 
 group = 'com.softserveinc'
@@ -16,6 +17,10 @@ bootRun {
 
 war {
 	enabled = true
+}
+
+checkstyleMain {
+	configFile = file("${rootDir}/checkstyle.xml")
 }
 
 configurations {
@@ -36,6 +41,8 @@ dependencies {
 	implementation "org.mapstruct:mapstruct:${MAPPER_VERSION}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
 	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
+	compileOnly "org.projectlombok:lombok"
+	annotationProcessor "org.projectlombok:lombok"
 
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	runtimeOnly 'org.postgresql:postgresql'
