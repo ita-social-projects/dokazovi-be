@@ -5,6 +5,7 @@ plugins {
 	id 'war'
 	id 'idea'
 	id 'checkstyle'
+	id 'jacoco'
 }
 
 group = 'com.softserveinc'
@@ -56,4 +57,17 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = "0.8.5"
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		html.destination file("${buildDir}/jacoco/reports/html")
+		xml.enabled false
+		csv.enabled false
+	}
 }
