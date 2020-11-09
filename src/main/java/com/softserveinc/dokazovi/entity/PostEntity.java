@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
@@ -31,9 +30,9 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "posts")
+@Entity(name = "post_entity")
 @Table(name = "posts")
-public class Post implements Serializable {
+public class PostEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,24 +49,20 @@ public class Post implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "author_id")
-	private User author;
+	private UserEntity author;
 
 	@ManyToOne
 	@JoinColumn(name = "type_id")
-	private PostType type;
+	private PostTypeEntity type;
 
 	@ManyToOne
 	@JoinColumn(name = "direction_id")
-	private Direction mainDirection;
+	private DirectionEntity mainDirection;
 
 	@Enumerated(EnumType.STRING)
-	@Type(type = "com.softserveinc.dokazovi.entity.enumerations.PostgreSQLPostStatusEnumType")
 	private PostStatus status;
 
-	@ManyToMany(
-			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-			fetch = FetchType.EAGER
-	)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_directions",
 			joinColumns = {@JoinColumn(name = "post_id")},
@@ -75,12 +70,9 @@ public class Post implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Direction> directions = new HashSet<>();
+	private Set<DirectionEntity> directions = new HashSet<>();
 
-	@ManyToMany(
-			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-			fetch = FetchType.EAGER
-	)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_tags",
 			joinColumns = {@JoinColumn(name = "post_id")},
@@ -88,12 +80,9 @@ public class Post implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Tag> tags = new HashSet<>();
+	private Set<TagEntity> tags = new HashSet<>();
 
-	@ManyToMany(
-			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-			fetch = FetchType.EAGER
-	)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_sources",
 			joinColumns = {@JoinColumn(name = "source_id")},
@@ -101,7 +90,7 @@ public class Post implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Source> sources = new HashSet<>();
+	private Set<SourceEntity> sources = new HashSet<>();
 
 	@CreationTimestamp
 	private Timestamp createdAt;
@@ -109,8 +98,8 @@ public class Post implements Serializable {
 	@UpdateTimestamp
 	private Timestamp modifiedAt;
 
-	public Post(String title, String content, boolean important, User author,
-			PostType type, Direction mainDirection, PostStatus status) {
+	public PostEntity(String title, String content, boolean important, UserEntity author,
+			PostTypeEntity type, DirectionEntity mainDirection, PostStatus status) {
 		this.title = title;
 		this.content = content;
 		this.important = important;

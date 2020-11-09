@@ -18,9 +18,9 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "tags")
+@Entity(name = "tag_entity")
 @Table(name = "tags")
-public class Tag implements Serializable {
+public class TagEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +32,9 @@ public class Tag implements Serializable {
 	@ManyToMany(mappedBy = "tags")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<Post> posts = new HashSet<>();
+	private Set<PostEntity> posts = new HashSet<>();
 
-	public Tag(String tag) {
+	public TagEntity(String tag) {
 		this.tag = tag;
 	}
 

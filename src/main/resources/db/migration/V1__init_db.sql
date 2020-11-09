@@ -13,37 +13,11 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
-CREATE TYPE public.post_status AS ENUM (
-  'draft',
-  'moderation_first_sign',
-  'moderation_second_sign',
-  'published',
-  'archived'
-);
-
-ALTER TYPE public.post_status OWNER TO dokazovi;
-
-CREATE TYPE public.source_type AS ENUM (
-  'profile_image',
-  'post_image',
-  'post_video'
-);
-
-ALTER TYPE public.source_type OWNER TO dokazovi;
-
-CREATE TYPE public.user_status AS ENUM (
-  'new',
-  'active',
-  'deleted'
-);
-
-ALTER TYPE public.user_status OWNER TO dokazovi;
-
 CREATE TABLE public.users (
   "user_id" SERIAL PRIMARY KEY,
   "email" varchar,
   "password" varchar,
-  "status" public.user_status,
+  "status" varchar,
   "first_name" varchar,
   "last_name" varchar,
   "qualification" varchar,
@@ -113,7 +87,7 @@ CREATE TABLE public.posts (
   "type_id" int,
   "title" varchar,
   "content" text,
-  "status" public.post_status,
+  "status" varchar,
   "important" boolean,
   "tags" varchar,
   "created_at" TIMESTAMP DEFAULT (now()),
@@ -134,7 +108,7 @@ ALTER TABLE public.charities OWNER TO dokazovi;
 
 CREATE TABLE public.sources (
   "source_id" SERIAL PRIMARY KEY,
-  "type" public.source_type,
+  "type" varchar,
   "value" varchar
 );
 
