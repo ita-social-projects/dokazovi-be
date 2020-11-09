@@ -77,7 +77,7 @@ jacocoTestReport {
 }
 
 sonarqube {
-	tasks['sonarqube'].dependsOn test
+	tasks['sonarqube'].dependsOn jacocoTestReport
 	properties {
 		property 'sonar.host.url', 'http://localhost:9000'
 		property "sonar.sources", "src/main"
