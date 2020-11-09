@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PostTypeDTO {
-
+public class PostUserInstitutionDTO {
 	private Integer id;
 	private String name;
+	private String region;
 }

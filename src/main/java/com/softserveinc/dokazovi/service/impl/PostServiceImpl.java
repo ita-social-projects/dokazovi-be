@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
-import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -18,14 +18,8 @@ public class PostServiceImpl implements PostService {
 	private final PostMapper postMapper;
 
 	@Override
-	public Page<PostDTO> findAll(Pageable pageable) {
-		return postRepository.findAll(pageable)
-				.map(postMapper::toPostDTO);
-	}
-
-	@Override
-	public Page<PostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable) {
+	public Page<LatestPostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable) {
 		return postRepository.findAllByStatus(postStatus, pageable)
-				.map(postMapper::toPostDTO);
+				.map(postMapper::toLatestPostDTO);
 	}
 }

@@ -7,11 +7,13 @@ import java.sql.Timestamp;
 
 @Data
 @Builder
-public class PostDTO {
+public class LatestPostDTO {
+
 	private Integer id;
 	private String title;
 	private String content;
-	private PostUserDTO postUserDTO;
-	private PostTypeDTO postTypeDTO;
+	private PostUserDTO author;
+	private PostDirectionDTO direction;
+	private PostTypeDTO type;
 	private Timestamp createdAt;
 }

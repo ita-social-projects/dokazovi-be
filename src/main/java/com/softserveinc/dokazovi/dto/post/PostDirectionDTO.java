@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PostTypeDTO {
+public class PostDirectionDTO {
 
 	private Integer id;
 	private String name;
