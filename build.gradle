@@ -6,6 +6,7 @@ plugins {
 	id 'idea'
 	id 'checkstyle'
 	id 'jacoco'
+	id 'org.sonarqube' version '3.0'
 }
 
 group = 'com.softserveinc'
@@ -66,8 +67,22 @@ jacoco {
 jacocoTestReport {
 	dependsOn test
 	reports {
-		html.destination file("${buildDir}/jacoco/reports/html")
-		xml.enabled false
+		html.enabled true
+		xml.enabled true
 		csv.enabled false
+		html.destination file("${buildDir}/jacoco/reports/html")
+		xml.destination file("${buildDir}/jacoco/reports/jacocoTestReport.xml")
+
+	}
+}
+
+sonarqube {
+	tasks['sonarqube'].dependsOn test
+	properties {
+		property 'sonar.host.url', 'http://localhost:9000'
+		property "sonar.sources", "src/main"
+		property "sonar.tests", "src/test"
+		property "sonar.jacoco.coverage.reportPaths", "$buildDir/jacoco/reports/jacocoTestReport.xml"
+		property "sonar.junit.reportsPaths", "$buildDir/test-results/"
 	}
 }
