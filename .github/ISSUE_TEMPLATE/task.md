@@ -1,3 +1,12 @@
+---
+name: Task
+about: Describe kask
+title: ''
+labels: Task
+assignees: ''
+
+---
+
 **Story link**
 [#100 Story](https://jira.softserve.academy/browse/100)
 
