@@ -1,8 +1,5 @@
 package com.softserveinc.dokazovi.dto;
 
-import com.softserveinc.dokazovi.entity.DirectionEntity;
-import com.softserveinc.dokazovi.entity.PostTypeEntity;
-import com.softserveinc.dokazovi.entity.UserEntity;
 import lombok.Data;
 
 @Data
@@ -14,10 +11,10 @@ public class PostDto {
 
 	private String content;
 
-	private UserEntity author;
+	private AuthorDto author;
 
-	private PostTypeEntity type;
+	private PostTypeDto type;
 
-	private DirectionEntity mainDirection;
+	private DirectionDto direction;
 
 }
