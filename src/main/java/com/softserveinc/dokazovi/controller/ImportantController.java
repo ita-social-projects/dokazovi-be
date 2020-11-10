@@ -25,7 +25,7 @@ public class ImportantController {
 	@ApiPageable
 	@GetMapping("/")
 	//TODO: change pagination mode to "3 posts per page"
-	public ResponseEntity<Page<PostEntity>> findAll(Pageable pageable) {
+	public ResponseEntity<Page<PostEntity>> findImportant(Pageable pageable) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findImportantPosts(pageable));
