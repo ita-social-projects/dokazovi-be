@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.dto.post;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,5 +16,6 @@ public class LatestPostDTO {
 	private PostUserDTO author;
 	private PostDirectionDTO direction;
 	private PostTypeDTO type;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private Timestamp createdAt;
 }

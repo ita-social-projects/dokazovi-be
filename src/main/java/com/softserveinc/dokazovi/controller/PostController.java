@@ -26,7 +26,7 @@ public class PostController {
 	@ApiOperation(value = "Find latest published posts")
 	@ApiPageable
 	@GetMapping("/latest")
-	public ResponseEntity<Page<LatestPostDTO>> findLatestByStatus(
+	public ResponseEntity<Page<LatestPostDTO>> findLatestPublished(
 			@PageableDefault(sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
