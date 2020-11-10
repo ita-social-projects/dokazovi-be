@@ -5,7 +5,7 @@ import com.softserveinc.dokazovi.entity.PostEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {PostUserMapper.class, PostTypeMapper.class, PostDirectionMapper.class})
+@Mapper(componentModel = "spring", uses = {UserMapper.class, PostTypeMapper.class, DirectionMapper.class})
 public interface PostMapper {
 
 	@Mapping(target = "author", source = "author")

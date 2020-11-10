@@ -5,7 +5,7 @@ import com.softserveinc.dokazovi.entity.DirectionEntity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface PostDirectionMapper {
+public interface DirectionMapper {
 
 	PostDirectionDTO toPostDirectionDTO(DirectionEntity directionEntity);
 }

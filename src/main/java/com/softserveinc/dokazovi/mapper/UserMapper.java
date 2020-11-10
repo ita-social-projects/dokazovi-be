@@ -11,10 +11,10 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.Set;
 
-@Mapper(componentModel = "spring", uses = {PostUserInstitutionMapper.class})
-public interface PostUserMapper {
+@Mapper(componentModel = "spring", uses = {InstitutionMapper.class})
+public interface UserMapper {
 
-	PostUserInstitutionMapper INSTITUTION_MAPPER = Mappers.getMapper(PostUserInstitutionMapper.class);
+	InstitutionMapper INSTITUTION_MAPPER = Mappers.getMapper(InstitutionMapper.class);
 
 	@Mapping(target = "institution", source = "institutions", qualifiedByName = "getPrimaryUserInstitution")
 	PostUserDTO toPostUserDTO(UserEntity userEntity);

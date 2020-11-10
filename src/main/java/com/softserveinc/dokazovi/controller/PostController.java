@@ -23,7 +23,7 @@ public class PostController {
 
 	private final PostService postService;
 
-	@ApiOperation(value = "Find latest posts by status")
+	@ApiOperation(value = "Find latest published posts")
 	@ApiPageable
 	@GetMapping("/latest")
 	public ResponseEntity<Page<LatestPostDTO>> findLatestByStatus(
