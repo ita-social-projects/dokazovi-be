@@ -19,6 +19,7 @@ public class UserServiceImpl implements UserService {
 		this.userRepository = userRepository;
 	}
 
+	@Override
 	public UserEntity findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
