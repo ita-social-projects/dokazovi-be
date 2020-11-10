@@ -1,11 +1,14 @@
 package com.softserveinc.dokazovi.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class PostTypeDto {
+@Builder
+public class InstitutionDTO {
 
 	private Integer id;
 
 	private String name;
+
 }

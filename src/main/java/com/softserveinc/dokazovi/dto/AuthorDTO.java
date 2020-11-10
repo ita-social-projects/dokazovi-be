@@ -1,9 +1,11 @@
 package com.softserveinc.dokazovi.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class AuthorDto {
+@Builder
+public class AuthorDTO {
 
 	private Integer id;
 
@@ -11,6 +13,6 @@ public class AuthorDto {
 
 	private String lastName;
 
-	InstitutionDto institution;
+	InstitutionDTO institution;
 
 }
