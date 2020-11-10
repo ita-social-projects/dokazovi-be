@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable;
 public interface PostService {
 
 	Page<PostEntity> findAll(Pageable pageable);
+
+	Page<PostEntity> findImportantPosts(Pageable pageable);
 }

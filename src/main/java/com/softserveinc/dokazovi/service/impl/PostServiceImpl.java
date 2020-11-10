@@ -20,4 +20,10 @@ public class PostServiceImpl implements PostService {
 	public Page<PostEntity> findAll(Pageable pageable) {
 		return postRepository.findAll(pageable);
 	}
+
+	@Override
+	public Page<PostEntity> findImportantPosts(Pageable pageable) {
+		// TODO: create method and SELECT query form important = true
+		return null;
+	}
 }
