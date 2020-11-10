@@ -49,6 +49,8 @@ public class UserEntity implements Serializable {
 
 	private String phone;
 
+	private String avatarUrl;
+
 	@Column(name = "bio", columnDefinition = "TEXT")
 	private String bio;
 

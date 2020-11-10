@@ -33,9 +33,9 @@ public class UserInstitutionEntity implements Serializable {
 	private InstitutionEntity institution;
 
 	@ColumnDefault("false")
-	private boolean isPrimary;
+	private Boolean isPrimary;
 
-	public UserInstitutionEntity(UserEntity user, InstitutionEntity institution, boolean isPrimary) {
+	public UserInstitutionEntity(UserEntity user, InstitutionEntity institution, Boolean isPrimary) {
 		this.user = user;
 		this.institution = institution;
 		this.isPrimary = isPrimary;
