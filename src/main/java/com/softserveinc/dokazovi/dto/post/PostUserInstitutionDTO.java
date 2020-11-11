@@ -8,7 +8,7 @@ import lombok.Data;
 public class PostUserInstitutionDTO {
 
 	private Integer id;
-
 	private String name;
+	private String region;
 
 }

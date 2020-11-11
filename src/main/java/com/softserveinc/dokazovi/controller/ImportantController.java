@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(EndPoints.WEB_API)
 public class ImportantController {
 
 	private final PostService postService;
