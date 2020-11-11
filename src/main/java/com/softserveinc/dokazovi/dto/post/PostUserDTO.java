@@ -1,18 +1,15 @@
-package com.softserveinc.dokazovi.dto;
+package com.softserveinc.dokazovi.dto.post;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class AuthorDTO {
+public class PostUserDTO {
 
 	private Integer id;
-
 	private String firstName;
-
 	private String lastName;
-
-	InstitutionDTO institution;
+	private PostUserInstitutionDTO institution;
 
 }
