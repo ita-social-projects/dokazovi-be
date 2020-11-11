@@ -49,6 +49,8 @@ public class UserEntity implements Serializable {
 
 	private String phone;
 
+	private String avatar;
+
 	@Column(name = "bio", columnDefinition = "TEXT")
 	private String bio;
 
@@ -129,5 +131,4 @@ public class UserEntity implements Serializable {
 		roles.remove(role);
 		role.getUsers().remove(this);
 	}
-
 }

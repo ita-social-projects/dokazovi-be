@@ -37,6 +37,7 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.flywaydb:flyway-core'
 	implementation "org.mapstruct:mapstruct:${MAPPER_VERSION}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
