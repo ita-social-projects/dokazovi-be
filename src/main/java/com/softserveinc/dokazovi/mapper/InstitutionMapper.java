@@ -9,4 +9,6 @@ import org.mapstruct.Mapping;
 public interface InstitutionMapper {
 	@Mapping(target = "region", source = "institution.region.name")
 	PostUserInstitutionDTO toPostUserInstitutionDTO (InstitutionEntity institution);
+
+
 }

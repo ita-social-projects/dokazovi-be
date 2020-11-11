@@ -1,10 +1,10 @@
 package com.softserveinc.dokazovi.service;
 
-import com.softserveinc.dokazovi.dto.DoctorPreviewDTO;
+import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
 import org.springframework.data.domain.Page;
 
 import java.awt.print.Pageable;
 
 public interface UserService {
-	Page<DoctorPreviewDTO> getExpertsPreview(Pageable pageable);
+	Page<ExpertPreviewDTO> getExpertsPreview(Pageable pageable);
 }

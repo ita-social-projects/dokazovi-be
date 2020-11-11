@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
+
+	Page<PostEntity> findFirstByAuthorIdAndStatusOrderByCreatedAt(Integer authorId, PostStatus status);
 }
