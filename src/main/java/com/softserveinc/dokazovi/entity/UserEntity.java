@@ -132,5 +132,4 @@ public class UserEntity implements Serializable {
 		roles.remove(role);
 		role.getUsers().remove(this);
 	}
-
 }
