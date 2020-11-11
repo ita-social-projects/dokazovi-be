@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(EndPoints.IMPORTANT)
+@RequestMapping(EndPoints.WEB_API)
 public class ImportantController {
 
 	private final PostService postService;
@@ -27,7 +27,7 @@ public class ImportantController {
 
 	@ApiPageable
 	@ApiOperation(value = "Find important posts")
-	@GetMapping()
+	@GetMapping(EndPoints.IMPORTANT)
 	public ResponseEntity<Page<ImportantPostDTO>> findImportant(
 			@PageableDefault(size = 3)
 			@SortDefault.SortDefaults({
