@@ -41,4 +41,7 @@ public class UserInstitutionEntity implements Serializable {
 		this.isPrimary = isPrimary;
 	}
 
+	public Boolean isPrimary() {
+		return isPrimary;
+	}
 }

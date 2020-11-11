@@ -49,7 +49,7 @@ public class UserEntity implements Serializable {
 
 	private String phone;
 
-	private String avatarUrl;
+	private String avatar;
 
 	@Column(name = "bio", columnDefinition = "TEXT")
 	private String bio;
@@ -111,13 +111,14 @@ public class UserEntity implements Serializable {
 	private Timestamp createdAt;
 
 	public UserEntity(String firstName, String lastName, String email, String password, String qualification,
-			String phone, String bio, UserStatus status) {
+			String phone, String avatar, String bio, UserStatus status) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
 		this.qualification = qualification;
 		this.phone = phone;
+		this.avatar = avatar;
 		this.bio = bio;
 		this.status = status;
 	}

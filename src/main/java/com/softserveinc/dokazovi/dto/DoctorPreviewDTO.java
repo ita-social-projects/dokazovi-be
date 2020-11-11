@@ -9,20 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DoctorPreviewDTO {
 
-	private Integer id;
+	private Integer doctorId;
 
-	private String avatarUrl;
-
-	private String firstName;
-
-	private String lastName;
-
-	private DirectionDTO direction;
-
-	private InstitutionDTO institution;
+	private String name;
 
 	private String qualification;
 
-	private LastAddedPostDTO lastAddedPost;
+	private UserDirectionDTO direction;
+
+	private InstitutionDTO institution;
+
+	private LatestExpertPostDTO lastAddedPost;
 
 }

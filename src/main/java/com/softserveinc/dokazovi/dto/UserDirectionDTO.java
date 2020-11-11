@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DirectionDTO {
+public class UserDirectionDTO {
 
 	private Integer id;
 

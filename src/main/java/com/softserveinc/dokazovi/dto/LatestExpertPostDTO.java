@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LastAddedPostDTO {
+public class LatestExpertPostDTO {
 
 	private Integer id;
 
