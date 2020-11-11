@@ -12,5 +12,6 @@ public interface ImportantPostMapper {
 	@Mapping(target = "author", source = "author")
 	@Mapping(target = "type", source = "type")
 	@Mapping(target = "direction", source = "mainDirection")
+	@Mapping(target = "createdAt", source = "createdAt")
 	ImportantPostDTO toImportantPostDTO(PostEntity postEntity);
 }
