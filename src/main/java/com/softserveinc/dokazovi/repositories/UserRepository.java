@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
+	UserEntity findByEmail(String email);
+
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM users u WHERE u.status='ACTIVE' ORDER BY random() LIMIT :#{#numberOfUsers}")
 	List<UserEntity> findRandomActiveUsers(@Param("numberOfUsers") Integer numberOfUsers);
