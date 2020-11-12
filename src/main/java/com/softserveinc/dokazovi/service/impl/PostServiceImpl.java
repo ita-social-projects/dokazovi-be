@@ -6,23 +6,17 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.service.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
-
-	@Autowired
-	public PostServiceImpl(PostRepository postRepository,
-			PostMapper postMapper) {
-		this.postRepository = postRepository;
-		this.postMapper = postMapper;
-	}
 
 	@Override
 	public Page<PostEntity> findAll(Pageable pageable) {
