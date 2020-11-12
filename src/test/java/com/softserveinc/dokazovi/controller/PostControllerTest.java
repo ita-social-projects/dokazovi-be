@@ -27,8 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoSettings(strictness = Strictness.LENIENT)
 class PostControllerTest {
 
-	private static final String postLink = "/post";
-
 	private MockMvc mockMvc;
 
 	@InjectMocks
@@ -47,9 +45,9 @@ class PostControllerTest {
 	@Test
 	void findLatestPublished_GetWithPagination_isOk() throws Exception {
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
-		mockMvc.perform(get(postLink + "/latest/?page=0"))
+		mockMvc.perform(get(EndPoints.POST + EndPoints.POST_LATEST + "/?page=0"))
 				.andExpect(status().isOk());
-		verify(postService).findAllByStatus(eq(PostStatus.PUBLISHED),eq(pageable));
+		verify(postService).findAllByStatus(eq(PostStatus.PUBLISHED), eq(pageable));
 	}
 
 
