@@ -12,5 +12,5 @@ public interface UserService {
 
 	Page<UserEntity> findAll(Pageable pageable);
 
-	Page<ExpertPreviewDTO> getExpertsPreview(Pageable pageable);
+	Page<ExpertPreviewDTO> getExpertsPreview(Pageable pageable, Integer numberOfUsers);
 }

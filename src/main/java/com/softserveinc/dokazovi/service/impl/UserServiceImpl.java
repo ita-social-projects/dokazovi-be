@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
 import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.UserMapper;
@@ -7,8 +8,12 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -34,8 +39,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<ExpertPreviewDTO> getExpertsPreview(Pageable pageable) {
-		return null;
+	public Page<ExpertPreviewDTO> getExpertsPreview(Pageable pageable, Integer number) {
+		List<ExpertPreviewDTO> expertPreviewDTOS = new ArrayList<>();
+		List<UserEntity> userEntities = userRepository.findRandomActiveUsers(number);
+		userEntities.forEach((n) -> expertPreviewDTOS.add(userMapper.toExpertPreviewDTO(n)));
+		Page<ExpertPreviewDTO> page = new PageImpl<>(expertPreviewDTOS);
+		return page;
 	}
 
 }

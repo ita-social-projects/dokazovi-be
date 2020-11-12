@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping(EndPoints.USERS)
 @RequiredArgsConstructor
 public class UserController {
 
@@ -22,10 +22,10 @@ public class UserController {
 
 	@ApiOperation(value = "Get preview of random experts")
 	@ApiPageable
-	@GetMapping("/experts")
-	public ResponseEntity<Page<ExpertPreviewDTO>> getExpertPreview(Pageable pageable) {
+	@GetMapping(EndPoints.EXPERTS)
+	public ResponseEntity<Page<ExpertPreviewDTO>> getExpertPreview(Pageable pageable,Integer numberOfUsers) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(userService.getExpertsPreview(pageable));
+				.body(userService.getExpertsPreview(pageable,numberOfUsers));
 	}
 }
