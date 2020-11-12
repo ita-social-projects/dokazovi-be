@@ -1,69 +1,5 @@
-INSERT INTO public.users (user_id, email, password, status, first_name, last_name, qualification, phone, bio,
-                          created_at, avatar)
-VALUES
-('1', 'ivan@mail.com', 'ivan', 'ACTIVE', 'Іван', 'Іванов', 'Лікар вищої категорії', '+380969696969'
-, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
- 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
-   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-   now(), 'https://i.imgur.com/I80W1Q0.png'),
-
-('2', 'andrii@mail.com', 'andrii', 'ACTIVE', 'Андрій', 'Петров', 'Лікар-спеціаліст', '+380505050505'
-, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
- 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
-   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-   now(), 'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png'),
-
-('3', 'olena@mail.com', 'olena', 'ACTIVE', 'Олена', 'Шевченко', 'Кандидат медичних наук', '+380939393939'
-, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
- 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
-   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-   now(), 'https://html5css.ru/howto/img_avatar2.png'),
-
-('4', 'dmytro@mail.com', 'dmytro', 'ACTIVE', 'Дмитро', 'Степаненко', 'Лікар-спеціаліст', '+380444444444'
-, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
- 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
-   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-   now(), 'https://www.publicdomainpictures.net/pictures/270000/velka/avatar-people-person-business-u.jpg'),
-
-('5', 'kateryna@mail.com', 'kateryna', 'ACTIVE', 'Катерина', 'Кравченко', 'Кандидат медичних наук', '+380989898989'
-, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
- 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
-   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-   now(), 'https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg'),
-
-('6', 'oleh@mail.com', 'oleh', 'ACTIVE', 'Олег', 'Петренко', 'Кандидат медичних наук', '+380939393939'
-, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
- 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
-   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-   now(), 'https://www.striketwosummit.com/wp-content/uploads/2019/04/avatar-1606916_960_720.png'),
-
-('7', 'tetyana@mail.com', 'tetyana', 'ACTIVE', 'Тетяна', 'Коваленко', 'Лікар вищої категорії', '+380444444444'
-, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
- 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
-   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-   now(), 'https://www.pinclipart.com/picdir/middle/155-1559325_female-avatar-clipart.png'),
-
-('8', 'maryna@mail.com', 'maryna', 'ACTIVE', 'Марина', 'Вовк', 'Лікар-спеціаліст', '+380939393939'
-, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
- 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
-   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-   now(), 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR3F3e5C2_4KVWpSSvmBDVb8iPGyRnDB5DVPA&usqp=CAU'),
-
-('9', 'admin@mail.com', 'admin', 'ACTIVE', 'Gregory', 'House', 'Адмін', '+380939393939'
-, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
- 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
-   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-   now(), 'https://pickaface.net/gallery/avatar/20130319_083314_1174_admin.png')
-
+INSERT INTO public.directions (direction_id, name) VALUES
+('1', 'Covid-19'), ('2', 'Офтальмологія'), ('3', 'Хірургія'), ('4', 'Терапія'), ('5', 'Вірусологія')
 ON CONFLICT DO NOTHING;
 
 
@@ -78,6 +14,91 @@ INSERT INTO public.regions (region_id, name) VALUES
 ON CONFLICT DO NOTHING;
 
 
+INSERT INTO public.institutions (institution_id, name, region_id, address) VALUES
+('1', 'Адоніс', '10', 'м. Київ, вул. Дніпровська набережна, 26К'),
+('2', 'Новий зір', '10', 'м. Київ, вул. Коперника, 12Д'),
+('3', 'Інномед', '2', 'м. Вінниця, ш. Хмельницьке, 96Г'),
+('4', 'Медікум', '4', 'м. Дніпро, пр-т. Д. Яворницького, 59'),
+('5', 'Medical Idea', '10', 'м. Бровари, вул. Короленка, 54')
+ON CONFLICT DO NOTHING;
+
+
+INSERT INTO public.users (user_id, email, password, status, first_name, last_name, qualification, phone, bio,
+                          created_at, avatar, direction_id, institution_id)
+VALUES
+('1', 'ivan@mail.com', 'ivan', 'ACTIVE', 'Іван', 'Іванов', 'Лікар вищої категорії', '+380969696969'
+, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
+ 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
+   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+   now(), 'https://i.imgur.com/I80W1Q0.png', '3', '1'),
+
+('2', 'andrii@mail.com', 'andrii', 'ACTIVE', 'Андрій', 'Петров', 'Лікар-спеціаліст', '+380505050505'
+, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
+ 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
+   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+   now(), 'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png', '5', '1'),
+
+('3', 'olena@mail.com', 'olena', 'ACTIVE', 'Олена', 'Шевченко', 'Кандидат медичних наук', '+380939393939'
+, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
+ 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
+   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+   now(), 'https://html5css.ru/howto/img_avatar2.png', '1', '2'),
+
+('4', 'dmytro@mail.com', 'dmytro', 'ACTIVE', 'Дмитро', 'Степаненко', 'Лікар-спеціаліст', '+380444444444'
+, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
+ 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
+   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+   now(), 'https://www.publicdomainpictures.net/pictures/270000/velka/avatar-people-person-business-u.jpg', '4', '1'),
+
+('5', 'kateryna@mail.com', 'kateryna', 'ACTIVE', 'Катерина', 'Кравченко', 'Кандидат медичних наук', '+380989898989'
+, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
+ 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
+   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+   now(), 'https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd' ||
+    '12d0cb/fb-avatar-2.jpg', '3', '3'),
+
+('6', 'oleh@mail.com', 'oleh', 'ACTIVE', 'Олег', 'Петренко', 'Кандидат медичних наук', '+380939393939'
+, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
+ 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
+   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+   now(), 'https://www.striketwosummit.com/wp-content/uploads/2019/04/avatar-1606916_960_720.png', '2', '4'),
+
+('7', 'tetyana@mail.com', 'tetyana', 'ACTIVE', 'Тетяна', 'Коваленко', 'Лікар вищої категорії', '+380444444444'
+, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
+ 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
+   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+   now(), 'https://www.pinclipart.com/picdir/middle/155-1559325_female-avatar-clipart.png', '1', '5'),
+
+('8', 'maryna@mail.com', 'maryna', 'ACTIVE', 'Марина', 'Вовк', 'Лікар-спеціаліст', '+380939393939'
+, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
+ 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
+   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+   now(), 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR3F3e5C2_4KVWpSSvmBDVb8iPGyRnDB5DVPA&usqp=CAU', '5', '3'),
+
+('9', 'admin@mail.com', 'admin', 'ACTIVE', 'Gregory', 'House', 'Адмін', '+380939393939'
+, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
+ 'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
+   'sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+   now(), 'https://pickaface.net/gallery/avatar/20130319_083314_1174_admin.png', null, null)
+
+ON CONFLICT DO NOTHING;
+
+
+INSERT INTO public.users_institutions (user_id, institution_id) VALUES
+('1', '1'), ('1', '2'), ('1', '5'), ('2', '2'), ('2', '5'), ('3', '1'), ('3', '2'), ('4', '1'), ('4', '5'), ('5', '3'),
+('6', '4'), ('7', '1'), ('7', '5'), ('8', '3')
+ON CONFLICT DO NOTHING;
+
+
 INSERT INTO public.roles (role_id, role_name) VALUES
 ('1', 'Admin'), ('2', 'Doctor'), ('3', 'Trusted Doctor')
 ON CONFLICT DO NOTHING;
@@ -85,11 +106,6 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO public.roles_users (role_id, user_id) VALUES
 ('1', '9'), ('2', '4'), ('3', '2'), ('2', '1'), ('3', '3'), ('2', '5'), ('3', '7'), ('2', '6'), ('3', '8')
-ON CONFLICT DO NOTHING;
-
-
-INSERT INTO public.directions (direction_id, name) VALUES
-('1', 'Covid-19'), ('2', 'Офтальмологія'), ('3', 'Хірургія'), ('4', 'Терапія'), ('5', 'Вірусологія')
 ON CONFLICT DO NOTHING;
 
 
@@ -196,7 +212,7 @@ ON CONFLICT DO NOTHING;
 
 
 INSERT INTO public.posts_sources (source_id, post_id) VALUES
-('5', '11'), ('5', '12'), ('6', '13'), ('6', '10'), ('7', '15'), ('8', '14'), ('9', '17'), ('10', '16')
+('11', '5'), ('12', '5'), ('13', '6'), ('10', '6'), ('15', '7'), ('14', '8'), ('17', '9'), ('16', '10')
 ON CONFLICT DO NOTHING;
 
 
@@ -214,8 +230,3 @@ INSERT INTO public.posts_directions (post_id, direction_id) VALUES
 ('7', '1'), ('7', '3'), ('7', '4'), ('7', '5'), ('8', '1'), ('8', '2'), ('8', '3'), ('9', '3'),
 ('10', '1'), ('10', '3'), ('10', '4'), ('10', '5')
 ON CONFLICT DO NOTHING;
-
-
-
-
-
