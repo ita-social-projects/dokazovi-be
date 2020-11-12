@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER;
+
 @RestController
-@RequestMapping(EndPoints.USER)
+@RequestMapping(USER)
 @RequiredArgsConstructor
 public class UserController {
 
@@ -23,7 +26,7 @@ public class UserController {
 
 	@ApiOperation(value = "Get preview of random experts. Default 11 max per page.")
 	@ApiPageable
-	@GetMapping(EndPoints.EXPERTS)
+	@GetMapping(EXPERTS)
 	public ResponseEntity<Page<ExpertPreviewDTO>> getExpertPreview(
 			@PageableDefault(size = 11) Pageable pageable) {
 		return ResponseEntity
