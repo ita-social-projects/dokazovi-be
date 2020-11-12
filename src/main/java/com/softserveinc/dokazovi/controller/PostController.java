@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping(EndPoints.POST)
 @RequiredArgsConstructor
 public class PostController {
 
@@ -25,7 +25,7 @@ public class PostController {
 
 	@ApiOperation(value = "Find latest published posts")
 	@ApiPageable
-	@GetMapping("/latest")
+	@GetMapping(EndPoints.POST_LATEST)
 	public ResponseEntity<Page<LatestPostDTO>> findLatestPublished(
 			@PageableDefault(sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity

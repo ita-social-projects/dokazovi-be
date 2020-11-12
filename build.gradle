@@ -23,6 +23,10 @@ checkstyleMain {
 	configFile = file("${rootDir}/checkstyle.xml")
 }
 
+checkstyleTest {
+	configFile = file("${rootDir}/checkstyle.xml")
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor

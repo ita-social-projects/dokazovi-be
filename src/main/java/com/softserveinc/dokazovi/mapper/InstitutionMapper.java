@@ -5,7 +5,7 @@ import com.softserveinc.dokazovi.dto.user.ExpertInstitutionDTO;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {RegionMapper.class})
+@Mapper(componentModel = "spring")
 public interface InstitutionMapper {
 
 	PostUserInstitutionDTO toPostUserInstitutionDTO (InstitutionEntity institution);
