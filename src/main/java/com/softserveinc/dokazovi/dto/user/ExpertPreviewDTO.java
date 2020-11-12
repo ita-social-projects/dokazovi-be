@@ -7,9 +7,11 @@ import lombok.Data;
 @Builder
 public class ExpertPreviewDTO {
 
-	private Integer doctorId;
+	private Integer id;
 
-	private String name;
+	private String firstName;
+
+	private String lastName;
 
 	private UserDirectionDTO direction;
 

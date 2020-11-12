@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+
 	@Query(nativeQuery = true,
-			value = "SELECT * FROM users u WHERE u.status='ACTIVE' ORDER BY random()  LIMIT :#{#numberOfUsers}")
-	List<UserEntity> findRandomActiveUsersId(@Param("numberOfUsers") Integer numberOfUsers);
+			value = "SELECT * FROM users u WHERE u.status='ACTIVE' ORDER BY random() LIMIT :#{#numberOfUsers}")
+	List<UserEntity> findRandomActiveUsers(@Param("numberOfUsers") Integer numberOfUsers);
 }
