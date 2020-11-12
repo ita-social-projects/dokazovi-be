@@ -40,10 +40,15 @@ public class DirectionEntity implements Serializable {
 	@ToString.Exclude
 	private Set<PostEntity> posts = new HashSet<>();
 
+	@OneToMany(mappedBy = "mainDirection")
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
+	private Set<UserEntity> mainUsersDirections = new HashSet<>();
+
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> userEntities = new HashSet<>();
+	private Set<UserEntity> users = new HashSet<>();
 
 	public DirectionEntity(String name) {
 		this.name = name;
