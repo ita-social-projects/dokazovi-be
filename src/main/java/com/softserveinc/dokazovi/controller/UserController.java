@@ -21,7 +21,7 @@ public class UserController {
 
 	private final UserService userService;
 
-	@ApiOperation(value = "Get preview of random experts")
+	@ApiOperation(value = "Get preview of random experts. Default 11 max per page.")
 	@ApiPageable
 	@GetMapping(EndPoints.EXPERTS)
 	public ResponseEntity<Page<ExpertPreviewDTO>> getExpertPreview(
