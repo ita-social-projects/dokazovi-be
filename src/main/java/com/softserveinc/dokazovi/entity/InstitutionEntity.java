@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -34,8 +33,8 @@ public class InstitutionEntity implements Serializable {
 	private String name;
 
 	@ManyToOne
-	@JoinColumn(name = "region_id", nullable = false)
-	private RegionEntity region;
+	@JoinColumn(name = "city_id", nullable = false)
+	private CityEntity city;
 
 	@Column(name = "address", nullable = false)
 	private String address;
@@ -43,16 +42,10 @@ public class InstitutionEntity implements Serializable {
 	@OneToMany(mappedBy = "mainInstitution")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> mainUsersInstitution = new HashSet<>();
+	private Set<UserEntity> mainUsersInstitution;
 
 	@ManyToMany(mappedBy = "institutions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	Set<UserEntity> users = new HashSet<>();
-
-	public InstitutionEntity(RegionEntity region, String name, String address) {
-		this.name = name;
-		this.region = region;
-		this.address = address;
-	}
+	private Set<UserEntity> users;
 }
