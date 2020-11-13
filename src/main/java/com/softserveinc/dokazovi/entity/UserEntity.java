@@ -105,12 +105,7 @@ public class UserEntity implements Serializable {
 	@ToString.Exclude
 	private Set<DirectionEntity> directions = new HashSet<>();
 
-	@ManyToMany
-	@JoinTable(
-			name = "users_sources",
-			joinColumns = {@JoinColumn(name = "user_id")},
-			inverseJoinColumns = {@JoinColumn(name = "source_id")}
-	)
+	@OneToMany(mappedBy = "user")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<SourceEntity> sources = new HashSet<>();
