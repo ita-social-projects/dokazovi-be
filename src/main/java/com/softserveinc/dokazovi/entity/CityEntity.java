@@ -1,5 +1,7 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +16,8 @@ import javax.persistence.Table;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity(name = "city_entity")
 @Table(name = "cities")
 public class CityEntity {
