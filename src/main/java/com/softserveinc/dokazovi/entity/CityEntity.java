@@ -26,15 +26,9 @@ public class CityEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "city_id")
 	private Integer id;
-
 	private String name;
 
 	@ManyToOne
 	@JoinColumn(name = "region_id", nullable = false)
 	private RegionEntity region;
-
-	public CityEntity(String name, RegionEntity region) {
-		this.name = name;
-		this.region = region;
-	}
 }

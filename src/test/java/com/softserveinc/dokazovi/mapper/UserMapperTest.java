@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.mapper;
 
+import com.softserveinc.dokazovi.dto.post.PostUserDTO;
 import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
@@ -21,8 +22,8 @@ class UserMapperTest {
 	private final Timestamp latestCreatedAt = Timestamp.valueOf("1992-05-22 10:10:10.0");
 	private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
 	private UserEntity userEntity;
-	private DirectionEntity mainUserDirection;
 	private InstitutionEntity mainInstitution;
+	private DirectionEntity mainUserDirection;
 	private CityEntity cityEntity;
 	private PostEntity postEntity;
 	private PostEntity latestPostEntity;
@@ -33,15 +34,18 @@ class UserMapperTest {
 				.id(1)
 				.name("City name")
 				.build();
+
 		mainInstitution = InstitutionEntity.builder()
 				.id(1)
 				.name("Some institution name")
 				.city(cityEntity)
 				.build();
+
 		mainUserDirection = DirectionEntity.builder()
 				.id(1)
 				.name("Direction")
 				.build();
+
 		userEntity = UserEntity.builder()
 				.id(1)
 				.firstName("Some firstname")
@@ -50,6 +54,7 @@ class UserMapperTest {
 				.mainInstitution(mainInstitution)
 				.mainDirection(mainUserDirection)
 				.build();
+
 		postEntity = PostEntity.builder()
 				.id(1)
 				.title("Post title")
@@ -57,6 +62,7 @@ class UserMapperTest {
 				.createdAt(createdAt)
 				.status(PostStatus.PUBLISHED)
 				.build();
+
 		latestPostEntity = PostEntity.builder()
 				.id(2)
 				.title("Latest Post title")
@@ -67,6 +73,18 @@ class UserMapperTest {
 
 		userEntity.getPosts().add(postEntity);
 		userEntity.getPosts().add(latestPostEntity);
+	}
+
+
+	@Test
+	void toPostUserDTO_whenMaps_thenCorrect() {
+		PostUserDTO postUserDTO = mapper.toPostUserDTO(userEntity);
+		assertEquals(userEntity.getId(), postUserDTO.getId());
+		assertEquals(userEntity.getFirstName(), postUserDTO.getFirstName());
+		assertEquals(userEntity.getLastName(), postUserDTO.getLastName());
+		assertEquals(userEntity.getAvatar(), postUserDTO.getAvatar());
+		assertEquals(userEntity.getMainInstitution().getId(), postUserDTO.getMainInstitution().getId());
+		assertEquals(userEntity.getMainInstitution().getName(), postUserDTO.getMainInstitution().getName());
 	}
 
 	@Test

@@ -12,11 +12,9 @@ public interface UserMapper {
 
 	PostMapper POST_MAPPER = Mappers.getMapper(PostMapper.class);
 
-	@Mapping(target = "institution", source = "mainInstitution")
 	PostUserDTO toPostUserDTO(UserEntity userEntity);
 
 	@Mapping(target = "lastAddedPost",
 			expression = "java(POST_MAPPER.toLatestExpertPostDTO(userEntity.getLatestExpertPost()))")
 	ExpertPreviewDTO toExpertPreviewDTO(UserEntity userEntity);
-
 }

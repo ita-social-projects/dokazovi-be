@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.mapper;
 
 import com.softserveinc.dokazovi.dto.user.LatestExpertPostDTO;
+import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
@@ -59,6 +60,24 @@ class PostMapperTest {
 				.type(type)
 				.createdAt(createdAt)
 				.build();
+	}
+
+	@Test
+	void toLatestPostDTO_whenMaps_thenCorrect() {
+		LatestPostDTO latestPostDTO = postMapper.toLatestPostDTO(post);
+		assertEquals(latestPostDTO.getId(), post.getId());
+		assertEquals(latestPostDTO.getTitle(), post.getTitle());
+		assertEquals(latestPostDTO.getAuthor().getId(), author.getId());
+		assertEquals(latestPostDTO.getAuthor().getFirstName(), author.getFirstName());
+		assertEquals(latestPostDTO.getAuthor().getLastName(), author.getLastName());
+		assertEquals(latestPostDTO.getAuthor().getAvatar(), author.getAvatar());
+		assertEquals(latestPostDTO.getAuthor().getMainInstitution().getId(), author.getMainInstitution().getId());
+		assertEquals(latestPostDTO.getAuthor().getMainInstitution().getName(), author.getMainInstitution().getName());
+		assertEquals(latestPostDTO.getDirection().getId(), mainDirection.getId());
+		assertEquals(latestPostDTO.getDirection().getName(), mainDirection.getName());
+		assertEquals(latestPostDTO.getType().getId(), type.getId());
+		assertEquals(latestPostDTO.getType().getName(), type.getName());
+		assertEquals(latestPostDTO.getCreatedAt(), createdAt);
 	}
 
 	@Test
