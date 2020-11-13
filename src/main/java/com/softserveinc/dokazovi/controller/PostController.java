@@ -1,9 +1,11 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
 import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
+import static com.softserveinc.dokazovi.controller.EndPoints.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping(POST)
 @RequiredArgsConstructor
 public class PostController {
 
@@ -25,11 +27,21 @@ public class PostController {
 
 	@ApiOperation(value = "Find latest published posts")
 	@ApiPageable
-	@GetMapping("/latest")
+	@GetMapping(LATEST)
 	public ResponseEntity<Page<LatestPostDTO>> findLatestPublished(
 			@PageableDefault(sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findAllByStatus(PostStatus.PUBLISHED, pageable));
+	}
+
+	@ApiPageable
+	@ApiOperation(value = "Find important posts")
+	@GetMapping(IMPORTANT)
+	public ResponseEntity<Page<ImportantPostDTO>> findImportant(
+			@PageableDefault(size = 3, sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService.findImportantPosts(pageable));
 	}
 }
