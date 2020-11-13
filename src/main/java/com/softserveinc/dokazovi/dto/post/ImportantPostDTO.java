@@ -13,7 +13,7 @@ public class ImportantPostDTO {
 	private Integer id;
 	private String title;
 	private PostUserDTO author;
-	private String type;
+	private PostTypeDTO type;
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Timestamp createdAt;
 	private PostDirectionDTO direction;

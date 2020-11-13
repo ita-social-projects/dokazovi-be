@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -54,6 +54,14 @@ public class UserEntity implements Serializable {
 	@Column(name = "bio", columnDefinition = "TEXT")
 	private String bio;
 
+	@ManyToOne
+	@JoinColumn(name = "direction_id")
+	private DirectionEntity mainDirection;
+
+	@ManyToOne
+	@JoinColumn(name = "institution_id")
+	private InstitutionEntity mainInstitution;
+
 	@Enumerated(EnumType.STRING)
 	private UserStatus status;
 
@@ -67,15 +75,15 @@ public class UserEntity implements Serializable {
 	@ToString.Exclude
 	private Set<CharityEntity> charities = new HashSet<>();
 
-	@OneToMany(
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-			mappedBy = "user",
-			orphanRemoval = true
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "users_institutions",
+			joinColumns = {@JoinColumn(name = "user_id")},
+			inverseJoinColumns = {@JoinColumn(name = "institution_id")}
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserInstitutionEntity> institutions = new HashSet<>();
+	private Set<InstitutionEntity> institutions = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -132,5 +140,4 @@ public class UserEntity implements Serializable {
 		roles.remove(role);
 		role.getUsers().remove(this);
 	}
-
 }
