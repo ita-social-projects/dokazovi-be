@@ -1,5 +1,7 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity(name = "post_type_entity")
 @Table(name = "post_types")
 public class PostTypeEntity implements Serializable {
