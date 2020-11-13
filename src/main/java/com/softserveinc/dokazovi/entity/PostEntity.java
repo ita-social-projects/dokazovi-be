@@ -1,6 +1,8 @@
 package com.softserveinc.dokazovi.entity;
 
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,11 +27,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity(name = "post_entity")
 @Table(name = "posts")
 public class PostEntity implements Serializable {
@@ -70,7 +73,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<DirectionEntity> directions = new HashSet<>();
+	private Set<DirectionEntity> directions;
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -80,7 +83,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<TagEntity> tags = new HashSet<>();
+	private Set<TagEntity> tags;
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -90,7 +93,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<SourceEntity> sources = new HashSet<>();
+	private Set<SourceEntity> sources;
 
 	@CreationTimestamp
 	private Timestamp createdAt;

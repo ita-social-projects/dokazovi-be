@@ -5,7 +5,6 @@ import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
 import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
-import static com.softserveinc.dokazovi.controller.EndPoints.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,8 +17,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.IMPORTANT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
+
 @RestController
-@RequestMapping(POST)
+@RequestMapping(EndPoints.POST)
 @RequiredArgsConstructor
 public class PostController {
 
@@ -27,7 +29,7 @@ public class PostController {
 
 	@ApiOperation(value = "Find latest published posts")
 	@ApiPageable
-	@GetMapping(LATEST)
+	@GetMapping(POST_LATEST)
 	public ResponseEntity<Page<LatestPostDTO>> findLatestPublished(
 			@PageableDefault(sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity
