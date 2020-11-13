@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
 import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -19,8 +20,9 @@ public class PostServiceImpl implements PostService {
 	private final PostMapper postMapper;
 
 	@Override
-	public Page<PostEntity> findAll(Pageable pageable) {
-		return postRepository.findAll(pageable);
+	public Page<LatestPostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable) {
+		return postRepository.findAllByStatus(postStatus, pageable)
+				.map(postMapper::toLatestPostDTO);
 	}
 
 	@Override

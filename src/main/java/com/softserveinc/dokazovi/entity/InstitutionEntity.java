@@ -5,18 +5,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -34,24 +33,19 @@ public class InstitutionEntity implements Serializable {
 	private String name;
 
 	@ManyToOne
-	@JoinColumn(name = "region_id", nullable = false)
-	private RegionEntity region;
+	@JoinColumn(name = "city_id", nullable = false)
+	private CityEntity city;
 
 	@Column(name = "address", nullable = false)
 	private String address;
 
-	@OneToMany(
-			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
-			mappedBy = "institution",
-			orphanRemoval = true
-	)
+	@OneToMany(mappedBy = "mainInstitution")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserInstitutionEntity> users = new HashSet<>();
+	private Set<UserEntity> mainUsersInstitution;
 
-	public InstitutionEntity(RegionEntity region, String name, String address) {
-		this.name = name;
-		this.region = region;
-		this.address = address;
-	}
+	@ManyToMany(mappedBy = "institutions")
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
+	private Set<UserEntity> users;
 }

@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {RegionMapper.class})
 public interface InstitutionMapper {
-	@Mapping(target = "region", source = "institution.region.name")
+
 	PostUserInstitutionDTO toPostUserInstitutionDTO (InstitutionEntity institution);
 
 	ExpertInstitutionDTO toExpertInstitutionDTO (InstitutionEntity institution);

@@ -13,7 +13,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -40,10 +42,11 @@ public class SourceEntity implements Serializable {
 	@ToString.Exclude
 	private Set<PostEntity> posts = new HashSet<>();
 
-	@ManyToMany(mappedBy = "sources")
+	@ManyToOne
+	@JoinColumn(name = "user_id")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> users = new HashSet<>();
+	private UserEntity user;
 
 	public SourceEntity(SourceType type, String value) {
 		this.type = type;

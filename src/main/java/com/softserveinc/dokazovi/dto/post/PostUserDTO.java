@@ -12,5 +12,4 @@ public class PostUserDTO {
 	private String lastName;
 	private String avatar;
 	private PostUserInstitutionDTO institution;
-
 }

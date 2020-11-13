@@ -20,7 +20,7 @@ public class SwaggerConfig {
 
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2)
+		return new Docket(DocumentationType.OAS_30)
 				.genericModelSubstitutes(ResponseEntity.class)
 				.ignoredParameterTypes(Pageable.class)
 				.ignoredParameterTypes(java.sql.Date.class)

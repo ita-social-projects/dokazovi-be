@@ -7,8 +7,6 @@ import lombok.Data;
 @Builder
 public class PostDirectionDTO {
 
-	Integer id;
-
-	String name;
-
+	private Integer id;
+	private String name;
 }
