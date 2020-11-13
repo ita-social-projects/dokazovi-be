@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
 import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
@@ -31,5 +32,15 @@ public class PostController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findAllByStatus(PostStatus.PUBLISHED, pageable));
+	}
+
+	@ApiPageable
+	@ApiOperation(value = "Find important posts")
+	@GetMapping(EndPoints.IMPORTANT)
+	public ResponseEntity<Page<ImportantPostDTO>> findImportant(
+			@PageableDefault(size = 3, sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService.findImportantPosts(pageable));
 	}
 }
