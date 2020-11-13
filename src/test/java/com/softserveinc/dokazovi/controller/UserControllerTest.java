@@ -42,7 +42,7 @@ class UserControllerTest {
 	@Test
 	void getExpertPreview_GetWithPagination_isOk() throws Exception {
 		Pageable pageable = PageRequest.of(0, 11);
-		mockMvc.perform(get(EndPoints.USER + EndPoints.EXPERTS + "/?page=0"))
+		mockMvc.perform(get(EndPoints.USER + EndPoints.USER_EXPERTS + "/?page=0"))
 				.andExpect(status().isOk());
 		verify(userService).getExpertsPreview(eq(pageable));
 	}
