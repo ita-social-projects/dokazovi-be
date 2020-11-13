@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -34,8 +35,9 @@ public class TagEntity implements Serializable {
 	@ToString.Exclude
 	private Set<PostEntity> posts = new HashSet<>();
 
-	public TagEntity(String tag) {
+	@Builder
+	public TagEntity(Integer id, String tag) {
+		this.id = id;
 		this.tag = tag;
 	}
-
 }

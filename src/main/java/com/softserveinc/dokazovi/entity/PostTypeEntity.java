@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,8 +18,6 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity(name = "post_type_entity")
 @Table(name = "post_types")
 public class PostTypeEntity implements Serializable {
@@ -37,8 +34,9 @@ public class PostTypeEntity implements Serializable {
 	@ToString.Exclude
 	private Set<PostEntity> posts;
 
-	public PostTypeEntity(String name) {
+	@Builder
+	public PostTypeEntity(Integer id, String name) {
+		this.id = id;
 		this.name = name;
 	}
-
 }

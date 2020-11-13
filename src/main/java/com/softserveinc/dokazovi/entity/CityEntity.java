@@ -15,9 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity(name = "city_entity")
 @Table(name = "cities")
 public class CityEntity {
@@ -26,6 +26,7 @@ public class CityEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "city_id")
 	private Integer id;
+
 	private String name;
 
 	@ManyToOne

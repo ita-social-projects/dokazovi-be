@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,8 +19,6 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity(name = "direction_entity")
 @Table(name = "directions")
 public class DirectionEntity implements Serializable {
@@ -53,8 +50,9 @@ public class DirectionEntity implements Serializable {
 	@ToString.Exclude
 	private Set<UserEntity> users;
 
-	public DirectionEntity(String name) {
+	@Builder
+	public DirectionEntity(Integer id, String name) {
+		this.id = id;
 		this.name = name;
 	}
-
 }

@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,8 +30,6 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity(name = "post_entity")
 @Table(name = "posts")
 public class PostEntity implements Serializable {
@@ -101,8 +98,11 @@ public class PostEntity implements Serializable {
 	@UpdateTimestamp
 	private Timestamp modifiedAt;
 
-	public PostEntity(String title, String content, Boolean important, UserEntity author,
-			PostTypeEntity type, DirectionEntity mainDirection, PostStatus status) {
+	@Builder
+	public PostEntity(Integer id, String title, String content, Boolean important,
+			UserEntity author, PostTypeEntity type, DirectionEntity mainDirection,
+			PostStatus status, Timestamp createdAt, Timestamp modifiedAt) {
+		this.id = id;
 		this.title = title;
 		this.content = content;
 		this.important = important;
@@ -110,6 +110,7 @@ public class PostEntity implements Serializable {
 		this.type = type;
 		this.mainDirection = mainDirection;
 		this.status = status;
+		this.createdAt = createdAt;
+		this.modifiedAt = modifiedAt;
 	}
-
 }

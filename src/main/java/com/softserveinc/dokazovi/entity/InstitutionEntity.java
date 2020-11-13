@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,8 +21,6 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity(name = "institution_entity")
 @Table(name = "institutions")
 public class InstitutionEntity implements Serializable {
@@ -52,4 +49,12 @@ public class InstitutionEntity implements Serializable {
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<UserEntity> users;
+
+	@Builder
+	public InstitutionEntity(Integer id, String name, CityEntity city, String address) {
+		this.id = id;
+		this.name = name;
+		this.city = city;
+		this.address = address;
+	}
 }

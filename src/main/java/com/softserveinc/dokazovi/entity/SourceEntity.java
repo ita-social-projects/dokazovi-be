@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.entity;
 
 import com.softserveinc.dokazovi.entity.enumerations.SourceType;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -37,20 +38,20 @@ public class SourceEntity implements Serializable {
 
 	private String value;
 
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
+
 	@ManyToMany(mappedBy = "sources")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<PostEntity> posts = new HashSet<>();
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private UserEntity user;
-
-	public SourceEntity(SourceType type, String value) {
+	@Builder
+	public SourceEntity(Integer id, SourceType type, String value, UserEntity user) {
+		this.id = id;
 		this.type = type;
 		this.value = value;
+		this.user = user;
 	}
-
 }

@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -35,8 +36,9 @@ public class RoleEntity implements Serializable {
 	@ToString.Exclude
 	private Set<UserEntity> users = new HashSet<>();
 
-	public RoleEntity(String name) {
+	@Builder
+	public RoleEntity(Integer id, String name) {
+		this.id = id;
 		this.name = name;
 	}
-
 }
