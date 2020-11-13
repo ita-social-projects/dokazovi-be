@@ -13,9 +13,9 @@ public class ExpertPreviewDTO {
 
 	private String lastName;
 
-	private UserDirectionDTO direction;
+	private UserDirectionDTO mainDirection;
 
-	private ExpertInstitutionDTO institution;
+	private ExpertInstitutionDTO mainInstitution;
 
 	private String qualification;
 

@@ -21,8 +21,6 @@ public interface UserMapper {
 
 	PostUserDTO toPostUserDTO(UserEntity userEntity);
 
-	@Mapping(target = "institution", source = "mainInstitution")
-	@Mapping(target = "direction", source = "mainDirection")
 	@Mapping(target = "lastAddedPost", source = "posts", qualifiedByName = "getLatestPublishedPost")
 	ExpertPreviewDTO toExpertPreviewDTO(UserEntity userEntity);
 

@@ -9,10 +9,8 @@ public class ExpertInstitutionDTO {
 
 	private Integer id;
 
-	private ExpertRegionDTO region;
+	private ExpertInstitutionCityDTO city;
 
 	private String name;
-
-	private String address;
 
 }
