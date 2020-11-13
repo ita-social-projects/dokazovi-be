@@ -1,6 +1,8 @@
 package com.softserveinc.dokazovi.entity;
 
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -23,11 +25,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity(name = "user_entity")
 @Table(name = "users")
 public class UserEntity implements Serializable {
@@ -68,12 +71,12 @@ public class UserEntity implements Serializable {
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> posts = new HashSet<>();
+	private Set<PostEntity> posts;
 
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<CharityEntity> charities = new HashSet<>();
+	private Set<CharityEntity> charities;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -83,7 +86,7 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<InstitutionEntity> institutions = new HashSet<>();
+	private Set<InstitutionEntity> institutions;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -93,7 +96,7 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<RoleEntity> roles = new HashSet<>();
+	private Set<RoleEntity> roles;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -103,12 +106,12 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<DirectionEntity> directions = new HashSet<>();
+	private Set<DirectionEntity> directions;
 
 	@OneToMany(mappedBy = "user")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<SourceEntity> sources = new HashSet<>();
+	private Set<SourceEntity> sources;
 
 	@CreationTimestamp
 	private Timestamp createdAt;

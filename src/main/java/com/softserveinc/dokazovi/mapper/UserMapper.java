@@ -19,7 +19,6 @@ public interface UserMapper {
 
 	PostMapper POST_MAPPER = Mappers.getMapper(PostMapper.class);
 
-	@Mapping(target = "institution", source = "mainInstitution")
 	PostUserDTO toPostUserDTO(UserEntity userEntity);
 
 	@Mapping(target = "lastAddedPost", source = "posts", qualifiedByName = "getLatestPublishedPost")
@@ -28,10 +27,10 @@ public interface UserMapper {
 	@Named("getLatestPublishedPost")
 	default LatestExpertPostDTO getPrimaryUserInstitution(Set<PostEntity> posts) {
 		return posts.stream()
-				.filter(postEntity -> postEntity.getStatus().equals(PostStatus.PUBLISHED))
-				.sorted(Comparator.comparing(PostEntity::getCreatedAt).reversed())
-				.map(POST_MAPPER::toLatestExpertPostDTO)
-				.findFirst()
-				.orElse(null);
+					.filter(postEntity -> postEntity.getStatus().equals(PostStatus.PUBLISHED))
+					.sorted(Comparator.comparing(PostEntity::getCreatedAt))
+					.map(POST_MAPPER::toLatestExpertPostDTO)
+					.findFirst()
+					.orElse(null);
 	}
 }

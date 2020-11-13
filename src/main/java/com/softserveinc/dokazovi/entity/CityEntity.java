@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,7 +30,9 @@ public class CityEntity {
 	@JoinColumn(name = "region_id", nullable = false)
 	private RegionEntity region;
 
-	public CityEntity(String name, RegionEntity region) {
+  @Builder
+	public CityEntity(Integer id, String name, RegionEntity region) {
+    this.id = id;
 		this.name = name;
 		this.region = region;
 	}

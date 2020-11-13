@@ -1,5 +1,7 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity(name = "region_entity")
 @Table(name = "regions")
 public class RegionEntity implements Serializable {
