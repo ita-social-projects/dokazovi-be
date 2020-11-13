@@ -45,7 +45,7 @@ public class PostEntity implements Serializable {
 	private String content;
 
 	@ColumnDefault("false")
-	private boolean important;
+	private Boolean important;
 
 	@ManyToOne
 	@JoinColumn(name = "author_id")
@@ -98,7 +98,7 @@ public class PostEntity implements Serializable {
 	@UpdateTimestamp
 	private Timestamp modifiedAt;
 
-	public PostEntity(String title, String content, boolean important, UserEntity author,
+	public PostEntity(String title, String content, Boolean important, UserEntity author,
 			PostTypeEntity type, DirectionEntity mainDirection, PostStatus status) {
 		this.title = title;
 		this.content = content;
