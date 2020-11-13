@@ -4,7 +4,6 @@ import com.softserveinc.dokazovi.dto.post.PostUserInstitutionDTO;
 import com.softserveinc.dokazovi.dto.user.ExpertInstitutionDTO;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface InstitutionMapper {
