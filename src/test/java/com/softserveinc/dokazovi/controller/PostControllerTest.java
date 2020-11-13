@@ -17,6 +17,8 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.POST;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +47,7 @@ class PostControllerTest {
 	@Test
 	void findLatestPublished_GetWithPagination_isOk() throws Exception {
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
-		mockMvc.perform(get(EndPoints.POST + EndPoints.POST_LATEST + "/?page=0"))
+		mockMvc.perform(get(POST + POST_LATEST + "/?page=0"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByStatus(eq(PostStatus.PUBLISHED), eq(pageable));
 	}
