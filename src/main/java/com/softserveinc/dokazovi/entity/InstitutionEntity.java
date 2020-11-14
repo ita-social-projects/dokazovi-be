@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -43,12 +44,12 @@ public class InstitutionEntity implements Serializable {
 	@OneToMany(mappedBy = "mainInstitution")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> mainUsersInstitution;
+	private Set<UserEntity> mainUsersInstitution = new HashSet<>();
 
 	@ManyToMany(mappedBy = "institutions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> users;
+	private Set<UserEntity> users = new HashSet<>();
 
 	@Builder
 	public InstitutionEntity(Integer id, String name, CityEntity city, String address) {

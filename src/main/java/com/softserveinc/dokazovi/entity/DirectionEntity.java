@@ -15,6 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -33,22 +34,22 @@ public class DirectionEntity implements Serializable {
 	@OneToMany(mappedBy = "mainDirection")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> mainPostsDirections;
+	private Set<PostEntity> mainPostsDirections = new HashSet<>();
 
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> posts;
+	private Set<PostEntity> posts = new HashSet<>();
 
 	@OneToMany(mappedBy = "mainDirection")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> mainUsersDirections;
+	private Set<UserEntity> mainUsersDirections = new HashSet<>();
 
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> users;
+	private Set<UserEntity> users = new HashSet<>();
 
 	@Builder
 	public DirectionEntity(Integer id, String name) {

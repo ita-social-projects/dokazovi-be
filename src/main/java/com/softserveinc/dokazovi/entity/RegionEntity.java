@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -32,7 +33,7 @@ public class RegionEntity implements Serializable {
 	@OneToMany(mappedBy = "region")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<CityEntity> cities;
+	private Set<CityEntity> cities = new HashSet<>();
 
 	@Builder
 	public RegionEntity(Integer id, String name) {

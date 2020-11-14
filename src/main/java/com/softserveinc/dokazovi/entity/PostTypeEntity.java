@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -32,7 +33,7 @@ public class PostTypeEntity implements Serializable {
 	@OneToMany(mappedBy = "type")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> posts;
+	private Set<PostEntity> posts = new HashSet<>();
 
 	@Builder
 	public PostTypeEntity(Integer id, String name) {

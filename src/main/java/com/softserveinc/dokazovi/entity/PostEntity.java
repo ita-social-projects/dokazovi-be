@@ -26,6 +26,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -70,7 +71,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<DirectionEntity> directions;
+	private Set<DirectionEntity> directions = new HashSet<>();
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -80,7 +81,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<TagEntity> tags;
+	private Set<TagEntity> tags = new HashSet<>();
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -90,7 +91,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<SourceEntity> sources;
+	private Set<SourceEntity> sources = new HashSet<>();
 
 	@CreationTimestamp
 	private Timestamp createdAt;
