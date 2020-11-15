@@ -92,6 +92,9 @@ sonarqube {
 		property "sonar.login", System.getenv("SONAR_LOGIN")
 		property "sonar.jacoco.reportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
 		property "sonar.junit.reportPaths", "$buildDir/test-results/test/"
-		property "sonar.exclusions", "**/*.sql"
+		property "sonar.exclusions", "**/*.sql," +
+				"src/main/java/com/softserveinc/dokazovi/entity/**," +
+				"src/main/java/com/softserveinc/dokazovi/dto/**," +
+				"src/main/java/com/softserveinc/dokazovi/config/**"
 	}
 }
