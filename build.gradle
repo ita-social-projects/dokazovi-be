@@ -62,10 +62,6 @@ dependencies {
 
 test {
 	useJUnitPlatform()
-	jacoco {
-		excludes += ["**/dto/**"]
-		excludes += ["**/entity/**"]
-	}
 }
 
 jacoco {
@@ -75,9 +71,7 @@ jacoco {
 jacocoTestReport {
 	dependsOn test
 	reports {
-		html.enabled true
 		xml.enabled true
-		csv.enabled false
 	}
 }
 
@@ -85,14 +79,11 @@ sonarqube {
 	tasks['sonarqube'].dependsOn jacocoTestReport
 	properties {
 		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.sources", "src/main/java"
-		property "sonar.tests", "src/test/java"
 		property "sonar.organization", System.getenv("SONAR_ORGANIZATION")
 		property "sonar.projectKey", System.getenv("SONAR_PROJECT_KEY")
 		property "sonar.login", System.getenv("SONAR_LOGIN")
 		property "sonar.jacoco.reportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
-		property "sonar.junit.reportPaths", "$buildDir/test-results/test/"
-		property "sonar.exclusions", "**/*.sql," +
+		property "sonar.coverage.exclusions", "**/*.sql," +
 				"src/main/java/com/softserveinc/dokazovi/entity/**," +
 				"src/main/java/com/softserveinc/dokazovi/dto/**," +
 				"src/main/java/com/softserveinc/dokazovi/config/**"
