@@ -7,7 +7,7 @@ import com.softserveinc.dokazovi.entity.PostEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, PostTypeMapper.class, DirectionMapper.class})
+@Mapper(componentModel = "spring")
 public interface PostMapper {
 
 	@Mapping(target = "author", source = "author")
@@ -17,5 +17,6 @@ public interface PostMapper {
 
 	LatestExpertPostDTO toLatestExpertPostDTO(PostEntity post);
 
-	ImportantPostDTO toImportantPostDTO(PostEntity postEntity);
+	@Mapping(target = "direction", source = "mainDirection")
+	ImportantPostDTO toImportantPostDTO(PostEntity post);
 }

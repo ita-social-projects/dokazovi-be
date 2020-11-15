@@ -14,16 +14,13 @@ import org.mapstruct.factory.Mappers;
 import java.util.Comparator;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", uses = {InstitutionMapper.class, DirectionMapper.class, PostMapper.class})
+@Mapper(componentModel = "spring")
 public interface UserMapper {
 
 	PostMapper POST_MAPPER = Mappers.getMapper(PostMapper.class);
 
-	@Mapping(target = "institution", source = "mainInstitution")
 	PostUserDTO toPostUserDTO(UserEntity userEntity);
 
-	@Mapping(target = "institution", source = "mainInstitution")
-	@Mapping(target = "direction", source = "mainDirection")
 	@Mapping(target = "lastAddedPost", source = "posts", qualifiedByName = "getLatestPublishedPost")
 	ExpertPreviewDTO toExpertPreviewDTO(UserEntity userEntity);
 
