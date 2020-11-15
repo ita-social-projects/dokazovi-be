@@ -39,4 +39,13 @@ class PostServiceImplTest {
 		postService.findAllByStatus(PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toLatestPostDTO(any(PostEntity.class));
 	}
+
+	@Test
+	void findImportantPosts() {
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		when(postRepository.findAllByImportantIsTrueAndStatus(any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findImportantPosts(pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toImportantPostDTO(any(PostEntity.class));
+	}
 }
