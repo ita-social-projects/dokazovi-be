@@ -14,7 +14,7 @@ public class ImportantPostDTO {
 	private String title;
 	private PostUserDTO author;
 	private PostTypeDTO type;
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private Timestamp createdAt;
 	private PostDirectionDTO direction;
 

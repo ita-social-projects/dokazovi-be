@@ -17,5 +17,6 @@ public interface PostMapper {
 
 	LatestExpertPostDTO toLatestExpertPostDTO(PostEntity post);
 
-	ImportantPostDTO toImportantPostDTO(PostEntity postEntity);
+	@Mapping(target = "direction", source = "mainDirection")
+	ImportantPostDTO toImportantPostDTO(PostEntity post);
 }
