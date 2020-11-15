@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.entity;
 
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,11 +27,12 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "user_entity")
 @Table(name = "users")
@@ -72,12 +74,12 @@ public class UserEntity implements Serializable {
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> posts = new HashSet<>();
+	private Set<PostEntity> posts;
 
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<CharityEntity> charities = new HashSet<>();
+	private Set<CharityEntity> charities;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -87,7 +89,7 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<InstitutionEntity> institutions = new HashSet<>();
+	private Set<InstitutionEntity> institutions;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -97,7 +99,7 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<RoleEntity> roles = new HashSet<>();
+	private Set<RoleEntity> roles;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -107,35 +109,15 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<DirectionEntity> directions = new HashSet<>();
+	private Set<DirectionEntity> directions;
 
 	@OneToMany(mappedBy = "user")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<SourceEntity> sources = new HashSet<>();
+	private Set<SourceEntity> sources;
 
 	@CreationTimestamp
 	private Timestamp createdAt;
-
-	@Builder
-	public UserEntity(Integer id, String firstName, String lastName, String email, String password,
-			String qualification, String phone, String avatar, String bio,
-			DirectionEntity mainDirection, InstitutionEntity mainInstitution,
-			UserStatus status, Timestamp createdAt) {
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.password = password;
-		this.qualification = qualification;
-		this.phone = phone;
-		this.avatar = avatar;
-		this.bio = bio;
-		this.mainDirection = mainDirection;
-		this.mainInstitution = mainInstitution;
-		this.status = status;
-		this.createdAt = createdAt;
-	}
 
 	public PostEntity getLatestExpertPost() {
 		if (posts == null || posts.isEmpty()) {
@@ -145,15 +127,5 @@ public class UserEntity implements Serializable {
 				.filter(postEntity -> Objects.equals(postEntity.getStatus(), PostStatus.PUBLISHED))
 				.max(Comparator.comparing(PostEntity::getCreatedAt))
 				.orElse(null);
-	}
-
-	public void addRole(RoleEntity role) {
-		roles.add(role);
-		role.getUsers().add(this);
-	}
-
-	public void removeRole(RoleEntity role) {
-		roles.remove(role);
-		role.getUsers().remove(this);
 	}
 }

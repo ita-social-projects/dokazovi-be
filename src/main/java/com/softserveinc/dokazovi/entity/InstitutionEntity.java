@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,10 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "institution_entity")
 @Table(name = "institutions")
@@ -44,18 +46,10 @@ public class InstitutionEntity implements Serializable {
 	@OneToMany(mappedBy = "mainInstitution")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> mainUsersInstitution = new HashSet<>();
+	private Set<UserEntity> mainUsersInstitution;
 
 	@ManyToMany(mappedBy = "institutions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> users = new HashSet<>();
-
-	@Builder
-	public InstitutionEntity(Integer id, String name, CityEntity city, String address) {
-		this.id = id;
-		this.name = name;
-		this.city = city;
-		this.address = address;
-	}
+	private Set<UserEntity> users;
 }

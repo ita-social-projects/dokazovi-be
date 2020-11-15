@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -71,8 +72,7 @@ class UserMapperTest {
 				.status(PostStatus.PUBLISHED)
 				.build();
 
-		userEntity.getPosts().add(postEntity);
-		userEntity.getPosts().add(latestPostEntity);
+		userEntity.setPosts(Set.of(postEntity, latestPostEntity));
 	}
 
 

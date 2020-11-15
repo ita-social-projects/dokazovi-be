@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "region_entity")
 @Table(name = "regions")
@@ -33,11 +36,5 @@ public class RegionEntity implements Serializable {
 	@OneToMany(mappedBy = "region")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<CityEntity> cities = new HashSet<>();
-
-	@Builder
-	public RegionEntity(Integer id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+	private Set<CityEntity> cities;
 }

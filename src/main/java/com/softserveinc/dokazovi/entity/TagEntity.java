@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,10 +15,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "tag_entity")
 @Table(name = "tags")
@@ -33,11 +35,5 @@ public class TagEntity implements Serializable {
 	@ManyToMany(mappedBy = "tags")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> posts = new HashSet<>();
-
-	@Builder
-	public TagEntity(Integer id, String tag) {
-		this.id = id;
-		this.tag = tag;
-	}
+	private Set<PostEntity> posts;
 }

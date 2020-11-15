@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,10 +16,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "direction_entity")
 @Table(name = "directions")
@@ -34,26 +36,20 @@ public class DirectionEntity implements Serializable {
 	@OneToMany(mappedBy = "mainDirection")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> mainPostsDirections = new HashSet<>();
+	private Set<PostEntity> mainPostsDirections;
 
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<PostEntity> posts = new HashSet<>();
+	private Set<PostEntity> posts;
 
 	@OneToMany(mappedBy = "mainDirection")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> mainUsersDirections = new HashSet<>();
+	private Set<UserEntity> mainUsersDirections;
 
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> users = new HashSet<>();
-
-	@Builder
-	public DirectionEntity(Integer id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+	private Set<UserEntity> users;
 }

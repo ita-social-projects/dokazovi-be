@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.entity;
 
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,10 +27,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "post_entity")
 @Table(name = "posts")
@@ -71,7 +73,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<DirectionEntity> directions = new HashSet<>();
+	private Set<DirectionEntity> directions;
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -81,7 +83,7 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<TagEntity> tags = new HashSet<>();
+	private Set<TagEntity> tags;
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
@@ -91,27 +93,11 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<SourceEntity> sources = new HashSet<>();
+	private Set<SourceEntity> sources;
 
 	@CreationTimestamp
 	private Timestamp createdAt;
 
 	@UpdateTimestamp
 	private Timestamp modifiedAt;
-
-	@Builder
-	public PostEntity(Integer id, String title, String content, Boolean important,
-			UserEntity author, PostTypeEntity type, DirectionEntity mainDirection,
-			PostStatus status, Timestamp createdAt, Timestamp modifiedAt) {
-		this.id = id;
-		this.title = title;
-		this.content = content;
-		this.important = important;
-		this.author = author;
-		this.type = type;
-		this.mainDirection = mainDirection;
-		this.status = status;
-		this.createdAt = createdAt;
-		this.modifiedAt = modifiedAt;
-	}
 }

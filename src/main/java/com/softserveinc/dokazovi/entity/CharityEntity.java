@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "charity_entity")
 @Table(name = "charities")
@@ -40,14 +43,5 @@ public class CharityEntity implements Serializable {
 
 	@UpdateTimestamp
 	private Timestamp modifiedAt;
-
-	@Builder
-	public CharityEntity(Integer id, String body, UserEntity author, Timestamp createdAt, Timestamp modifiedAt) {
-		this.id = id;
-		this.body = body;
-		this.author = author;
-		this.createdAt = createdAt;
-		this.modifiedAt = modifiedAt;
-	}
 
 }
