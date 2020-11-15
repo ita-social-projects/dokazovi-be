@@ -62,6 +62,10 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+	jacoco {
+		excludes += ["**/dto/**"]
+		excludes += ["**/entity/**"]
+	}
 }
 
 jacoco {
@@ -81,8 +85,8 @@ sonarqube {
 	tasks['sonarqube'].dependsOn jacocoTestReport
 	properties {
 		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.sources", "src/main"
-		property "sonar.tests", "src/test"
+		property "sonar.sources", "src/main/java"
+		property "sonar.tests", "src/test/java"
 		property "sonar.organization", System.getenv("SONAR_ORGANIZATION")
 		property "sonar.projectKey", System.getenv("SONAR_PROJECT_KEY")
 		property "sonar.login", System.getenv("SONAR_LOGIN")
