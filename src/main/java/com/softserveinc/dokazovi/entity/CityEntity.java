@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,9 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "city_entity")
 @Table(name = "cities")
 public class CityEntity {
@@ -32,4 +29,12 @@ public class CityEntity {
 	@ManyToOne
 	@JoinColumn(name = "region_id", nullable = false)
 	private RegionEntity region;
+
+	@Builder
+	public CityEntity(Integer id, String name, RegionEntity region) {
+		this.id = id;
+		this.name = name;
+		this.region = region;
+	}
+
 }
