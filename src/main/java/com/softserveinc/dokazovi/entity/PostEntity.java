@@ -30,9 +30,9 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "post_entity")
 @Table(name = "posts")
 public class PostEntity implements Serializable {
@@ -100,16 +100,4 @@ public class PostEntity implements Serializable {
 
 	@UpdateTimestamp
 	private Timestamp modifiedAt;
-
-	public PostEntity(String title, String content, Boolean important, UserEntity author,
-			PostTypeEntity type, DirectionEntity mainDirection, PostStatus status) {
-		this.title = title;
-		this.content = content;
-		this.important = important;
-		this.author = author;
-		this.type = type;
-		this.mainDirection = mainDirection;
-		this.status = status;
-	}
-
 }

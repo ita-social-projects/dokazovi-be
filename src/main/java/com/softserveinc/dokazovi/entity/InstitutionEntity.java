@@ -21,9 +21,9 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "institution_entity")
 @Table(name = "institutions")
 public class InstitutionEntity implements Serializable {

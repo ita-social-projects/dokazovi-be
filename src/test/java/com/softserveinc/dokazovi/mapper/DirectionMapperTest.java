@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.mapper;
 
+import com.softserveinc.dokazovi.dto.user.UserDirectionDTO;
 import com.softserveinc.dokazovi.dto.post.PostDirectionDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,5 +27,13 @@ class DirectionMapperTest {
 		PostDirectionDTO postDirectionDTO = mapper.toPostDirectionDTO(directionEntity);
 		assertEquals(directionEntity.getId(), postDirectionDTO.getId());
 		assertEquals(directionEntity.getName(), postDirectionDTO.getName());
+	}
+
+	@Test
+	public void toUserDirectionDTO_whenMaps_thenCorrect() {
+		UserDirectionDTO userDirectionDTO = mapper.toUserDirectionDTO(directionEntity);
+
+		assertEquals(userDirectionDTO.getId(), directionEntity.getId());
+		assertEquals(userDirectionDTO.getName(), directionEntity.getName());
 	}
 }
