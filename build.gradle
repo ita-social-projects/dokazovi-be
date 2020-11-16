@@ -17,9 +17,16 @@ bootRun {
 	main = "com.softserveinc.dokazovi"
 }
 
+assemble {
+	dependsOn jar
+}
+
 jar {
-	archiveBaseName = 'dokazovi'
-	archiveVersion = '0.0.1'
+	enabled = true
+}
+
+manifest {
+	attributes 'Main-Class': 'com.softserveinc.dokazovi.DokazoviApplication'
 }
 
 war {
