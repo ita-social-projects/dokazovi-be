@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Configuration
 public class StaticResourceConfiguration implements WebMvcConfigurer {
@@ -21,6 +22,6 @@ public class StaticResourceConfiguration implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry
 				.addResourceHandler("/" + urlAssetsPath + "/**")
-				.addResourceLocations("file:///" + Path.of(fsPath).toAbsolutePath() + File.separator);
+				.addResourceLocations("file:///" + Paths.get(fsPath).toAbsolutePath() + File.separator);
 	}
 }
