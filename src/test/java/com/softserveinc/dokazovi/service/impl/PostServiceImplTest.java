@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -34,7 +36,8 @@ class PostServiceImplTest {
 
 	@Test
 	void findAllByStatus() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		Page<PostEntity> postEntityPage = new PageImpl<>(Stream.of(new PostEntity(), new PostEntity()).collect(
+				Collectors.toList()));
 		when(postRepository.findAllByStatus(any(PostStatus.class), any(Pageable.class))).thenReturn(postEntityPage);
 		postService.findAllByStatus(PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toLatestPostDTO(any(PostEntity.class));
@@ -42,7 +45,8 @@ class PostServiceImplTest {
 
 	@Test
 	void findImportantPosts() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		Page<PostEntity> postEntityPage = new PageImpl<>(Stream.of(new PostEntity(), new PostEntity()).collect(
+				Collectors.toList()));
 		when(postRepository.findAllByImportantIsTrueAndStatus(any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findImportantPosts(pageable);
