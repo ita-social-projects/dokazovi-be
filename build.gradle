@@ -23,10 +23,9 @@ assemble {
 
 jar {
 	enabled = true
-}
-
-manifest {
-	attributes 'Main-Class': 'com.softserveinc.dokazovi.DokazoviApplication'
+	manifest {
+		attributes 'Main-Class': 'com.softserveinc.dokazovi.DokazoviApplication'
+	}
 }
 
 war {
