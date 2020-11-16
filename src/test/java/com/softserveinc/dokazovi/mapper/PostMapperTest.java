@@ -90,7 +90,8 @@ class PostMapperTest {
 		assertEquals(importantPostDTO.getAuthor().getLastName(), author.getLastName());
 		assertEquals(importantPostDTO.getAuthor().getAvatar(), author.getAvatar());
 		assertEquals(importantPostDTO.getAuthor().getMainInstitution().getId(), author.getMainInstitution().getId());
-		assertEquals(importantPostDTO.getAuthor().getMainInstitution().getName(), author.getMainInstitution().getName());
+		assertEquals(importantPostDTO.getAuthor().getMainInstitution().getName(),
+				author.getMainInstitution().getName());
 		assertEquals(importantPostDTO.getDirection().getId(), mainDirection.getId());
 		assertEquals(importantPostDTO.getDirection().getName(), mainDirection.getName());
 		assertEquals(importantPostDTO.getType().getId(), type.getId());
