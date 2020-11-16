@@ -79,9 +79,9 @@ sonarqube {
 	tasks['sonarqube'].dependsOn jacocoTestReport
 	properties {
 		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.organization", System.getenv("SONAR_ORGANIZATION")
-		property "sonar.projectKey", System.getenv("SONAR_PROJECT_KEY")
-		property "sonar.login", System.getenv("SONAR_LOGIN")
+		property "sonar.organization", "nickunderhill"
+		property "sonar.projectKey", "nickunderhill_dokazovi-be"
+		property "sonar.login", System.getenv("94739342cf2a3304d4caefe1043458d5a4b866d2")
 		property "sonar.jacoco.reportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
 		property "sonar.coverage.exclusions", "**/*.sql," +
 				"src/main/java/com/softserveinc/dokazovi/entity/**," +
