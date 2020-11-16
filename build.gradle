@@ -17,6 +17,11 @@ bootRun {
 	main = "com.softserveinc.dokazovi"
 }
 
+jar {
+	archiveBaseName = 'dokazovi'
+	archiveVersion = '0.0.1'
+}
+
 war {
 	enabled = true
 }
