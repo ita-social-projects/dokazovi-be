@@ -2,9 +2,9 @@ name: Sonar Code Check
 on:
   push:
     branches:
-      - master
+      - develop
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited]
 jobs:
   build:
     name: Build
