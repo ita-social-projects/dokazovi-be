@@ -1,193 +1,159 @@
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
+SET STATEMENT_TIMEOUT = 0;
+SET LOCK_TIMEOUT = 0;
+SET IDLE_IN_TRANSACTION_SESSION_TIMEOUT = 0;
+SET CLIENT_ENCODING = 'UTF8';
+SET STANDARD_CONFORMING_STRINGS = ON;
+SELECT PG_CATALOG.SET_CONFIG('SEARCH_PATH', '', FALSE);
+SET CHECK_FUNCTION_BODIES = FALSE;
+SET XMLOPTION = CONTENT;
+SET CLIENT_MIN_MESSAGES = WARNING;
+SET ROW_SECURITY = OFF;
 
-SET default_tablespace = '';
+SET DEFAULT_TABLESPACE = '';
 
-SET default_table_access_method = heap;
+SET DEFAULT_TABLE_ACCESS_METHOD = HEAP;
 
-CREATE TABLE public.users (
-  "user_id" SERIAL PRIMARY KEY,
-  "email" varchar,
-  "password" varchar,
-  "status" varchar,
-  "first_name" varchar,
-  "last_name" varchar,
-  "qualification" varchar,
-  "phone" varchar,
-  "bio" text,
-  "created_at" TIMESTAMP DEFAULT (now())
+CREATE TABLE PUBLIC.USERS (
+  USER_ID SERIAL PRIMARY KEY,
+  EMAIL VARCHAR,
+  PASSWORD VARCHAR,
+  STATUS VARCHAR,
+  FIRST_NAME VARCHAR,
+  LAST_NAME VARCHAR,
+  QUALIFICATION VARCHAR,
+  PHONE VARCHAR,
+  BIO TEXT,
+  CREATED_AT TIMESTAMP DEFAULT (NOW())
 );
 
-ALTER TABLE public.users OWNER TO dokazovi;
-
-CREATE TABLE public.roles (
-  "role_id" SERIAL PRIMARY KEY,
-  "role_name" varchar
+CREATE TABLE PUBLIC.ROLES (
+  ROLE_ID SERIAL PRIMARY KEY,
+  ROLE_NAME VARCHAR
 );
 
-ALTER TABLE public.roles OWNER TO dokazovi;
-
-CREATE TABLE public.roles_users (
-  "role_id" int,
-  "user_id" int
+CREATE TABLE PUBLIC.ROLES_USERS (
+  ROLE_ID INT,
+  USER_ID INT
 );
 
-ALTER TABLE public.roles_users OWNER TO dokazovi;
-
-CREATE TABLE public.regions (
-  "region_id" SERIAL PRIMARY KEY,
-  "name" varchar
+CREATE TABLE PUBLIC.REGIONS (
+  REGION_ID SERIAL PRIMARY KEY,
+  NAME VARCHAR
 );
 
-ALTER TABLE public.regions OWNER TO dokazovi;
-
-CREATE TABLE public.institutions (
-  "institution_id" SERIAL PRIMARY KEY,
-  "name" varchar,
-  "region_id" int,
-  "address" varchar
+CREATE TABLE PUBLIC.INSTITUTIONS (
+  INSTITUTION_ID SERIAL PRIMARY KEY,
+  NAME VARCHAR,
+  REGION_ID INT,
+  ADDRESS VARCHAR
 );
 
-ALTER TABLE public.institutions OWNER TO dokazovi;
-
-CREATE TABLE public.users_institutions (
-  "user_id" int,
-  "institution_id" int,
-  "is_primary" boolean
+CREATE TABLE PUBLIC.USERS_INSTITUTIONS (
+  USER_ID INT,
+  INSTITUTION_ID INT,
+  IS_PRIMARY BOOLEAN
 );
 
-ALTER TABLE public.users_institutions OWNER TO dokazovi;
-
-CREATE TABLE public.tags (
-  "tag_id" SERIAL PRIMARY KEY,
-  "tag" varchar
+CREATE TABLE PUBLIC.TAGS (
+  TAG_ID SERIAL PRIMARY KEY,
+  TAG VARCHAR
 );
 
-ALTER TABLE public.tags OWNER TO dokazovi;
-
-CREATE TABLE public.posts_tags (
-  "post_id" int,
-  "tag_id" int
+CREATE TABLE PUBLIC.POSTS_TAGS (
+  POST_ID INT,
+  TAG_ID INT
 );
 
-ALTER TABLE public.posts_tags OWNER TO dokazovi;
-
-CREATE TABLE public.posts (
-  "post_id" SERIAL PRIMARY KEY,
-  "author_id" int,
-  "direction_id" int,
-  "type_id" int,
-  "title" varchar,
-  "content" text,
-  "status" varchar,
-  "important" boolean,
-  "tags" varchar,
-  "created_at" TIMESTAMP DEFAULT (now()),
-  "modified_at" TIMESTAMP DEFAULT (now())
+CREATE TABLE PUBLIC.POSTS (
+  POST_ID SERIAL PRIMARY KEY,
+  AUTHOR_ID INT,
+  DIRECTION_ID INT,
+  TYPE_ID INT,
+  TITLE VARCHAR,
+  CONTENT TEXT,
+  STATUS VARCHAR,
+  IMPORTANT BOOLEAN,
+  TAGS VARCHAR,
+  CREATED_AT TIMESTAMP DEFAULT (NOW()),
+  MODIFIED_AT TIMESTAMP DEFAULT (NOW())
 );
 
-ALTER TABLE public.posts OWNER TO dokazovi;
-
-CREATE TABLE public.charities (
-  "charity_id" SERIAL PRIMARY KEY,
-  "body" text,
-  "author_id" INT,
-  "created_at" TIMESTAMP DEFAULT (now()),
-  "modified_at" TIMESTAMP DEFAULT (now())
+CREATE TABLE PUBLIC.CHARITIES (
+  CHARITY_ID SERIAL PRIMARY KEY,
+  BODY TEXT,
+  AUTHOR_ID INT,
+  CREATED_AT TIMESTAMP DEFAULT (NOW()),
+  MODIFIED_AT TIMESTAMP DEFAULT (NOW())
 );
 
-ALTER TABLE public.charities OWNER TO dokazovi;
-
-CREATE TABLE public.sources (
-  "source_id" SERIAL PRIMARY KEY,
-  "type" varchar,
-  "value" varchar
+CREATE TABLE PUBLIC.SOURCES (
+  SOURCE_ID SERIAL PRIMARY KEY,
+  TYPE VARCHAR,
+  VALUE VARCHAR
 );
 
-ALTER TABLE public.sources OWNER TO dokazovi;
-
-CREATE TABLE public.users_sources (
-  "user_id" int,
-  "source_id" int
+CREATE TABLE PUBLIC.USERS_SOURCES (
+  USER_ID INT,
+  SOURCE_ID INT
 );
 
-ALTER TABLE public.users_sources OWNER TO dokazovi;
-
-CREATE TABLE public.posts_sources (
-  "post_id" int,
-  "source_id" int
+CREATE TABLE PUBLIC.POSTS_SOURCES (
+  POST_ID INT,
+  SOURCE_ID INT
 );
 
-ALTER TABLE public.posts_sources OWNER TO dokazovi;
-
-CREATE TABLE public.users_directions (
-  "user_id" int,
-  "direction_id" int
+CREATE TABLE PUBLIC.USERS_DIRECTIONS (
+  USER_ID INT,
+  DIRECTION_ID INT
 );
 
-ALTER TABLE public.users_directions OWNER TO dokazovi;
-
-CREATE TABLE public.directions (
-  "direction_id" SERIAL PRIMARY KEY,
-  "name" varchar
+CREATE TABLE PUBLIC.DIRECTIONS (
+  DIRECTION_ID SERIAL PRIMARY KEY,
+  NAME VARCHAR
 );
 
-ALTER TABLE public.directions OWNER TO dokazovi;
-
-CREATE TABLE public.posts_directions (
-  "post_id" int,
-  "direction_id" int
+CREATE TABLE PUBLIC.POSTS_DIRECTIONS (
+  POST_ID INT,
+  DIRECTION_ID INT
 );
 
-ALTER TABLE public.posts_directions OWNER TO dokazovi;
-
-CREATE TABLE public.post_types (
-  "type_id" SERIAL PRIMARY KEY,
-  "name" varchar
+CREATE TABLE PUBLIC.POST_TYPES (
+  TYPE_ID SERIAL PRIMARY KEY,
+  NAME VARCHAR
 );
 
-ALTER TABLE public.post_types OWNER TO dokazovi;
+ALTER TABLE PUBLIC.ROLES_USERS ADD FOREIGN KEY (ROLE_ID) REFERENCES PUBLIC.ROLES(ROLE_ID);
 
-ALTER TABLE public.roles_users ADD FOREIGN KEY (role_id) REFERENCES public.roles(role_id);
+ALTER TABLE PUBLIC.ROLES_USERS ADD FOREIGN KEY (USER_ID) REFERENCES PUBLIC.USERS(USER_ID);
 
-ALTER TABLE public.roles_users ADD FOREIGN KEY (user_id) REFERENCES public.users(user_id);
+ALTER TABLE PUBLIC.INSTITUTIONS ADD FOREIGN KEY (REGION_ID) REFERENCES PUBLIC.REGIONS(REGION_ID);
 
-ALTER TABLE public.institutions ADD FOREIGN KEY (region_id) REFERENCES public.regions(region_id);
+ALTER TABLE PUBLIC.USERS_INSTITUTIONS ADD FOREIGN KEY (USER_ID) REFERENCES PUBLIC.USERS (USER_ID);
 
-ALTER TABLE public.users_institutions ADD FOREIGN KEY (user_id) REFERENCES public.users (user_id);
+ALTER TABLE PUBLIC.USERS_INSTITUTIONS ADD FOREIGN KEY (INSTITUTION_ID) REFERENCES PUBLIC.INSTITUTIONS (INSTITUTION_ID);
 
-ALTER TABLE public.users_institutions ADD FOREIGN KEY (institution_id) REFERENCES public.institutions (institution_id);
+ALTER TABLE PUBLIC.POSTS_TAGS ADD FOREIGN KEY (POST_ID) REFERENCES PUBLIC.POSTS (POST_ID);
 
-ALTER TABLE public.posts_tags ADD FOREIGN KEY (post_id) REFERENCES public.posts (post_id);
+ALTER TABLE PUBLIC.POSTS_TAGS ADD FOREIGN KEY (TAG_ID) REFERENCES PUBLIC.TAGS (TAG_ID);
 
-ALTER TABLE public.posts_tags ADD FOREIGN KEY (tag_id) REFERENCES public.tags (tag_id);
+ALTER TABLE PUBLIC.POSTS ADD FOREIGN KEY (AUTHOR_ID) REFERENCES PUBLIC.USERS (USER_ID);
 
-ALTER TABLE public.posts ADD FOREIGN KEY (author_id) REFERENCES public.users (user_id);
+ALTER TABLE PUBLIC.POSTS ADD FOREIGN KEY (TYPE_ID) REFERENCES PUBLIC.POST_TYPES (TYPE_ID);
 
-ALTER TABLE public.posts ADD FOREIGN KEY (type_id) REFERENCES public.post_types (type_id);
+ALTER TABLE PUBLIC.CHARITIES ADD FOREIGN KEY (AUTHOR_ID) REFERENCES PUBLIC.USERS (USER_ID);
 
-ALTER TABLE public.charities ADD FOREIGN KEY (author_id) REFERENCES public.users (user_id);
+ALTER TABLE PUBLIC.USERS_SOURCES ADD FOREIGN KEY (USER_ID) REFERENCES PUBLIC.USERS (USER_ID);
 
-ALTER TABLE public.users_sources ADD FOREIGN KEY (user_id) REFERENCES public.users (user_id);
+ALTER TABLE PUBLIC.USERS_SOURCES ADD FOREIGN KEY (SOURCE_ID) REFERENCES PUBLIC.SOURCES (SOURCE_ID);
 
-ALTER TABLE public.users_sources ADD FOREIGN KEY (source_id) REFERENCES public.sources (source_id);
+ALTER TABLE PUBLIC.POSTS_SOURCES ADD FOREIGN KEY (POST_ID) REFERENCES PUBLIC.POSTS (POST_ID);
 
-ALTER TABLE public.posts_sources ADD FOREIGN KEY (post_id) REFERENCES public.posts (post_id);
+ALTER TABLE PUBLIC.POSTS_SOURCES ADD FOREIGN KEY (SOURCE_ID) REFERENCES PUBLIC.SOURCES (SOURCE_ID);
 
-ALTER TABLE public.posts_sources ADD FOREIGN KEY (source_id) REFERENCES public.sources (source_id);
+ALTER TABLE PUBLIC.USERS_DIRECTIONS ADD FOREIGN KEY (USER_ID) REFERENCES PUBLIC.USERS (USER_ID);
 
-ALTER TABLE public.users_directions ADD FOREIGN KEY (user_id) REFERENCES public.users (user_id);
+ALTER TABLE PUBLIC.USERS_DIRECTIONS ADD FOREIGN KEY (DIRECTION_ID) REFERENCES PUBLIC.DIRECTIONS (DIRECTION_ID);
 
-ALTER TABLE public.users_directions ADD FOREIGN KEY (direction_id) REFERENCES public.directions (direction_id);
+ALTER TABLE PUBLIC.POSTS_DIRECTIONS ADD FOREIGN KEY (POST_ID) REFERENCES PUBLIC.POSTS (POST_ID);
 
-ALTER TABLE public.posts_directions ADD FOREIGN KEY (post_id) REFERENCES public.posts (post_id);
-
-ALTER TABLE public.posts_directions ADD FOREIGN KEY (direction_id) REFERENCES public.directions (direction_id);
+ALTER TABLE PUBLIC.POSTS_DIRECTIONS ADD FOREIGN KEY (DIRECTION_ID) REFERENCES PUBLIC.DIRECTIONS (DIRECTION_ID);
