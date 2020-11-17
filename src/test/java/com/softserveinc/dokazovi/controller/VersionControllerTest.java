@@ -20,7 +20,7 @@ class VersionControllerTest {
 
 	@Test
 	void getBuildVersion_Get_isOk() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get(EndPoints.VERSION))
+		this.mockMvc.perform(MockMvcRequestBuilders.get(EndPoints.VERSION + "failTest"))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 	}
