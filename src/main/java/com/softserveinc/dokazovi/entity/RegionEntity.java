@@ -18,9 +18,9 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "region_entity")
 @Table(name = "regions")
 public class RegionEntity implements Serializable {
@@ -36,9 +36,4 @@ public class RegionEntity implements Serializable {
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<CityEntity> cities;
-
-	public RegionEntity(String name) {
-		this.name = name;
-	}
-
 }

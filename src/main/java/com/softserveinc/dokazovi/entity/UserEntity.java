@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
+import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,12 +26,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Comparator;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "user_entity")
 @Table(name = "users")
 public class UserEntity implements Serializable {
@@ -116,26 +119,13 @@ public class UserEntity implements Serializable {
 	@CreationTimestamp
 	private Timestamp createdAt;
 
-	public UserEntity(String firstName, String lastName, String email, String password, String qualification,
-			String phone, String avatar, String bio, UserStatus status) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.password = password;
-		this.qualification = qualification;
-		this.phone = phone;
-		this.avatar = avatar;
-		this.bio = bio;
-		this.status = status;
-	}
-
-	public void addRole(RoleEntity role) {
-		roles.add(role);
-		role.getUsers().add(this);
-	}
-
-	public void removeRole(RoleEntity role) {
-		roles.remove(role);
-		role.getUsers().remove(this);
+	public PostEntity getLatestExpertPost() {
+		if (posts == null || posts.isEmpty()) {
+			return null;
+		}
+		return posts.stream()
+				.filter(postEntity -> Objects.equals(postEntity.getStatus(), PostStatus.PUBLISHED))
+				.max(Comparator.comparing(PostEntity::getCreatedAt))
+				.orElse(null);
 	}
 }

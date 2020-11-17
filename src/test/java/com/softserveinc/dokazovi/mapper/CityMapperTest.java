@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.mapper;
 
+import com.softserveinc.dokazovi.dto.user.ExpertInstitutionCityDTO;
 import com.softserveinc.dokazovi.dto.post.PostUserInstitutionCityDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,5 +27,13 @@ class CityMapperTest {
 		PostUserInstitutionCityDTO postUserInstitutionCityDTO = mapper.toPostUserInstitutionCityDTO(cityEntity);
 		assertEquals(postUserInstitutionCityDTO.getId(), cityEntity.getId());
 		assertEquals(postUserInstitutionCityDTO.getName(), cityEntity.getName());
+	}
+
+	@Test
+	void toExpertInstitutionCityDTO_whenMaps_thenCorrect() {
+		ExpertInstitutionCityDTO expertInstitutionCityDTO = mapper.toExpertInstitutionCityDTO(cityEntity);
+
+		assertEquals(expertInstitutionCityDTO.getId(), cityEntity.getId());
+		assertEquals(expertInstitutionCityDTO.getName(), cityEntity.getName());
 	}
 }

@@ -18,9 +18,9 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "post_type_entity")
 @Table(name = "post_types")
 public class PostTypeEntity implements Serializable {
@@ -36,9 +36,4 @@ public class PostTypeEntity implements Serializable {
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<PostEntity> posts;
-
-	public PostTypeEntity(String name) {
-		this.name = name;
-	}
-
 }

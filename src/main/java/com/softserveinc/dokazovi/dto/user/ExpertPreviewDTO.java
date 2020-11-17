@@ -13,6 +13,8 @@ public class ExpertPreviewDTO {
 
 	private String lastName;
 
+	private String avatar;
+
 	private UserDirectionDTO mainDirection;
 
 	private ExpertInstitutionDTO mainInstitution;

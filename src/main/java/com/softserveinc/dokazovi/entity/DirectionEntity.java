@@ -19,9 +19,9 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "direction_entity")
 @Table(name = "directions")
 public class DirectionEntity implements Serializable {
@@ -52,9 +52,4 @@ public class DirectionEntity implements Serializable {
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<UserEntity> users;
-
-	public DirectionEntity(String name) {
-		this.name = name;
-	}
-
 }

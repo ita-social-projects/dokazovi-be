@@ -1,13 +1,14 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.util.BuildVersion;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @SpringBootTest
@@ -16,14 +17,11 @@ class VersionControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-	@Autowired
-	private BuildVersion buildVersion;
 
 	@Test
-	void shouldReturnBuildVersion() throws Exception {
-		String version = String.format("{\"version\":\"%s\"}", buildVersion.getVersion());
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/version"))
+	void getBuildVersion_Get_isOk() throws Exception {
+		this.mockMvc.perform(MockMvcRequestBuilders.get(EndPoints.VERSION))
 				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(content().string(version));
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 	}
 }
