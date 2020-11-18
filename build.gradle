@@ -14,7 +14,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 bootRun {
-	main = "com.softserveinc.dokazovi"
+	main = "com.softserveinc.dokazovi.DokazoviApplication"
 }
 
 war {

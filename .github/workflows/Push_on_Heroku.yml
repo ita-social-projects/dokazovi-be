@@ -1,0 +1,32 @@
+name: Check_tests_style_build_push_on_Heroku
+
+on:
+  push:
+    branches:
+      - 'release'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+      - name: Run build with Gradle(check styles, run tests)
+        run: ./gradlew build
+      - name: Build the tagged Docker image
+        run: docker build -f .docker/dokazovi.Dockerfile -t dokazovi .
+      - name: Build, Push and Deploy to Heroku
+        id: heroku
+        uses: snithyanantham/docker-compose-multiple-apps-heroku-deploy@v1.0
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }}
+          api_key: ${{ secrets.HEROKU_API_KEY }}
+          docker_compose_file: '.docker/docker-compose.heroku.yml'
+          heroku_apps: '[{"imagename":"dokazovi","appname":"dokazovi-be","apptype":"web"}]'
