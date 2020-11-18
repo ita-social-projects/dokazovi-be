@@ -9,12 +9,14 @@
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
 ##About the project
+
 The "Dokazovo" project is a platform where proven experts will provide only evident information about coronavirus disease in Ukraine and other scientific and medical topics and prevent the spread of infodemia.
 So there will be only verified information on the platform, only verified speakers and their recommendations.
 
-
 ##Start the project locally
+
 ###Required to install
+
 * Java 11
 * PostgreSQL (9.5.9 or higher)
 
@@ -31,11 +33,13 @@ git clone https://github.com/ita-social-projects/dokazovi-be
 db name:`dokazovi` user: `dokazovi` password: `dokazovi`.
 
 (Optional) You can enter other values in environmental variables:
+
 ```properties
 spring.datasource.url=${DATASOURCE_URL}
 spring.datasource.username=${DATASOURCE_USER}
 spring.datasource.password=${DATASOURCE_PASSWORD}
 ```
+
 #### 3. Start the app with IDE
 
 If everything is ok you can run the [Swagger](#How-to-work-with-swagger-UI)
