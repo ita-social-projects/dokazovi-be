@@ -2,11 +2,11 @@
 
 # Dokazovo
 
-[![Build Status](https://img.shields.io/travis/ita-social-projects/dokazovi-be/master?style=flat-square)](https://travis-ci.org/github/ita-social-projects/dokazovi-be)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_dokazovi-be&metric=coverage)](https://sonarcloud.io/dashboard?id=ita-social-projects_dokazovi-be)
-[![Github Issues](https://img.shields.io/github/issues/ita-social-projects/dokazovi-be?style=flat-square)](https://github.com/ita-social-projects/dokazovi-be/issues)
-[![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/dokazovi-be?style=flat-square)](https://github.com/ita-social-projects/dokazovi-be/pulls)
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+![Build Status](https://github.com/ita-social-projects/dokazovi-be/workflows/Build%20&%20Test/badge.svg)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_dokazovi-be&metric=coverage&)](https://sonarcloud.io/dashboard?id=ita-social-projects_dokazovi-be)
+[![Github Issues](https://img.shields.io/github/issues/ita-social-projects/dokazovi-be)](https://github.com/ita-social-projects/dokazovi-be/issues)
+[![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/dokazovi-be)](https://github.com/ita-social-projects/dokazovi-be/pulls)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://badges.mit-license.org)
 
 ## About the project
 
