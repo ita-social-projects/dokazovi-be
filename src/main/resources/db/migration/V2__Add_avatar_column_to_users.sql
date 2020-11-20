@@ -1,1 +1,0 @@
-alter table public.users add avatar varchar(255);
