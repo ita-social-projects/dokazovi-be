@@ -51,8 +51,9 @@ class UserControllerTest {
 	void getExpertPreviewByDirection_GetWithPagination_isOk() throws Exception {
 		Pageable pageable = PageRequest.of(0, 12);
 		Integer directionId = 1;
-		mockMvc.perform(get(EndPoints.USER + EndPoints.USER_EXPERTS_BY_DIRECTION +"/?page=0"+"/?directionId"+directionId))
+		mockMvc.perform(
+				get(EndPoints.USER + EndPoints.USER_EXPERTS_BY_DIRECTION + "/" + directionId + "/?page=0"))
 				.andExpect(status().isOk());
-		verify(userService).getExpertsPreviewByDirection(null, pageable);
+		verify(userService).getExpertsPreviewByDirection(directionId, pageable);
 	}
 }

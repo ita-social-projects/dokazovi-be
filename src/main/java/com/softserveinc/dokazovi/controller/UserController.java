@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,13 +35,14 @@ public class UserController {
 				.status(HttpStatus.OK)
 				.body(userService.getExpertsPreview(pageable));
 	}
+
 	@ApiOperation(value = "Get preview of experts by filtered by direction. Default 12 max per page.")
 	@ApiPageable
-	@GetMapping(USER_EXPERTS_BY_DIRECTION)
-	public ResponseEntity<Page<ExpertPreviewDTO>> getExpertPreviewByDirection(Integer directionId,
-			@PageableDefault(size = 12) Pageable pageable) {
+	@GetMapping(USER_EXPERTS_BY_DIRECTION + "/{directionId}")
+	public ResponseEntity<Page<ExpertPreviewDTO>> getExpertPreviewByDirection(
+			@PathVariable String directionId, @PageableDefault(size = 12) Pageable pageable) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(userService.getExpertsPreviewByDirection(directionId, pageable));
+				.body(userService.getExpertsPreviewByDirection(Integer.parseInt(directionId), pageable));
 	}
 }
