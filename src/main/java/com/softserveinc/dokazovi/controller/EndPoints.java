@@ -8,4 +8,5 @@ public final class EndPoints {
 	public static final String IMPORTANT = "/important";
 	public static final String USER = "/user";
 	public static final String USER_EXPERTS = "/experts";
+	public static final String USER_EXPERTS_BY_DIRECTION = "/experts-by-direction";
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_EXPERTS_BY_DIRECTION;
 
 @RestController
 @RequestMapping(USER)
@@ -32,5 +33,14 @@ public class UserController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(userService.getExpertsPreview(pageable));
+	}
+	@ApiOperation(value = "Get preview of experts by filtered by direction. Default 12 max per page.")
+	@ApiPageable
+	@GetMapping(USER_EXPERTS_BY_DIRECTION)
+	public ResponseEntity<Page<ExpertPreviewDTO>> getExpertPreviewByDirection(Integer directionId,
+			@PageableDefault(size = 12) Pageable pageable) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(userService.getExpertsPreviewByDirection(directionId, pageable));
 	}
 }

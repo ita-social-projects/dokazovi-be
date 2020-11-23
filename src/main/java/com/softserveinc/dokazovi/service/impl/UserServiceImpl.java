@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.service.UserService;
@@ -31,6 +32,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Page<ExpertPreviewDTO> getExpertsPreview(Pageable pageable) {
 		return userRepository.findRandomActiveUsers(pageable)
+				.map(userMapper::toExpertPreviewDTO);
+	}
+
+	@Override
+	public Page<ExpertPreviewDTO> getExpertsPreviewByDirection(Integer directionEntityId, Pageable pageable) {
+		return userRepository.findAllByStatusAndMainDirectionId(UserStatus.ACTIVE, directionEntityId, pageable)
 				.map(userMapper::toExpertPreviewDTO);
 	}
 

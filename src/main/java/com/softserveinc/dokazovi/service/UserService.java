@@ -13,4 +13,6 @@ public interface UserService {
 	Page<UserEntity> findAll(Pageable pageable);
 
 	Page<ExpertPreviewDTO> getExpertsPreview(Pageable pageable);
+
+	Page<ExpertPreviewDTO> getExpertsPreviewByDirection(Integer directionId, Pageable pageable);
 }
