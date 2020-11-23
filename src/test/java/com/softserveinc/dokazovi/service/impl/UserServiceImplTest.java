@@ -38,4 +38,13 @@ class UserServiceImplTest {
 		userService.getExpertsPreview(pageable);
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toExpertPreviewDTO(any(UserEntity.class));
 	}
+
+	@Test
+	void getExpertsPreviewByDirection() {
+		Integer directionId = 1;
+		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
+		when(userRepository.findAllByStatusAndMainDirectionId(any(Integer.class),any(Pageable.class))).thenReturn(userEntityPage);
+		userService.getExpertsPreviewByDirection(directionId, pageable);
+		verify(userMapper, times(userEntityPage.getNumberOfElements())).toExpertPreviewDTO(any(UserEntity.class));
+	}
 }
