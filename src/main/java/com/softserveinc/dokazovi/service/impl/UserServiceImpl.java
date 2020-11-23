@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Page<ExpertPreviewDTO> getExpertsPreviewByDirection(Integer directionEntityId, Pageable pageable) {
-		return userRepository.findAllByStatusAndMainDirectionId(UserStatus.ACTIVE, directionEntityId, pageable)
+		return userRepository.findAllByStatusAndMainDirectionId(directionEntityId, pageable)
 				.map(userMapper::toExpertPreviewDTO);
 	}
 
