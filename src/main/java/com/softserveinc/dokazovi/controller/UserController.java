@@ -2,7 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
-import com.softserveinc.dokazovi.payload.RandomExpertRequestBody;
+import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class UserController {
 	@ApiPageable
 	@PostMapping(USER_RANDOM_EXPERTS)
 	public ResponseEntity<Page<ExpertPreviewDTO>> getRandomExpertPreview(
-			@PageableDefault(size = 12) Pageable pageable, @RequestBody RandomExpertRequestBody requestBody) {
+			@PageableDefault(size = 12) Pageable pageable, @RequestBody RandomExpertFilteringDTO requestBody) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(userService.getRandomExpertPreview(pageable, requestBody));

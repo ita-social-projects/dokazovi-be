@@ -2,7 +2,7 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.UserMapper;
-import com.softserveinc.dokazovi.payload.RandomExpertRequestBody;
+import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ class UserServiceImplTest {
 	@Test
 	void getRandomExpertPreview() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
-		RandomExpertRequestBody requestBody = new RandomExpertRequestBody();
+		RandomExpertFilteringDTO requestBody = new RandomExpertFilteringDTO();
 
 		when(userRepository.findRandomActiveUsers(any(Pageable.class))).thenReturn(userEntityPage);
 		userService.getRandomExpertPreview(pageable, requestBody);
