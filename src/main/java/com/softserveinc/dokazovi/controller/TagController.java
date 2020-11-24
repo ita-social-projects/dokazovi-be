@@ -2,7 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.dto.tag.TagSaveDTO;
-import com.softserveinc.dokazovi.service.impl.TagServiceImpl;
+import com.softserveinc.dokazovi.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.TAG_FIND_BY_VALUE;
 @RequiredArgsConstructor
 public class TagController {
 
-	private final TagServiceImpl tagService;
+	private final TagService tagService;
 
 	@GetMapping(TAG_FIND_BY_VALUE)
 	public ResponseEntity<List<TagDTO>> findAllTags(

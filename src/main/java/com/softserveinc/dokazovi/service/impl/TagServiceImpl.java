@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.tag.TagSaveDTO;
 import com.softserveinc.dokazovi.entity.TagEntity;
 import com.softserveinc.dokazovi.mapper.TagMapper;
 import com.softserveinc.dokazovi.repositories.TagRepository;
+import com.softserveinc.dokazovi.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TagServiceImpl {
+public class TagServiceImpl implements TagService {
 
 	private final TagRepository tagRepository;
 	private final TagMapper tagMapper;
@@ -25,7 +26,7 @@ public class TagServiceImpl {
 		return tagMapper.toTagDTO(tagEntity);
 	}
 
-	public List<TagDTO> findTagsByValue(String value, int limit) {
+	public List<TagDTO> findTagsByValue(String value, Integer limit) {
 		String filter = value.toLowerCase();
 		return tagRepository.findAll()
 				.stream()
