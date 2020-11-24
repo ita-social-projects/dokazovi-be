@@ -36,8 +36,10 @@ class UserServiceImplTest {
 	void getRandomExpertPreview() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		RandomExpertRequestBody requestBody = new RandomExpertRequestBody();
+
 		when(userRepository.findRandomActiveUsers(any(Pageable.class))).thenReturn(userEntityPage);
 		userService.getRandomExpertPreview(pageable, requestBody);
+
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toExpertPreviewDTO(any(UserEntity.class));
 	}
 }

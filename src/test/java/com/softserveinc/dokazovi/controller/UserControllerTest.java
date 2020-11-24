@@ -13,12 +13,15 @@ import org.mockito.quality.Strictness;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.USER;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,10 +45,13 @@ class UserControllerTest {
 
 	@Test
 	void getRandomExpertPreview_GetWithPagination_isOk() throws Exception {
-		Pageable pageable = PageRequest.of(0, 11);
+		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0";
+		Pageable pageable = PageRequest.of(0, 12);
 		RandomExpertRequestBody requestBody = new RandomExpertRequestBody();
-		mockMvc.perform(get(EndPoints.USER + EndPoints.USER_RANDOM_EXPERTS + "/?page=0"))
+
+		mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON).content("{}"))
 				.andExpect(status().isOk());
+
 		verify(userService).getRandomExpertPreview(eq(pageable), eq(requestBody));
 	}
 }
