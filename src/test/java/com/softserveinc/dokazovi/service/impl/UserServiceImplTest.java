@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.UserMapper;
+import com.softserveinc.dokazovi.payload.RandomExpertRequestBody;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,19 +33,11 @@ class UserServiceImplTest {
 	private UserServiceImpl userService;
 
 	@Test
-	void findAllByStatus() {
+	void getRandomExpertPreview() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
+		RandomExpertRequestBody requestBody = new RandomExpertRequestBody();
 		when(userRepository.findRandomActiveUsers(any(Pageable.class))).thenReturn(userEntityPage);
-		userService.getExpertsPreview(pageable);
-		verify(userMapper, times(userEntityPage.getNumberOfElements())).toExpertPreviewDTO(any(UserEntity.class));
-	}
-
-	@Test
-	void getExpertsPreviewByDirection() {
-		Integer directionId = 1;
-		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
-		when(userRepository.findAllByStatusAndMainDirectionId(any(Integer.class),any(Pageable.class))).thenReturn(userEntityPage);
-		userService.getExpertsPreviewByDirection(directionId, pageable);
+		userService.getRandomExpertPreview(pageable, requestBody);
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toExpertPreviewDTO(any(UserEntity.class));
 	}
 }

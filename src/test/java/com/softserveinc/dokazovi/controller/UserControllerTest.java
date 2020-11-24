@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
+import com.softserveinc.dokazovi.payload.RandomExpertRequestBody;
 import com.softserveinc.dokazovi.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,20 +41,11 @@ class UserControllerTest {
 	}
 
 	@Test
-	void getExpertPreview_GetWithPagination_isOk() throws Exception {
+	void getRandomExpertPreview_GetWithPagination_isOk() throws Exception {
 		Pageable pageable = PageRequest.of(0, 11);
-		mockMvc.perform(get(EndPoints.USER + EndPoints.USER_EXPERTS + "/?page=0"))
+		RandomExpertRequestBody requestBody = new RandomExpertRequestBody();
+		mockMvc.perform(get(EndPoints.USER + EndPoints.USER_RANDOM_EXPERTS + "/?page=0"))
 				.andExpect(status().isOk());
-		verify(userService).getExpertsPreview(eq(pageable));
-	}
-
-	@Test
-	void getExpertPreviewByDirection_GetWithPagination_isOk() throws Exception {
-		Pageable pageable = PageRequest.of(0, 12);
-		Integer directionId = 1;
-		mockMvc.perform(
-				get(EndPoints.USER + EndPoints.USER_EXPERTS_BY_DIRECTION + "/" + directionId + "/?page=0"))
-				.andExpect(status().isOk());
-		verify(userService).getExpertsPreviewByDirection(directionId, pageable);
+		verify(userService).getRandomExpertPreview(eq(pageable), eq(requestBody));
 	}
 }
