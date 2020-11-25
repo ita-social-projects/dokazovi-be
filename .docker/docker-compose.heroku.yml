@@ -4,10 +4,3 @@ services:
   api:
     image: dokazovi
     container_name: dokazovi
-    ports:
-      - '8080:8080'
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"

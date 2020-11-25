@@ -17,10 +17,6 @@ bootRun {
 	main = "com.softserveinc.dokazovi.DokazoviApplication"
 }
 
-war {
-	enabled = true
-}
-
 checkstyleMain {
 	configFile = file("${rootDir}/checkstyle.xml")
 }
