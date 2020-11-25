@@ -2,6 +2,8 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
 import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
+import com.softserveinc.dokazovi.dto.post.PostDirectionDTO;
+import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -29,4 +31,16 @@ public class PostServiceImpl implements PostService {
 		return postRepository.findAllByImportantIsTrueAndStatus(PostStatus.PUBLISHED, pageable)
 				.map(postMapper::toImportantPostDTO);
 	}
+
+	@Override
+	public Page<LatestPostDTO> findPostsByMainDirection(PostDirectionDTO directionDTO, Pageable pageable) {
+		DirectionEntity directionEntity = DirectionEntity
+				.builder()
+				.id(directionDTO.getId())
+				.name(directionDTO.getName())
+				.build();
+		return postRepository.findAllByMainDirection(directionEntity, pageable)
+				.map(postMapper::toLatestPostDTO);
+	}
+
 }

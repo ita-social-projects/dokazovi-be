@@ -17,9 +17,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.POST;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
-import static com.softserveinc.dokazovi.controller.EndPoints.IMPORTANT;
+import static com.softserveinc.dokazovi.controller.EndPoints.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -56,7 +54,7 @@ class PostControllerTest {
 	@Test
 	void findImportant_GetWithPagination_isOk() throws Exception {
 		Pageable pageable = PageRequest.of(0, 3, Sort.by("createdAt").descending());
-		mockMvc.perform(get(POST + IMPORTANT + "/?page=0&size=3"))
+		mockMvc.perform(get(POST + POST_IMPORTANT + "/?page=0&size=3"))
 				.andExpect(status().isOk());
 		verify(postService).findImportantPosts(eq(pageable));
 	}
