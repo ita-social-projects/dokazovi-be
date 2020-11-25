@@ -22,7 +22,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM users u "
 						+ "WHERE u.status='ACTIVE' "
-						+ "AND u.direction_id IN :#{#directionsIds}"
+						+ "AND u.direction_id IN (:directionsIds)"
 					+ " ORDER BY random()")
 	Page<UserEntity> findRandomActiveUsersByDirections(Pageable pageable,
 			@Param("directionsIds") Set<Integer> directionsIds);

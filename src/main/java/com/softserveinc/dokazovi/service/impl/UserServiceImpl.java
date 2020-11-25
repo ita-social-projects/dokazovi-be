@@ -35,10 +35,10 @@ public class UserServiceImpl implements UserService {
 		if (CollectionUtils.isEmpty(requestBody.getDirectionsIds())) {
 			return userRepository.findRandomActiveUsers(pageable)
 					.map(userMapper::toExpertPreviewDTO);
-		} else {
-			return userRepository.findRandomActiveUsersByDirections(pageable, requestBody.getDirectionsIds())
-					.map(userMapper::toExpertPreviewDTO);
 		}
+
+		return userRepository.findRandomActiveUsersByDirections(pageable, requestBody.getDirectionsIds())
+				.map(userMapper::toExpertPreviewDTO);
 	}
 
 }
