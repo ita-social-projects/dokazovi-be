@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Page<ExpertPreviewDTO> getRandomExpertPreview(Pageable pageable, RandomExpertFilteringDTO requestBody) {
-		if (requestBody == null || CollectionUtils.isEmpty(requestBody.getDirectionsIds())) {
+		if (CollectionUtils.isEmpty(requestBody.getDirectionsIds())) {
 			return userRepository.findRandomActiveUsers(pageable)
 					.map(userMapper::toExpertPreviewDTO);
 		}
