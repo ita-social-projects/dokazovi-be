@@ -2,8 +2,6 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
 import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
-import com.softserveinc.dokazovi.dto.post.PostDirectionDTO;
-import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -12,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,13 +33,13 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<LatestPostDTO> findPostsByMainDirection(PostDirectionDTO directionDTO, Pageable pageable) {
-		DirectionEntity directionEntity = DirectionEntity
-				.builder()
-				.id(directionDTO.getId())
-				.name(directionDTO.getName())
-				.build();
-		return postRepository.findAllByMainDirection(directionEntity, pageable)
+	public Page<LatestPostDTO> findAllByMainDirectionAndTags(
+			Integer directionId, Set<Integer> tags, Pageable pageable) {
+		if (tags == null || tags.isEmpty()) {
+			return postRepository.findAllByMainDirectionId(directionId, pageable)
+					.map(postMapper::toLatestPostDTO);
+		}
+		return postRepository.findAllByMainDirectionIdAndTagsIdIn(directionId, tags, pageable)
 				.map(postMapper::toLatestPostDTO);
 	}
 

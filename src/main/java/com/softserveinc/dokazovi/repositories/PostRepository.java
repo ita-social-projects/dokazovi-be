@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.repositories;
 
-import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import org.springframework.data.domain.Page;
@@ -11,11 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
-
-	Page<PostEntity> findAllByImportantIsTrueAndStatus(PostStatus status,Pageable pageable);
+	Page<PostEntity> findAllByImportantIsTrueAndStatus(PostStatus status, Pageable pageable);
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
-	Page<PostEntity> findAllByMainDirection(DirectionEntity directionEntity, Pageable pageable);
+	Page<PostEntity> findAllByMainDirectionId(Integer directionId, Pageable pageable);
 
+	Page<PostEntity> findAllByMainDirectionIdAndTagsIdIn(
+			Integer directionId, Iterable<Integer> tagId, Pageable pageable);
 }

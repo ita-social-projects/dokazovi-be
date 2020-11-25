@@ -3,8 +3,6 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
 import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
-import com.softserveinc.dokazovi.dto.post.PostDirectionDTO;
-import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
 import io.swagger.annotations.ApiOperation;
@@ -15,11 +13,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Set;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.*;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 
 @RestController
 @RequestMapping(EndPoints.POST)
@@ -49,15 +52,14 @@ public class PostController {
 	}
 
 	@ApiPageable
-	@ApiOperation(value = "Find latest posts by direction")
-	@PostMapping(POST_LATEST_BY_DIRECTION)
+	@ApiOperation(value = "Find latest posts by main direction and tags(optional)")
+	@GetMapping(POST_LATEST_BY_DIRECTION)
 	public ResponseEntity<Page<LatestPostDTO>> findLatestByDirection(
 			@PageableDefault(size = 6, sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable,
-			@RequestBody PostDirectionDTO directionDTO,
-			@RequestBody List<TagDTO> tags) {
+			@RequestParam Integer directionId,
+			@RequestParam(required = false) Set<Integer> tags) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(postService.findPostsByMainDirection(directionDTO, pageable));
+				.body(postService.findAllByMainDirectionAndTags(directionId, tags, pageable));
 	}
-
 }

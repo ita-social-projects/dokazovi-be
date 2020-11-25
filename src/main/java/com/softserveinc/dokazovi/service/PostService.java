@@ -2,10 +2,11 @@ package com.softserveinc.dokazovi.service;
 
 import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
 import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
-import com.softserveinc.dokazovi.dto.post.PostDirectionDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Set;
 
 public interface PostService {
 
@@ -13,5 +14,5 @@ public interface PostService {
 
 	Page<ImportantPostDTO> findImportantPosts(Pageable pageable);
 
-	Page<LatestPostDTO> findPostsByMainDirection(PostDirectionDTO direction, Pageable pageable);
+	Page<LatestPostDTO> findAllByMainDirectionAndTags(Integer directionId, Set<Integer> tags, Pageable pageable);
 }
