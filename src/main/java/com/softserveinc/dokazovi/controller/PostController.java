@@ -52,14 +52,15 @@ public class PostController {
 	}
 
 	@ApiPageable
-	@ApiOperation(value = "Find latest posts by main direction and tags(optional)")
+	@ApiOperation(value = "Find latest posts by main direction")
 	@GetMapping(POST_LATEST_BY_DIRECTION)
 	public ResponseEntity<Page<LatestPostDTO>> findLatestByDirection(
 			@PageableDefault(size = 6, sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@RequestParam Integer directionId,
+			@RequestParam(required = false) Integer typeId,
 			@RequestParam(required = false) Set<Integer> tags) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(postService.findAllByMainDirectionAndTags(directionId, tags, pageable));
+				.body(postService.findAllByMainDirection(directionId, typeId, tags, pageable));
 	}
 }

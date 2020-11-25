@@ -33,13 +33,19 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<LatestPostDTO> findAllByMainDirectionAndTags(
-			Integer directionId, Set<Integer> tags, Pageable pageable) {
-		if (tags == null || tags.isEmpty()) {
+	public Page<LatestPostDTO> findAllByMainDirection(
+			Integer directionId, Integer typeId, Set<Integer> tags, Pageable pageable) {
+		if (typeId == null && tags == null) {
 			return postRepository.findAllByMainDirectionId(directionId, pageable)
 					.map(postMapper::toLatestPostDTO);
+		} else if (typeId == null) {
+			return postRepository.findAllByMainDirectionIdAndTagsIdIn(directionId, tags, pageable)
+					.map(postMapper::toLatestPostDTO);
+		} else if (tags == null) {
+			return postRepository.findAllByMainDirectionIdAndTypeId(directionId, typeId, pageable)
+					.map(postMapper::toLatestPostDTO);
 		}
-		return postRepository.findAllByMainDirectionIdAndTagsIdIn(directionId, tags, pageable)
+		return postRepository.findAllByMainDirectionIdAndTypeIdAndTagsIdIn(directionId, typeId, tags, pageable)
 				.map(postMapper::toLatestPostDTO);
 	}
 

@@ -14,5 +14,6 @@ public interface PostService {
 
 	Page<ImportantPostDTO> findImportantPosts(Pageable pageable);
 
-	Page<LatestPostDTO> findAllByMainDirectionAndTags(Integer directionId, Set<Integer> tags, Pageable pageable);
+	Page<LatestPostDTO> findAllByMainDirection(
+			Integer directionId, Integer typeId, Set<Integer> tags, Pageable pageable);
 }
