@@ -38,8 +38,6 @@ class UserControllerTest {
 	@InjectMocks
 	private UserController userController;
 
-	private final String RANDOM_EXPERTS_PAGINATION_URI = USER + USER_RANDOM_EXPERTS + "/?page=0";
-
 	@BeforeEach
 	public void init() {
 		this.mockMvc = MockMvcBuilders
@@ -50,11 +48,11 @@ class UserControllerTest {
 
 	@Test
 	void getRandomExpertPreview_GetWithPagination_isOk() throws Exception {
+		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0";
 		Pageable pageable = PageRequest.of(0, 12);
 		RandomExpertFilteringDTO requestBody = new RandomExpertFilteringDTO();
 
-		mockMvc.perform(post(RANDOM_EXPERTS_PAGINATION_URI).contentType(MediaType.APPLICATION_JSON)
-				.content("{}"))
+		mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON).content("{}"))
 				.andExpect(status().isOk());
 
 		verify(userService).getRandomExpertPreview(eq(pageable), eq(requestBody));
@@ -62,12 +60,12 @@ class UserControllerTest {
 
 	@Test
 	void getRandomExpertPreview_GetWithPaginationByDirections_isOk() throws Exception {
+		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0";
 		Pageable pageable = PageRequest.of(0, 12);
 		RandomExpertFilteringDTO requestBody = new RandomExpertFilteringDTO();
 		requestBody.setDirectionsIds(Sets.newHashSet(Arrays.asList(1, 3, 5)));
 
-		mockMvc.perform(post(RANDOM_EXPERTS_PAGINATION_URI).contentType(MediaType.APPLICATION_JSON)
-				.content("{\"directionsIds\": [1,3,5]}"))
+		mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON).content("{\"directionsIds\": [1,3,5]}"))
 				.andExpect(status().isOk());
 
 		verify(userService).getRandomExpertPreview(eq(pageable), eq(requestBody));

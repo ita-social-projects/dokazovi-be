@@ -25,6 +25,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+				.cors()
+				.and()
 				.sessionManagement()
 				.sessionCreationPolicy(STATELESS)
 				.and()
@@ -39,5 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.httpBasic().disable()
 				.logout().disable();
 	}
+
+
 
 }
