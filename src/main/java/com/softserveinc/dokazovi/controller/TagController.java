@@ -26,7 +26,7 @@ public class TagController {
 	private final TagService tagService;
 
 	@GetMapping(TAG_FIND_BY_VALUE)
-	public ResponseEntity<List<TagDTO>> findAllTags(
+	public ResponseEntity<List<TagDTO>> findByValue(
 			@RequestParam String value,
 			@RequestParam(defaultValue = "5") Integer limit) {
 		return ResponseEntity
@@ -37,7 +37,7 @@ public class TagController {
 	@PostMapping
 	public ResponseEntity<TagDTO> saveTag(@RequestBody TagSaveDTO tagSaveDTO) {
 		return ResponseEntity
-				.status(HttpStatus.OK)
+				.status(HttpStatus.CREATED)
 				.body(tagService.save(tagSaveDTO));
 	}
 }
