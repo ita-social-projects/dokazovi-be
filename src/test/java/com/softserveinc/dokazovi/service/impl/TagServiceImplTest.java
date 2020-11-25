@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -60,7 +61,7 @@ class TagServiceImplTest {
 		when(tagMapper.toTagDTO(any(TagEntity.class))).thenReturn(TagDTO.builder().build());
 		List<TagDTO> a = tagService.findTagsByValue("a", limit);
 		List<TagDTO> b = tagService.findTagsByValue("b", limit);
-		assertEquals(a.size(), 5);
-		assertEquals(b.size(), 4);
+		assertSame(5, a.size());
+		assertSame(4, b.size());
 	}
 }
