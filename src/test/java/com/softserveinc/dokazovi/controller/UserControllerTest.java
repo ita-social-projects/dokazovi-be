@@ -1,8 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.service.UserService;
-import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,17 +12,16 @@ import org.mockito.quality.Strictness;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
+import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,24 +47,20 @@ class UserControllerTest {
 	void getRandomExpertPreview_GetWithPagination_isOk() throws Exception {
 		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0";
 		Pageable pageable = PageRequest.of(0, 12);
-		RandomExpertFilteringDTO requestBody = new RandomExpertFilteringDTO();
 
-		mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON).content("{}"))
-				.andExpect(status().isOk());
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		verify(userService).getRandomExpertPreview(eq(pageable), eq(requestBody));
+		verify(userService).getRandomExpertPreview(eq(pageable), eq(null));
 	}
 
 	@Test
 	void getRandomExpertPreview_GetWithPaginationByDirections_isOk() throws Exception {
-		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0";
+		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0&directions=1,3,5";
 		Pageable pageable = PageRequest.of(0, 12);
-		RandomExpertFilteringDTO requestBody = new RandomExpertFilteringDTO();
-		requestBody.setDirectionsIds(Sets.newHashSet(Arrays.asList(1, 3, 5)));
+		Set<Integer> directionsIds = Set.of(1, 3, 5);
 
-		mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON).content("{\"directionsIds\": [1,3,5]}"))
-				.andExpect(status().isOk());
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		verify(userService).getRandomExpertPreview(eq(pageable), eq(requestBody));
+		verify(userService).getRandomExpertPreview(eq(pageable), eq(directionsIds));
 	}
 }
