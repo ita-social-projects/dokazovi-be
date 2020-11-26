@@ -2,7 +2,6 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.service.UserService;
-import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
+import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
@@ -63,7 +62,7 @@ class UserControllerTest {
 		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0";
 		Pageable pageable = PageRequest.of(0, 12);
 		RandomExpertFilteringDTO requestBody = new RandomExpertFilteringDTO();
-		requestBody.setDirectionsIds(Sets.newHashSet(Arrays.asList(1, 3, 5)));
+		requestBody.setDirectionsIds(Set.of(1, 3, 5));
 
 		mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON).content("{\"directionsIds\": [1,3,5]}"))
 				.andExpect(status().isOk());

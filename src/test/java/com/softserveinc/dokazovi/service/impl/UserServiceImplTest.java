@@ -4,7 +4,6 @@ import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
-import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -15,8 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -51,7 +50,7 @@ class UserServiceImplTest {
 	void getRandomExpertPreviewByDirections() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		RandomExpertFilteringDTO requestBody = new RandomExpertFilteringDTO();
-		requestBody.setDirectionsIds(Sets.newHashSet(Arrays.asList(1, 2)));
+		requestBody.setDirectionsIds(Set.of(1, 2));
 
 		when(userRepository.findRandomActiveUsersByDirections(any(Pageable.class), ArgumentMatchers.anySet()))
 				.thenReturn(userEntityPage);
