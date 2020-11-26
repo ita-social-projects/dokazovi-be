@@ -1,8 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
-import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
-import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
+import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +34,7 @@ public class PostController {
 	@ApiOperation(value = "Find latest published posts")
 	@ApiPageable
 	@GetMapping(POST_LATEST)
-	public ResponseEntity<Page<LatestPostDTO>> findLatestPublished(
+	public ResponseEntity<Page<PostDTO>> findLatestPublished(
 			@PageableDefault(sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
@@ -45,7 +44,7 @@ public class PostController {
 	@ApiPageable
 	@ApiOperation(value = "Find important posts")
 	@GetMapping(POST_IMPORTANT)
-	public ResponseEntity<Page<ImportantPostDTO>> findImportant(
+	public ResponseEntity<Page<PostDTO>> findImportant(
 			@PageableDefault(size = 3, sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
@@ -55,7 +54,7 @@ public class PostController {
 	@ApiPageable
 	@ApiOperation(value = "Find latest posts by main direction")
 	@GetMapping(POST_LATEST_BY_DIRECTION)
-	public ResponseEntity<Page<LatestPostDTO>> findLatestByDirection(
+	public ResponseEntity<Page<PostDTO>> findLatestByDirection(
 			@PageableDefault(size = 6, sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@ApiParam(value = "Direction id")
 			@RequestParam Integer direction,

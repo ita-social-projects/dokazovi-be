@@ -10,7 +10,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CityMapper {
 
-
 	ExpertInstitutionCityDTO toExpertInstitutionCityDTO(CityEntity cityEntity);
 
 	PostUserInstitutionCityDTO toPostUserInstitutionCityDTO(CityEntity cityEntity);
