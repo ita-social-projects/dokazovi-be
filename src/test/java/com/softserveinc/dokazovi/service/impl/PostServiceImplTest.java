@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Set;
 
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.times;
@@ -40,7 +39,7 @@ class PostServiceImplTest {
 		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
 		when(postRepository.findAllByStatus(any(PostStatus.class), any(Pageable.class))).thenReturn(postEntityPage);
 		postService.findAllByStatus(PostStatus.PUBLISHED, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toLatestPostDTO(any(PostEntity.class));
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
 	@Test
@@ -49,7 +48,7 @@ class PostServiceImplTest {
 		when(postRepository.findAllByImportantIsTrueAndStatus(any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findImportantPosts(pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toImportantPostDTO(any(PostEntity.class));
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
 	@Test
@@ -59,7 +58,7 @@ class PostServiceImplTest {
 		when(postRepository.findAllByMainDirectionId(any(Integer.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, null, null, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toLatestPostDTO(any(PostEntity.class));
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
 	@Test
@@ -71,7 +70,7 @@ class PostServiceImplTest {
 				any(Integer.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, typeId, null, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toLatestPostDTO(any(PostEntity.class));
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
 	@Test
@@ -82,7 +81,7 @@ class PostServiceImplTest {
 		when(postRepository.findAllByMainDirectionIdAndTagsIdIn(any(Integer.class), anySet(), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, null, sets, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toLatestPostDTO(any(PostEntity.class));
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
 	@Test
@@ -95,6 +94,6 @@ class PostServiceImplTest {
 				any(Integer.class), anySet(), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, typeId, sets, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toLatestPostDTO(any(PostEntity.class));
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 }

@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.mapper;
 
-import com.softserveinc.dokazovi.dto.post.ImportantPostDTO;
-import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
+import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.user.LatestExpertPostDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
@@ -19,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PostMapperTest {
 
 	private final Timestamp createdAt = Timestamp.valueOf("1991-05-22 10:10:10.0");
+	private final Timestamp modifiedAt = Timestamp.valueOf("1991-05-22 10:10:10.0");
 	private final PostMapper postMapper = Mappers.getMapper(PostMapper.class);
 
 	private PostEntity post;
@@ -60,44 +60,27 @@ class PostMapperTest {
 				.mainDirection(mainDirection)
 				.type(type)
 				.createdAt(createdAt)
+				.modifiedAt(modifiedAt)
 				.build();
 	}
 
 	@Test
-	void toLatestPostDTO_whenMaps_thenCorrect() {
-		LatestPostDTO latestPostDTO = postMapper.toLatestPostDTO(post);
-		assertEquals(latestPostDTO.getId(), post.getId());
-		assertEquals(latestPostDTO.getTitle(), post.getTitle());
-		assertEquals(latestPostDTO.getAuthor().getId(), author.getId());
-		assertEquals(latestPostDTO.getAuthor().getFirstName(), author.getFirstName());
-		assertEquals(latestPostDTO.getAuthor().getLastName(), author.getLastName());
-		assertEquals(latestPostDTO.getAuthor().getAvatar(), author.getAvatar());
-		assertEquals(latestPostDTO.getAuthor().getMainInstitution().getId(), author.getMainInstitution().getId());
-		assertEquals(latestPostDTO.getAuthor().getMainInstitution().getName(), author.getMainInstitution().getName());
-		assertEquals(latestPostDTO.getDirection().getId(), mainDirection.getId());
-		assertEquals(latestPostDTO.getDirection().getName(), mainDirection.getName());
-		assertEquals(latestPostDTO.getType().getId(), type.getId());
-		assertEquals(latestPostDTO.getType().getName(), type.getName());
-		assertEquals(latestPostDTO.getCreatedAt(), createdAt);
-	}
-
-	@Test
-	void toImportantPostDTO_whenMaps_thenCorrect() {
-		ImportantPostDTO importantPostDTO = postMapper.toImportantPostDTO(post);
-		assertEquals(importantPostDTO.getId(), post.getId());
-		assertEquals(importantPostDTO.getTitle(), post.getTitle());
-		assertEquals(importantPostDTO.getAuthor().getId(), author.getId());
-		assertEquals(importantPostDTO.getAuthor().getFirstName(), author.getFirstName());
-		assertEquals(importantPostDTO.getAuthor().getLastName(), author.getLastName());
-		assertEquals(importantPostDTO.getAuthor().getAvatar(), author.getAvatar());
-		assertEquals(importantPostDTO.getAuthor().getMainInstitution().getId(), author.getMainInstitution().getId());
-		assertEquals(importantPostDTO.getAuthor().getMainInstitution().getName(),
-				author.getMainInstitution().getName());
-		assertEquals(importantPostDTO.getDirection().getId(), mainDirection.getId());
-		assertEquals(importantPostDTO.getDirection().getName(), mainDirection.getName());
-		assertEquals(importantPostDTO.getType().getId(), type.getId());
-		assertEquals(importantPostDTO.getType().getName(), type.getName());
-		assertEquals(importantPostDTO.getCreatedAt(), createdAt);
+	void toPostDTO() {
+		PostDTO postDTO = postMapper.toPostDTO(post);
+		assertEquals(postDTO.getId(), post.getId());
+		assertEquals(postDTO.getTitle(), post.getTitle());
+		assertEquals(postDTO.getAuthor().getId(), author.getId());
+		assertEquals(postDTO.getAuthor().getFirstName(), author.getFirstName());
+		assertEquals(postDTO.getAuthor().getLastName(), author.getLastName());
+		assertEquals(postDTO.getAuthor().getAvatar(), author.getAvatar());
+		assertEquals(postDTO.getAuthor().getMainInstitution().getId(), author.getMainInstitution().getId());
+		assertEquals(postDTO.getAuthor().getMainInstitution().getName(), author.getMainInstitution().getName());
+		assertEquals(postDTO.getMainDirection().getId(), mainDirection.getId());
+		assertEquals(postDTO.getMainDirection().getName(), mainDirection.getName());
+		assertEquals(postDTO.getType().getId(), type.getId());
+		assertEquals(postDTO.getType().getName(), type.getName());
+		assertEquals(postDTO.getCreatedAt(), post.getCreatedAt());
+		assertEquals(postDTO.getModifiedAt(), post.getModifiedAt());
 	}
 
 	@Test
