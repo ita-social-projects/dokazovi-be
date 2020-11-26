@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -34,6 +35,20 @@ class UserServiceImplTest {
 	private Pageable pageable;
 	@InjectMocks
 	private UserServiceImpl userService;
+
+	@Test
+	void findExpertById() {
+		Integer id = 1;
+		UserEntity userEntity = UserEntity.builder()
+				.id(id)
+				.build();
+
+		when(userRepository.findById(id))
+				.thenReturn(Optional.of(userEntity));
+		userService.findExpertById(id);
+
+		verify(userMapper).toExpertDTO(userEntity);
+	}
 
 	@Test
 	void getRandomExpertPreview() {

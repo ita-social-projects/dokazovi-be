@@ -1,9 +1,10 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.dto.user.ExpertDTO;
 import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
+import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.UserMapper;
-import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,11 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
+
+	@Override
+	public ExpertDTO findExpertById(Integer userId) {
+		return userMapper.toExpertDTO(userRepository.findById(userId).orElse(null));
+	}
 
 	@Override
 	public UserEntity findByEmail(String email) {

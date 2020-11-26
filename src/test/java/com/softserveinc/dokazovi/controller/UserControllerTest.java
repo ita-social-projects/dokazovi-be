@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
+import com.softserveinc.dokazovi.dto.user.ExpertDTO;
 import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.service.UserService;
 import org.assertj.core.util.Sets;
@@ -22,8 +23,11 @@ import java.util.Arrays;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,5 +73,30 @@ class UserControllerTest {
 				.andExpect(status().isOk());
 
 		verify(userService).getRandomExpertPreview(eq(pageable), eq(requestBody));
+	}
+
+	@Test
+	void getExpertById_WhenExists_isOk() throws Exception {
+		Integer existingUserId = 1;
+		String uri = USER + "/" + existingUserId;
+		ExpertDTO expertDTO = ExpertDTO.builder()
+				.id(existingUserId)
+				.build();
+
+		when(userService.findExpertById(any(Integer.class))).thenReturn(expertDTO);
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		verify(userService).findExpertById(eq(existingUserId));
+	}
+
+	@Test
+	void getExpertById_WhenNotExists_NotFound() throws Exception {
+		Integer notExistingUserId = 1;
+		String uri = USER + "/" + notExistingUserId;
+
+		when(userService.findExpertById(any(Integer.class))).thenReturn(null);
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+
+		verify(userService).findExpertById(eq(notExistingUserId));
 	}
 }

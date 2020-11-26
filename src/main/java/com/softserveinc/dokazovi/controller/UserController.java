@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.user.ExpertDTO;
 import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
 import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.service.UserService;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +38,16 @@ public class UserController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(userService.getRandomExpertPreview(pageable, requestBody));
+	}
+
+	@ApiOperation(value = "Get expert by Id, as a path variable.")
+	@ApiPageable
+	@GetMapping("/{userId}")
+	public ResponseEntity<ExpertDTO> getExpertById(@PathVariable("userId") Integer userId) {
+		ExpertDTO expertDTO = userService.findExpertById(userId);
+		return ResponseEntity
+				.status((expertDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+				.body(expertDTO);
 	}
 
 }
