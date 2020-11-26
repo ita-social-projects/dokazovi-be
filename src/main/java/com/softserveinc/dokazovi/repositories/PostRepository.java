@@ -10,9 +10,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
-
-	Page<PostEntity> findAllByImportantIsTrueAndStatus(PostStatus status,Pageable pageable);
+	Page<PostEntity> findAllByImportantIsTrueAndStatus(PostStatus status, Pageable pageable);
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
+	Page<PostEntity> findAllByMainDirectionId(Integer directionId, Pageable pageable);
+
+	Page<PostEntity> findAllByMainDirectionIdAndTypeId(Integer directionId, Integer typeId, Pageable pageable);
+
+	Page<PostEntity> findAllByMainDirectionIdAndTagsIdIn(
+			Integer directionId, Iterable<Integer> tagId, Pageable pageable);
+
+	Page<PostEntity> findAllByMainDirectionIdAndTypeIdAndTagsIdIn(
+			Integer directionId, Integer typeId, Iterable<Integer> tagId, Pageable pageable);
 }
