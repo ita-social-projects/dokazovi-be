@@ -6,6 +6,7 @@ import com.softserveinc.dokazovi.dto.post.LatestPostDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,11 +57,14 @@ public class PostController {
 	@GetMapping(POST_LATEST_BY_DIRECTION)
 	public ResponseEntity<Page<LatestPostDTO>> findLatestByDirection(
 			@PageableDefault(size = 6, sort = {"createdAt"}, direction = Sort.Direction.DESC) Pageable pageable,
-			@RequestParam Integer directionId,
-			@RequestParam(required = false) Integer typeId,
+			@ApiParam(value = "Direction id")
+			@RequestParam Integer direction,
+			@ApiParam(value = "Post type id")
+			@RequestParam(required = false) Integer type,
+			@ApiParam(value = "You can use multiple comma-separated tag IDs, e.g. ?tags=1,2,3,4", type = "string")
 			@RequestParam(required = false) Set<Integer> tags) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(postService.findAllByMainDirection(directionId, typeId, tags, pageable));
+				.body(postService.findAllByMainDirection(direction, type, tags, pageable));
 	}
 }

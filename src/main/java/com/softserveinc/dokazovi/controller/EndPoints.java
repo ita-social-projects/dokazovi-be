@@ -9,6 +9,6 @@ public final class EndPoints {
 	public static final String USER = "/user";
 	public static final String USER_RANDOM_EXPERTS = "/random-experts";
 	public static final String TAG = "/tag";
-	public static final String TAG_FIND_BY_VALUE = "/findByValue";
-	public static final String POST_LATEST_BY_DIRECTION =  "/latest-by-direction";
+	public static final String TAG_FIND_BY_VALUE = "/find-by-value";
+	public static final String POST_LATEST_BY_DIRECTION = "/latest-by-direction";
 }
