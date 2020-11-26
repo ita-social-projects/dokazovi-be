@@ -67,7 +67,8 @@ class PostServiceImplTest {
 		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
 		Integer directionId = 1;
 		Integer typeId = 1;
-		when(postRepository.findAllByMainDirectionIdAndTypeId(any(Integer.class), any(Integer.class), any(Pageable.class)))
+		when(postRepository.findAllByMainDirectionIdAndTypeId(any(Integer.class),
+				any(Integer.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, typeId, null, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toLatestPostDTO(any(PostEntity.class));
@@ -90,7 +91,8 @@ class PostServiceImplTest {
 		Integer directionId = 1;
 		Integer typeId = 1;
 		Set<Integer> sets = Set.of(1, 2, 3, 4);
-		when(postRepository.findAllByMainDirectionIdAndTypeIdAndTagsIdIn(any(Integer.class), any(Integer.class), anySet(), any(Pageable.class)))
+		when(postRepository.findAllByMainDirectionIdAndTypeIdAndTagsIdIn(any(Integer.class),
+				any(Integer.class), anySet(), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, typeId, sets, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toLatestPostDTO(any(PostEntity.class));
