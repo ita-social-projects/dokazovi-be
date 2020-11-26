@@ -35,10 +35,10 @@ public class UserController {
 	public ResponseEntity<Page<ExpertPreviewDTO>> getRandomExpertPreview(
 			@PageableDefault(size = 12) Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
-			@RequestParam(required = false, name = "directions") Set<Integer> directionsIds) {
+			@RequestParam(required = false) Set<Integer> directions) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(userService.getRandomExpertPreview(pageable, directionsIds));
+				.body(userService.getRandomExpertPreview(pageable, directions));
 	}
 
 }
