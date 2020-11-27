@@ -1,7 +1,5 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserveinc.dokazovi.dto.post.PostLatestByDirectionFilterDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
@@ -27,7 +26,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRE
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -52,7 +50,7 @@ class PostControllerTest {
 
 	@Test
 	void findLatestPublished_GetWithPagination_isOk() throws Exception {
-		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(get(POST + POST_LATEST + "/?page=0"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByStatus(eq(PostStatus.PUBLISHED), eq(pageable));
@@ -60,7 +58,7 @@ class PostControllerTest {
 
 	@Test
 	void findImportant_GetWithPagination_isOk() throws Exception {
-		Pageable pageable = PageRequest.of(0, 3, Sort.by("createdAt").descending());
+		Pageable pageable = PageRequest.of(0, 3, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(get(POST + POST_IMPORTANT + "/?page=0&size=3"))
 				.andExpect(status().isOk());
 		verify(postService).findImportantPosts(eq(pageable));
@@ -68,19 +66,13 @@ class PostControllerTest {
 
 	@Test
 	void findLatestByDirection() throws Exception {
-		String content = "{\n" +
-				"  \"direction\": 1," +
-				"  \"type\": 2," +
-				"  \"tags\": [3,4,5]" +
-				"}";
-		ObjectMapper mapper = new ObjectMapper();
-		PostLatestByDirectionFilterDTO postParamsDTO = mapper.readValue(content, PostLatestByDirectionFilterDTO.class);
-		Pageable pageable = PageRequest.of(0, 6, Sort.by("createdAt").descending());
+		Integer directionId = 1;
+		Integer typeId = 2;
+		Set<Integer> tags = Set.of(3, 4, 5, 6);
+		Pageable pageable = PageRequest.of(0, 6, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(
-				post(POST + POST_LATEST_BY_DIRECTION + "/?page=0&size=6")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(content))
+				get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tags=3,4,5,6"))
 				.andExpect(status().isOk());
-		verify(postService).findAllByMainDirection(postParamsDTO, PostStatus.PUBLISHED, pageable);
+		verify(postService).findAllByMainDirection(directionId, typeId, tags, PostStatus.PUBLISHED, pageable);
 	}
 }

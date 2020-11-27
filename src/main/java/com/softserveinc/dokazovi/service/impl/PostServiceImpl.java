@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
-import com.softserveinc.dokazovi.dto.post.PostLatestByDirectionFilterDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -34,23 +33,19 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Page<PostDTO> findAllByMainDirection(
-			PostLatestByDirectionFilterDTO postParamsDTO, PostStatus postStatus, Pageable pageable) {
-		Integer direction = postParamsDTO.getDirection();
-		Integer typeId = postParamsDTO.getType();
-		Set<Integer> tags = postParamsDTO.getTags();
+			Integer directionId, Integer typeId, Set<Integer> tags, PostStatus postStatus, Pageable pageable) {
 		if (typeId == null && tags == null) {
-			return postRepository.findAllByMainDirectionIdAndStatus(direction, postStatus, pageable)
+			return postRepository.findAllByMainDirectionIdAndStatus(directionId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		} else if (typeId == null) {
-			return postRepository.findAllByMainDirectionIdAndTagsIdInAndStatus(direction, tags, postStatus, pageable)
+			return postRepository.findAllByMainDirectionIdAndTagsIdInAndStatus(directionId, tags, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		} else if (tags == null) {
-			return postRepository.findAllByMainDirectionIdAndTypeIdAndStatus(direction, typeId, postStatus, pageable)
+			return postRepository.findAllByMainDirectionIdAndTypeIdAndStatus(directionId, typeId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		}
 		return postRepository.findAllByMainDirectionIdAndTypeIdAndTagsIdInAndStatus(
-				direction, typeId, tags, postStatus, pageable)
+				directionId, typeId, tags, postStatus, pageable)
 				.map(postMapper::toPostDTO);
 	}
-
 }
