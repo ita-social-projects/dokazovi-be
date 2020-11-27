@@ -46,7 +46,7 @@ class UserServiceImplTest {
 				.thenReturn(Optional.of(userEntity));
 		userService.findExpertById(id);
 
-		verify(userMapper).toExpertDTO(userEntity);
+		verify(userMapper).toUserDTO(userEntity);
 	}
 
 	@Test
@@ -58,7 +58,7 @@ class UserServiceImplTest {
 				.thenReturn(userEntityPage);
 		userService.getRandomExpertPreview(pageable, requestBody);
 
-		verify(userMapper, times(userEntityPage.getNumberOfElements())).toExpertPreviewDTO(any(UserEntity.class));
+		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
 
 	@Test
@@ -71,6 +71,6 @@ class UserServiceImplTest {
 				.thenReturn(userEntityPage);
 		userService.getRandomExpertPreview(pageable, requestBody);
 
-		verify(userMapper, times(userEntityPage.getNumberOfElements())).toExpertPreviewDTO(any(UserEntity.class));
+		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
 }

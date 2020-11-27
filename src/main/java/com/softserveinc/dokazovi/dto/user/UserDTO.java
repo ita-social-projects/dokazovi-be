@@ -7,27 +7,32 @@ import java.util.Set;
 
 @Data
 @Builder
-public class ExpertDTO {
+public class UserDTO {
 
 	private Integer id;
-
-	private String avatar;
 
 	private String firstName;
 
 	private String lastName;
 
+	private String email;
+
 	private String qualification;
+
+	private String phone;
+
+	private String avatar;
+
+	private String bio;
 
 	private UserDirectionDTO mainDirection;
 
 	private Set<UserDirectionDTO> directions;
 
-	private ExpertInstitutionDTO mainInstitution;
+	private UserInstitutionDTO mainInstitution;
 
-	private String phone;
+	private Set<UserInstitutionDTO> institutions;
 
-	private String email;
+	private LatestUserPostDTO lastAddedPost;
 
-	private String bio;
 }

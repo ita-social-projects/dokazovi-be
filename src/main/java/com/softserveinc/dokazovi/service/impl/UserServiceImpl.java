@@ -1,8 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
-import com.softserveinc.dokazovi.dto.user.ExpertDTO;
-import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
 import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
+import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -22,8 +21,8 @@ public class UserServiceImpl implements UserService {
 	private final UserMapper userMapper;
 
 	@Override
-	public ExpertDTO findExpertById(Integer userId) {
-		return userMapper.toExpertDTO(userRepository.findById(userId).orElse(null));
+	public UserDTO findExpertById(Integer userId) {
+		return userMapper.toUserDTO(userRepository.findById(userId).orElse(null));
 	}
 
 	@Override
@@ -36,14 +35,14 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findAll(pageable);
 	}
 
-	public Page<ExpertPreviewDTO> getRandomExpertPreview(Pageable pageable, RandomExpertFilteringDTO requestBody) {
+	public Page<UserDTO> getRandomExpertPreview(Pageable pageable, RandomExpertFilteringDTO requestBody) {
 		if (CollectionUtils.isEmpty(requestBody.getDirectionsIds())) {
 			return userRepository.findRandomActiveUsers(pageable)
-					.map(userMapper::toExpertPreviewDTO);
+					.map(userMapper::toUserDTO);
 		}
 
 		return userRepository.findRandomActiveUsersByDirections(pageable, requestBody.getDirectionsIds())
-				.map(userMapper::toExpertPreviewDTO);
+				.map(userMapper::toUserDTO);
 	}
 
 }

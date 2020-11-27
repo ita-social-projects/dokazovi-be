@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.mapper;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
-import com.softserveinc.dokazovi.dto.user.LatestExpertPostDTO;
+import com.softserveinc.dokazovi.dto.user.LatestUserPostDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
@@ -85,9 +85,9 @@ class PostMapperTest {
 
 	@Test
 	void toLatestExpertPostDTO_whenMaps_thenCorrect() {
-		LatestExpertPostDTO latestExpertPostDTO = postMapper.toLatestExpertPostDTO(post);
+		LatestUserPostDTO latestUserPostDTO = postMapper.toLatestExpertPostDTO(post);
 
-		assertEquals(latestExpertPostDTO.getId(), post.getId());
-		assertEquals(latestExpertPostDTO.getTitle(), post.getTitle());
+		assertEquals(latestUserPostDTO.getId(), post.getId());
+		assertEquals(latestUserPostDTO.getTitle(), post.getTitle());
 	}
 }

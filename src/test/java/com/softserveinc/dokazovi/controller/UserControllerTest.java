@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.dto.user.ExpertDTO;
+import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,11 +78,11 @@ class UserControllerTest {
 	void getExpertById_WhenExists_isOk() throws Exception {
 		Integer existingUserId = 1;
 		String uri = USER + "/" + existingUserId;
-		ExpertDTO expertDTO = ExpertDTO.builder()
+		UserDTO userDTO = UserDTO.builder()
 				.id(existingUserId)
 				.build();
 
-		when(userService.findExpertById(any(Integer.class))).thenReturn(expertDTO);
+		when(userService.findExpertById(any(Integer.class))).thenReturn(userDTO);
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
 		verify(userService).findExpertById(eq(existingUserId));

@@ -1,8 +1,7 @@
 package com.softserveinc.dokazovi.mapper;
 
 import com.softserveinc.dokazovi.dto.post.PostUserDTO;
-import com.softserveinc.dokazovi.dto.user.ExpertDTO;
-import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
+import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,7 +16,5 @@ public interface UserMapper {
 
 	@Mapping(target = "lastAddedPost",
 			expression = "java(POST_MAPPER.toLatestExpertPostDTO(userEntity.getLatestExpertPost()))")
-	ExpertPreviewDTO toExpertPreviewDTO(UserEntity userEntity);
-
-	ExpertDTO toExpertDTO(UserEntity userEntity);
+	UserDTO toUserDTO(UserEntity userEntity);
 }
