@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findAll(pageable);
 	}
 
+	@Override
 	public Page<UserDTO> getRandomExpertPreview(Pageable pageable, RandomExpertFilteringDTO requestBody) {
 		if (CollectionUtils.isEmpty(requestBody.getDirectionsIds())) {
 			return userRepository.findRandomActiveUsers(pageable)
