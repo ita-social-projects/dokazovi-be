@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.service.impl;
 
-import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.UserMapper;
@@ -12,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Set;
+
 
 @Service
 @RequiredArgsConstructor
@@ -19,11 +20,6 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
-
-	@Override
-	public UserDTO findExpertById(Integer userId) {
-		return userMapper.toUserDTO(userRepository.findById(userId).orElse(null));
-	}
 
 	@Override
 	public UserEntity findByEmail(String email) {
@@ -36,13 +32,23 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<UserDTO> getRandomExpertPreview(Pageable pageable, RandomExpertFilteringDTO requestBody) {
-		if (CollectionUtils.isEmpty(requestBody.getDirectionsIds())) {
+	public UserDTO findExpertById(Integer userId) {
+		return userMapper.toUserDTO(userRepository.findById(userId).orElse(null));
+	}
+
+	@Override
+	public Page<UserDTO> findAllExperts(Pageable pageable) {
+		return null;
+	}
+
+	@Override
+	public Page<UserDTO> getRandomExpertPreview(Pageable pageable, Set<Integer> directionsIds) {
+		if (CollectionUtils.isEmpty(directionsIds)) {
 			return userRepository.findRandomActiveUsers(pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		return userRepository.findRandomActiveUsersByDirections(pageable, requestBody.getDirectionsIds())
+		return userRepository.findRandomActiveUsersByDirections(pageable, directionsIds)
 				.map(userMapper::toUserDTO);
 	}
 

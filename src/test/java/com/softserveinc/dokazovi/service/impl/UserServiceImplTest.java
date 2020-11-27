@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.service.impl;
 
-import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -52,11 +51,10 @@ class UserServiceImplTest {
 	@Test
 	void getRandomExpertPreview() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
-		RandomExpertFilteringDTO requestBody = new RandomExpertFilteringDTO();
 
 		when(userRepository.findRandomActiveUsers(any(Pageable.class)))
 				.thenReturn(userEntityPage);
-		userService.getRandomExpertPreview(pageable, requestBody);
+		userService.getRandomExpertPreview(pageable, null);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
@@ -64,12 +62,11 @@ class UserServiceImplTest {
 	@Test
 	void getRandomExpertPreviewByDirections() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
-		RandomExpertFilteringDTO requestBody = new RandomExpertFilteringDTO();
-		requestBody.setDirectionsIds(Set.of(1, 2));
+		Set<Integer> directionIds = Set.of(1, 2);
 
 		when(userRepository.findRandomActiveUsersByDirections(any(Pageable.class), ArgumentMatchers.anySet()))
 				.thenReturn(userEntityPage);
-		userService.getRandomExpertPreview(pageable, requestBody);
+		userService.getRandomExpertPreview(pageable, directionIds);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
