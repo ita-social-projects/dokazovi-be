@@ -50,7 +50,7 @@ class PostControllerTest {
 
 	@Test
 	void findLatestPublished_GetWithPagination_isOk() throws Exception {
-		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(get(POST + POST_LATEST + "/?page=0"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByStatus(eq(PostStatus.PUBLISHED), eq(pageable));
@@ -58,7 +58,7 @@ class PostControllerTest {
 
 	@Test
 	void findImportant_GetWithPagination_isOk() throws Exception {
-		Pageable pageable = PageRequest.of(0, 3, Sort.by("createdAt").descending());
+		Pageable pageable = PageRequest.of(0, 3, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(get(POST + POST_IMPORTANT + "/?page=0&size=3"))
 				.andExpect(status().isOk());
 		verify(postService).findImportantPosts(eq(pageable));
@@ -69,7 +69,7 @@ class PostControllerTest {
 		Integer directionId = 1;
 		Integer typeId = 2;
 		Set<Integer> tags = Set.of(3, 4, 5, 6);
-		Pageable pageable = PageRequest.of(0, 6, Sort.by("createdAt").descending());
+		Pageable pageable = PageRequest.of(0, 6, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(
 				get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tags=3,4,5,6"))
 				.andExpect(status().isOk());
