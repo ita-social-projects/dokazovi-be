@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.ExpertDTO;
 import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
+import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -11,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.Set;
 
 
 @Service
@@ -37,14 +36,13 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findAll(pageable);
 	}
 
-	@Override
-	public Page<ExpertPreviewDTO> getRandomExpertPreview(Pageable pageable, Set<Integer> directionsIds) {
-		if (CollectionUtils.isEmpty(directionsIds)) {
+	public Page<ExpertPreviewDTO> getRandomExpertPreview(Pageable pageable, RandomExpertFilteringDTO requestBody) {
+		if (CollectionUtils.isEmpty(requestBody.getDirectionsIds())) {
 			return userRepository.findRandomActiveUsers(pageable)
 					.map(userMapper::toExpertPreviewDTO);
 		}
 
-		return userRepository.findRandomActiveUsersByDirections(pageable, directionsIds)
+		return userRepository.findRandomActiveUsersByDirections(pageable, requestBody.getDirectionsIds())
 				.map(userMapper::toExpertPreviewDTO);
 	}
 

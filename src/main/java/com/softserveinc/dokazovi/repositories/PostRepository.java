@@ -14,13 +14,14 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
-	Page<PostEntity> findAllByMainDirectionId(Integer directionId, Pageable pageable);
+	Page<PostEntity> findAllByMainDirectionIdAndStatus(Integer directionId, PostStatus postStatus, Pageable pageable);
 
-	Page<PostEntity> findAllByMainDirectionIdAndTypeId(Integer directionId, Integer typeId, Pageable pageable);
+	Page<PostEntity> findAllByMainDirectionIdAndTypeIdAndStatus(
+			Integer directionId, Integer typeId, PostStatus postStatus, Pageable pageable);
 
-	Page<PostEntity> findAllByMainDirectionIdAndTagsIdIn(
-			Integer directionId, Iterable<Integer> tagId, Pageable pageable);
+	Page<PostEntity> findAllByMainDirectionIdAndTagsIdInAndStatus(
+			Integer directionId, Iterable<Integer> tagId, PostStatus postStatus, Pageable pageable);
 
-	Page<PostEntity> findAllByMainDirectionIdAndTypeIdAndTagsIdIn(
-			Integer directionId, Integer typeId, Iterable<Integer> tagId, Pageable pageable);
+	Page<PostEntity> findAllByMainDirectionIdAndTypeIdAndTagsIdInAndStatus(
+			Integer directionId, Integer typeId, Iterable<Integer> tagId, PostStatus postStatus, Pageable pageable);
 }

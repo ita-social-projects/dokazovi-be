@@ -3,19 +3,18 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.ExpertDTO;
 import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
+import com.softserveinc.dokazovi.dto.user.RandomExpertFilteringDTO;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
@@ -35,12 +34,10 @@ public class UserController {
 	@ApiPageable
 	@GetMapping(USER_RANDOM_EXPERTS)
 	public ResponseEntity<Page<ExpertPreviewDTO>> getRandomExpertPreview(
-			@PageableDefault(size = 12) Pageable pageable,
-			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
-			@RequestParam(required = false) Set<Integer> directions) {
+			@PageableDefault(size = 12) Pageable pageable, @RequestBody RandomExpertFilteringDTO requestBody) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(userService.getRandomExpertPreview(pageable, directions));
+				.body(userService.getRandomExpertPreview(pageable, requestBody));
 	}
 
 	@ApiOperation(value = "Get expert by Id, as a path variable.")
