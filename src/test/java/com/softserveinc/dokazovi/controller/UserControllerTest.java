@@ -53,7 +53,7 @@ class UserControllerTest {
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		verify(userService).getRandomExpertPreview(eq(pageable), eq(null));
+		verify(userService).findRandomExpertPreview(eq(null), eq(pageable));
 	}
 
 	@Test
@@ -64,7 +64,7 @@ class UserControllerTest {
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		verify(userService).getRandomExpertPreview(eq(pageable), eq(directionsIds));
+		verify(userService).findRandomExpertPreview(eq(directionsIds), eq(pageable));
 	}
 
 	@Test

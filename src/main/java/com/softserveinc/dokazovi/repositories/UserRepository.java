@@ -16,6 +16,15 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
 	Page<UserEntity> findAllByStatus(UserStatus userStatus, Pageable pageable);
 
+	Page<UserEntity> findAllByMainDirectionIdInAndStatus(Iterable<Integer> directionsIds, UserStatus userStatus,
+			Pageable pageable);
+
+	Page<UserEntity> findAllByMainInstitutionCityRegionIdInAndStatus(Iterable<Integer> regionsIds,
+			UserStatus userStatus, Pageable pageable);
+
+	Page<UserEntity> findAllByMainDirectionIdInAndMainInstitutionCityRegionIdInAndStatus(
+			Iterable<Integer> directionsIds, Iterable<Integer> regionsIds, UserStatus userStatus, Pageable pageable);
+
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM users u WHERE u.status='ACTIVE' ORDER BY random()")
 	Page<UserEntity> findRandomActiveUsers(Pageable pageable);
@@ -25,6 +34,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ "WHERE u.status='ACTIVE' "
 					+ "AND u.direction_id IN (:directionsIds)"
 					+ " ORDER BY random()")
-	Page<UserEntity> findRandomActiveUsersByDirections(Pageable pageable,
-			@Param("directionsIds") Iterable<Integer> directionsIds);
+	Page<UserEntity> findRandomActiveUsersByDirections(@Param("directionsIds") Iterable<Integer> directionsIds,
+			Pageable pageable);
 }

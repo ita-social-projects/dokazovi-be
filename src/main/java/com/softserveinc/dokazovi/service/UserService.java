@@ -16,8 +16,9 @@ public interface UserService {
 
 	UserDTO findExpertById(Integer userId);
 
-	Page<UserDTO> findAllExperts(Pageable pageable);
+	Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds, Set<Integer> regionsIds,
+			Pageable pageable);
 
-	Page<UserDTO> getRandomExpertPreview(Pageable pageable, Set<Integer> directionsIds);
+	Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
 }

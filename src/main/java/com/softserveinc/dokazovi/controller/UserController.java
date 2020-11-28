@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 
 @RestController
@@ -29,8 +30,7 @@ public class UserController {
 
 	private final UserService userService;
 
-	@ApiOperation(value = "Get preview of random experts,"
-			+ " accepts sorting parameters in request body. Default 12 max per page.")
+	@ApiOperation(value = "Get preview of random experts, filtered by directions. Default 12 max per page.")
 	@ApiPageable
 	@GetMapping(USER_RANDOM_EXPERTS)
 	public ResponseEntity<Page<UserDTO>> getRandomExpertPreview(
@@ -39,7 +39,22 @@ public class UserController {
 			@RequestParam(required = false) Set<Integer> directions) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(userService.getRandomExpertPreview(pageable, directions));
+				.body(userService.findRandomExpertPreview(directions, pageable));
+	}
+
+	@ApiOperation(value = "Get experts ordered by firstName then lastName, filtered by directions and regions."
+			+ " Default 6 per page.")
+	@ApiPageable
+	@GetMapping(USER_ALL_EXPERTS)
+	public ResponseEntity<Page<UserDTO>> getAllExpertsByDirectionsAndByRegions(
+			@PageableDefault(size = 6, sort = {"firstName", "lastName"}) Pageable pageable,
+			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> directions,
+			@ApiParam(value = "Multiple comma-separated region IDs, e.g. ?regions=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> regions) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(userService.findAllExpertsByDirectionsAndRegions(directions, regions, pageable));
 	}
 
 	@ApiOperation(value = "Get expert by Id, as a path variable.")

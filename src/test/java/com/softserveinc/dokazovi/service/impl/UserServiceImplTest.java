@@ -54,7 +54,7 @@ class UserServiceImplTest {
 
 		when(userRepository.findRandomActiveUsers(any(Pageable.class)))
 				.thenReturn(userEntityPage);
-		userService.getRandomExpertPreview(pageable, null);
+		userService.findRandomExpertPreview(null, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
@@ -64,9 +64,9 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> directionIds = Set.of(1, 2);
 
-		when(userRepository.findRandomActiveUsersByDirections(any(Pageable.class), ArgumentMatchers.anySet()))
+		when(userRepository.findRandomActiveUsersByDirections(ArgumentMatchers.anySet(), any(Pageable.class)))
 				.thenReturn(userEntityPage);
-		userService.getRandomExpertPreview(pageable, directionIds);
+		userService.findRandomExpertPreview(directionIds, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
