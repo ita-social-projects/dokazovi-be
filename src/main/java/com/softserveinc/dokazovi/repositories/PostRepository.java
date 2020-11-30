@@ -24,4 +24,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	Page<PostEntity> findAllByMainDirectionIdAndTypeIdAndTagsIdInAndStatus(
 			Integer directionId, Integer typeId, Iterable<Integer> tagId, PostStatus postStatus, Pageable pageable);
+
+	Page<PostEntity> findAllByAuthorIdAndStatus(Integer authorId, PostStatus postStatus, Pageable pageable);
+
+	Page<PostEntity> findAllByAuthorIdAndTypeIdAndStatus(
+			Integer authorId, Integer typeId, PostStatus postStatus, Pageable pageable);
 }

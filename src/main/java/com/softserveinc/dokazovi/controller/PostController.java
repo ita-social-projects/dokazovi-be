@@ -23,6 +23,7 @@ import java.util.Set;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 
 @RestController
 @RequestMapping(EndPoints.POST)
@@ -65,5 +66,19 @@ public class PostController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findAllByMainDirection(direction, type, tags, PostStatus.PUBLISHED, pageable));
+	}
+
+	@ApiPageable
+	@ApiOperation(value = "Find latest posts by some expert")
+	@GetMapping(POST_LATEST_BY_EXPERT)
+	public ResponseEntity<Page<PostDTO>> findLatestByExpert(
+			@PageableDefault(size = 9, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
+			@ApiParam(value = "Expert's id")
+			@RequestParam Integer expert,
+			@ApiParam(value = "Post type id")
+			@RequestParam(required = false) Integer type) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService.findAllByExpert(expert, type, PostStatus.PUBLISHED, pageable));
 	}
 }
