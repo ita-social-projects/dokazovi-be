@@ -100,4 +100,24 @@ class PostServiceImplTest {
 		postService.findAllByMainDirection(directionId, typeId,tags, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
+
+	@Test
+	void findAllByExpert() {
+		Integer expertId = 3;
+		when(postRepository.findAllByAuthorIdAndStatus(
+				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllByExpert(expertId, null, PostStatus.PUBLISHED, pageable);
+	}
+
+	@Test
+	void findAllByExpertAndType() {
+		Integer expertId = 5;
+		Integer typeId = 1;
+		when(postRepository.findAllByAuthorIdAndTypeIdAndStatus(any(Integer.class),
+				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
 }

@@ -20,9 +20,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -74,5 +75,16 @@ class PostControllerTest {
 				get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tags=3,4,5,6"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByMainDirection(directionId, typeId, tags, PostStatus.PUBLISHED, pageable);
+	}
+
+	@Test
+	void findLatestByExpert() throws Exception {
+		Integer expertId = 2;
+		Integer typeId = 1;
+		Pageable pageable = PageRequest.of(0, 9, Sort.by("createdAt", "id").descending());
+		mockMvc.perform(
+				get(POST + POST_LATEST_BY_EXPERT + "?expert=2&page=0&size=9&type=1"))
+				.andExpect(status().isOk());
+		verify(postService).findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
 	}
 }
