@@ -15,4 +15,6 @@ public interface PostService {
 
 	Page<PostDTO> findAllByMainDirection(
 			Integer directionId, Integer typeId, Set<Integer> tags, PostStatus postStatus, Pageable pageable);
+
+	Page<PostDTO> findAllByExpert(Integer expertId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 }

@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Set;
+
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
@@ -24,4 +26,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	Page<PostEntity> findAllByMainDirectionIdAndTypeIdAndTagsIdInAndStatus(
 			Integer directionId, Integer typeId, Iterable<Integer> tagId, PostStatus postStatus, Pageable pageable);
+
+	Page<PostEntity> findAllByAuthorIdAndStatus(Integer authorId, PostStatus postStatus, Pageable pageable);
+
+	Page<PostEntity> findAllByAuthorIdAndTypeIdInAndStatus(
+			Integer authorId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 }
