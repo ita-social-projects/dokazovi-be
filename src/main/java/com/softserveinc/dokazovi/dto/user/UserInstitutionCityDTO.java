@@ -5,10 +5,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LatestExpertPostDTO {
+public class UserInstitutionCityDTO {
 
 	private Integer id;
 
-	private String title;
-
+	private String name;
 }

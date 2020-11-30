@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.mapper;
 
 import com.softserveinc.dokazovi.dto.post.PostUserDTO;
-import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
+import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
@@ -24,34 +24,57 @@ class UserMapperTest {
 	private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
 	private UserEntity userEntity;
 	private InstitutionEntity mainInstitution;
+	private InstitutionEntity institution1;
 	private DirectionEntity mainUserDirection;
-	private CityEntity cityEntity;
+	private DirectionEntity direction1;
+	private CityEntity cityEntity1;
+	private CityEntity cityEntity2;
 	private PostEntity postEntity;
 	private PostEntity latestPostEntity;
 
 	@BeforeEach
 	void init() {
-		cityEntity = CityEntity.builder()
+		cityEntity1 = CityEntity.builder()
 				.id(1)
-				.name("City name")
+				.name("City name 1")
+				.build();
+
+		cityEntity2 = CityEntity.builder()
+				.id(2)
+				.name("City name 1")
 				.build();
 
 		mainInstitution = InstitutionEntity.builder()
 				.id(1)
-				.name("Some institution name")
-				.city(cityEntity)
+				.name("Main institution")
+				.city(cityEntity1)
+				.build();
+
+		institution1 = InstitutionEntity.builder()
+				.id(2)
+				.name("Institution 1")
+				.city(cityEntity2)
 				.build();
 
 		mainUserDirection = DirectionEntity.builder()
 				.id(1)
-				.name("Direction")
+				.name("Main direction")
+				.build();
+
+		direction1 = DirectionEntity.builder()
+				.id(2)
+				.name("Direction 1")
 				.build();
 
 		userEntity = UserEntity.builder()
 				.id(1)
 				.firstName("Some firstname")
 				.lastName("Some lastname")
+				.email("mail@mail.com")
+				.qualification("qualification 1")
+				.phone("380990099009")
 				.avatar("Some avatar url")
+				.bio("bio 1")
 				.mainInstitution(mainInstitution)
 				.mainDirection(mainUserDirection)
 				.build();
@@ -73,6 +96,8 @@ class UserMapperTest {
 				.build();
 
 		userEntity.setPosts(Set.of(postEntity, latestPostEntity));
+		userEntity.setDirections(Set.of(mainUserDirection, direction1));
+		userEntity.setInstitutions(Set.of(mainInstitution, institution1));
 	}
 
 
@@ -88,29 +113,32 @@ class UserMapperTest {
 	}
 
 	@Test
-	void toExpertPreviewDTO_whenMaps_thenCorrect() {
-		ExpertPreviewDTO expertPreviewDTO = mapper.toExpertPreviewDTO(userEntity);
+	void toUserDTO() {
+		UserDTO userDTO = mapper.toUserDTO(userEntity);
 
-		assertEquals(expertPreviewDTO.getId(), userEntity.getId());
-		assertEquals(expertPreviewDTO.getFirstName(), userEntity.getFirstName());
-		assertEquals(expertPreviewDTO.getLastName(), userEntity.getLastName());
-		assertEquals(expertPreviewDTO.getAvatar(), userEntity.getAvatar());
-		assertEquals(expertPreviewDTO.getQualification(), userEntity.getQualification());
+		assertEquals(userDTO.getId(), userEntity.getId());
+		assertEquals(userDTO.getFirstName(), userEntity.getFirstName());
+		assertEquals(userDTO.getLastName(), userEntity.getLastName());
+		assertEquals(userDTO.getEmail(), userEntity.getEmail());
+		assertEquals(userDTO.getQualification(), userEntity.getQualification());
+		assertEquals(userDTO.getPhone(), userEntity.getPhone());
+		assertEquals(userDTO.getAvatar(), userEntity.getAvatar());
+		assertEquals(userDTO.getBio(), userEntity.getBio());
 
-		assertEquals(expertPreviewDTO.getMainDirection().getId(), userEntity.getMainDirection().getId());
-		assertEquals(expertPreviewDTO.getMainDirection().getName(), userEntity.getMainDirection().getName());
+		assertEquals(userDTO.getMainDirection().getId(), userEntity.getMainDirection().getId());
+		assertEquals(userDTO.getMainDirection().getName(), userEntity.getMainDirection().getName());
 
-		assertEquals(expertPreviewDTO.getMainInstitution().getId(), userEntity.getMainInstitution().getId());
-		assertEquals(expertPreviewDTO.getMainInstitution().getName(), userEntity.getMainInstitution().getName());
-		assertEquals(expertPreviewDTO.getMainInstitution().getCity().getName(),
+		assertEquals(userDTO.getMainInstitution().getId(), userEntity.getMainInstitution().getId());
+		assertEquals(userDTO.getMainInstitution().getName(), userEntity.getMainInstitution().getName());
+		assertEquals(userDTO.getMainInstitution().getCity().getName(),
 				userEntity.getMainInstitution().getCity().getName());
-		assertEquals(expertPreviewDTO.getMainInstitution().getCity().getName(),
+		assertEquals(userDTO.getMainInstitution().getCity().getName(),
 				userEntity.getMainInstitution().getCity().getName());
 
-		assertEquals(expertPreviewDTO.getLastAddedPost().getId(), userEntity.getLatestExpertPost().getId());
-		assertEquals(expertPreviewDTO.getLastAddedPost().getTitle(), userEntity.getLatestExpertPost().getTitle());
+		assertEquals(userDTO.getLastAddedPost().getId(), userEntity.getLatestExpertPost().getId());
+		assertEquals(userDTO.getLastAddedPost().getTitle(), userEntity.getLatestExpertPost().getTitle());
 
-		assertEquals(expertPreviewDTO.getLastAddedPost().getId(), latestPostEntity.getId());
-		assertEquals(expertPreviewDTO.getLastAddedPost().getTitle(), latestPostEntity.getTitle());
+		assertEquals(userDTO.getLastAddedPost().getId(), latestPostEntity.getId());
+		assertEquals(userDTO.getLastAddedPost().getTitle(), latestPostEntity.getTitle());
 	}
 }

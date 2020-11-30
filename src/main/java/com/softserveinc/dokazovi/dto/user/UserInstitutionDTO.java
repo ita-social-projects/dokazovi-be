@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ExpertInstitutionDTO {
+public class UserInstitutionDTO {
 
 	private Integer id;
 
-	private ExpertInstitutionCityDTO city;
+	private UserInstitutionCityDTO city;
 
 	private String name;
 

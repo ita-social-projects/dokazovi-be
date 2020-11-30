@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.mapper;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
-import com.softserveinc.dokazovi.dto.user.LatestExpertPostDTO;
+import com.softserveinc.dokazovi.dto.user.LatestUserPostDTO;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import org.mapstruct.Mapper;
 
@@ -10,5 +10,5 @@ public interface PostMapper {
 
 	PostDTO toPostDTO(PostEntity postEntity);
 
-	LatestExpertPostDTO toLatestExpertPostDTO(PostEntity post);
+	LatestUserPostDTO toLatestExpertPostDTO(PostEntity post);
 }

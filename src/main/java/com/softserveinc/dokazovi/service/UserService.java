@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.service;
 
-import com.softserveinc.dokazovi.dto.user.ExpertPreviewDTO;
+import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +14,11 @@ public interface UserService {
 
 	Page<UserEntity> findAll(Pageable pageable);
 
-	Page<ExpertPreviewDTO> getRandomExpertPreview(Pageable pageable, Set<Integer> directionsIds);
+	UserDTO findExpertById(Integer userId);
+
+	Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds, Set<Integer> regionsIds,
+			Pageable pageable);
+
+	Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
 }

@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.mapper;
 
-import com.softserveinc.dokazovi.dto.user.ExpertInstitutionDTO;
+import com.softserveinc.dokazovi.dto.user.UserInstitutionDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.dto.post.PostUserInstitutionDTO;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
@@ -39,7 +39,7 @@ class InstitutionMapperTest {
 
 	@Test
 	void toExpertInstitutionDTO_whenMaps_thenCorrect() {
-		ExpertInstitutionDTO expertInstitutionDTO = mapper.toExpertInstitutionDTO(institutionEntity);
+		UserInstitutionDTO expertInstitutionDTO = mapper.toExpertInstitutionDTO(institutionEntity);
 
 		assertEquals(expertInstitutionDTO.getId(), institutionEntity.getId());
 		assertEquals(expertInstitutionDTO.getName(), institutionEntity.getName());
