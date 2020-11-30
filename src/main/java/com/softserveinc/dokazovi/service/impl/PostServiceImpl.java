@@ -50,12 +50,13 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostDTO> findAllByExpert(Integer expertId, Integer typeId, PostStatus postStatus, Pageable pageable) {
+	public Page<PostDTO> findAllByExpert(
+			Integer expertId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable) {
 		if (typeId == null) {
 			return postRepository.findAllByAuthorIdAndStatus(expertId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		}
-		return postRepository.findAllByAuthorIdAndTypeIdAndStatus(expertId, typeId, postStatus, pageable)
+		return postRepository.findAllByAuthorIdAndTypeIdInAndStatus(expertId, typeId, postStatus, pageable)
 				.map(postMapper::toPostDTO);
 	}
 }

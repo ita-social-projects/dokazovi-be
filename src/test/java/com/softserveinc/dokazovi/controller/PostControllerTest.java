@@ -80,10 +80,10 @@ class PostControllerTest {
 	@Test
 	void findLatestByExpert() throws Exception {
 		Integer expertId = 2;
-		Integer typeId = 1;
+		Set<Integer> typeId = Set.of(1, 2);
 		Pageable pageable = PageRequest.of(0, 9, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(
-				get(POST + POST_LATEST_BY_EXPERT + "?expert=2&page=0&size=9&type=1"))
+				get(POST + POST_LATEST_BY_EXPERT + "?expert=2&page=0&size=9&type=1,2"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
 	}

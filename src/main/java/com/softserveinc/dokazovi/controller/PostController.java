@@ -76,7 +76,7 @@ public class PostController {
 			@ApiParam(value = "Expert's id")
 			@RequestParam Integer expert,
 			@ApiParam(value = "Post type id")
-			@RequestParam(required = false) Integer type) {
+			@RequestParam(required = false) Set<Integer> type) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findAllByExpert(expert, type, PostStatus.PUBLISHED, pageable));

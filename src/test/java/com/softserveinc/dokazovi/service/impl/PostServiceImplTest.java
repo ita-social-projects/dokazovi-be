@@ -108,14 +108,15 @@ class PostServiceImplTest {
 				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByExpert(expertId, null, PostStatus.PUBLISHED, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
 	@Test
 	void findAllByExpertAndType() {
 		Integer expertId = 5;
-		Integer typeId = 1;
-		when(postRepository.findAllByAuthorIdAndTypeIdAndStatus(any(Integer.class),
-				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
+		Set<Integer> typeId = Set.of(1, 2);
+		when(postRepository.findAllByAuthorIdAndTypeIdInAndStatus(any(Integer.class),
+				anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
