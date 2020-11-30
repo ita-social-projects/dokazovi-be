@@ -47,7 +47,7 @@ public class UserController {
 	@ApiPageable
 	@GetMapping(USER_ALL_EXPERTS)
 	public ResponseEntity<Page<UserDTO>> getAllExpertsByDirectionsAndByRegions(
-			@PageableDefault(size = 6, sort = {"firstName", "lastName"}) Pageable pageable,
+			@PageableDefault(size = 6, sort = {"firstName", "lastName", "id"}) Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
 			@ApiParam(value = "Multiple comma-separated region IDs, e.g. ?regions=1,2,3,4", type = "string")

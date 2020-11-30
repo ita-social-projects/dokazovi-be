@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -67,6 +68,66 @@ class UserServiceImplTest {
 		when(userRepository.findRandomActiveUsersByDirections(ArgumentMatchers.anySet(), any(Pageable.class)))
 				.thenReturn(userEntityPage);
 		userService.findRandomExpertPreview(directionIds, pageable);
+
+		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
+	}
+
+	@Test
+	void findAllExpertsByDirectionsAndRegions_NotFiltered() {
+		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
+
+		when(userRepository.findAllByStatus(
+				any(UserStatus.class),
+				any(Pageable.class)
+		)).thenReturn(userEntityPage);
+		userService.findAllExpertsByDirectionsAndRegions(null, null, pageable);
+
+		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
+	}
+
+	@Test
+	void findAllExpertsByDirectionsAndRegions_FilteredByRegionsOnly() {
+		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
+		Set<Integer> regionsIds = Set.of(1, 4, 6);
+
+		when(userRepository.findAllByMainInstitutionCityRegionIdInAndStatus(
+				ArgumentMatchers.anySet(),
+				any(UserStatus.class),
+				any(Pageable.class)
+		)).thenReturn(userEntityPage);
+		userService.findAllExpertsByDirectionsAndRegions(null, regionsIds, pageable);
+
+		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
+	}
+
+	@Test
+	void findAllExpertsByDirectionsAndRegions_FilteredByDirectionsOnly() {
+		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
+		Set<Integer> directionsIds = Set.of(1, 4, 6);
+
+		when(userRepository.findAllByMainDirectionIdInAndStatus(
+				ArgumentMatchers.anySet(),
+				any(UserStatus.class),
+				any(Pageable.class)
+		)).thenReturn(userEntityPage);
+		userService.findAllExpertsByDirectionsAndRegions(directionsIds, null, pageable);
+
+		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
+	}
+
+	@Test
+	void findAllExpertsByDirectionsAndRegions_FilteredByDirectionsAndByRegions() {
+		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
+		Set<Integer> directionsIds = Set.of(1, 4, 6);
+		Set<Integer> regionsIds = Set.of(1, 4, 6);
+
+		when(userRepository.findAllByMainDirectionIdInAndMainInstitutionCityRegionIdInAndStatus(
+				ArgumentMatchers.anySet(),
+				ArgumentMatchers.anySet(),
+				any(UserStatus.class),
+				any(Pageable.class)
+		)).thenReturn(userEntityPage);
+		userService.findAllExpertsByDirectionsAndRegions(directionsIds, regionsIds, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
