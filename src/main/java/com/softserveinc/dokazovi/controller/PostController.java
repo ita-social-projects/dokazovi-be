@@ -59,13 +59,13 @@ public class PostController {
 			@PageableDefault(size = 6, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@ApiParam(value = "Direction id")
 			@RequestParam Integer direction,
-			@ApiParam(value = "Post type id")
-			@RequestParam(required = false) Integer type,
-			@ApiParam(value = "You can use multiple comma-separated tag IDs, e.g. ?tags=1,2,3,4", type = "string")
-			@RequestParam(required = false) Set<Integer> tags) {
+			@ApiParam(value = "You can use multiple comma-separated type IDs, e.g. ?type=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> type,
+			@ApiParam(value = "You can use multiple comma-separated tag IDs, e.g. ?tag=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> tag) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(postService.findAllByMainDirection(direction, type, tags, PostStatus.PUBLISHED, pageable));
+				.body(postService.findAllByMainDirection(direction, type, tag, PostStatus.PUBLISHED, pageable));
 	}
 
 	@ApiPageable
