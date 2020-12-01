@@ -24,14 +24,14 @@ class DirectionMapperTest {
 	}
 
 	@Test
-	public void toPostDirectionDTO_whenMaps_thenCorrect() {
+	void toPostDirectionDTO_whenMaps_thenCorrect() {
 		PostDirectionDTO postDirectionDTO = mapper.toPostDirectionDTO(directionEntity);
 		assertEquals(directionEntity.getId(), postDirectionDTO.getId());
 		assertEquals(directionEntity.getName(), postDirectionDTO.getName());
 	}
 
 	@Test
-	public void toUserDirectionDTO_whenMaps_thenCorrect() {
+	void toUserDirectionDTO_whenMaps_thenCorrect() {
 		UserDirectionDTO userDirectionDTO = mapper.toUserDirectionDTO(directionEntity);
 
 		assertEquals(userDirectionDTO.getId(), directionEntity.getId());
@@ -39,7 +39,7 @@ class DirectionMapperTest {
 	}
 
 	@Test
-	public void toDirectionDTO_whenMaps_thenCorrect() {
+	void toDirectionDTO_whenMaps_thenCorrect() {
 		DirectionDTO directionDTO = mapper.toDirectionDTO(directionEntity);
 
 		assertEquals(directionDTO.getId(), directionEntity.getId());
