@@ -30,6 +30,7 @@ public class TagEntity implements Serializable {
 	@Column(name = "tag_id")
 	private Integer id;
 
+	@Column(unique = true)
 	private String tag;
 
 	@ManyToMany(mappedBy = "tags")
