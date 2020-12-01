@@ -68,13 +68,13 @@ class PostControllerTest {
 	@Test
 	void findLatestByDirection() throws Exception {
 		Integer directionId = 1;
-		Integer typeId = 2;
-		Set<Integer> tags = Set.of(3, 4, 5, 6);
+		Set<Integer> type = Set.of(2);
+		Set<Integer> tag = Set.of(3, 4, 5, 6);
 		Pageable pageable = PageRequest.of(0, 6, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(
-				get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tags=3,4,5,6"))
+				get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tag=3,4,5,6"))
 				.andExpect(status().isOk());
-		verify(postService).findAllByMainDirection(directionId, typeId, tags, PostStatus.PUBLISHED, pageable);
+		verify(postService).findAllByMainDirection(directionId, type, tag, PostStatus.PUBLISHED, pageable);
 	}
 
 	@Test
