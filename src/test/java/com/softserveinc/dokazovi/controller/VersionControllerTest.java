@@ -23,6 +23,7 @@ class VersionControllerTest {
 				.standaloneSetup(versionController)
 				.build();
 	}
+
 	@Test
 	void getBuildVersion_Get_isOk() throws Exception {
 		mockMvc
