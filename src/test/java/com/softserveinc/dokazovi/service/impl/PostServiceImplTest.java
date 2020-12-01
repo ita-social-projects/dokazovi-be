@@ -70,11 +70,11 @@ class PostServiceImplTest {
 	@Test
 	void findAllByMainDirectionAndType() {
 		Integer directionId = 1;
-		Integer typeId = 1;
-		when(postRepository.findAllByMainDirectionIdAndTypeIdAndStatus(any(Integer.class),
-				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
+		Set<Integer> types = Set.of(1,2,3);
+		when(postRepository.findAllByMainDirectionIdAndTypeIdInAndStatus(any(Integer.class),
+				anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
-		postService.findAllByMainDirection(directionId, typeId, null, PostStatus.PUBLISHED, pageable);
+		postService.findAllByMainDirection(directionId, types, null, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -92,12 +92,12 @@ class PostServiceImplTest {
 	@Test
 	void findAllByMainDirectionAndTypeAndTags() {
 		Integer directionId = 1;
-		Integer typeId = 1;
+		Set<Integer> types = Set.of(1,2,3);
 		Set<Integer> tags = Set.of(1, 2, 3, 4);
-		when(postRepository.findAllByMainDirectionIdAndTypeIdAndTagsIdInAndStatus(any(Integer.class),
-				any(Integer.class), anySet(), any(PostStatus.class), any(Pageable.class)))
+		when(postRepository.findAllByMainDirectionIdAndTypeIdInAndTagsIdInAndStatus(any(Integer.class),
+				anySet(), anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
-		postService.findAllByMainDirection(directionId, typeId,tags, PostStatus.PUBLISHED, pageable);
+		postService.findAllByMainDirection(directionId, types,tags, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 

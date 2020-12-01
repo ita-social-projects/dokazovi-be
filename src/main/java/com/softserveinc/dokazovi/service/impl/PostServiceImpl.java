@@ -33,19 +33,20 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Page<PostDTO> findAllByMainDirection(
-			Integer directionId, Integer typeId, Set<Integer> tags, PostStatus postStatus, Pageable pageable) {
-		if (typeId == null && tags == null) {
+			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable) {
+		if (typeId == null && tagId == null) {
 			return postRepository.findAllByMainDirectionIdAndStatus(directionId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		} else if (typeId == null) {
-			return postRepository.findAllByMainDirectionIdAndTagsIdInAndStatus(directionId, tags, postStatus, pageable)
+			return postRepository.findAllByMainDirectionIdAndTagsIdInAndStatus(directionId, tagId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
-		} else if (tags == null) {
-			return postRepository.findAllByMainDirectionIdAndTypeIdAndStatus(directionId, typeId, postStatus, pageable)
+		} else if (tagId == null) {
+			return postRepository.findAllByMainDirectionIdAndTypeIdInAndStatus(
+					directionId, typeId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		}
-		return postRepository.findAllByMainDirectionIdAndTypeIdAndTagsIdInAndStatus(
-				directionId, typeId, tags, postStatus, pageable)
+		return postRepository.findAllByMainDirectionIdAndTypeIdInAndTagsIdInAndStatus(
+				directionId, typeId, tagId, postStatus, pageable)
 				.map(postMapper::toPostDTO);
 	}
 
