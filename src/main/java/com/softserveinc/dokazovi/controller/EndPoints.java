@@ -12,4 +12,8 @@ public final class EndPoints {
 	public static final String TAG = "/tag";
 	public static final String TAG_FIND_BY_VALUE = "/find-by-value";
 	public static final String POST_LATEST_BY_DIRECTION = "/latest-by-direction";
+	public static final String DIRECTION = "/direction";
+	public static final String DIRECTION_ALL = "/all-directions";
+	public static final String REGION = "/region";
+	public static final String REGION_ALL = "/all-regions";
 }
