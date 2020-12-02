@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.DIRECTION;
-import static com.softserveinc.dokazovi.controller.EndPoints.DIRECTION_ALL;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,11 +41,8 @@ class DirectionControllerTest {
 
 	@Test
 	void getAllDirections() throws Exception {
-		Pageable pageable = PageRequest.of(0, 2000);
-		String uri = DIRECTION + DIRECTION_ALL;
+		mockMvc.perform(get(DIRECTION)).andExpect(status().isOk());
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
-
-		verify(directionService).findAllDirections(pageable);
+		verify(directionService).findAllDirections();
 	}
 }

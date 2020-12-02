@@ -14,6 +14,5 @@ public final class EndPoints {
 	public static final String POST_LATEST_BY_DIRECTION = "/latest-by-direction";
 	public static final String POST_LATEST_BY_EXPERT = "/latest-by-expert";
 	public static final String DIRECTION = "/direction";
-	public static final String DIRECTION_ALL = "/all-directions";
 	public static final String REGION = "/region";
 }

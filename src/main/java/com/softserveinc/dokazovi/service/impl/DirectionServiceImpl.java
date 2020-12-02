@@ -5,9 +5,10 @@ import com.softserveinc.dokazovi.mapper.DirectionMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.service.DirectionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,8 +18,9 @@ public class DirectionServiceImpl implements DirectionService {
 	private final DirectionMapper directionMapper;
 
 	@Override
-	public Page<DirectionDTO> findAllDirections(Pageable pageable) {
-		return directionRepository.findAll(pageable)
-				.map(directionMapper::toDirectionDTO);
+	public List<DirectionDTO> findAllDirections() {
+		return directionRepository.findAll().stream()
+				.map(directionMapper::toDirectionDTO)
+				.collect(Collectors.toList());
 	}
 }
