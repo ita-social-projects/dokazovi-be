@@ -1,5 +1,7 @@
 package com.softserveinc.dokazovi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,14 +54,23 @@ public class PostEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "author_id")
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private UserEntity author;
 
 	@ManyToOne
 	@JoinColumn(name = "type_id")
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private PostTypeEntity type;
 
 	@ManyToOne
 	@JoinColumn(name = "direction_id")
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private DirectionEntity mainDirection;
 
 	@Enumerated(EnumType.STRING)
@@ -73,6 +84,9 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<DirectionEntity> directions;
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -83,6 +97,9 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<TagEntity> tags;
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -93,6 +110,9 @@ public class PostEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<SourceEntity> sources;
 
 	@CreationTimestamp
