@@ -16,5 +16,4 @@ public final class EndPoints {
 	public static final String DIRECTION = "/direction";
 	public static final String DIRECTION_ALL = "/all-directions";
 	public static final String REGION = "/region";
-	public static final String REGION_ALL = "/all-regions";
 }

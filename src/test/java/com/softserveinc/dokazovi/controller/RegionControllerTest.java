@@ -9,14 +9,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.REGION;
-import static com.softserveinc.dokazovi.controller.EndPoints.REGION_ALL;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,11 +39,8 @@ class RegionControllerTest {
 
 	@Test
 	void getAllRegions() throws Exception {
-		Pageable pageable = PageRequest.of(0, 2000);
-		String uri = REGION + REGION_ALL;
+		mockMvc.perform(get(REGION)).andExpect(status().isOk());
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
-
-		verify(regionService).findAllRegions(pageable);
+		verify(regionService).findAllRegions();
 	}
 }

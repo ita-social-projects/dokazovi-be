@@ -8,9 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -26,18 +23,16 @@ class RegionServiceImplTest {
 	private RegionRepository regionRepository;
 	@Mock
 	private RegionMapper regionMapper;
-	@Mock
-	private Pageable pageable;
 	@InjectMocks
 	private RegionServiceImpl regionService;
 
 	@Test
 	void findAllRegions() {
-		Page<RegionEntity> regionEntityPage = new PageImpl<>(List.of(new RegionEntity(), new RegionEntity()));
+		List<RegionEntity> regions = List.of(new RegionEntity(), new RegionEntity());
 
-		when(regionRepository.findAll(any(Pageable.class))).thenReturn(regionEntityPage);
-		regionService.findAllRegions(pageable);
+		when(regionRepository.findAll()).thenReturn(regions);
+		regionService.findAllRegions();
 
-		verify(regionMapper, times(regionEntityPage.getNumberOfElements())).toRegionDTO(any(RegionEntity.class));
+		verify(regionMapper, times(regions.size())).toRegionDTO(any(RegionEntity.class));
 	}
 }
