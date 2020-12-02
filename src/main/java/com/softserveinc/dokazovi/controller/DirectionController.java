@@ -1,11 +1,9 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.service.DirectionService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +22,6 @@ public class DirectionController {
 	private final DirectionService directionService;
 
 	@ApiOperation("Get all directions")
-	@ApiPageable
 	@GetMapping
 	public ResponseEntity<List<DirectionDTO>> getAllDirections() {
 		return ResponseEntity
