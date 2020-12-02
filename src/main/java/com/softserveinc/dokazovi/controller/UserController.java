@@ -58,7 +58,6 @@ public class UserController {
 	}
 
 	@ApiOperation(value = "Get expert by Id, as a path variable.")
-	@ApiPageable
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDTO> getExpertById(@PathVariable("userId") Integer userId) {
 		UserDTO userDTO = userService.findExpertById(userId);
