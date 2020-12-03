@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.dto.user;
 
+import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import lombok.Builder;
 import lombok.Data;
 
@@ -25,9 +26,9 @@ public class UserDTO {
 
 	private String bio;
 
-	private UserDirectionDTO mainDirection;
+	private DirectionDTO mainDirection;
 
-	private Set<UserDirectionDTO> directions;
+	private Set<DirectionDTO> directions;
 
 	private UserInstitutionDTO mainInstitution;
 
