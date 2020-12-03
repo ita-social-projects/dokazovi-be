@@ -53,7 +53,7 @@ public class PostController {
 	}
 
 	@ApiPageable
-	@ApiOperation(value = "Find latest posts by main direction")
+	@ApiOperation(value = "Find latest posts by direction")
 	@GetMapping(POST_LATEST_BY_DIRECTION)
 	public ResponseEntity<Page<PostDTO>> findLatestByDirection(
 			@PageableDefault(size = 6, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
