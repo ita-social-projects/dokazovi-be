@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.dto.post;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +17,8 @@ public class PostDTO {
 	private String title;
 	private String content;
 	private PostUserDTO author;
-	private PostDirectionDTO mainDirection;
-	private Set<PostDirectionDTO> directions;
+	private DirectionDTO mainDirection;
+	private Set<DirectionDTO> directions;
 	private Set<TagDTO> tags;
 	private PostTypeDTO type;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
