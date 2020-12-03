@@ -9,10 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
-	UserEntity findByEmail(String email);
+	Optional<UserEntity> findByEmail(String email);
 
 	Page<UserEntity> findAllByStatus(UserStatus userStatus, Pageable pageable);
 
@@ -36,4 +38,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ " ORDER BY random()")
 	Page<UserEntity> findRandomActiveUsersByDirections(@Param("directionsIds") Iterable<Integer> directionsIds,
 			Pageable pageable);
+
+	Boolean existsByEmail(String email);
 }

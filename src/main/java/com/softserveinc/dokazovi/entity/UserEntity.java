@@ -1,5 +1,8 @@
 package com.softserveinc.dokazovi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.softserveinc.dokazovi.entity.enumerations.AuthProvider;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import lombok.AllArgsConstructor;
@@ -24,6 +27,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Comparator;
@@ -62,10 +66,16 @@ public class UserEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "direction_id")
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private DirectionEntity mainDirection;
 
 	@ManyToOne
 	@JoinColumn(name = "institution_id")
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private InstitutionEntity mainInstitution;
 
 	@Enumerated(EnumType.STRING)
@@ -74,11 +84,17 @@ public class UserEntity implements Serializable {
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<PostEntity> posts;
 
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<CharityEntity> charities;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -89,6 +105,9 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<InstitutionEntity> institutions;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -99,6 +118,9 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<RoleEntity> roles;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -109,15 +131,27 @@ public class UserEntity implements Serializable {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<DirectionEntity> directions;
 
 	@OneToMany(mappedBy = "user")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<SourceEntity> sources;
 
 	@CreationTimestamp
 	private Timestamp createdAt;
+
+
+	@Enumerated(EnumType.STRING)
+	private AuthProvider provider;
+
+	private String providerId;
 
 	public PostEntity getLatestExpertPost() {
 		if (posts == null || posts.isEmpty()) {

@@ -2,15 +2,22 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.exception.ResourceNotFoundException;
+import com.softserveinc.dokazovi.repositories.UserRepository;
+import com.softserveinc.dokazovi.security.CurrentUser;
+import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +34,9 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS
 @RequestMapping(USER)
 @RequiredArgsConstructor
 public class UserController {
+
+	@Autowired
+	private UserRepository userRepository;
 
 	private final UserService userService;
 
@@ -64,6 +74,13 @@ public class UserController {
 		return ResponseEntity
 				.status((userDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(userDTO);
+	}
+
+	@GetMapping("/me")
+	@PreAuthorize("hasRole('USER')")
+	public UserEntity getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+		return userRepository.findById(userPrincipal.getId())
+				.orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
 	}
 
 }
