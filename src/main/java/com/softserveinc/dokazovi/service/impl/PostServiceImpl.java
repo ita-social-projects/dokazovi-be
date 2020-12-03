@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -34,19 +35,23 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Page<PostDTO> findAllByMainDirection(
 			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable) {
+		DirectionEntity direction = DirectionEntity.builder()
+				.id(directionId)
+				.build();
 		if (typeId == null && tagId == null) {
-			return postRepository.findAllByMainDirectionIdAndStatus(directionId, postStatus, pageable)
+			return postRepository.findAllByDirectionsContainsAndStatus(direction, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		} else if (typeId == null) {
-			return postRepository.findAllByMainDirectionIdAndTagsIdInAndStatus(directionId, tagId, postStatus, pageable)
+			return postRepository.findAllByDirectionsContainsAndTagsIdInAndStatus(
+					direction, tagId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		} else if (tagId == null) {
-			return postRepository.findAllByMainDirectionIdAndTypeIdInAndStatus(
-					directionId, typeId, postStatus, pageable)
+			return postRepository.findAllByDirectionsContainsAndTypeIdInAndStatus(
+					direction, typeId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		}
-		return postRepository.findAllByMainDirectionIdAndTypeIdInAndTagsIdInAndStatus(
-				directionId, typeId, tagId, postStatus, pageable)
+		return postRepository.findAllByDirectionsContainsAndTypeIdInAndTagsIdInAndStatus(
+				direction, typeId, tagId, postStatus, pageable)
 				.map(postMapper::toPostDTO);
 	}
 
