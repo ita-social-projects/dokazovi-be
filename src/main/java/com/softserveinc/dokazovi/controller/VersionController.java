@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.util.BuildVersion;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,14 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping()
+@RequestMapping(EndPoints.VERSION)
 @RequiredArgsConstructor
 public class VersionController {
 
-	private final BuildVersion buildVersion;
+	private final BuildProperties buildProperties;
 
-	@GetMapping(EndPoints.VERSION)
-	public ResponseEntity<BuildVersion> getBuildVersion() {
-		return new ResponseEntity<>(buildVersion, HttpStatus.OK);
+	@GetMapping
+	public ResponseEntity<BuildProperties> getBuildVersion() {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(buildProperties);
 	}
 }

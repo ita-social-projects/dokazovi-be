@@ -1,10 +1,13 @@
 package com.softserveinc.dokazovi.config;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
@@ -16,7 +19,10 @@ import java.util.Date;
 @Configuration
 @EnableSwagger2
 @Import(springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration.class)
+@RequiredArgsConstructor
 public class SwaggerConfig {
+
+	private final BuildProperties buildProperties;
 
 	@Bean
 	public Docket api() {
@@ -30,6 +36,13 @@ public class SwaggerConfig {
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("com.softserveinc.dokazovi.controller"))
 				.build()
-				.apiInfo(ApiInfo.DEFAULT);
+				.apiInfo(apiInfo());
+	}
+
+	private ApiInfo apiInfo() {
+		return new ApiInfoBuilder()
+				.title("Dokazovo API")
+				.version(buildProperties.getVersion())
+				.build();
 	}
 }
