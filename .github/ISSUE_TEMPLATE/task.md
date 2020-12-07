@@ -1,8 +1,8 @@
 ---
 name: Task
-about: Describe kask
+about: Describe task
 title: ''
-labels: Task
+labels: ''
 assignees: ''
 
 ---
