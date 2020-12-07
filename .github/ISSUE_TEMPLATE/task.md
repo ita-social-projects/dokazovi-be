@@ -17,3 +17,6 @@ Show priority posts by api request
 1. - [ ] Implement api endpoint contorller for getting posts.
 2. - [ ] Implement service for getting all priority posts.
 3. - [ ] Implement repository for getting all priority posts.
+
+
+PERT: [Sprint 3](https://docs.google.com/spreadsheets/d/1RAvIdPidr9LfnJMXSpfFeylnlB2aTgO3D5Q7IRYhgp4/edit#gid=849226876) 
