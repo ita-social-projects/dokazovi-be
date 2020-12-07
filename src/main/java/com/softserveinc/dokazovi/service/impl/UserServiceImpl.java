@@ -2,9 +2,11 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
+import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
+	private final VerificationTokenRepository tokenRepository;
 
 	@Override
 	public UserEntity findByEmail(String email) {
@@ -71,4 +74,34 @@ public class UserServiceImpl implements UserService {
 				.map(userMapper::toUserDTO);
 	}
 
+	@Override
+	public void setEnableTrue(UserEntity user) {
+		UserEntity userEntity = userRepository.findById(user.getId()).get();
+		userEntity.setEnabled(true);
+		userRepository.save(userEntity);
+	}
+
+	@Override
+	public VerificationToken getVerificationToken(String verificationToken) {
+		return tokenRepository.findByToken(verificationToken);
+	}
+
+	@Override
+	public void createVerificationToken(UserEntity user, String token) {
+		VerificationToken myToken = VerificationToken.builder()
+				.user(user)
+				.token(token)
+				.build();
+		tokenRepository.save(myToken);
+	}
+
+	@Override
+	public Boolean existsByEmail(String email) {
+		return userRepository.existsByEmail(email);
+	}
+
+	@Override
+	public UserEntity saveUser(UserEntity user) {
+		return userRepository.save(user);
+	}
 }

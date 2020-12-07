@@ -153,6 +153,9 @@ public class UserEntity implements Serializable {
 
 	private String providerId;
 
+	@Column(name = "enabled")
+	private boolean enabled;
+
 	public PostEntity getLatestExpertPost() {
 		if (posts == null || posts.isEmpty()) {
 			return null;
@@ -161,5 +164,9 @@ public class UserEntity implements Serializable {
 				.filter(postEntity -> Objects.equals(postEntity.getStatus(), PostStatus.PUBLISHED))
 				.max(Comparator.comparing(PostEntity::getCreatedAt))
 				.orElse(null);
+	}
+
+	public boolean getEnabled() {
+		return this.enabled;
 	}
 }
