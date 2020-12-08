@@ -4,9 +4,9 @@ spring:
       client:
         registration:
           google:
-            clientId: 425294147582-vr1ricj8mfm890srcv3kfpjsdpttd5qs.apps.googleusercontent.com
-            clientSecret: jvNGn7wuLqcb3xAHfAyiI3fa
-            redirectUri: "http://localhost:8080/oauth2/callback/google"
+            clientId: 190733985182-7m00uc9ngp1d7s347d5i2tuu61biln4v.apps.googleusercontent.com
+            clientSecret: fGDQ86w8SYZeUVkhc8Fwo2Tv
+#            redirectUri: "http://localhost:8080/api/oauth2/callback/google"
             scope:
               - email
               - profile
