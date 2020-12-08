@@ -33,6 +33,9 @@ public class DirectionEntity implements Serializable {
 
 	private String name;
 
+	@Column(length = 7)
+	private String color;
+
 	@OneToMany(mappedBy = "mainDirection")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
