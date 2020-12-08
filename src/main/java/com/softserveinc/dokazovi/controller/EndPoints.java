@@ -15,4 +15,8 @@ public final class EndPoints {
 	public static final String POST_LATEST_BY_EXPERT = "/latest-by-expert";
 	public static final String DIRECTION = "/direction";
 	public static final String REGION = "/region";
+	public static final String AUTH = "/auth";
+	public static final String AUTH_VERIFICATION = "/verification";
+	public static final String AUTH_LOGIN = "/login";
+	public static final String AUTH_SIGNUP = "/signup";
 }
