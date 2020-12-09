@@ -9,4 +9,5 @@ public class DirectionDTO {
 
 	private Integer id;
 	private String name;
+	private String color;
 }
