@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -77,7 +79,8 @@ public class AuthController {
 	}
 
 	@PostMapping(AUTH_SIGNUP)
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest)
+			throws IOException, MessagingException {
 		if (userService.existsByEmail(signUpRequest.getEmail())) {
 			throw new BadRequestException("Email address already in use.");
 		}

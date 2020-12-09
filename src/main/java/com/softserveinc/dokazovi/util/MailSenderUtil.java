@@ -2,32 +2,41 @@ package com.softserveinc.dokazovi.util;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class MailSenderUtil {
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
-
-    public void sendMessage(UserEntity user) {
+    public void sendMessage(UserEntity user) throws IOException, MessagingException {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
-
         String confirmationUrl = "http://localhost:8080/api/auth/verification?token=" + token;
-        String message = "Ви успішно зареєструвались. Щоб підтвердити Вашу почту, пройдіть за посиланням нижче:";
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
+        String template = readHtmlFile("verificationMail.html");
+        template = MessageFormat.format(template, confirmationUrl);
+        message.setContent(template, "text/html");
+        helper.setTo(user.getEmail());
+        helper.setSubject("DOKAZOVI");
+        javaMailSender.send(message);
+    }
 
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(user.getEmail());
-        email.setSubject("DOKAZOVI: Підтвердження електронної адреси");
-        email.setText(message + "\r\n" + confirmationUrl);
-        javaMailSender.send(email);
+    public String readHtmlFile(String fileName) throws IOException {
+        String file = "src/main/resources/template/" + fileName;
+        return Files.readString(Path.of(file));
     }
 }
