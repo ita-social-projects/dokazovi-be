@@ -2,8 +2,10 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
+import com.softserveinc.dokazovi.service.PostTypeService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 
 @RestController
 @RequestMapping(EndPoints.POST)
@@ -31,6 +35,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 public class PostController {
 
 	private final PostService postService;
+	private final PostTypeService postTypeService;
 
 	@ApiOperation(value = "Find latest published posts")
 	@ApiPageable
@@ -80,5 +85,13 @@ public class PostController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findAllByExpert(expert, type, PostStatus.PUBLISHED, pageable));
+	}
+
+	@ApiOperation(value = "Find all types of posts")
+	@GetMapping(POST_TYPE)
+	public ResponseEntity<List<PostTypeDTO>> findAllPostType() {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postTypeService.findAll());
 	}
 }

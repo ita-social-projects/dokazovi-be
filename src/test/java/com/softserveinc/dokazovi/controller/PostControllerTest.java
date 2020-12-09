@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
+import com.softserveinc.dokazovi.service.PostTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,6 +42,8 @@ class PostControllerTest {
 	private PostController postController;
 	@Mock
 	private PostService postService;
+	@Mock
+	private PostTypeService postTypeService;
 
 	@BeforeEach
 	public void init() {
@@ -86,5 +90,11 @@ class PostControllerTest {
 				get(POST + POST_LATEST_BY_EXPERT + "?expert=2&page=0&size=9&type=1,2"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
+	}
+
+	@Test
+	void findAllPostType() throws Exception {
+		mockMvc.perform(get(POST + POST_TYPE)).andExpect(status().isOk());
+		verify(postTypeService).findAll();
 	}
 }
