@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -27,10 +28,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -148,10 +151,15 @@ public class UserEntity implements Serializable {
 	private Timestamp createdAt;
 
 
-	@Enumerated(EnumType.STRING)
-	private AuthProvider provider;
 
-	private String providerId;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
+	private Set<ProviderEntity> userProviderEntities;
+
 
 	@Column(name = "enabled")
 	private boolean enabled;

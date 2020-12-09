@@ -21,7 +21,7 @@ public class MailSenderUtil {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
 
-        String confirmationUrl = "http://localhost:8080/auth/verification?token=" + token;
+        String confirmationUrl = "http://localhost:8080/api/auth/verification?token=" + token;
         String message = "Ви успішно зареєструвались. Щоб підтвердити Вашу почту, пройдіть за посиланням нижче:";
 
         SimpleMailMessage email = new SimpleMailMessage();

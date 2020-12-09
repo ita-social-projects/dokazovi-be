@@ -1,10 +1,12 @@
 package com.softserveinc.dokazovi.security.oauth2;
 
 
+import com.softserveinc.dokazovi.entity.ProviderEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.AuthProvider;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.OAuth2AuthenticationProcessingException;
+import com.softserveinc.dokazovi.repositories.ProviderRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.security.oauth2.user.OAuth2UserInfo;
@@ -29,6 +31,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private ProviderRepository userProviderRepository;
+
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
@@ -51,15 +56,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		}
 
 		Optional<UserEntity> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
+
 		UserEntity user;
 		if (userOptional.isPresent()) {
 			user = userOptional.get();
-			if (!user.getProvider()
-					.equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
-				throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
-						user.getProvider() + " account. Please use your " + user.getProvider() +
-						" account to login.");
-			}
 			user = updateExistingUser(user, oAuth2UserInfo);
 		} else {
 			user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
@@ -70,9 +70,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 	private UserEntity registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
 		UserEntity user = new UserEntity();
-		user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
-		user.setProviderId(oAuth2UserInfo.getId());
+		ProviderEntity provider = new ProviderEntity();
 
+		provider.setName(oAuth2UserRequest.getClientRegistration().getRegistrationId());
+		provider.setUserIdByProvider(oAuth2UserInfo.getId());
 		List<String> strings = Arrays.asList(oAuth2UserInfo.getName().split(" "));
 		if (strings.isEmpty()) {
 			user.setFirstName("user");
@@ -84,10 +85,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		if (strings.size() != 2) {
 			user.setFirstName(oAuth2UserInfo.getName());
 		}
+		provider.setEmail(oAuth2UserInfo.getEmail());
 		user.setEmail(oAuth2UserInfo.getEmail());
 		user.setAvatar(oAuth2UserInfo.getImageUrl());
 		user.setStatus(UserStatus.NEW);
-		return userRepository.save(user);
+		UserEntity savedUser = userRepository.save(user);
+		provider.setUser(savedUser);
+		userProviderRepository.save(provider);
+		return savedUser;
 	}
 
 	private UserEntity updateExistingUser(UserEntity existingUser, OAuth2UserInfo oAuth2UserInfo) {

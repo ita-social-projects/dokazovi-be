@@ -14,7 +14,9 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
-	Optional<UserEntity> findByEmail(String email);
+	@Query(nativeQuery = true,
+			value = "SELECT * FROM users WHERE user_id= (SELECT u.user_id FROM providers u WHERE  u.email IN (:email))")
+	Optional<UserEntity> findByEmail(@Param("email") String email);
 
 	Page<UserEntity> findAllByStatus(UserStatus userStatus, Pageable pageable);
 

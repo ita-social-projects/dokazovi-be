@@ -1,13 +1,14 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.entity.enumerations.AuthProvider;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.payload.ApiResponse;
 import com.softserveinc.dokazovi.payload.AuthResponse;
 import com.softserveinc.dokazovi.payload.LoginRequest;
 import com.softserveinc.dokazovi.payload.SignUpRequest;
 import com.softserveinc.dokazovi.security.TokenProvider;
+import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.util.MailSenderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
@@ -37,68 +40,77 @@ import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_VERIFICATION;
 @RequestMapping(AUTH)
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private TokenProvider tokenProvider;
+	@Autowired
+	private TokenProvider tokenProvider;
 
-    @Autowired
-    private MailSenderUtil mailSenderUtil;
+	@Autowired
+	private MailSenderUtil mailSenderUtil;
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @PostMapping(AUTH_LOGIN)
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+	@Autowired
+	private ProviderService providerService;
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+	@PostMapping(AUTH_LOGIN)
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(
+						loginRequest.getEmail(),
+						loginRequest.getPassword()
+				)
+		);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		String token = tokenProvider.createToken(authentication);
+		UserEntity userEntity = userService.findByEmail(loginRequest.getEmail());
+		if (!userEntity.getEnabled()) {
+			throw new BadRequestException("Please confirm your email!");
+		} else {
+			return ResponseEntity.ok(new AuthResponse(token));
+		}
+	}
 
-        String token = tokenProvider.createToken(authentication);
-        UserEntity userEntity = userService.findByEmail(loginRequest.getEmail());
-        if (!userEntity.getEnabled()) {
-            throw new BadRequestException("Please confirm your email!");
-        } else {
-            return ResponseEntity.ok(new AuthResponse(token));
-        }
-    }
+	@PostMapping(AUTH_SIGNUP)
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+		if (userService.existsByEmail(signUpRequest.getEmail())) {
+			throw new BadRequestException("Email address already in use.");
+		}
+		UserEntity user = new UserEntity();
+		List<String> strings = Arrays.asList(signUpRequest.getName().split(" "));
+		if (strings.isEmpty()) {
+			user.setFirstName("user");
+		}
+		if (strings.size() == 2) {
+			user.setFirstName(strings.get(0));
+			user.setLastName(strings.get(1));
+		}
+		if (strings.size() != 2) {
+			user.setFirstName(signUpRequest.getName());
+		}
+		user.setEmail(signUpRequest.getEmail());
+		user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+		user.setStatus(UserStatus.NEW);
+		UserEntity result = userService.saveUser(user);
+		providerService.createLocalProviderEntityForUser(result, signUpRequest.getEmail());
+		URI location = ServletUriComponentsBuilder
+				.fromCurrentContextPath().path("/api/user/me")
+				.buildAndExpand(result.getId()).toUri();
 
-    @PostMapping(AUTH_SIGNUP)
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if (userService.existsByEmail(signUpRequest.getEmail())) {
-            throw new BadRequestException("Email address already in use.");
-        }
+		mailSenderUtil.sendMessage(user);
+		return ResponseEntity.created(location)
+				.body(new ApiResponse(true, "User registered successfully! Please confirm your email!"));
+	}
 
-        UserEntity user = new UserEntity();
-        user.setFirstName(signUpRequest.getName());
-        user.setEmail(signUpRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setProvider(AuthProvider.local);
-
-        UserEntity result = userService.saveUser(user);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/user/me")
-                .buildAndExpand(result.getId()).toUri();
-
-        mailSenderUtil.sendMessage(user);
-        return ResponseEntity.created(location)
-                .body(new ApiResponse(true, "User registered successfully! Please confirm your email!"));
-    }
-
-    @GetMapping(AUTH_VERIFICATION)
-    public ResponseEntity<?> registrationComplete(
-            @RequestParam(value = "token") String token) {
-        userService.setEnableTrue(userService.getVerificationToken(token).getUser());
-        return ResponseEntity.ok().body(new ApiResponse(true, "Email confirmed! redirect to login page!"));
-    }
+	@GetMapping(AUTH_VERIFICATION)
+	public ResponseEntity<?> registrationComplete(
+			@RequestParam(value = "token") String token) {
+		userService.setEnableTrue(userService.getVerificationToken(token).getUser());
+		return ResponseEntity.ok().body(new ApiResponse(true, "Email confirmed! redirect to login page!"));
+	}
 }
