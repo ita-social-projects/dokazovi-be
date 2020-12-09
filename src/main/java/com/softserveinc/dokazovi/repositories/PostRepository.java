@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.repositories;
 
+import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import org.springframework.data.domain.Page;
@@ -16,16 +17,18 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
-	Page<PostEntity> findAllByMainDirectionIdAndStatus(Integer directionId, PostStatus postStatus, Pageable pageable);
+	Page<PostEntity> findAllByDirectionsContainsAndStatus(
+			DirectionEntity direction, PostStatus postStatus, Pageable pageable);
 
-	Page<PostEntity> findAllByMainDirectionIdAndTypeIdInAndStatus(
-			Integer directionId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
+	Page<PostEntity> findAllByDirectionsContainsAndTypeIdInAndStatus(
+			DirectionEntity direction, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 
-	Page<PostEntity> findAllByMainDirectionIdAndTagsIdInAndStatus(
-			Integer directionId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);
+	Page<PostEntity> findAllByDirectionsContainsAndTagsIdInAndStatus(
+			DirectionEntity direction, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);
 
-	Page<PostEntity> findAllByMainDirectionIdAndTypeIdInAndTagsIdInAndStatus(
-			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);
+	Page<PostEntity> findAllByDirectionsContainsAndTypeIdInAndTagsIdInAndStatus(
+			DirectionEntity direction, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus,
+			Pageable pageable);
 
 	Page<PostEntity> findAllByAuthorIdAndStatus(Integer authorId, PostStatus postStatus, Pageable pageable);
 

@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.mapper.PostMapper;
@@ -60,8 +61,8 @@ class PostServiceImplTest {
 	@Test
 	void findAllByMainDirection() {
 		Integer directionId = 1;
-		when(postRepository.findAllByMainDirectionIdAndStatus(
-				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
+		when(postRepository.findAllByDirectionsContainsAndStatus(
+				any(DirectionEntity.class), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, null, null, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
@@ -71,8 +72,8 @@ class PostServiceImplTest {
 	void findAllByMainDirectionAndType() {
 		Integer directionId = 1;
 		Set<Integer> types = Set.of(1,2,3);
-		when(postRepository.findAllByMainDirectionIdAndTypeIdInAndStatus(any(Integer.class),
-				anySet(), any(PostStatus.class), any(Pageable.class)))
+		when(postRepository.findAllByDirectionsContainsAndTypeIdInAndStatus(
+				any(DirectionEntity.class), anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, types, null, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
@@ -82,8 +83,8 @@ class PostServiceImplTest {
 	void findAllByMainDirectionAndTags() {
 		Integer directionId = 1;
 		Set<Integer> tags = Set.of(1, 2, 3, 4);
-		when(postRepository.findAllByMainDirectionIdAndTagsIdInAndStatus(
-				any(Integer.class), anySet(), any(PostStatus.class), any(Pageable.class)))
+		when(postRepository.findAllByDirectionsContainsAndTagsIdInAndStatus(
+				any(DirectionEntity.class), anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, null, tags, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
@@ -94,8 +95,8 @@ class PostServiceImplTest {
 		Integer directionId = 1;
 		Set<Integer> types = Set.of(1,2,3);
 		Set<Integer> tags = Set.of(1, 2, 3, 4);
-		when(postRepository.findAllByMainDirectionIdAndTypeIdInAndTagsIdInAndStatus(any(Integer.class),
-				anySet(), anySet(), any(PostStatus.class), any(Pageable.class)))
+		when(postRepository.findAllByDirectionsContainsAndTypeIdInAndTagsIdInAndStatus(
+				any(DirectionEntity.class), anySet(), anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByMainDirection(directionId, types,tags, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
