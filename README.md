@@ -50,8 +50,8 @@ If everything is ok you can run the [Swagger](#How-to-work-with-swagger-UI)
 2. Open this url: http://localhost:8080/api/swagger-ui/
 
 ## Project Deploy
-[Dokazovi - FE](https://dokazovi-fe.herokuapp.com/)
-[Dokazovi - BE - Swagger](https://dokazovi-be.herokuapp.com/api/swagger-ui/#/)
+- [Dokazovi - FE](https://dokazovi-fe.herokuapp.com/)
+- [Dokazovi - BE - Swagger](https://dokazovi-be.herokuapp.com/api/swagger-ui/#/)
 
 ## How to contribute
 * [Branching Strategy](https://github.com/ita-social-projects/dokazovi-be/wiki/Branching-Strategy)
