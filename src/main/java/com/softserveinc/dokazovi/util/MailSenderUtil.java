@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.util;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -20,11 +21,13 @@ import java.util.UUID;
 public class MailSenderUtil {
     private final JavaMailSender javaMailSender;
     private final UserService userService;
+    @Value("${host.url}")
+    private String hostUrl;
 
     public void sendMessage(UserEntity user) throws IOException, MessagingException {
         String token = UUID.randomUUID().toString();
         userService.createVerificationToken(user, token);
-        String confirmationUrl = "http://localhost:8080/api/auth/verification?token=" + token;
+        String confirmationUrl = hostUrl + "/api/auth/verification?token=" + token;
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
         String template = readHtmlFile("verificationMail.html");
