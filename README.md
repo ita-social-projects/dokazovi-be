@@ -49,7 +49,7 @@ If everything is ok you can run the [Swagger](#How-to-work-with-swagger-UI)
 1. [Run](#How-to-run) Dokazovo project.
 2. Open this url: http://localhost:8080/api/swagger-ui/
 
-## Documentation
+## How to contribute
 * [Branching Strategy](https://github.com/ita-social-projects/dokazovi-be/wiki/Branching-Strategy)
 * [Database](https://github.com/ita-social-projects/dokazovi-be/wiki/Database)
 * [Setup CheckStyle to your IDE](https://github.com/ita-social-projects/dokazovi-be/wiki/Setup-CheckStyle-to-your-IDE)
