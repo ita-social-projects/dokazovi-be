@@ -14,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.Set;
 
 @Data
@@ -23,7 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "tag_entity")
 @Table(name = "tags")
-public class TagEntity implements Serializable {
+public class TagEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

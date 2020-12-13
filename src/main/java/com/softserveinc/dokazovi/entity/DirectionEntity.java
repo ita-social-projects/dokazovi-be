@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.Set;
 
 @Data
@@ -24,7 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "direction_entity")
 @Table(name = "directions")
-public class DirectionEntity implements Serializable {
+public class DirectionEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

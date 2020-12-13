@@ -24,7 +24,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.Objects;
@@ -36,7 +35,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "user_entity")
 @Table(name = "users")
-public class UserEntity implements Serializable {
+public class UserEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

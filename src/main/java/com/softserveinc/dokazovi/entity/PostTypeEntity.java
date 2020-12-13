@@ -14,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.Set;
 
 @Data
@@ -23,7 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "post_type_entity")
 @Table(name = "post_types")
-public class PostTypeEntity implements Serializable {
+public class PostTypeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
