@@ -35,8 +35,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS
 @RequiredArgsConstructor
 public class UserController {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	private final UserService userService;
 

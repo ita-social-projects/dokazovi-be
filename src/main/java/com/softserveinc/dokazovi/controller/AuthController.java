@@ -11,7 +11,7 @@ import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.util.MailSenderUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,25 +40,21 @@ import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_VERIFICATION;
 
 @RestController
 @RequestMapping(AUTH)
+@RequiredArgsConstructor
 public class AuthController {
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final AuthenticationManager authenticationManager;
 
-	@Autowired
-	private TokenProvider tokenProvider;
+	private final PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private MailSenderUtil mailSenderUtil;
+	private final TokenProvider tokenProvider;
 
-	@Autowired
-	private UserService userService;
+	private final MailSenderUtil mailSenderUtil;
 
-	@Autowired
-	private ProviderService providerService;
+	private final UserService userService;
+
+	private final ProviderService providerService;
 
 	@PostMapping(AUTH_LOGIN)
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -81,7 +77,7 @@ public class AuthController {
 	@PostMapping(AUTH_SIGNUP)
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest)
 			throws IOException, MessagingException {
-		if (userService.existsByEmail(signUpRequest.getEmail())) {
+		if (providerService.existsByLocalEmail(signUpRequest.getEmail())) {
 			throw new BadRequestException("Email address already in use.");
 		}
 		UserEntity user = new UserEntity();
@@ -104,7 +100,6 @@ public class AuthController {
 		URI location = ServletUriComponentsBuilder
 				.fromCurrentContextPath().path("/api/user/me")
 				.buildAndExpand(result.getId()).toUri();
-
 		mailSenderUtil.sendMessage(user);
 		return ResponseEntity.created(location)
 				.body(new ApiResponse(true, "User registered successfully! Please confirm your email!"));
