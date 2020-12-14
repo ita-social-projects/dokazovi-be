@@ -1,9 +1,11 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
+import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -18,16 +20,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
 	@Mock
 	private UserRepository userRepository;
+	@Mock
+	private VerificationTokenRepository tokenRepository;
 	@Mock
 	private UserMapper userMapper;
 	@Mock
@@ -130,5 +133,59 @@ class UserServiceImplTest {
 		userService.findAllExpertsByDirectionsAndRegions(directionsIds, regionsIds, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
+	}
+
+	@Test
+	void setEnableTrue() {
+		UserEntity userEntity = UserEntity.builder()
+				.id(1)
+				.build();
+		when(userRepository.findById(any(Integer.class))).thenReturn(Optional.ofNullable(userEntity));
+		userService.setEnableTrue(userEntity);
+		assertEquals(true, userEntity.getEnabled());
+	}
+
+	@Test
+	void getVerificationToken() {
+		String token = "950c9760-805e-449c-a966-2d0d5ebd86f4";
+		VerificationToken verificationToken = VerificationToken.builder()
+				.token(token)
+				.build();
+		when(tokenRepository.findByToken(any(String.class))).thenReturn(verificationToken);
+		verificationToken = userService.getVerificationToken(token);
+		assertEquals(token, verificationToken.getToken());
+	}
+
+	@Test
+	void createVerificationToken() {
+		String token = "950c9760-805e-449c-a966-2d0d5ebd86f4";
+		UserEntity userEntity = UserEntity.builder().build();
+		VerificationToken verificationToken = VerificationToken.builder()
+				.token(token)
+				.user(userEntity)
+				.build();
+		when(tokenRepository.save(any(VerificationToken.class))).thenReturn(verificationToken);
+		userService.createVerificationToken(userEntity, token);
+		assertEquals(token, verificationToken.getToken());
+		assertEquals(userEntity, verificationToken.getUser());
+	}
+
+	@Test
+	void existByEmail() {
+		String email = "user@mail.com";
+		Boolean existing = true;
+		when(userRepository.existsByEmail(anyString())).thenReturn(existing);
+		existing = userService.existsByEmail(email);
+		assertEquals(true, existing);
+	}
+
+	@Test
+	void saveUser() {
+		UserEntity userEntity = UserEntity.builder()
+				.id(1)
+				.build();
+		when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
+		userEntity = userService.saveUser(userEntity);
+		assertEquals(1, userEntity.getId());
 	}
 }
