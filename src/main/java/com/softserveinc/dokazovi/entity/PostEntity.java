@@ -25,7 +25,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -35,7 +34,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "post_entity")
 @Table(name = "posts")
-public class PostEntity implements Serializable {
+public class PostEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
