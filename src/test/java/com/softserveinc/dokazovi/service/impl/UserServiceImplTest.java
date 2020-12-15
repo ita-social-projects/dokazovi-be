@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -136,13 +137,33 @@ class UserServiceImplTest {
 	}
 
 	@Test
+	void findByEmail() {
+		String email = "some@some.com";
+		UserEntity user = UserEntity.builder()
+				.email(email)
+				.build();
+		when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
+		UserEntity resultUser = userService.findByEmail(email);
+		verify(userRepository, times(1)).findByEmail(email);
+		assertEquals(email, resultUser.getEmail());
+	}
+
+	@Test
+	void findAll() {
+		Page<UserEntity> users = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
+		when(userRepository.findAll(any(Pageable.class))).thenReturn(users);
+		userService.findAll(pageable);
+		verify(userRepository, times(1)).findAll(pageable);
+	}
+
+	@Test
 	void setEnableTrue() {
 		UserEntity userEntity = UserEntity.builder()
 				.id(1)
 				.build();
 		when(userRepository.findById(any(Integer.class))).thenReturn(Optional.ofNullable(userEntity));
 		userService.setEnableTrue(userEntity);
-		assertEquals(true, userEntity.getEnabled());
+		assertTrue(userEntity.getEnabled());
 		verify(userRepository, times(1))
 				.findById(any(Integer.class));
 	}
@@ -197,25 +218,5 @@ class UserServiceImplTest {
 		assertEquals(1, userEntity.getId());
 		verify(userRepository, times(1))
 				.save(any(UserEntity.class));
-	}
-
-	@Test
-	void findByEmail() {
-		String email = "some@some.com";
-		UserEntity user = UserEntity.builder()
-				.email(email)
-				.build();
-		when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
-		UserEntity resultUser = userService.findByEmail(email);
-		verify(userRepository, times(1)).findByEmail(email);
-		assertEquals(email, resultUser.getEmail());
-	}
-
-	@Test
-	void findAll() {
-		Page<UserEntity> users = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
-		when(userRepository.findAll(any(Pageable.class))).thenReturn(users);
-		userService.findAll(pageable);
-		verify(userRepository, times(1)).findAll(pageable);
 	}
 }
