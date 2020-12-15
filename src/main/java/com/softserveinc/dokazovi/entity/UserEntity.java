@@ -2,7 +2,6 @@ package com.softserveinc.dokazovi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.softserveinc.dokazovi.entity.enumerations.AuthProvider;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import lombok.AllArgsConstructor;
@@ -28,12 +27,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -43,7 +38,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "user_entity")
 @Table(name = "users")
-public class UserEntity implements Serializable {
+public class UserEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

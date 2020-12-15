@@ -18,12 +18,12 @@ public class ProviderServiceImpl implements ProviderService {
 
 	@Override
 	public Optional<ProviderEntity> createLocalProviderEntityForUser(UserEntity userEntity, String email) {
-		ProviderEntity providerEntity = ProviderEntity.builder().
-				user(userEntity).
-				email(email).
-				userIdByProvider(userEntity.getId().toString()).
-				name(AuthProvider.local.toString()).
-				build();
+		ProviderEntity providerEntity = ProviderEntity.builder()
+				.user(userEntity)
+				.email(email)
+				.userIdByProvider(userEntity.getId().toString())
+				.name(AuthProvider.local.toString())
+				.build();
 		return Optional.of(providerRepository.save(providerEntity));
 	}
 

@@ -27,8 +27,8 @@ public UserPrincipal(Integer id, String email, String password, Collection<? ext
         }
 
 public static UserPrincipal create(UserEntity user) {
-        List<GrantedAuthority> authorities = Collections.
-        singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        List<GrantedAuthority> authorities = Collections
+                .singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new UserPrincipal(
         user.getId(),

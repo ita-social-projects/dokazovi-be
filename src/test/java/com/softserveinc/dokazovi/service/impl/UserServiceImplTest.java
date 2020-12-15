@@ -198,4 +198,24 @@ class UserServiceImplTest {
 		verify(userRepository, times(1))
 				.save(any(UserEntity.class));
 	}
+
+	@Test
+	void findByEmail() {
+		String email = "some@some.com";
+		UserEntity user = UserEntity.builder()
+				.email(email)
+				.build();
+		when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
+		UserEntity resultUser = userService.findByEmail(email);
+		verify(userRepository, times(1)).findByEmail(email);
+		assertEquals(email, resultUser.getEmail());
+	}
+
+	@Test
+	void findAll() {
+		Page<UserEntity> users = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
+		when(userRepository.findAll(any(Pageable.class))).thenReturn(users);
+		userService.findAll(pageable);
+		verify(userRepository, times(1)).findAll(pageable);
+	}
 }
