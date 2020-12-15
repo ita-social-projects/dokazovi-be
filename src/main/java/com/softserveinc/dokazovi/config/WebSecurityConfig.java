@@ -89,13 +89,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new HttpCookieOAuth2AuthorizationRequestRepository();
 	}
 
-	@Override
-	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-		authenticationManagerBuilder
-				.userDetailsService(customUserDetailsService)
-				.passwordEncoder(passwordEncoder());
-	}
-
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -156,4 +149,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
+	@Override
+	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+		authenticationManagerBuilder
+				.userDetailsService(customUserDetailsService)
+				.passwordEncoder(passwordEncoder());
+	}
 }
