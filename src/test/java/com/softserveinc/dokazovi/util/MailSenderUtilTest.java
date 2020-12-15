@@ -2,7 +2,6 @@ package com.softserveinc.dokazovi.util;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.service.UserService;
-import org.apache.catalina.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,11 +14,8 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,16 +35,16 @@ public class MailSenderUtilTest {
 
     @Test
     void sendMessage() throws IOException, MessagingException {
+        MimeMessage message = new MimeMessage(Session.getInstance(new Properties()));
+        doNothing().when(userService).createVerificationToken(any(UserEntity.class), anyString());
+        when(javaMailSender.createMimeMessage()).thenReturn(message);
+        doNothing().when(javaMailSender).send(any(MimeMessage.class));
         String email = "user@mail.com";
         String password = "user";
         UserEntity user = UserEntity.builder()
                 .email(email)
                 .password(password)
                 .build();
-        MimeMessage message = new MimeMessage(Session.getInstance(new Properties()));
-        doNothing().when(userService).createVerificationToken(any(UserEntity.class), anyString());
-        when(javaMailSender.createMimeMessage()).thenReturn(message);
-        doNothing().when(javaMailSender).send(any(MimeMessage.class));
         mailSender.sendMessage(user);
         verify(userService, times(1)).createVerificationToken(any(UserEntity.class), anyString());
         verify(javaMailSender, times(1)).createMimeMessage();
