@@ -6,7 +6,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_dokazovi-be&metric=coverage&)](https://sonarcloud.io/dashboard?id=ita-social-projects_dokazovi-be)
 [![Github Issues](https://img.shields.io/github/issues/ita-social-projects/dokazovi-be)](https://github.com/ita-social-projects/dokazovi-be/issues)
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/dokazovi-be)](https://github.com/ita-social-projects/dokazovi-be/pulls)
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://badges.mit-license.org)
+[![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/ita-social-projects/dokazovi-be/blob/develop/LICENSE)
 
 ## About the project
 
@@ -49,7 +49,11 @@ If everything is ok you can run the [Swagger](#How-to-work-with-swagger-UI)
 1. [Run](#How-to-run) Dokazovo project.
 2. Open this url: http://localhost:8080/api/swagger-ui/
 
-## Documentation
+## Project Deploy
+- [Dokazovi - FE](https://dokazovi-fe.herokuapp.com/)
+- [Dokazovi - BE - Swagger](https://dokazovi-be.herokuapp.com/api/swagger-ui/#/)
+
+## How to contribute
 * [Branching Strategy](https://github.com/ita-social-projects/dokazovi-be/wiki/Branching-Strategy)
 * [Database](https://github.com/ita-social-projects/dokazovi-be/wiki/Database)
 * [Setup CheckStyle to your IDE](https://github.com/ita-social-projects/dokazovi-be/wiki/Setup-CheckStyle-to-your-IDE)

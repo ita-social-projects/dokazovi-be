@@ -19,7 +19,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.Set;
 
 @Data
@@ -28,7 +27,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity(name = "source_entity")
 @Table(name = "sources")
-public class SourceEntity implements Serializable {
+public class SourceEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
