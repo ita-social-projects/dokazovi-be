@@ -21,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -37,7 +36,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/api/**"));
-	private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
 
 	private CustomUserDetailsService customUserDetailsService;
 
@@ -45,10 +43,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private CustomOAuth2UserService customOAuth2UserService;
 
 
-	private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+	private OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
 
 
-	private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+	private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
 
 
 	private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
@@ -56,26 +54,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public WebSecurityConfig(CustomUserDetailsService customUserDetailsService,
 			CustomOAuth2UserService customOAuth2UserService,
-			OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-			OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
+			OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
+			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler,
 			HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
 		this.customUserDetailsService = customUserDetailsService;
 		this.customOAuth2UserService = customOAuth2UserService;
-		this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
-		this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
+		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
+		this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
 		this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
 	}
 
 	public WebSecurityConfig(boolean disableDefaults, CustomUserDetailsService customUserDetailsService,
 			CustomOAuth2UserService customOAuth2UserService,
-			OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-			OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
+			OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
+			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler,
 			HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
 		super(disableDefaults);
 		this.customUserDetailsService = customUserDetailsService;
 		this.customOAuth2UserService = customOAuth2UserService;
-		this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
-		this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
+		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
+		this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
 		this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
 	}
 
@@ -143,8 +141,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.userInfoEndpoint()
 				.userService(customOAuth2UserService)
 				.and()
-				.successHandler(oAuth2AuthenticationSuccessHandler)
-				.failureHandler(oAuth2AuthenticationFailureHandler);
+				.successHandler(oauth2AuthenticationSuccessHandler)
+				.failureHandler(oauth2AuthenticationFailureHandler);
 
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}

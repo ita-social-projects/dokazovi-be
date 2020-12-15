@@ -33,11 +33,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private final ProviderRepository userProviderRepository;
 
 	@Override
-	public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
-		OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
+	public OAuth2User loadUser(OAuth2UserRequest oauth2UserRequest) throws OAuth2AuthenticationException {
+		OAuth2User oauth2User = super.loadUser(oauth2UserRequest);
 
 		try {
-			return processOAuth2User(oAuth2UserRequest, oAuth2User);
+			return processOAuth2User(oauth2UserRequest, oauth2User);
 		} catch (AuthenticationException ex) {
 			throw ex;
 		} catch (Exception ex) {
@@ -45,34 +45,34 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		}
 	}
 
-	private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
-		OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory
-				.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(),
-						oAuth2User.getAttributes());
-		if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
+	private OAuth2User processOAuth2User(OAuth2UserRequest oauth2UserRequest, OAuth2User oauth2User) {
+		OAuth2UserInfo oauth2UserInfo = OAuth2UserInfoFactory
+				.getOAuth2UserInfo(oauth2UserRequest.getClientRegistration().getRegistrationId(),
+						oauth2User.getAttributes());
+		if (StringUtils.isEmpty(oauth2UserInfo.getEmail())) {
 			throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
 		}
 
-		Optional<UserEntity> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
+		Optional<UserEntity> userOptional = userRepository.findByEmail(oauth2UserInfo.getEmail());
 
 		UserEntity user;
 		if (userOptional.isPresent()) {
 			user = userOptional.get();
-			user = updateExistingUser(user, oAuth2UserInfo);
+			user = updateExistingUser(user, oauth2UserInfo);
 		} else {
-			user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+			user = registerNewUser(oauth2UserRequest, oauth2UserInfo);
 		}
 
-		return UserPrincipal.create(user, oAuth2User.getAttributes());
+		return UserPrincipal.create(user, oauth2User.getAttributes());
 	}
 
-	private UserEntity registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
+	private UserEntity registerNewUser(OAuth2UserRequest oauth2UserRequest, OAuth2UserInfo oauth2UserInfo) {
 		UserEntity user = new UserEntity();
 		ProviderEntity provider = new ProviderEntity();
 
-		provider.setName(oAuth2UserRequest.getClientRegistration().getRegistrationId());
-		provider.setUserIdByProvider(oAuth2UserInfo.getId());
-		List<String> strings = Arrays.asList(oAuth2UserInfo.getName().split(" "));
+		provider.setName(oauth2UserRequest.getClientRegistration().getRegistrationId());
+		provider.setUserIdByProvider(oauth2UserInfo.getId());
+		List<String> strings = Arrays.asList(oauth2UserInfo.getName().split(" "));
 		if (strings.isEmpty()) {
 			user.setFirstName("user");
 		}
@@ -81,11 +81,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 			user.setLastName(strings.get(1));
 		}
 		if (strings.size() != 2) {
-			user.setFirstName(oAuth2UserInfo.getName());
+			user.setFirstName(oauth2UserInfo.getName());
 		}
-		provider.setEmail(oAuth2UserInfo.getEmail());
-		user.setEmail(oAuth2UserInfo.getEmail());
-		user.setAvatar(oAuth2UserInfo.getImageUrl());
+		provider.setEmail(oauth2UserInfo.getEmail());
+		user.setEmail(oauth2UserInfo.getEmail());
+		user.setAvatar(oauth2UserInfo.getImageUrl());
 		user.setStatus(UserStatus.NEW);
 		UserEntity savedUser = userRepository.save(user);
 		provider.setUser(savedUser);
@@ -93,10 +93,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		return savedUser;
 	}
 
-	private UserEntity updateExistingUser(UserEntity existingUser, OAuth2UserInfo oAuth2UserInfo) {
-		existingUser.setFirstName(oAuth2UserInfo.getName().split(" ")[0]);
-		existingUser.setLastName(oAuth2UserInfo.getName().split(" ")[1]);
-		existingUser.setAvatar(oAuth2UserInfo.getImageUrl());
+	private UserEntity updateExistingUser(UserEntity existingUser, OAuth2UserInfo oauth2UserInfo) {
+		existingUser.setFirstName(oauth2UserInfo.getName().split(" ")[0]);
+		existingUser.setLastName(oauth2UserInfo.getName().split(" ")[1]);
+		existingUser.setAvatar(oauth2UserInfo.getImageUrl());
 		return userRepository.save(existingUser);
 	}
 
