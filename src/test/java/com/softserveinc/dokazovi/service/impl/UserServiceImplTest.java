@@ -143,6 +143,8 @@ class UserServiceImplTest {
 		when(userRepository.findById(any(Integer.class))).thenReturn(Optional.ofNullable(userEntity));
 		userService.setEnableTrue(userEntity);
 		assertEquals(true, userEntity.getEnabled());
+		verify(userRepository, times(1))
+				.findById(any(Integer.class));
 	}
 
 	@Test
@@ -154,6 +156,8 @@ class UserServiceImplTest {
 		when(tokenRepository.findByToken(any(String.class))).thenReturn(verificationToken);
 		verificationToken = userService.getVerificationToken(token);
 		assertEquals(token, verificationToken.getToken());
+		verify(tokenRepository, times(1))
+				.findByToken(any(String.class));
 	}
 
 	@Test
@@ -166,6 +170,8 @@ class UserServiceImplTest {
 				.build();
 		when(tokenRepository.save(any(VerificationToken.class))).thenReturn(verificationToken);
 		userService.createVerificationToken(userEntity, token);
+		verify(tokenRepository, times(1))
+				.save(any(VerificationToken.class));
 		assertEquals(token, verificationToken.getToken());
 		assertEquals(userEntity, verificationToken.getUser());
 	}
@@ -177,6 +183,8 @@ class UserServiceImplTest {
 		when(userRepository.existsByEmail(anyString())).thenReturn(existing);
 		existing = userService.existsByEmail(email);
 		assertEquals(true, existing);
+		verify(userRepository, times(1))
+				.existsByEmail(anyString());
 	}
 
 	@Test
@@ -187,5 +195,7 @@ class UserServiceImplTest {
 		when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
 		userEntity = userService.saveUser(userEntity);
 		assertEquals(1, userEntity.getId());
+		verify(userRepository, times(1))
+				.save(any(UserEntity.class));
 	}
 }

@@ -37,9 +37,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_VERIFICATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -99,6 +97,10 @@ public class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+        verify(authenticationManager, times(2))
+                .authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(userService, times(1))
+                .findByEmail(anyString());
     }
 
     @Test
@@ -127,6 +129,14 @@ public class AuthControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         assertEquals(email, user.getEmail());
+        verify(userService, times(1))
+                .saveUser(any(UserEntity.class));
+        verify(mailSenderUtil, times(1))
+                .sendMessage(any(UserEntity.class));
+        verify(passwordEncoder, times(1))
+                .encode(anyString());
+        verify(providerService, times(1))
+                .createLocalProviderEntityForUser(any(UserEntity.class), anyString());
     }
 
     @Test
@@ -138,7 +148,8 @@ public class AuthControllerTest {
                 .build();
         when(userService.getVerificationToken(anyString())).thenReturn(verificationToken);
         mockMvc.perform(get(uri)).andExpect(status().isOk());
-        verify(userService).getVerificationToken(token);
+        verify(userService, times(1))
+                .getVerificationToken(anyString());
         assertEquals(token, verificationToken.getToken());
     }
 
