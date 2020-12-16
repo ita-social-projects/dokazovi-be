@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Data
@@ -24,7 +23,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Entity(name = "charity_entity")
 @Table(name = "charities")
-public class CharityEntity implements Serializable {
+public class CharityEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
