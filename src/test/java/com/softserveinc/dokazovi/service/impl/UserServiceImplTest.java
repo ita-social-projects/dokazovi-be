@@ -139,15 +139,6 @@ class UserServiceImplTest {
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
 
-	/*
-	@Test
-	void findByEmail() {
-		String email = "some@some.com";
-		userService.findByEmail(email);
-		verify(userRepository, times(1)).findByEmail(email);
-	}
-	 */
-
 	@Test
 	void findAll() {
 		userService.findAll(pageable);

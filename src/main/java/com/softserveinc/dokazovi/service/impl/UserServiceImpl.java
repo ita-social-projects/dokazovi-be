@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserEntity findByEmail(String email) {
-		return userRepository.findByEmail(email).get();
+		return userRepository.findByEmail(email).orElse(null);
 	}
 
 	@Override
@@ -76,7 +77,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void setEnableTrue(UserEntity user) {
-		UserEntity userEntity = userRepository.findById(user.getId()).get();
+		UserEntity userEntity = userRepository.findById(user.getId()).orElse(null);
+		if (userEntity == null) {
+			throw new BadRequestException("Something went wrong!!!");
+		}
 		userEntity.setEnabled(true);
 		userRepository.save(userEntity);
 	}

@@ -17,7 +17,7 @@ private Integer id;
 private String email;
 private String password;
 private Collection<? extends GrantedAuthority> authorities;
-private Map<String, Object> attributes;
+private transient Map<String, Object> attributes;
 
 public UserPrincipal(Integer id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;

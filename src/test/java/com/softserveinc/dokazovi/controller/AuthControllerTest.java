@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.entity.ProviderEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
-import com.softserveinc.dokazovi.payload.LoginRequest;
-import com.softserveinc.dokazovi.payload.SignUpRequest;
+import com.softserveinc.dokazovi.entity.payload.LoginRequest;
+import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class AuthControllerTest {
+class AuthControllerTest {
 
     private MockMvc mockMvc;
     @Mock

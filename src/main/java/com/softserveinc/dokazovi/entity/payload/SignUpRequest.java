@@ -1,4 +1,4 @@
-package com.softserveinc.dokazovi.payload;
+package com.softserveinc.dokazovi.entity.payload;
 
 import lombok.Data;
 

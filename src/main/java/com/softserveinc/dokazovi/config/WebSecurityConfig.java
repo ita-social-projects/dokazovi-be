@@ -20,9 +20,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -35,8 +32,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 )
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/api/**"));
-
 	private CustomUserDetailsService customUserDetailsService;
 
 
@@ -48,33 +43,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
 
-
-	private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
-
 	@Autowired
 	public WebSecurityConfig(CustomUserDetailsService customUserDetailsService,
-			CustomOAuth2UserService customOAuth2UserService,
-			OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
-			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler,
-			HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
+							 CustomOAuth2UserService customOAuth2UserService,
+							 OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
+							 OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
 		this.customUserDetailsService = customUserDetailsService;
 		this.customOAuth2UserService = customOAuth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
 		this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
-		this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
 	}
 
 	public WebSecurityConfig(boolean disableDefaults, CustomUserDetailsService customUserDetailsService,
-			CustomOAuth2UserService customOAuth2UserService,
-			OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
-			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler,
-			HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
+							 CustomOAuth2UserService customOAuth2UserService,
+							 OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
+							 OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
 		super(disableDefaults);
 		this.customUserDetailsService = customUserDetailsService;
 		this.customOAuth2UserService = customOAuth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
 		this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
-		this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
 	}
 
 	@Bean
