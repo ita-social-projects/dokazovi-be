@@ -22,7 +22,6 @@ import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -63,11 +62,10 @@ class TokenAuthenticationFilterTest {
 
 			@Override
 			public String getHeader(String name) {
-				if(name.equalsIgnoreCase("Authorization")) {
-					String header = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCIsImlhdCI6MT"
+				if (name.equalsIgnoreCase("Authorization")) {
+					return "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCIsImlhdCI6MT"
 							+ "YwODU3Mzg3NywiZXhwIjoxNjA5NDM3ODc3fQ.5cbYB3lXDOJmh546wDrZlBw"
 							+ "WtNQrtgElNBOc0M7Hi3Y3ZkHx5bHnZYKGBbZdVeURqBMVWipAFx1fBwtSh-y0OQ";
-					return header;
 				}
 				return null;
 			}
@@ -183,33 +181,32 @@ class TokenAuthenticationFilterTest {
 			}
 
 			@Override
-			public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+			public boolean authenticate(HttpServletResponse response) {
 				return false;
 			}
 
 			@Override
-			public void login(String username, String password) throws ServletException {
+			public void login(String username, String password) {
 
 			}
 
 			@Override
-			public void logout() throws ServletException {
+			public void logout() {
 
 			}
 
 			@Override
-			public Collection<Part> getParts() throws IOException, ServletException {
+			public Collection<Part> getParts() {
 				return null;
 			}
 
 			@Override
-			public Part getPart(String name) throws IOException, ServletException {
+			public Part getPart(String name) {
 				return null;
 			}
 
 			@Override
-			public <T extends HttpUpgradeHandler> T upgrade(Class<T> httpUpgradeHandlerClass)
-					throws IOException, ServletException {
+			public <T extends HttpUpgradeHandler> T upgrade(Class<T> httpUpgradeHandlerClass) {
 				return null;
 			}
 
@@ -229,7 +226,7 @@ class TokenAuthenticationFilterTest {
 			}
 
 			@Override
-			public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
+			public void setCharacterEncoding(String env) {
 
 			}
 
@@ -249,7 +246,7 @@ class TokenAuthenticationFilterTest {
 			}
 
 			@Override
-			public ServletInputStream getInputStream() throws IOException {
+			public ServletInputStream getInputStream() {
 				return null;
 			}
 
@@ -294,7 +291,7 @@ class TokenAuthenticationFilterTest {
 			}
 
 			@Override
-			public BufferedReader getReader() throws IOException {
+			public BufferedReader getReader() {
 				return null;
 			}
 
@@ -399,29 +396,23 @@ class TokenAuthenticationFilterTest {
 				return null;
 			}
 		};
-		chain = new FilterChain() {
-			@Override
-			public void doFilter(ServletRequest request, ServletResponse response)
-					throws IOException, ServletException {
-
-			}
+		chain = (request, response) -> {
 		};
 		tokenAuthenticationFilter = new TokenAuthenticationFilter();
 	}
 
-	private final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCIsImlhdCI6"
-			+ "MTYwODU3Mzg3NywiZXhwIjoxNjA5NDM3ODc3fQ.5cbYB3lXDOJmh546wDrZlBwWtNQrtg"
-			+ "ElNBOc0M7Hi3Y3ZkHx5bHnZYKGBbZdVeURqBMVWipAFx1fBwtSh-y0OQ";
-
 
 	@Test
 	void doFilterInternal() throws ServletException, IOException {
-		tokenAuthenticationFilter.doFilterInternal(request,response,chain);
+		tokenAuthenticationFilter.doFilterInternal(request, response, chain);
 	}
 
 
 	@Test
 	void getJwtFromRequest() {
+		String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCIsImlhdCI6"
+				+ "MTYwODU3Mzg3NywiZXhwIjoxNjA5NDM3ODc3fQ.5cbYB3lXDOJmh546wDrZlBwWtNQrtg"
+				+ "ElNBOc0M7Hi3Y3ZkHx5bHnZYKGBbZdVeURqBMVWipAFx1fBwtSh-y0OQ";
 		String actualJwt = tokenAuthenticationFilter.getJwtFromRequest(request);
 		assertEquals(token, actualJwt);
 	}
