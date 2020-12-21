@@ -10,6 +10,7 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.security.oauth2.user.OAuth2UserInfo;
 import com.softserveinc.dokazovi.security.oauth2.user.OAuth2UserInfoFactory;
+import com.softserveinc.dokazovi.util.StringToNameParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -20,8 +21,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -72,17 +71,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 		provider.setName(oauth2UserRequest.getClientRegistration().getRegistrationId());
 		provider.setUserIdByProvider(oauth2UserInfo.getId());
-		List<String> strings = Arrays.asList(oauth2UserInfo.getName().split(" "));
-		if (strings.isEmpty()) {
-			user.setFirstName("user");
-		}
-		if (strings.size() == 2) {
-			user.setFirstName(strings.get(0));
-			user.setLastName(strings.get(1));
-		}
-		if (strings.size() != 2) {
-			user.setFirstName(oauth2UserInfo.getName());
-		}
+		StringToNameParser.setUserNameFromRequest(oauth2UserInfo, user);
 		provider.setEmail(oauth2UserInfo.getEmail());
 		user.setEmail(oauth2UserInfo.getEmail());
 		user.setAvatar(oauth2UserInfo.getImageUrl());

@@ -2,15 +2,16 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
-import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.entity.payload.ApiResponse;
 import com.softserveinc.dokazovi.entity.payload.AuthResponse;
 import com.softserveinc.dokazovi.entity.payload.LoginRequest;
 import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
+import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.util.MailSenderUtil;
+import com.softserveinc.dokazovi.util.StringToNameParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,8 +31,6 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
@@ -81,17 +80,7 @@ public class AuthController {
 			throw new BadRequestException("Email address already in use.");
 		}
 		UserEntity user = new UserEntity();
-		List<String> strings = Arrays.asList(signUpRequest.getName().split(" "));
-		if (strings.isEmpty()) {
-			user.setFirstName("user");
-		}
-		if (strings.size() == 2) {
-			user.setFirstName(strings.get(0));
-			user.setLastName(strings.get(1));
-		}
-		if (strings.size() != 2) {
-			user.setFirstName(signUpRequest.getName());
-		}
+		StringToNameParser.setUserNameFromRequest(signUpRequest,user);
 		user.setEmail(signUpRequest.getEmail());
 		user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 		user.setStatus(UserStatus.NEW);
