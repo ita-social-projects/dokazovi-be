@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
@@ -55,6 +56,9 @@ public class UserEntity {
 	private String phone;
 
 	private String avatar;
+
+	@ColumnDefault("0")
+	private Integer promotionLevel;
 
 	@Column(name = "bio", columnDefinition = "TEXT")
 	private String bio;
