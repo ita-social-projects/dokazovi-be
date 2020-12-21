@@ -23,7 +23,6 @@ class PostMapperTest {
 
 	private PostEntity post;
 	private UserEntity author;
-	private DirectionEntity mainDirection;
 	private PostTypeEntity type;
 	private InstitutionEntity mainInstitution;
 
@@ -42,11 +41,6 @@ class PostMapperTest {
 				.mainInstitution(mainInstitution)
 				.build();
 
-		mainDirection = DirectionEntity.builder()
-				.id(1)
-				.name("Some main direction")
-				.build();
-
 		type = PostTypeEntity.builder()
 				.id(1)
 				.name("Article")
@@ -57,7 +51,6 @@ class PostMapperTest {
 				.title("Post title")
 				.content("Post content")
 				.author(author)
-				.mainDirection(mainDirection)
 				.type(type)
 				.createdAt(createdAt)
 				.modifiedAt(modifiedAt)
@@ -75,8 +68,6 @@ class PostMapperTest {
 		assertEquals(postDTO.getAuthor().getAvatar(), author.getAvatar());
 		assertEquals(postDTO.getAuthor().getMainInstitution().getId(), author.getMainInstitution().getId());
 		assertEquals(postDTO.getAuthor().getMainInstitution().getName(), author.getMainInstitution().getName());
-		assertEquals(postDTO.getMainDirection().getId(), mainDirection.getId());
-		assertEquals(postDTO.getMainDirection().getName(), mainDirection.getName());
 		assertEquals(postDTO.getType().getId(), type.getId());
 		assertEquals(postDTO.getType().getName(), type.getName());
 		assertEquals(postDTO.getCreatedAt(), post.getCreatedAt());

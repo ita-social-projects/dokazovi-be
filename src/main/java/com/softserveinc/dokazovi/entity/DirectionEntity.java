@@ -31,14 +31,10 @@ public class DirectionEntity {
 	private Integer id;
 
 	private String name;
+	private String label;
 
 	@Column(length = 7)
 	private String color;
-
-	@OneToMany(mappedBy = "mainDirection")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<PostEntity> mainPostsDirections;
 
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude

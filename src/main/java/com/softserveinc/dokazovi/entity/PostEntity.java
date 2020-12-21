@@ -60,10 +60,6 @@ public class PostEntity {
 	@JoinColumn(name = "type_id")
 	private PostTypeEntity type;
 
-	@ManyToOne
-	@JoinColumn(name = "direction_id")
-	private DirectionEntity mainDirection;
-
 	@Enumerated(EnumType.STRING)
 	private PostStatus status;
 
