@@ -409,7 +409,9 @@ class TokenAuthenticationFilterTest {
 		tokenAuthenticationFilter = new TokenAuthenticationFilter();
 	}
 
-	private final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCIsImlhdCI6MTYwODU3Mzg3NywiZXhwIjoxNjA5NDM3ODc3fQ.5cbYB3lXDOJmh546wDrZlBwWtNQrtgElNBOc0M7Hi3Y3ZkHx5bHnZYKGBbZdVeURqBMVWipAFx1fBwtSh-y0OQ";
+	private final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCIsImlhdCI6"
+			+ "MTYwODU3Mzg3NywiZXhwIjoxNjA5NDM3ODc3fQ.5cbYB3lXDOJmh546wDrZlBwWtNQrtg"
+			+ "ElNBOc0M7Hi3Y3ZkHx5bHnZYKGBbZdVeURqBMVWipAFx1fBwtSh-y0OQ";
 
 
 	@Test
