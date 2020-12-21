@@ -64,10 +64,6 @@ public class UserEntity {
 	private String bio;
 
 	@ManyToOne
-	@JoinColumn(name = "direction_id")
-	private DirectionEntity mainDirection;
-
-	@ManyToOne
 	@JoinColumn(name = "institution_id")
 	private InstitutionEntity mainInstitution;
 

@@ -45,11 +45,6 @@ public class DirectionEntity {
 	@ToString.Exclude
 	private Set<PostEntity> posts;
 
-	@OneToMany(mappedBy = "mainDirection")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<UserEntity> mainUsersDirections;
-
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
