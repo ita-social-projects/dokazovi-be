@@ -47,8 +47,7 @@ class TokenProviderTest {
 
 			@Override
 			public Object getPrincipal() {
-				UserPrincipal userPrincipal = new UserPrincipal(28, "test@test.com", "test", new HashSet<>());
-				return userPrincipal;
+				return new UserPrincipal(28, "test@test.com", "test", new HashSet<>());
 			}
 
 			@Override
