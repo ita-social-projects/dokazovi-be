@@ -146,7 +146,6 @@ public class UserEntity {
 	private Timestamp createdAt;
 
 
-
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
