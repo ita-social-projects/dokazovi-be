@@ -17,7 +17,6 @@ public class PostDTO {
 	private String title;
 	private String content;
 	private PostUserDTO author;
-	private DirectionDTO mainDirection;
 	private Set<DirectionDTO> directions;
 	private Set<TagDTO> tags;
 	private PostTypeDTO type;

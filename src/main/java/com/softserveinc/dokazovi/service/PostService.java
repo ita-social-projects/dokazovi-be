@@ -13,7 +13,7 @@ public interface PostService {
 
 	Page<PostDTO> findImportantPosts(Pageable pageable);
 
-	Page<PostDTO> findAllByMainDirection(
+	Page<PostDTO> findAllByDirection(
 			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);
 
 	Page<PostDTO> findAllByExpert(Integer expertId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
