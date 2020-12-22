@@ -8,16 +8,18 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class TokenProviderTest {
 
 	@Mock
@@ -29,42 +31,6 @@ class TokenProviderTest {
 
 	@BeforeEach()
 	public void init() {
-		authentication = new Authentication() {
-			@Override
-			public Collection<? extends GrantedAuthority> getAuthorities() {
-				return null;
-			}
-
-			@Override
-			public Object getCredentials() {
-				return null;
-			}
-
-			@Override
-			public Object getDetails() {
-				return null;
-			}
-
-			@Override
-			public Object getPrincipal() {
-				return new UserPrincipal(28, "test@test.com", "test", new HashSet<>());
-			}
-
-			@Override
-			public boolean isAuthenticated() {
-				return false;
-			}
-
-			@Override
-			public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-
-			}
-
-			@Override
-			public String getName() {
-				return null;
-			}
-		};
 		appProperties = new AppProperties();
 		appProperties.getAuth().setTokenSecret(secret);
 		appProperties.getAuth().setTokenExpirationMsec(864000000);
@@ -79,6 +45,8 @@ class TokenProviderTest {
 
 	@Test
 	void createToken() {
+		UserPrincipal userPrincipal = new UserPrincipal(28, "test@test.com", "test", new HashSet<>());
+		when(authentication.getPrincipal()).thenReturn(userPrincipal);
 		String token = tokenProvider.createToken(authentication);
 		String actualId = Jwts.parser()
 				.setSigningKey(secret)
