@@ -68,7 +68,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private UserEntity registerNewUser(OAuth2UserRequest oauth2UserRequest, OAuth2UserInfo oauth2UserInfo) {
 		UserEntity user = new UserEntity();
 		ProviderEntity provider = new ProviderEntity();
-
 		provider.setName(oauth2UserRequest.getClientRegistration().getRegistrationId());
 		provider.setUserIdByProvider(oauth2UserInfo.getId());
 		StringToNameParser.setUserNameFromRequest(oauth2UserInfo, user);
