@@ -1,7 +1,5 @@
 package com.softserveinc.dokazovi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,32 +43,22 @@ public class PostEntity {
 
 	private String title;
 
-	@Column(name = "content", columnDefinition = "TEXT")
+	@Column(columnDefinition = "TEXT")
 	private String content;
+
+	@Column(columnDefinition = "TEXT")
+	private String preview;
 
 	@ColumnDefault("false")
 	private Boolean important;
 
 	@ManyToOne
 	@JoinColumn(name = "author_id")
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private UserEntity author;
 
 	@ManyToOne
 	@JoinColumn(name = "type_id")
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private PostTypeEntity type;
-
-	@ManyToOne
-	@JoinColumn(name = "direction_id")
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private DirectionEntity mainDirection;
 
 	@Enumerated(EnumType.STRING)
 	private PostStatus status;
@@ -83,9 +71,6 @@ public class PostEntity {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<DirectionEntity> directions;
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -96,9 +81,6 @@ public class PostEntity {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<TagEntity> tags;
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -109,9 +91,6 @@ public class PostEntity {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<SourceEntity> sources;
 
 	@CreationTimestamp
