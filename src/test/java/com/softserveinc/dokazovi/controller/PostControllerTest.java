@@ -78,7 +78,7 @@ class PostControllerTest {
 		mockMvc.perform(
 				get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tag=3,4,5,6"))
 				.andExpect(status().isOk());
-		verify(postService).findAllByMainDirection(directionId, type, tag, PostStatus.PUBLISHED, pageable);
+		verify(postService).findAllByDirection(directionId, type, tag, PostStatus.PUBLISHED, pageable);
 	}
 
 	@Test

@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostDTO> findAllByMainDirection(
+	public Page<PostDTO> findAllByDirection(
 			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable) {
 		DirectionEntity direction = DirectionEntity.builder()
 				.id(directionId)

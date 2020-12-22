@@ -18,6 +18,7 @@ class DirectionMapperTest {
 		directionEntity = DirectionEntity.builder()
 				.id(1)
 				.name("Some name")
+				.label("Some label")
 				.color("#ef5350")
 				.build();
 	}
@@ -28,6 +29,7 @@ class DirectionMapperTest {
 
 		assertEquals(directionDTO.getId(), directionEntity.getId());
 		assertEquals(directionDTO.getName(), directionEntity.getName());
+		assertEquals(directionDTO.getLabel(), directionEntity.getLabel());
 		assertEquals(directionDTO.getColor(), directionEntity.getColor());
 	}
 }

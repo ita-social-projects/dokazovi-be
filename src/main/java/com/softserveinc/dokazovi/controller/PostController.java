@@ -70,7 +70,7 @@ public class PostController {
 			@RequestParam(required = false) Set<Integer> tag) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(postService.findAllByMainDirection(direction, type, tag, PostStatus.PUBLISHED, pageable));
+				.body(postService.findAllByDirection(direction, type, tag, PostStatus.PUBLISHED, pageable));
 	}
 
 	@ApiPageable
