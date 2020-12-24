@@ -43,8 +43,11 @@ public class PostEntity {
 
 	private String title;
 
-	@Column(name = "content", columnDefinition = "TEXT")
+	@Column(columnDefinition = "TEXT")
 	private String content;
+
+	@Column(columnDefinition = "TEXT")
+	private String preview;
 
 	@ColumnDefault("false")
 	private Boolean important;
@@ -56,10 +59,6 @@ public class PostEntity {
 	@ManyToOne
 	@JoinColumn(name = "type_id")
 	private PostTypeEntity type;
-
-	@ManyToOne
-	@JoinColumn(name = "direction_id")
-	private DirectionEntity mainDirection;
 
 	@Enumerated(EnumType.STRING)
 	private PostStatus status;
