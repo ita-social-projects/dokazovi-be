@@ -42,20 +42,21 @@ public class UserServiceImpl implements UserService {
 			Pageable pageable) {
 		if (CollectionUtils.isEmpty(directionsIds) && CollectionUtils.isEmpty(regionsIds)) {
 			return userRepository
-					.findAllByStatus(UserStatus.ACTIVE, pageable)
+					.findAllByStatusOrderByRating(UserStatus.ACTIVE, pageable)
 					.map(userMapper::toUserDTO);
 		} else if (CollectionUtils.isEmpty(directionsIds)) {
 			return userRepository
-					.findAllByMainInstitutionCityRegionIdInAndStatus(regionsIds, UserStatus.ACTIVE, pageable)
+					.findAllByRegionsIdsInAndStatusOrderByRating(regionsIds, UserStatus.ACTIVE, pageable)
 					.map(userMapper::toUserDTO);
 		} else if (CollectionUtils.isEmpty(regionsIds)) {
 			return userRepository
-					.findAllByMainDirectionIdInAndStatus(directionsIds, UserStatus.ACTIVE, pageable)
+					.findAllByDirectionsIdsInAndStatusOrderByDirectionsMatchesThenByRating(
+							directionsIds, UserStatus.ACTIVE, pageable)
 					.map(userMapper::toUserDTO);
 		}
 
 		return userRepository
-				.findAllByMainDirectionIdInAndMainInstitutionCityRegionIdInAndStatus(
+				.findAllByDirectionsIdsInAndRegionsIdsInAndStatusOrderByDirectionsMatchesThenByRating(
 						directionsIds, regionsIds, UserStatus.ACTIVE, pageable)
 				.map(userMapper::toUserDTO);
 	}
@@ -63,11 +64,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable) {
 		if (CollectionUtils.isEmpty(directionsIds)) {
-			return userRepository.findRandomActiveUsers(pageable)
+			return userRepository.findRandomUsersByStatus(UserStatus.ACTIVE, pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		return userRepository.findRandomActiveUsersByDirections(directionsIds, pageable)
+		return userRepository.findRandomUsersByDirectionsAndStatus(directionsIds, UserStatus.ACTIVE, pageable)
 				.map(userMapper::toUserDTO);
 	}
 
