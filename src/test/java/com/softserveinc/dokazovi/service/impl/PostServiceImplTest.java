@@ -59,46 +59,46 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void findAllByMainDirection() {
+	void findAllByDirection() {
 		Integer directionId = 1;
 		when(postRepository.findAllByDirectionsContainsAndStatus(
 				any(DirectionEntity.class), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
-		postService.findAllByMainDirection(directionId, null, null, PostStatus.PUBLISHED, pageable);
+		postService.findAllByDirection(directionId, null, null, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
 	@Test
-	void findAllByMainDirectionAndType() {
+	void findAllByDirectionAndType() {
 		Integer directionId = 1;
 		Set<Integer> types = Set.of(1,2,3);
 		when(postRepository.findAllByDirectionsContainsAndTypeIdInAndStatus(
 				any(DirectionEntity.class), anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
-		postService.findAllByMainDirection(directionId, types, null, PostStatus.PUBLISHED, pageable);
+		postService.findAllByDirection(directionId, types, null, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
 	@Test
-	void findAllByMainDirectionAndTags() {
+	void findAllByDirectionAndTags() {
 		Integer directionId = 1;
 		Set<Integer> tags = Set.of(1, 2, 3, 4);
 		when(postRepository.findAllByDirectionsContainsAndTagsIdInAndStatus(
 				any(DirectionEntity.class), anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
-		postService.findAllByMainDirection(directionId, null, tags, PostStatus.PUBLISHED, pageable);
+		postService.findAllByDirection(directionId, null, tags, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
 	@Test
-	void findAllByMainDirectionAndTypeAndTags() {
+	void findAllByDirectionAndTypeAndTags() {
 		Integer directionId = 1;
 		Set<Integer> types = Set.of(1,2,3);
 		Set<Integer> tags = Set.of(1, 2, 3, 4);
 		when(postRepository.findAllByDirectionsContainsAndTypeIdInAndTagsIdInAndStatus(
 				any(DirectionEntity.class), anySet(), anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
-		postService.findAllByMainDirection(directionId, types,tags, PostStatus.PUBLISHED, pageable);
+		postService.findAllByDirection(directionId, types,tags, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
