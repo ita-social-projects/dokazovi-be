@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -97,7 +96,7 @@ class UserControllerTest {
 	@Test
 	void getAllExpertsByDirectionsAndByRegions_NotFiltered_isOk() throws Exception {
 		String uri = USER + USER_ALL_EXPERTS + "/?page=0";
-		Pageable pageable = PageRequest.of(0, 6, Sort.by("firstName", "lastName", "id"));
+		Pageable pageable = PageRequest.of(0, 6);
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
@@ -107,7 +106,7 @@ class UserControllerTest {
 	@Test
 	void getAllExpertsByDirectionsAndByRegions_FilteredByRegionsOnly_isOk() throws Exception {
 		String uri = USER + USER_ALL_EXPERTS + "/?page=0&regions=1,4,6";
-		Pageable pageable = PageRequest.of(0, 6, Sort.by("firstName", "lastName", "id"));
+		Pageable pageable = PageRequest.of(0, 6);
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
@@ -118,7 +117,7 @@ class UserControllerTest {
 	@Test
 	void getAllExpertsByDirectionsAndByRegions_FilteredByDirectionsOnly_isOk() throws Exception {
 		String uri = USER + USER_ALL_EXPERTS + "/?page=0&directions=1,4,6";
-		Pageable pageable = PageRequest.of(0, 6, Sort.by("firstName", "lastName", "id"));
+		Pageable pageable = PageRequest.of(0, 6);
 		Set<Integer> directionsIds = Set.of(1, 4, 6);
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
@@ -129,7 +128,7 @@ class UserControllerTest {
 	@Test
 	void getAllExpertsByDirectionsAndByRegions_FilteredByDirectionsAndByRegions_isOk() throws Exception {
 		String uri = USER + USER_ALL_EXPERTS + "/?page=0&directions=1,4,6&regions=1,4,6";
-		Pageable pageable = PageRequest.of(0, 6, Sort.by("firstName", "lastName", "id"));
+		Pageable pageable = PageRequest.of(0, 6);
 		Set<Integer> directionsIds = Set.of(1, 4, 6);
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
 
