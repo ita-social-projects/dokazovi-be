@@ -59,7 +59,7 @@ public String getPassword() {
 
 @Override
 public String getUsername() {
-        return email;
+        return getEmail();
         }
 
 @Override

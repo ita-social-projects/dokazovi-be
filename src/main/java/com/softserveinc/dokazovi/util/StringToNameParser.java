@@ -9,6 +9,9 @@ import java.util.List;
 
 public class StringToNameParser {
 
+	private StringToNameParser() {
+	}
+
 	public static void setUserNameFromRequest(SignUpRequest signUpRequest, UserEntity user) {
 		List<String> strings = Arrays.asList(signUpRequest.getName().split(" "));
 		parseString(strings, user);

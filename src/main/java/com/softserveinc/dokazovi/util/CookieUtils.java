@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public class CookieUtils {
 
+	private CookieUtils() {
+	}
+
 	public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
 		Cookie[] cookies = request.getCookies();
 
@@ -20,7 +23,6 @@ public class CookieUtils {
 				}
 			}
 		}
-
 		return Optional.empty();
 	}
 
@@ -55,4 +57,5 @@ public class CookieUtils {
 		return cls.cast(SerializationUtils.deserialize(
 				Base64.getUrlDecoder().decode(cookie.getValue())));
 	}
+
 }

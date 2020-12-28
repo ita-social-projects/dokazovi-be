@@ -17,7 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 @Data
 @Builder
@@ -25,7 +24,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity(name = "provider_entity")
 @Table(name = "providers")
-public class ProviderEntity implements Serializable {
+public class ProviderEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,6 +10,6 @@ public interface ProviderService {
 
 	Optional<ProviderEntity> createLocalProviderEntityForUser(UserEntity userEntity, String email);
 
-	Boolean existsByLocalEmail(String email);
+	boolean existsByLocalEmail(String email);
 
 }

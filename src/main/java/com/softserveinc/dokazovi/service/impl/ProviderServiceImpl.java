@@ -22,13 +22,13 @@ public class ProviderServiceImpl implements ProviderService {
 				.user(userEntity)
 				.email(email)
 				.userIdByProvider(userEntity.getId().toString())
-				.name(AuthProvider.local.toString())
+				.name(AuthProvider.LOCAL.toString())
 				.build();
 		return Optional.of(providerRepository.save(providerEntity));
 	}
 
 	@Override
-	public Boolean existsByLocalEmail(String email) {
-		return providerRepository.existsByEmailAndAndName(email,AuthProvider.local.name());
+	public boolean existsByLocalEmail(String email) {
+		return providerRepository.existsByEmailAndAndName(email,AuthProvider.LOCAL.name());
 	}
 }
