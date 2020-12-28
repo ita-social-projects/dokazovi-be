@@ -1,11 +1,22 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
+import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.entity.SourceEntity;
+import com.softserveinc.dokazovi.entity.TagEntity;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.error.InvalidIdEntityException;
+import com.softserveinc.dokazovi.error.NotExistsEntityException;
+import com.softserveinc.dokazovi.error.UnsupportedCreateOperationException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
+import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.PostService;
+import com.softserveinc.dokazovi.service.SourceService;
+import com.softserveinc.dokazovi.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +29,67 @@ import java.util.Set;
 public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
+	private final DirectionService directionService;
+	private final TagService tagService;
+	private final SourceService sourceService;
 	private final PostMapper postMapper;
+
+	@Override
+	public PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserEntity user) {
+		Integer postId = postSaveDTO.getId();
+
+		if (postId == null) {
+			PostEntity mappedEntity = postMapper.toPostEntity(postSaveDTO);
+			validateSave(mappedEntity);
+			mappedEntity.setAuthor(user);
+			PostEntity savedEntity = postRepository.save(mappedEntity);
+			return postMapper.toPostDTO(savedEntity);
+		}
+
+		return postRepository.findById(postId)
+				.map(postEntity -> {
+					postMapper.updatePostEntityFromDTO(postSaveDTO, postEntity);
+					validateSave(postEntity);
+					PostEntity save = postRepository.save(postEntity);
+					return postMapper.toPostDTO(save);
+				})
+				.orElseThrow(() -> new InvalidIdEntityException(postSaveDTO));
+	}
+
+	@Override
+	public void validateSave(PostEntity postEntity) {
+		Set<DirectionEntity> directions = postEntity.getDirections();
+		if (directions != null) {
+			directions.forEach(directionEntity -> {
+				if (directionEntity.getId() == null) {
+					throw new UnsupportedCreateOperationException(directionEntity);
+				}
+				if (!directionService.exists(directionEntity)) {
+					throw new NotExistsEntityException(directionEntity);
+				}
+			});
+		}
+
+		Set<TagEntity> tags = postEntity.getTags();
+		if (tags != null) {
+			tags.forEach(tagEntity -> {
+				if (tagEntity.getId() == null) {
+					tagService.isUnique(tagEntity);
+				} else {
+					tagService.exists(tagEntity);
+				}
+			});
+		}
+
+		Set<SourceEntity> sources = postEntity.getSources();
+		if (sources != null) {
+			sources.forEach(sourceEntity -> {
+				if (sourceEntity.getId() != null && !sourceService.exists(sourceEntity)) {
+					throw new NotExistsEntityException(sourceEntity);
+				}
+			});
+		}
+	}
 
 	@Override
 	public Page<PostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable) {
@@ -65,4 +136,5 @@ public class PostServiceImpl implements PostService {
 		return postRepository.findAllByAuthorIdAndTypeIdInAndStatus(expertId, typeId, postStatus, pageable)
 				.map(postMapper::toPostDTO);
 	}
+
 }

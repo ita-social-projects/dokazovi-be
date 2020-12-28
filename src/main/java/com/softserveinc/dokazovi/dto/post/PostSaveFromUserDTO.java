@@ -1,30 +1,35 @@
 package com.softserveinc.dokazovi.dto.post;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.source.SourceDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
+import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import lombok.Builder;
 import lombok.Data;
 
-import java.sql.Timestamp;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Data
 @Builder
-public class PostDTO {
+public class PostSaveFromUserDTO {
 
 	private Integer id;
+	@NotNull
 	private String title;
+	@NotNull
 	private String preview;
+	@NotNull
 	private String content;
-	private PostUserDTO author;
-	private Set<DirectionDTO> directions;
-	private Set<TagDTO> tags;
+	@NotNull
 	private PostTypeDTO type;
+	private PostStatus status;
+	@NotNull
+	@Size(min = 1, max = 3)
+	private Set<DirectionDTO> directions;
+	@NotNull
+	@Size(min = 1, max = 3)
+	private Set<TagDTO> tags;
 	private Set<SourceDTO> sources;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-	private Timestamp createdAt;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-	private Timestamp modifiedAt;
 }
