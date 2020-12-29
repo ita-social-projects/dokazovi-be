@@ -8,11 +8,13 @@ import com.softserveinc.dokazovi.entity.SourceEntity;
 import com.softserveinc.dokazovi.entity.TagEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.error.NotExistsEntityException;
+import com.softserveinc.dokazovi.error.NotUniqueEntityException;
 import com.softserveinc.dokazovi.error.UnsupportedCreateOperationException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.SourceService;
+import com.softserveinc.dokazovi.service.TagService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,6 +51,8 @@ class PostServiceImplTest {
 	private DirectionService directionService;
 	@Mock
 	private SourceService sourceService;
+	@Mock
+	private TagService tagService;
 	@InjectMocks
 	private PostServiceImpl postService;
 
@@ -94,7 +98,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void validateSave_whenUnsupportedCreateOperationExceptionThrown_thenAssertionSucceeds() {
+	void validateSave_whenUnsupportedCreateOperationExceptionOfDirectionThrown_thenAssertionSucceeds() {
 		directionEntities.add(DirectionEntity.builder().id(null).build());
 		postEntity = PostEntity.builder()
 				.directions(directionEntities)
@@ -114,6 +118,36 @@ class PostServiceImplTest {
 				.directions(directionEntities)
 				.build();
 		when(directionService.exists(any(DirectionEntity.class))).thenReturn(false);
+		try {
+			postService.validateSave(postEntity);
+		} catch (NotExistsEntityException e) {
+			isExceptionThrown = true;
+		}
+		assertTrue(isExceptionThrown);
+	}
+
+	@Test
+	void validateSave_whenNotUniqueEntityExceptionOfTagsThrown_thenAssertionSucceeds() {
+		tagEntities.add(TagEntity.builder().build());
+		postEntity = PostEntity.builder()
+				.tags(tagEntities)
+				.build();
+		when(tagService.isUnique(any(TagEntity.class))).thenReturn(false);
+		try {
+			postService.validateSave(postEntity);
+		} catch (NotUniqueEntityException e) {
+			isExceptionThrown = true;
+		}
+		assertTrue(isExceptionThrown);
+	}
+
+	@Test
+	void validateSave_NotExistsEntityExceptionOfTagsThrown_thenAssertionSucceeds() {
+		tagEntities.add(TagEntity.builder().id(1).build());
+		postEntity = PostEntity.builder()
+				.tags(tagEntities)
+				.build();
+		when(tagService.exists(any(TagEntity.class))).thenReturn(false);
 		try {
 			postService.validateSave(postEntity);
 		} catch (NotExistsEntityException e) {
