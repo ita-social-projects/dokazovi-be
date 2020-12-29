@@ -4,14 +4,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.source.SourceDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Set;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostDTO {
 
 	private Integer id;
