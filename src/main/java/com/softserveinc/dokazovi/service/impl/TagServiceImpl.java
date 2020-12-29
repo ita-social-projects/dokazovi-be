@@ -50,6 +50,6 @@ public class TagServiceImpl implements TagService {
 
 	@Override
 	public boolean isUnique(TagEntity tagEntity) {
-		return tagRepository.exists(Example.of(tagEntity, uniqueMatcher));
+		return !tagRepository.exists(Example.of(tagEntity, uniqueMatcher));
 	}
 }

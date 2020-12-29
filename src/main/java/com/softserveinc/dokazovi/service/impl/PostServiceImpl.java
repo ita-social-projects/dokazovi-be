@@ -10,6 +10,7 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.error.InvalidIdEntityException;
 import com.softserveinc.dokazovi.error.NotExistsEntityException;
+import com.softserveinc.dokazovi.error.NotUniqueEntityException;
 import com.softserveinc.dokazovi.error.UnsupportedCreateOperationException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -73,10 +74,10 @@ public class PostServiceImpl implements PostService {
 		Set<TagEntity> tags = postEntity.getTags();
 		if (tags != null) {
 			tags.forEach(tagEntity -> {
-				if (tagEntity.getId() == null) {
-					tagService.isUnique(tagEntity);
-				} else {
-					tagService.exists(tagEntity);
+				if (tagEntity.getId() == null && !tagService.isUnique(tagEntity)) {
+					throw new NotUniqueEntityException(tagEntity);
+				} else if (!tagService.exists(tagEntity)) {
+					throw new NotExistsEntityException(tagEntity);
 				}
 			});
 		}
