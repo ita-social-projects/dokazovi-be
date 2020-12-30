@@ -74,7 +74,6 @@ class PostControllerTest {
 				"      \"id\": 1\n" +
 				"    }\n" +
 				"  ],\n" +
-				"  \"status\": \"ARCHIVED\",\n" +
 				"  \"tags\": [\n" +
 				"    {\n" +
 				"      \"id\": 1,\n" +
