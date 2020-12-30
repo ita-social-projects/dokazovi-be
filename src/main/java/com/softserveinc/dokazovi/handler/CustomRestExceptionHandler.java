@@ -22,7 +22,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
 			final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-		logger.warn(ex.getClass().getName());
+		logger.info(ex.getClass().getName());
 
 		List<String> errors = ex.getBindingResult().getFieldErrors()
 				.stream()
@@ -38,23 +38,9 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({EntityException.class})
 	public ResponseEntity<Object> handleEntityException(final EntityException ex) {
-		logger.warn(ex.getClass().getName() + ": [" + ex.getMessage() + "]");
+		logger.info(ex.getClass().getName());
 		final ApiError apiError = ApiError.builder()
 				.status(HttpStatus.BAD_REQUEST)
-				.errors(Collections.singletonList(ex.getLocalizedMessage()))
-				.build();
-		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
-	}
-
-	// 500
-
-	@ExceptionHandler({Exception.class})
-	public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
-		logger.info(ex.getClass().getName());
-		logger.error("error", ex);
-		//
-		final ApiError apiError = ApiError.builder()
-				.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.errors(Collections.singletonList(ex.getLocalizedMessage()))
 				.build();
 		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

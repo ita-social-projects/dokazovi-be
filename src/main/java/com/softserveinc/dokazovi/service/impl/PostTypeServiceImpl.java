@@ -1,10 +1,12 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
+import com.softserveinc.dokazovi.entity.PostTypeEntity;
 import com.softserveinc.dokazovi.mapper.PostTypeMapper;
 import com.softserveinc.dokazovi.repositories.PostTypeRepository;
 import com.softserveinc.dokazovi.service.PostTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,5 +25,10 @@ public class PostTypeServiceImpl implements PostTypeService {
 				.stream()
 				.map(postTypeMapper::toPostTypeDTO)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean exists(PostTypeEntity postTypeEntity) {
+		return postTypeRepository.exists(Example.of(postTypeEntity));
 	}
 }

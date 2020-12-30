@@ -9,6 +9,8 @@ import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +43,11 @@ public class PostController {
 	private final PostService postService;
 	private final PostTypeService postTypeService;
 
-	@ApiOperation(value = "Save post from user")
+	@ApiOperation(value = "Save post of user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = PostDTO.class),
+			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+	})
 	@PostMapping
 	public ResponseEntity<PostDTO> save(@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO) {
 		return ResponseEntity

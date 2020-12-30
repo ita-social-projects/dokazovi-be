@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.entity.PostTypeEntity;
 import com.softserveinc.dokazovi.entity.SourceEntity;
 import com.softserveinc.dokazovi.entity.TagEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -16,6 +17,7 @@ import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.PostService;
+import com.softserveinc.dokazovi.service.PostTypeService;
 import com.softserveinc.dokazovi.service.SourceService;
 import com.softserveinc.dokazovi.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -30,20 +32,22 @@ import java.util.Set;
 public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
+	private final PostMapper postMapper;
+	private final PostTypeService postTypeService;
 	private final DirectionService directionService;
 	private final TagService tagService;
 	private final SourceService sourceService;
-	private final PostMapper postMapper;
 
 	@Override
 	public PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserEntity user) {
 		Integer postId = postSaveDTO.getId();
 
 		if (postId == null) {
-			PostEntity mappedEntity = postMapper.toPostEntity(postSaveDTO);
-			validateSave(mappedEntity);
-			mappedEntity.setAuthor(user);
-			PostEntity savedEntity = postRepository.save(mappedEntity);
+			PostEntity postEntity = postMapper.toPostEntity(postSaveDTO);
+			validateSave(postEntity);
+			postEntity.setAuthor(user);
+			postEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+			PostEntity savedEntity = postRepository.save(postEntity);
 			return postMapper.toPostDTO(savedEntity);
 		}
 
@@ -51,6 +55,7 @@ public class PostServiceImpl implements PostService {
 				.map(postEntity -> {
 					postMapper.updatePostEntityFromDTO(postSaveDTO, postEntity);
 					validateSave(postEntity);
+					postEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
 					PostEntity save = postRepository.save(postEntity);
 					return postMapper.toPostDTO(save);
 				})
@@ -59,6 +64,16 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public void validateSave(PostEntity postEntity) {
+		PostTypeEntity type = postEntity.getType();
+		if (type != null) {
+			if (type.getId() == null) {
+				throw new UnsupportedCreateOperationException(type);
+			}
+			if (!postTypeService.exists(type)) {
+				throw new NotExistsEntityException(type);
+			}
+		}
+
 		Set<DirectionEntity> directions = postEntity.getDirections();
 		if (directions != null) {
 			directions.forEach(directionEntity -> {
