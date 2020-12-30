@@ -8,7 +8,6 @@ import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.PostTypeEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -69,7 +68,6 @@ class PostMapperTest {
 						.id(1)
 						.name("1")
 						.build())
-				.status(PostStatus.MODERATION_FIRST_SIGN)
 				.directions(new HashSet<>())
 				.tags(new HashSet<>())
 				.sources(new HashSet<>())
@@ -110,7 +108,6 @@ class PostMapperTest {
 		assertEquals(postEntity.getContent(), postSaveFromUserDTO.getContent());
 		assertEquals(postEntity.getType().getId(), postSaveFromUserDTO.getType().getId());
 		assertEquals(postEntity.getType().getName(), postSaveFromUserDTO.getType().getName());
-		assertEquals(postEntity.getStatus(), postSaveFromUserDTO.getStatus());
 		assertEquals(postEntity.getDirections().hashCode(), postSaveFromUserDTO.getDirections().hashCode());
 		assertEquals(postEntity.getTags().hashCode(), postSaveFromUserDTO.getTags().hashCode());
 		assertEquals(postEntity.getSources().hashCode(), postSaveFromUserDTO.getSources().hashCode());
@@ -126,7 +123,6 @@ class PostMapperTest {
 		assertEquals(postEntity.getContent(), postSaveFromUserDTO.getContent());
 		assertEquals(postEntity.getType().getId(), postSaveFromUserDTO.getType().getId());
 		assertEquals(postEntity.getType().getName(), postSaveFromUserDTO.getType().getName());
-		assertEquals(postEntity.getStatus(), postSaveFromUserDTO.getStatus());
 		assertEquals(postEntity.getDirections().hashCode(), postSaveFromUserDTO.getDirections().hashCode());
 		assertEquals(postEntity.getTags().hashCode(), postSaveFromUserDTO.getTags().hashCode());
 		assertEquals(postEntity.getSources().hashCode(), postSaveFromUserDTO.getSources().hashCode());

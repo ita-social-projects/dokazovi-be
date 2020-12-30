@@ -24,7 +24,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.Assert;
 
 import java.util.HashSet;
 import java.util.List;
@@ -86,10 +85,10 @@ class PostServiceImplTest {
 	@Test
 	void updatePostFromUserWithId() {
 		Optional<PostEntity> postEntity = Optional.ofNullable(PostEntity.builder().id(1).build());
-		PostSaveFromUserDTO postDTO = PostSaveFromUserDTO.builder().id(1).build();
 		when(postRepository.save(any(PostEntity.class))).thenReturn(postEntity.orElseThrow());
 		when(postRepository.findById(any(Integer.class))).thenReturn(postEntity);
 		when(postMapper.toPostDTO(any(PostEntity.class))).thenReturn(new PostDTO());
+		PostSaveFromUserDTO postDTO = PostSaveFromUserDTO.builder().id(1).build();
 		postService.saveFromUser(postDTO, null);
 		verify(postRepository).save(any(PostEntity.class));
 		verify(postMapper).toPostDTO(any(PostEntity.class));
@@ -200,7 +199,7 @@ class PostServiceImplTest {
 	@Test
 	void findAllByDirectionAndType() {
 		Integer directionId = 1;
-		Set<Integer> types = Set.of(1,2,3);
+		Set<Integer> types = Set.of(1, 2, 3);
 		when(postRepository.findAllByDirectionsContainsAndTypeIdInAndStatus(
 				any(DirectionEntity.class), anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
@@ -222,12 +221,12 @@ class PostServiceImplTest {
 	@Test
 	void findAllByDirectionAndTypeAndTags() {
 		Integer directionId = 1;
-		Set<Integer> types = Set.of(1,2,3);
+		Set<Integer> types = Set.of(1, 2, 3);
 		Set<Integer> tags = Set.of(1, 2, 3, 4);
 		when(postRepository.findAllByDirectionsContainsAndTypeIdInAndTagsIdInAndStatus(
 				any(DirectionEntity.class), anySet(), anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
-		postService.findAllByDirection(directionId, types,tags, PostStatus.PUBLISHED, pageable);
+		postService.findAllByDirection(directionId, types, tags, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 

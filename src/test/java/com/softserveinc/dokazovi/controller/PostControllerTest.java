@@ -1,10 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -26,8 +23,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Set;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.*;
-import static org.mockito.ArgumentMatchers.*;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
