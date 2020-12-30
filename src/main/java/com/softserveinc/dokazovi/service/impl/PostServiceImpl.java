@@ -91,7 +91,8 @@ public class PostServiceImpl implements PostService {
 			tags.forEach(tagEntity -> {
 				if (tagEntity.getId() == null && !tagService.isUnique(tagEntity)) {
 					throw new NotUniqueEntityException(tagEntity);
-				} else if (!tagService.exists(tagEntity)) {
+				}
+				if (tagEntity.getId() != null && !tagService.exists(tagEntity)) {
 					throw new NotExistsEntityException(tagEntity);
 				}
 			});
