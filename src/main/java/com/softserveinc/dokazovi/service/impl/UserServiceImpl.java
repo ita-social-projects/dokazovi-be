@@ -2,8 +2,10 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.mapper.UserMapper;
+import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.transaction.Transactional;
 import java.util.Set;
 
 
@@ -20,6 +23,7 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
+	private final PostRepository postRepository;
 	private final UserMapper userMapper;
 
 	@Override
@@ -38,26 +42,33 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds, Set<Integer> regionsIds,
 			Pageable pageable) {
+		int allPublishedPostsCount = this.getAllPostsCountByStatus(PostStatus.PUBLISHED);
+		int allAuthorsCount =
+				this.getUsersCountHavingPostWithStatus(PostStatus.PUBLISHED);
+
+
+		int averagePublishedPostsPerAuthor = (allAuthorsCount == 0) ? 1 :
+				(int) Math.ceil((float) allPublishedPostsCount / allAuthorsCount);
+
 		if (CollectionUtils.isEmpty(directionsIds) && CollectionUtils.isEmpty(regionsIds)) {
-			return userRepository
-					.findAllByStatusOrderByRating(UserStatus.ACTIVE, pageable)
+			return userRepository.findAllActiveUsersOrderByRating(
+							allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
 					.map(userMapper::toUserDTO);
 		} else if (CollectionUtils.isEmpty(directionsIds)) {
-			return userRepository
-					.findAllByRegionsIdsInAndStatusOrderByRating(regionsIds, UserStatus.ACTIVE, pageable)
+			return userRepository.findAllActiveUsersByRegionsIdsInOrderByRating(regionsIds,
+							allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
 					.map(userMapper::toUserDTO);
 		} else if (CollectionUtils.isEmpty(regionsIds)) {
-			return userRepository
-					.findAllByDirectionsIdsInAndStatusOrderByDirectionsMatchesThenByRating(
-							directionsIds, UserStatus.ACTIVE, pageable)
+			return userRepository.findAllActiveUsersByDirectionsIdsInOrderByDirectionsMatchesThenByRating(
+					directionsIds, allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		return userRepository
-				.findAllByDirectionsIdsInAndRegionsIdsInAndStatusOrderByDirectionsMatchesThenByRating(
-						directionsIds, regionsIds, UserStatus.ACTIVE, pageable)
+		return userRepository.findAllActiveUsersByDirectionsIdsInAndRegionsIdsInOrderByDirectionsMatchesThenByRating(
+						directionsIds, regionsIds, allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
 				.map(userMapper::toUserDTO);
 	}
 
@@ -72,4 +83,13 @@ public class UserServiceImpl implements UserService {
 				.map(userMapper::toUserDTO);
 	}
 
+	@Override
+	public Integer getUsersCountHavingPostWithStatus(PostStatus postsStatus) {
+		return userRepository.countUsersWhereExistsPostWithStatus(postsStatus);
+	}
+
+	@Override
+	public Integer getAllPostsCountByStatus(PostStatus postStatus) {
+		return postRepository.countAllByStatus(postStatus);
+	}
 }
