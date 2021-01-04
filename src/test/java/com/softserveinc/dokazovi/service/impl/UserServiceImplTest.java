@@ -80,8 +80,8 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
 		when(userRepository.findAllActiveUsersOrderByRating(
-				any(Integer.class),
-				any(Integer.class),
+				any(Double.class),
+				any(Double.class),
 				any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(null, null, pageable);
@@ -96,8 +96,8 @@ class UserServiceImplTest {
 
 		when(userRepository.findAllActiveUsersByRegionsIdsInOrderByRating(
 				anySet(),
-				any(Integer.class),
-				any(Integer.class),
+				any(Double.class),
+				any(Double.class),
 				any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(null, regionsIds, pageable);
@@ -112,8 +112,8 @@ class UserServiceImplTest {
 
 		when(userRepository.findAllActiveUsersByDirectionsIdsInOrderByDirectionsMatchesThenByRating(
 				anySet(),
-				any(Integer.class),
-				any(Integer.class),
+				any(Double.class),
+				any(Double.class),
 				any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(directionsIds, null, pageable);
@@ -130,8 +130,8 @@ class UserServiceImplTest {
 		when(userRepository.findAllActiveUsersByDirectionsIdsInAndRegionsIdsInOrderByDirectionsMatchesThenByRating(
 				anySet(),
 				anySet(),
-				any(Integer.class),
-				any(Integer.class),
+				any(Double.class),
+				any(Double.class),
 				any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(directionsIds, regionsIds, pageable);

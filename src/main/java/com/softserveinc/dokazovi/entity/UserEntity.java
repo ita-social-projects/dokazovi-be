@@ -59,7 +59,7 @@ public class UserEntity {
 	private String avatar;
 
 	@ColumnDefault("1.0")
-	private Float promotionScale;
+	private Double promotionScale;
 
 	@Enumerated(EnumType.STRING)
 	@ColumnDefault("BASIC")

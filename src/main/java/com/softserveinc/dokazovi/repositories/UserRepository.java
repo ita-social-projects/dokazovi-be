@@ -34,79 +34,75 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	Page<UserEntity> findRandomUsersByDirectionsAndStatus(
 			Iterable<Integer> directionsIds, UserStatus userStatus, Pageable pageable);
 
-	@Query(nativeQuery = true,
-			value = "SELECT U.* FROM USERS U "
-					+ "		LEFT OUTER JOIN POSTS P ON P.AUTHOR_ID = U.USER_ID "
-					+ "WHERE U.STATUS = 'ACTIVE' "
-					+ "GROUP BY U.USER_ID "
-					+ "ORDER BY CASE "
-					+ "				WHEN U.PROMOTION_LEVEL='TOP' THEN :allPublishedPostsCount "
-					+ "				WHEN U.PROMOTION_LEVEL='PROMOTED' THEN :averagePublishedPostsPerUser "
-					+ "				ELSE 0 "
-					+ "			END + "
-					+ "			SUM(CASE WHEN P.STATUS='PUBLISHED' THEN 1 ELSE 0 END) * U.PROMOTION_SCALE DESC, "
-					+ "			U.USER_ID DESC")
+	@Query(value = "SELECT U FROM user_entity U "
+				+ "		LEFT JOIN U.posts P "
+				+ "WHERE U.status = 'ACTIVE' "
+				+ "GROUP BY U.id "
+				+ "ORDER BY CASE "
+				+ "				WHEN U.promotionLevel='TOP' THEN :allPublishedPostsCount "
+				+ "				WHEN U.promotionLevel='PROMOTED' THEN :averagePublishedPostsPerUser "
+				+ "				ELSE 0.0 "
+				+ "			END + SUM(CASE WHEN P.status='PUBLISHED' THEN 1 ELSE 0 END) * U.promotionScale DESC, "
+				+ "			U.id DESC ",
+			countQuery = "SELECT COUNT(U) FROM user_entity U WHERE U.status = 'ACTIVE' GROUP BY U.id "
+						+ "ORDER BY :averagePublishedPostsPerUser, :allPublishedPostsCount")
 	Page<UserEntity> findAllActiveUsersOrderByRating(
-			Integer allPublishedPostsCount, Integer averagePublishedPostsPerUser, Pageable pageable);
+			Double allPublishedPostsCount, Double averagePublishedPostsPerUser, Pageable pageable);
 
-	@Query(nativeQuery = true,
-			value = "SELECT U.* FROM USERS U "
-					+ "		LEFT OUTER JOIN POSTS P ON P.AUTHOR_ID = U.USER_ID "
-					+ "		LEFT OUTER JOIN INSTITUTIONS I ON U.INSTITUTION_ID = I.INSTITUTION_ID "
-					+ "		LEFT OUTER JOIN CITIES C ON I.CITY_ID = C.CITY_ID "
-					+ "WHERE U.STATUS = 'ACTIVE' "
-					+ "		AND C.REGION_ID IN (:regionsIds) "
-					+ "GROUP BY U.USER_ID "
-					+ "ORDER BY CASE "
-					+ "				WHEN U.PROMOTION_LEVEL='TOP' THEN :allPublishedPostsCount "
-					+ "				WHEN U.PROMOTION_LEVEL='PROMOTED' THEN :averagePublishedPostsPerUser "
-					+ "				ELSE 0 "
-					+ "			END + "
-					+ "			SUM(CASE WHEN P.STATUS='PUBLISHED' THEN 1 ELSE 0 END) * U.PROMOTION_SCALE DESC, "
-					+ "			U.USER_ID DESC")
+	@Query(value = "SELECT U FROM user_entity U "
+				+ "		LEFT JOIN U.posts P "
+				+ "WHERE U.status = 'ACTIVE' AND U.mainInstitution.city.region.id IN (:regionsIds) "
+				+ "GROUP BY U.id "
+				+ "ORDER BY	CASE "
+				+ "				WHEN U.promotionLevel='TOP' THEN :allPublishedPostsCount "
+				+ "				WHEN U.promotionLevel='PROMOTED' THEN :averagePublishedPostsPerUser "
+				+ "				ELSE 0.0 "
+				+ "			END + SUM(CASE WHEN P.status='PUBLISHED' THEN 1 ELSE 0 END) * U.promotionScale DESC, "
+				+ "			U.id DESC ",
+			countQuery = "SELECT COUNT(U) FROM user_entity U "
+						+ "WHERE U.status = 'ACTIVE' AND U.mainInstitution.city.region.id IN (:regionsIds) "
+						+ "GROUP BY U.id ORDER BY :averagePublishedPostsPerUser, :allPublishedPostsCount")
 	Page<UserEntity> findAllActiveUsersByRegionsIdsInOrderByRating(
-			Iterable<Integer> regionsIds, Integer allPublishedPostsCount, Integer averagePublishedPostsPerUser,
+			Iterable<Integer> regionsIds, Double allPublishedPostsCount, Double averagePublishedPostsPerUser,
 			Pageable pageable);
 
-	@Query(nativeQuery = true,
-			value = "SELECT U.* FROM USERS U "
-					+ "		LEFT OUTER JOIN POSTS P ON P.AUTHOR_ID = U.USER_ID "
-					+ "		FULL JOIN USERS_DIRECTIONS UD ON U.USER_ID = UD.USER_ID "
-					+ "WHERE U.STATUS='ACTIVE' "
-					+ "		AND UD.DIRECTION_ID IN (:directionsIds) "
-					+ "GROUP BY U.USER_ID,  "
-					+ "ORDER BY COUNT(DISTINCT UD) DESC, "
-					+ "			CASE "
-					+ "				WHEN U.PROMOTION_LEVEL='TOP' THEN :allPublishedPostsCount "
-					+ "				WHEN U.PROMOTION_LEVEL='PROMOTED' THEN :averagePublishedPostsPerUser "
-					+ "				ELSE 0 "
-					+ "			END + "
-					+ "			SUM(CASE WHEN P.STATUS='PUBLISHED' THEN 1 ELSE 0 END) * U.PROMOTION_SCALE DESC, "
-					+ "			U.USER_ID DESC")
+	@Query(value = "SELECT U FROM user_entity U "
+				+ "		LEFT JOIN U.directions D "
+				+ "		LEFT JOIN U.posts P "
+				+ "WHERE U.status = 'ACTIVE' AND D.id IN (:directionsIds) "
+				+ "GROUP BY U.id "
+				+ "ORDER BY COUNT(DISTINCT D) DESC, "
+				+ "			CASE "
+				+ "				WHEN U.promotionLevel='TOP' THEN :allPublishedPostsCount "
+				+ "				WHEN U.promotionLevel='PROMOTED' THEN :averagePublishedPostsPerUser "
+				+ "				ELSE 0.0 "
+				+ "			END + SUM(CASE WHEN P.status='PUBLISHED' THEN 1 ELSE 0 END) * U.promotionScale DESC, "
+				+ "			U.id DESC ",
+			countQuery = "SELECT COUNT(U) FROM user_entity U INNER JOIN U.directions D "
+						+ "WHERE U.status = 'ACTIVE' AND D.id IN (:directionsIds) "
+						+ "GROUP BY U.id ORDER BY :averagePublishedPostsPerUser, :allPublishedPostsCount")
 	Page<UserEntity> findAllActiveUsersByDirectionsIdsInOrderByDirectionsMatchesThenByRating(
-			Iterable<Integer> directionsIds, Integer allPublishedPostsCount, Integer averagePublishedPostsPerUser,
+			Iterable<Integer> directionsIds, Double allPublishedPostsCount, Double averagePublishedPostsPerUser,
 			Pageable pageable);
 
-	@Query(nativeQuery = true,
-			value = "SELECT U.* "
-					+ "FROM USERS U "
-					+ "		LEFT OUTER JOIN POSTS P ON P.AUTHOR_ID = U.USER_ID "
-					+ "		JOIN USERS_DIRECTIONS UD ON U.USER_ID = UD.USER_ID "
-					+ "		LEFT OUTER JOIN INSTITUTIONS I ON U.INSTITUTION_ID = I.INSTITUTION_ID "
-					+ "		LEFT OUTER JOIN CITIES C ON I.CITY_ID = C.CITY_ID "
-					+ "WHERE U.STATUS = 'ACTIVE' "
-					+ "		AND UD.DIRECTION_ID IN (:directionsIds) "
-					+ "		AND C.REGION_ID IN (:regionsIds) "
-					+ "GROUP BY U.USER_ID "
-					+ "ORDER BY COUNT(DISTINCT UD) DESC, "
-					+ "			CASE "
-					+ "				WHEN U.PROMOTION_LEVEL='TOP' THEN :allPublishedPostsCount "
-					+ "				WHEN U.PROMOTION_LEVEL='PROMOTED' THEN :averagePublishedPostsPerUser "
-					+ "				ELSE 0 "
-					+ "			END + "
-					+ "			SUM(CASE WHEN P.STATUS='PUBLISHED' THEN 1 ELSE 0 END) * U.PROMOTION_SCALE DESC, "
-					+ "			U.USER_ID DESC")
+	@Query(value = "SELECT U FROM user_entity U "
+				+ "		LEFT JOIN U.directions D "
+				+ "		LEFT JOIN U.posts P "
+				+ "WHERE U.status = 'ACTIVE' AND D.id IN (:directionsIds) "
+				+ "		AND U.mainInstitution.city.region.id IN (:regionsIds) "
+				+ "GROUP BY U.id "
+				+ "ORDER BY COUNT(DISTINCT D) DESC, "
+				+ "			CASE "
+				+ "				WHEN U.promotionLevel='TOP' THEN :allPublishedPostsCount "
+				+ "				WHEN U.promotionLevel='PROMOTED' THEN :averagePublishedPostsPerUser "
+				+ "				ELSE 0.0 "
+				+ "			END + SUM(CASE WHEN P.status='PUBLISHED' THEN 1 ELSE 0 END) * U.promotionScale DESC, "
+				+ "			U.id DESC ",
+			countQuery = "SELECT COUNT(U) FROM user_entity U INNER JOIN U.directions D "
+						+ "WHERE U.status = 'ACTIVE' AND D.id IN (:directionsIds) "
+						+ "		AND U.mainInstitution.city.region.id IN (:regionsIds) "
+						+ "GROUP BY U.id ORDER BY :averagePublishedPostsPerUser, :allPublishedPostsCount")
 	Page<UserEntity> findAllActiveUsersByDirectionsIdsInAndRegionsIdsInOrderByDirectionsMatchesThenByRating(
-			Iterable<Integer> directionsIds, Iterable<Integer> regionsIds, Integer allPublishedPostsCount,
-			Integer averagePublishedPostsPerUser, Pageable pageable);
+			Iterable<Integer> directionsIds, Iterable<Integer> regionsIds, Double allPublishedPostsCount,
+			Double averagePublishedPostsPerUser, Pageable pageable);
 }

@@ -45,13 +45,11 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds, Set<Integer> regionsIds,
 			Pageable pageable) {
-		int allPublishedPostsCount = this.getAllPostsCountByStatus(PostStatus.PUBLISHED);
-		int allAuthorsCount =
-				this.getUsersCountHavingPostWithStatus(PostStatus.PUBLISHED);
+		Double allPublishedPostsCount = Double.valueOf(this.getAllPostsCountByStatus(PostStatus.PUBLISHED));
+		Double allAuthorsCount = Double.valueOf(this.getActiveUsersCountHavingPostWithStatus(PostStatus.PUBLISHED));
 
-
-		int averagePublishedPostsPerAuthor = (allAuthorsCount == 0) ? 1 :
-				(int) Math.ceil((float) allPublishedPostsCount / allAuthorsCount);
+		Double averagePublishedPostsPerAuthor = (allAuthorsCount == 0.0) ? 1.0 :
+				Math.ceil(allPublishedPostsCount / allAuthorsCount);
 
 		if (CollectionUtils.isEmpty(directionsIds) && CollectionUtils.isEmpty(regionsIds)) {
 			return userRepository.findAllActiveUsersOrderByRating(
@@ -63,7 +61,7 @@ public class UserServiceImpl implements UserService {
 					.map(userMapper::toUserDTO);
 		} else if (CollectionUtils.isEmpty(regionsIds)) {
 			return userRepository.findAllActiveUsersByDirectionsIdsInOrderByDirectionsMatchesThenByRating(
-					directionsIds, allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
+						directionsIds, allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
 					.map(userMapper::toUserDTO);
 		}
 
@@ -84,7 +82,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Integer getUsersCountHavingPostWithStatus(PostStatus postsStatus) {
+	public Integer getActiveUsersCountHavingPostWithStatus(PostStatus postsStatus) {
 		return userRepository.countUsersWhereExistsPostWithStatus(postsStatus);
 	}
 
