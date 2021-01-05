@@ -53,7 +53,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 				+ "       LEFT JOIN U.posts P "
 				+ "WHERE U.status = 'ACTIVE' AND U.mainInstitution.city.region.id IN (:regionsIds) "
 				+ "GROUP BY U.id "
-				+ "ORDER BY	CASE "
+				+ "ORDER BY CASE "
 				+ "             WHEN U.promotionLevel='TOP' THEN :allPublishedPostsCount "
 				+ "             WHEN U.promotionLevel='PROMOTED' THEN :averagePublishedPostsPerUser "
 				+ "             ELSE 0.0 "
