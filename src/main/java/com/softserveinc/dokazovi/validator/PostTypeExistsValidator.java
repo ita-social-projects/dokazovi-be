@@ -19,6 +19,9 @@ public class PostTypeExistsValidator implements ConstraintValidator<PostTypeExis
 			return true;
 		}
 		Integer id = value.getId();
-		return id != null && repository.existsById(id);
+		if (id == null) {
+			return false;
+		}
+		return repository.existsById(id);
 	}
 }

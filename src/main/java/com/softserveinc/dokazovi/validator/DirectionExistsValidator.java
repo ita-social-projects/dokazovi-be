@@ -16,6 +16,9 @@ public class DirectionExistsValidator implements ConstraintValidator<DirectionEx
 	@Override
 	public boolean isValid(DirectionDTO value, ConstraintValidatorContext context) {
 		Integer id = value.getId();
-		return id != null && repository.existsById(id);
+		if (id == null) {
+			return false;
+		}
+		return repository.existsById(id);
 	}
 }

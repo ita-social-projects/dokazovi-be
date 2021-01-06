@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.validator;
 
-import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
-import com.softserveinc.dokazovi.repositories.DirectionRepository;
+import com.softserveinc.dokazovi.dto.source.SourceDTO;
+import com.softserveinc.dokazovi.repositories.SourceRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,18 +14,18 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DirectionExistsValidatorTest {
+class SourceExistsValidatorTest {
 
 	@Mock
-	private DirectionRepository repository;
+	private SourceRepository repository;
 
 	@InjectMocks
-	private DirectionExistsValidator validator;
+	private SourceExistsValidator validator;
 
 	@Test
 	void isValid_WhenIdNotNull_ReturnTrue() {
 		when(repository.existsById(anyInt())).thenReturn(true);
-		DirectionDTO dto = DirectionDTO.builder()
+		SourceDTO dto = SourceDTO.builder()
 				.id(1)
 				.build();
 		assertTrue(validator.isValid(dto, null));
@@ -33,7 +33,7 @@ class DirectionExistsValidatorTest {
 
 	@Test
 	void isValid_WhenIdIsNull_ReturnFalse() {
-		DirectionDTO dto = DirectionDTO.builder()
+		SourceDTO dto = SourceDTO.builder()
 				.id(null)
 				.build();
 		assertFalse(validator.isValid(dto, null));

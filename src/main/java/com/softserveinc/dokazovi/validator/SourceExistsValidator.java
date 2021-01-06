@@ -16,6 +16,9 @@ public class SourceExistsValidator implements ConstraintValidator<SourceExists, 
 	@Override
 	public boolean isValid(SourceDTO value, ConstraintValidatorContext context) {
 		Integer id = value.getId();
-		return id != null && repository.existsById(id);
+		if (id == null) {
+			return false;
+		}
+		return repository.existsById(id);
 	}
 }
