@@ -5,7 +5,6 @@ import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.user.LatestUserPostDTO;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
@@ -14,10 +13,9 @@ public interface PostMapper {
 
 	PostDTO toPostDTO(PostEntity postEntity);
 
-	@Mapping(target = "important", expression = "java(false)")
 	PostEntity toPostEntity(PostSaveFromUserDTO postSaveFromUserDTO);
 
-	LatestUserPostDTO toLatestExpertPostDTO(PostEntity post);
+	PostEntity updatePostEntityFromDTO(PostSaveFromUserDTO postSaveFromUserDTO, @MappingTarget PostEntity postEntity);
 
-	void updatePostEntityFromDTO(PostSaveFromUserDTO postSaveFromUserDTO, @MappingTarget PostEntity postEntity);
+	LatestUserPostDTO toLatestExpertPostDTO(PostEntity post);
 }
