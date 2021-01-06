@@ -15,7 +15,7 @@ import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatc
 @RequiredArgsConstructor
 public class TagUniqueValidator implements ConstraintValidator<TagUnique, String> {
 
-	private final TagRepository tagRepository;
+	private final TagRepository repository;
 	private final ExampleMatcher modelMatcher = ExampleMatcher.matching()
 			.withIgnorePaths("id")
 			.withMatcher("tag", ignoreCase());
@@ -25,6 +25,6 @@ public class TagUniqueValidator implements ConstraintValidator<TagUnique, String
 		TagEntity tagEntity = TagEntity.builder()
 				.tag(value)
 				.build();
-		return !tagRepository.exists(Example.of(tagEntity, modelMatcher));
+		return !repository.exists(Example.of(tagEntity, modelMatcher));
 	}
 }

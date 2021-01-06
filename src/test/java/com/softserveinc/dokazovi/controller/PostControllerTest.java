@@ -20,6 +20,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.Validator;
 
 import java.util.Set;
 
@@ -50,10 +51,14 @@ class PostControllerTest {
 	@Mock
 	private PostTypeService postTypeService;
 
+	@Mock
+	private Validator validator;
+
 	@BeforeEach
 	public void init() {
 		this.mockMvc = MockMvcBuilders
 				.standaloneSetup(postController)
+				.setValidator(validator)
 				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
 				.build();
 	}

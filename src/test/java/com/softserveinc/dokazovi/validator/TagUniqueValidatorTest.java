@@ -27,7 +27,7 @@ class TagUniqueValidatorTest {
 	}
 
 	@Test
-	void isValid_WhenStringUnique_ReturnFalse() {
+	void isValid_WhenStringNotUnique_ReturnFalse() {
 		when(tagRepository.exists(any())).thenReturn(true);
 		assertFalse(validator.isValid("value", null));
 	}
