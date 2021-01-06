@@ -73,7 +73,7 @@ public class PostEntity {
 	@ToString.Exclude
 	private Set<DirectionEntity> directions;
 
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_tags",
 			joinColumns = {@JoinColumn(name = "post_id")},
@@ -83,7 +83,7 @@ public class PostEntity {
 	@ToString.Exclude
 	private Set<TagEntity> tags;
 
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_sources",
 			joinColumns = {@JoinColumn(name = "post_id")},
