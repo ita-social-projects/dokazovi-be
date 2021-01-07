@@ -1,4 +1,4 @@
-package com.softserveinc.dokazovi.error;
+package com.softserveinc.dokazovi.exception;
 
 public class InvalidIdEntityException extends EntityException {
 

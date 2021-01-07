@@ -1,6 +1,6 @@
-package com.softserveinc.dokazovi.handler;
+package com.softserveinc.dokazovi.exception.handler;
 
-import com.softserveinc.dokazovi.error.EntityException;
+import com.softserveinc.dokazovi.exception.EntityException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

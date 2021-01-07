@@ -1,4 +1,4 @@
-package com.softserveinc.dokazovi.handler;
+package com.softserveinc.dokazovi.exception.handler;
 
 import lombok.Builder;
 import lombok.Data;
