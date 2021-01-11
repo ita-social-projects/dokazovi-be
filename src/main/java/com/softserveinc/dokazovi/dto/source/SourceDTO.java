@@ -1,4 +1,4 @@
-package com.softserveinc.dokazovi.dto.tag;
+package com.softserveinc.dokazovi.dto.source;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagDTO {
+public class SourceDTO {
 	private Integer id;
-	private String tag;
+	private String value;
 }

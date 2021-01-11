@@ -1,5 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -15,20 +17,24 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.Validator;
 
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -45,12 +51,53 @@ class PostControllerTest {
 	@Mock
 	private PostTypeService postTypeService;
 
+	@Mock
+	private Validator validator;
+
 	@BeforeEach
 	public void init() {
 		this.mockMvc = MockMvcBuilders
 				.standaloneSetup(postController)
+				.setValidator(validator)
 				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
 				.build();
+	}
+
+	@Test
+	void savePost() throws Exception {
+		String content = "{\n" +
+				"  \"content\": \"string\",\n" +
+				"  \"directions\": [\n" +
+				"    {\n" +
+				"      \"id\": 1\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"id\": 1,\n" +
+				"  \"preview\": \"string\",\n" +
+				"  \"sources\": [\n" +
+				"    {\n" +
+				"      \"id\": 1\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"tags\": [\n" +
+				"    {\n" +
+				"      \"id\": 1,\n" +
+				"      \"tag\": \"string\"\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"title\": \"string\",\n" +
+				"  \"type\": {\n" +
+				"    \"id\": 1,\n" +
+				"    \"name\": \"string\"\n" +
+				"  }\n" +
+				"}";
+		ObjectMapper mapper = new ObjectMapper();
+		PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
+		mockMvc.perform(post(POST)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isCreated());
+		verify(postService).saveFromUser(eq(post), any());
 	}
 
 	@Test

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.TAG;
@@ -35,7 +36,7 @@ public class TagController {
 	}
 
 	@PostMapping
-	public ResponseEntity<TagDTO> saveTag(@RequestBody TagSaveDTO tagSaveDTO) {
+	public ResponseEntity<TagDTO> saveTag(@Valid @RequestBody TagSaveDTO tagSaveDTO) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(tagService.save(tagSaveDTO));

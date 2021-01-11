@@ -1,8 +1,12 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
+import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.service.PostService;
@@ -19,6 +23,28 @@ public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
+
+	@Override
+	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserEntity userEntity) {
+		Integer postId = postDTO.getId();
+		PostEntity mappedEntity;
+		if (postId == null) {
+			mappedEntity = postMapper.toPostEntity(postDTO);
+
+		} else {
+			mappedEntity = postRepository
+					.findById(postId)
+					.map(postEntity -> postMapper.updatePostEntityFromDTO(postDTO, postEntity))
+					.orElseThrow(() -> new InvalidIdDtoException(postDTO));
+		}
+
+		mappedEntity.setAuthor(userEntity);
+		mappedEntity.setImportant(false);
+		mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+
+		PostEntity savedEntity = postRepository.save(mappedEntity);
+		return postMapper.toPostDTO(savedEntity);
+	}
 
 	@Override
 	public Page<PostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable) {
@@ -65,4 +91,5 @@ public class PostServiceImpl implements PostService {
 		return postRepository.findAllByAuthorIdAndTypeIdInAndStatus(expertId, typeId, postStatus, pageable)
 				.map(postMapper::toPostDTO);
 	}
+
 }
