@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.exception.handler;
 
-import com.softserveinc.dokazovi.exception.EntityException;
+import com.softserveinc.dokazovi.exception.DtoException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +36,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
 	}
 
-	@ExceptionHandler({EntityException.class})
-	public ResponseEntity<Object> handleEntityException(final EntityException ex) {
+	@ExceptionHandler({DtoException.class})
+	public ResponseEntity<Object> handleEntityException(final DtoException ex) {
 		logger.info(ex.getClass().getName());
 		final ApiError apiError = ApiError.builder()
 				.status(HttpStatus.BAD_REQUEST)

@@ -6,7 +6,7 @@ import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.exception.InvalidIdEntityException;
+import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.service.PostService;
@@ -35,7 +35,7 @@ public class PostServiceImpl implements PostService {
 			mappedEntity = postRepository
 					.findById(postId)
 					.map(postEntity -> postMapper.updatePostEntityFromDTO(postDTO, postEntity))
-					.orElseThrow(() -> new InvalidIdEntityException(postDTO));
+					.orElseThrow(() -> new InvalidIdDtoException(postDTO));
 		}
 
 		mappedEntity.setAuthor(userEntity);

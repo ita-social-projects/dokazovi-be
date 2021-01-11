@@ -5,7 +5,7 @@ import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.exception.InvalidIdEntityException;
+import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +78,7 @@ class PostServiceImplTest {
 				.id(1)
 				.build();
 		UserEntity userEntity = new UserEntity();
-		assertThrows(InvalidIdEntityException.class, () -> postService.saveFromUser(dto, userEntity));
+		assertThrows(InvalidIdDtoException.class, () -> postService.saveFromUser(dto, userEntity));
 	}
 
 
