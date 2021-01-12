@@ -1,69 +1,95 @@
-<a href="https://softserve.academy/"><img src="https://s.057.ua/section/newsInternalIcon/upload/images/news/icon/000/050/792/vnutr_5ce4f980ef15f.jpg" title="SoftServe IT Academy" alt="SoftServe IT Academy"></a>
-
 # Dokazovo
-
 ![Build Status](https://github.com/ita-social-projects/dokazovi-be/workflows/Build%20&%20Test/badge.svg)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_dokazovi-be&metric=coverage&)](https://sonarcloud.io/dashboard?id=ita-social-projects_dokazovi-be)
 [![Github Issues](https://img.shields.io/github/issues/ita-social-projects/dokazovi-be)](https://github.com/ita-social-projects/dokazovi-be/issues)
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/dokazovi-be)](https://github.com/ita-social-projects/dokazovi-be/pulls)
 [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/ita-social-projects/dokazovi-be/blob/develop/LICENSE)
 
-## About the project
+The "Dokazovo" project is a platform where proven experts will provide only verified information about COVID-19 disease in Ukraine and other scientific and medical topics. The main aim of the "Dokazovo" project is to prevent the spread of infodemic. 
+А user will be able to learn and use only verified and reliable medical information, advice and recommendations. It will be a platform for verified speakers and their recommendations.
 
-The "Dokazovo" project is a platform where proven experts will provide only evident information about coronavirus disease in Ukraine and other scientific and medical topics and prevent the spread of infodemia.
-So there will be only verified information on the platform, only verified speakers and their recommendations.
 
-## Start the project locally
+## Getting Started
 
-### Required to install
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+### Running the application locally
+
+Required software:
 
 * Java 11
 * PostgreSQL (9.5.9 or higher)
+* IntelliJ IDEA
 
-### How to run
-
-#### 1. Clone this repo to your local machine using:
+Clone this repository to your local machine using:
 
 ```shell
 git clone https://github.com/ita-social-projects/dokazovi-be
 ```
+Create a database and set values in environment variables:
 
-#### 2. Create a database: 
+<img src="https://i.imgur.com/SUspHsj.png" alt="environment" width="500"/>
 
-db name:`dokazovi` user: `dokazovi` password: `dokazovi`.
+Run application and open [Swagger](http://localhost:8080/api/swagger-ui/)
 
-(Optional) You can enter other values in environmental variables:
+## Running the tests
 
-```properties
-spring.datasource.url=${DATASOURCE_URL}
-spring.datasource.username=${DATASOURCE_USER}
-spring.datasource.password=${DATASOURCE_PASSWORD}
+Run all tests for this system
+
+```
+./gradlew test
 ```
 
-#### 3. Start the app with IDE
+### Check code coverage
 
-If everything is ok you can run the [Swagger](#How-to-work-with-swagger-UI)
+Run:
 
-## How to work with swagger UI
+```
+./gradlew jacocoTestReport
+```
 
-1. [Run](#How-to-run) Dokazovo project.
-2. Open this url: http://localhost:8080/api/swagger-ui/
+Open the report file: /build/reports/jacoco/test/index.html
 
-## Project Deploy
-- [Dokazovi - FE](https://dokazovi-fe.herokuapp.com/)
-- [Dokazovi - BE - Swagger](https://dokazovi-be.herokuapp.com/api/swagger-ui/#/)
 
-## How to contribute
-* [Branching Strategy](https://github.com/ita-social-projects/dokazovi-be/wiki/Branching-Strategy)
-* [Database](https://github.com/ita-social-projects/dokazovi-be/wiki/Database)
-* [Setup CheckStyle to your IDE](https://github.com/ita-social-projects/dokazovi-be/wiki/Setup-CheckStyle-to-your-IDE)
-* [Code Quality and Coverage](https://github.com/ita-social-projects/dokazovi-be/wiki/Code-Quality-and-Coverage)
-* [Unit Testing](https://github.com/ita-social-projects/dokazovi-be/wiki/Unit-Testing)
----
+### Coding style tests
+
+Check code style for the application:
+
+```
+./gradlew checkstyleMain
+```
+
+Check code style for tests:
+
+```
+./gradlew checkstyleTest
+```
+
+## Deployed Apps and Additional Links
+
+[RC Java](https://dokazovi-be.herokuapp.com/api/swagger-ui/) - the latest version from the release branch is automatically deployed to Heroku
+
+[RC React](https://dokazovi-fe.herokuapp.com/) - release candidate from react team
+
+[React team repository](https://github.com/ita-social-projects/dokazovi-fe)
+
+## Built With
+
+* [Spring](https://spring.io/) - The framework used
+* [Gradle](https://gradle.org/) - Build tool
+* [SpringFox](http://springfox.github.io/springfox/) - Automating the generation of specifications for JSON APIs
+* [MapStruct](https://mapstruct.org/) - Java Bean mapper
+* [FlyWay](https://flywaydb.org/) - Migration tool
+
+## Contributing
+
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/ita-social-projects/dokazovi-be/tags). 
+
 
 ## License
 
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
-
-- **[MIT license](http://opensource.org/licenses/mit-license.php)**
-- Copyright 2020 © <a href="https://softserve.academy/" target="_blank"> SoftServe IT Academy</a>.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ita-social-projects/dokazovi-be/blob/develop/LICENSE) file for details
