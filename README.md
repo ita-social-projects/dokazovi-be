@@ -5,8 +5,8 @@
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/dokazovi-be)](https://github.com/ita-social-projects/dokazovi-be/pulls)
 [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/ita-social-projects/dokazovi-be/blob/develop/LICENSE)
 
-The "Dokazovo" project is a platform where proven experts will provide only verified information about COVID-19 disease in Ukraine and other scientific and medical topics. The main aim of the "Dokazovo" project is to prevent the spread of infodemic. 
-А user will be able to learn and use only verified and reliable medical information, advice and recommendations. It will be a platform for verified speakers and their recommendations.
+The "Dokazovo" project is a platform where proven experts will provide only verified information about COVID-19 disease in Ukraine and other scientific and medical topics. 
+The main aim of the "Dokazovo" project is to prevent the spread of infodemic. А user will be able to learn and use only verified and reliable medical information, advice and recommendations.
 
 
 ## Getting Started
@@ -86,4 +86,6 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/ita-social-projects/dokazovi-be/blob/develop/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ita-social-projects/dokazovi-be/blob/develop/LICENSE) file for details.
+
+Copyright 2020 © <a href="https://softserve.academy/" target="_blank"> SoftServe IT Academy</a>
