@@ -160,7 +160,7 @@ public class UserEntity {
 
 
 	@Column(name = "enabled")
-	private boolean enabled;
+	private Boolean enabled;
 
 	public PostEntity getLatestExpertPost() {
 		if (posts == null || posts.isEmpty()) {

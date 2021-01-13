@@ -45,9 +45,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public WebSecurityConfig(CustomUserDetailsService customUserDetailsService,
-							 CustomOAuth2UserService customOAuth2UserService,
-							 OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
-							 OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
+			CustomOAuth2UserService customOAuth2UserService,
+			OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
+			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
 		this.customUserDetailsService = customUserDetailsService;
 		this.customOAuth2UserService = customOAuth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
@@ -55,9 +55,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	public WebSecurityConfig(boolean disableDefaults, CustomUserDetailsService customUserDetailsService,
-							 CustomOAuth2UserService customOAuth2UserService,
-							 OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
-							 OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
+			CustomOAuth2UserService customOAuth2UserService,
+			OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
+			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
 		super(disableDefaults);
 		this.customUserDetailsService = customUserDetailsService;
 		this.customOAuth2UserService = customOAuth2UserService;
@@ -90,19 +90,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 				.cors()
-				.and()
+					.and()
 				.sessionManagement()
 				.sessionCreationPolicy(STATELESS)
-				.and()
-				.csrf().disable()
-				.formLogin().disable()
-				.httpBasic().disable()
-				.logout().disable()
+					.and()
+				.csrf()
+					.disable()
+				.formLogin()
+					.disable()
+				.httpBasic()
+					.disable()
+				.logout()
+					.disable()
 				.exceptionHandling()
-				.authenticationEntryPoint(new RestAuthenticationEntryPoint())
-				.and()
+					.authenticationEntryPoint(new RestAuthenticationEntryPoint())
+					.and()
 				.authorizeRequests()
-				.antMatchers("/**",
+					.antMatchers(
 						"/error",
 						"/favicon.ico",
 						"/**/*.png",
@@ -112,23 +116,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/**/*.html",
 						"/**/*.css",
 						"/**/*.js")
-				.permitAll()
-				.antMatchers("/auth/**", "/oauth2/**")
-				.permitAll()
+						.permitAll()
+				.antMatchers("/v3/api-docs/**", "/configuration/**", "/swagger*/**", "/webjars/**",
+						"/auth/**", "/oauth2/**")
+					.permitAll()
 				.anyRequest()
-				.authenticated()
-				.and()
+					.authenticated()
+					.and()
 				.oauth2Login()
-				.authorizationEndpoint()
-				.baseUri("/oauth2/authorize")
-				.authorizationRequestRepository(cookieAuthorizationRequestRepository())
-				.and()
-				.redirectionEndpoint()
-				.baseUri("/login/oauth2/code/*")
-				.and()
-				.userInfoEndpoint()
-				.userService(customOAuth2UserService)
-				.and()
+					.authorizationEndpoint()
+						.baseUri("/oauth2/authorize")
+						.authorizationRequestRepository(cookieAuthorizationRequestRepository())
+					.and()
+						.redirectionEndpoint()
+						.baseUri("/login/oauth2/code/*")
+					.and()
+						.userInfoEndpoint()
+						.userService(customOAuth2UserService)
+					.and()
 				.successHandler(oauth2AuthenticationSuccessHandler)
 				.failureHandler(oauth2AuthenticationFailureHandler);
 
