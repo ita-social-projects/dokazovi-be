@@ -2,10 +2,12 @@ package com.softserveinc.dokazovi.security.oauth2;
 
 
 import com.softserveinc.dokazovi.entity.ProviderEntity;
+import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.OAuth2AuthenticationProcessingException;
 import com.softserveinc.dokazovi.repositories.ProviderRepository;
+import com.softserveinc.dokazovi.repositories.RoleRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.security.oauth2.user.OAuth2UserInfo;
@@ -21,7 +23,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private final UserRepository userRepository;
 
 	private final ProviderRepository userProviderRepository;
+
+	private final RoleRepository roleRepository;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest oauth2UserRequest) throws OAuth2AuthenticationException {
@@ -68,6 +74,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private UserEntity registerNewUser(OAuth2UserRequest oauth2UserRequest, OAuth2UserInfo oauth2UserInfo) {
 		UserEntity user = new UserEntity();
 		ProviderEntity provider = new ProviderEntity();
+		Set<RoleEntity> roleEntities = new HashSet<>();
+		roleEntities.add(roleRepository.getRoleEntityByName("ROLE_DOCTOR").get());
 		provider.setName(oauth2UserRequest.getClientRegistration().getRegistrationId());
 		provider.setUserIdByProvider(oauth2UserInfo.getId());
 		StringToNameParser.setUserNameFromRequest(oauth2UserInfo, user);
@@ -75,6 +83,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		user.setEmail(oauth2UserInfo.getEmail());
 		user.setAvatar(oauth2UserInfo.getImageUrl());
 		user.setStatus(UserStatus.NEW);
+		user.setRoles(roleEntities);
+		user.setEnabled(true);
 		UserEntity savedUser = userRepository.save(user);
 		provider.setUser(savedUser);
 		userProviderRepository.save(provider);
