@@ -75,10 +75,13 @@ public class UserController {
 	}
 
 	@GetMapping("/me")
-	@PreAuthorize("hasRole('USER')")
-	public UserEntity getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
-		return userRepository.findById(userPrincipal.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+	@PreAuthorize("hasRole('ADMIN') or hasRole('DOCTOR')")
+	public ResponseEntity<UserDTO> getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+		System.out.println(userPrincipal.getAuthorities());
+		UserDTO userDTO = userService.findExpertById(userPrincipal.getId());
+		return ResponseEntity
+				.status((userDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+				.body(userDTO);
 	}
 
 }

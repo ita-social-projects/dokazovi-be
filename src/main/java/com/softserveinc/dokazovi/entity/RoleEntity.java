@@ -1,5 +1,7 @@
 package com.softserveinc.dokazovi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,5 +37,8 @@ public class RoleEntity {
 	@ManyToMany(mappedBy = "roles")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<UserEntity> users;
 }
