@@ -12,6 +12,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -23,20 +25,31 @@ import java.util.Set;
 public class PostSaveFromUserDTO {
 
 	private Integer id;
-	@NotNull
+
+	@NotBlank(message = "Title field cannot be empty")
 	private String title;
-	@NotNull
+
+	@NotBlank(message = "Preview field cannot be empty")
 	private String preview;
-	@NotNull
+
+	@NotBlank(message = "Content field cannot be empty")
 	private String content;
-	@NotNull
+
+	@NotNull(message = "PostType are required")
 	@PostTypeExists
+	@Valid
 	private PostTypeDTO type;
-	@NotNull
-	@Size(min = 1, max = 3)
+
+	@NotNull(message = "At least one topic are required")
+	@Size(min = 1, max = 3, message = "Number of chosen topics is from 1 to 3. ")
+	@Valid
 	private Set<@DirectionExists DirectionDTO> directions;
-	@NotNull
-	@Size(min = 1, max = 3)
+
+	@NotNull(message = "At least one tag are required")
+	@Size(min = 1, max = 3, message = "Number of chosen tags is from 1 to 3. ")
+	@Valid
 	private Set<@TagExists TagDTO> tags;
+
+	@Valid
 	private Set<@SourceExists SourceDTO> sources;
 }
