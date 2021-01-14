@@ -84,6 +84,7 @@ public class AuthController {
 		user.setEmail(signUpRequest.getEmail());
 		user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 		user.setStatus(UserStatus.NEW);
+		user.setEnabled(false);
 		UserEntity result = userService.saveUser(user);
 		providerService.createLocalProviderEntityForUser(result, signUpRequest.getEmail());
 		URI location = ServletUriComponentsBuilder
