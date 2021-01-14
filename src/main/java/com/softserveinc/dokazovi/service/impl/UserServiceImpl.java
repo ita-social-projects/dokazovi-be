@@ -4,14 +4,17 @@ import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.UserService;
+import com.softserveinc.dokazovi.util.StringToNameParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -25,6 +28,7 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
 	private final VerificationTokenRepository tokenRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserEntity findByEmail(String email) {
@@ -106,6 +110,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserEntity saveUser(UserEntity user) {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public UserEntity registerNewUser(SignUpRequest signUpRequest) {
+		UserEntity user = new UserEntity();
+		StringToNameParser.setUserNameFromRequest(signUpRequest, user);
+		user.setEmail(signUpRequest.getEmail());
+		user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+		user.setStatus(UserStatus.NEW);
+		user.setEnabled(false);
 		return userRepository.save(user);
 	}
 }

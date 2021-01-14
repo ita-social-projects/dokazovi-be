@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.entity.payload.ApiResponse;
 import com.softserveinc.dokazovi.entity.payload.AuthResponse;
 import com.softserveinc.dokazovi.entity.payload.LoginRequest;
@@ -11,14 +10,12 @@ import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.util.MailSenderUtil;
-import com.softserveinc.dokazovi.util.StringToNameParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,8 +41,6 @@ public class AuthController {
 
 
 	private final AuthenticationManager authenticationManager;
-
-	private final PasswordEncoder passwordEncoder;
 
 	private final TokenProvider tokenProvider;
 
@@ -79,17 +74,11 @@ public class AuthController {
 		if (providerService.existsByLocalEmail(signUpRequest.getEmail())) {
 			throw new BadRequestException("Email address already in use.");
 		}
-		UserEntity user = new UserEntity();
-		StringToNameParser.setUserNameFromRequest(signUpRequest,user);
-		user.setEmail(signUpRequest.getEmail());
-		user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-		user.setStatus(UserStatus.NEW);
-		user.setEnabled(false);
-		UserEntity result = userService.saveUser(user);
-		providerService.createLocalProviderEntityForUser(result, signUpRequest.getEmail());
+		UserEntity user = userService.registerNewUser(signUpRequest);
+		providerService.createLocalProviderEntityForUser(user, signUpRequest.getEmail());
 		URI location = ServletUriComponentsBuilder
 				.fromCurrentContextPath().path("/api/user/me")
-				.buildAndExpand(result.getId()).toUri();
+				.buildAndExpand(user.getId()).toUri();
 		mailSenderUtil.sendMessage(user);
 		return ResponseEntity.created(location)
 				.body(new ApiResponse(true, "User registered successfully! Please confirm your email!"));

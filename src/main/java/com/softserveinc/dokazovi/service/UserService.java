@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.service;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
+import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -31,5 +32,7 @@ public interface UserService {
 	Boolean existsByEmail(String email);
 
 	UserEntity saveUser(UserEntity user);
+
+	UserEntity registerNewUser(SignUpRequest signUpRequest);
 
 }
