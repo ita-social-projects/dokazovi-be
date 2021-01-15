@@ -1,5 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,8 @@ public class VersionController {
 
 	private final BuildProperties buildProperties;
 
+	@ApiOperation(value = "Get build version",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping
 	public ResponseEntity<BuildProperties> getBuildVersion() {
 		return ResponseEntity

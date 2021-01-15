@@ -57,6 +57,6 @@ public class SwaggerConfig {
 	}
 
 	private ApiKey apiKey() {
-		return new ApiKey("jwtToken", "Authorization", "header");
+		return new ApiKey("Authorization", "Authorization", "header");
 	}
 }

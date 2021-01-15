@@ -2,14 +2,13 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
-import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.exception.ResourceNotFoundException;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.CurrentUser;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +37,8 @@ public class UserController {
 
 	private final UserService userService;
 
-	@ApiOperation(value = "Get preview of random experts, filtered by directions. Default 12 max per page.")
+	@ApiOperation(value = "Get preview of random experts, filtered by directions. Default 12 max per page.",
+			authorizations = {@Authorization(value = "Authorization")})
 	@ApiPageable
 	@GetMapping(USER_RANDOM_EXPERTS)
 	public ResponseEntity<Page<UserDTO>> getRandomExpertPreview(
@@ -51,7 +51,8 @@ public class UserController {
 	}
 
 	@ApiOperation(value = "Get experts ordered by firstName then lastName, filtered by directions and regions."
-			+ " Default 6 per page.")
+			+ " Default 6 per page.",
+			authorizations = {@Authorization(value = "Authorization")})
 	@ApiPageable
 	@GetMapping(USER_ALL_EXPERTS)
 	public ResponseEntity<Page<UserDTO>> getAllExpertsByDirectionsAndByRegions(
@@ -65,7 +66,8 @@ public class UserController {
 				.body(userService.findAllExpertsByDirectionsAndRegions(directions, regions, pageable));
 	}
 
-	@ApiOperation(value = "Get expert by Id, as a path variable.")
+	@ApiOperation(value = "Get expert by Id, as a path variable.",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDTO> getExpertById(@PathVariable("userId") Integer userId) {
 		UserDTO userDTO = userService.findExpertById(userId);
@@ -74,6 +76,8 @@ public class UserController {
 				.body(userDTO);
 	}
 
+	@ApiOperation(value = "Get current user",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping("/me")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('DOCTOR')")
 	public ResponseEntity<UserDTO> getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {

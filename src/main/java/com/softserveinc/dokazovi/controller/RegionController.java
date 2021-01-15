@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.dto.region.RegionDTO;
 import com.softserveinc.dokazovi.service.RegionService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ public class RegionController {
 
 	private final RegionService regionService;
 
-	@ApiOperation("Get all regions")
+	@ApiOperation(value = "Get all regions",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping
 	public ResponseEntity<List<RegionDTO>> getAllRegions() {
 		return ResponseEntity

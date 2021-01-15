@@ -66,7 +66,6 @@ public class AuthController {
 		} else {
 			AuthResponse authResponse = new AuthResponse(token);
 			authResponse.setAccessToken(token);
-			System.out.println(authResponse.toString());
 			return ResponseEntity.ok(authResponse);
 		}
 	}
