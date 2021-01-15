@@ -5,7 +5,7 @@ DELETE FROM PUBLIC.ROLES_USERS;
 DELETE FROM PUBLIC.ROLES;
 
 INSERT INTO PUBLIC.ROLES (ROLE_NAME) VALUES
-('Admin'), ('Doctor'), ('Trusted Doctor');
+('ROLE_ADMIN'), ('ROLE_DOCTOR'), ('ROLE_TRUSTED_DOCTOR');
 
 INSERT INTO PUBLIC.ROLES_USERS (ROLE_ID, USER_ID) VALUES
 ('1', '9'), ('2', '4'), ('3', '2'), ('2', '1'), ('3', '3'), ('2', '5'), ('3', '7'), ('2', '6'), ('3', '8');

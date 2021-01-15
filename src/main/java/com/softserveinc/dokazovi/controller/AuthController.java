@@ -64,7 +64,10 @@ public class AuthController {
 		if (!userEntity.getEnabled()) {
 			throw new BadRequestException("Please confirm your email!");
 		} else {
-			return ResponseEntity.ok(new AuthResponse(token));
+			AuthResponse authResponse = new AuthResponse(token);
+			authResponse.setAccessToken(token);
+			System.out.println(authResponse.toString());
+			return ResponseEntity.ok(authResponse);
 		}
 	}
 

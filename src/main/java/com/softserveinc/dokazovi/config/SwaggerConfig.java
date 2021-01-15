@@ -10,10 +10,12 @@ import org.springframework.http.ResponseEntity;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Collections;
 import java.util.Date;
 
 @Configuration
@@ -36,13 +38,25 @@ public class SwaggerConfig {
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("com.softserveinc.dokazovi.controller"))
 				.build()
-				.apiInfo(apiInfo());
+				.apiInfo(apiInfo())
+				.securitySchemes(Collections.singletonList(apiKey()));
+
 	}
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
 				.title("Dokazovo API")
+				.description("Accounts for JWT authorization:\n" +
+						"\nAdministrator:\n" +
+						"username: admin; password: admin;\n" +
+						"\nUsers:\n" +
+						"username: userOne; password: userOne;\n" +
+						"username: userSecond; password: userSecond;")
 				.version(buildProperties.getVersion())
 				.build();
+	}
+
+	private ApiKey apiKey() {
+		return new ApiKey("jwtToken", "Authorization", "header");
 	}
 }
