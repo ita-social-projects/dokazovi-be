@@ -72,13 +72,6 @@ public class UserEntity {
 	private String bio;
 
 	@ManyToOne
-	@JoinColumn(name = "direction_id")
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private DirectionEntity mainDirection;
-
-	@ManyToOne
 	@JoinColumn(name = "institution_id")
 	@JsonIdentityInfo(
 			property = "id",

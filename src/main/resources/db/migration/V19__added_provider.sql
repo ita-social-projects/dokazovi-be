@@ -35,5 +35,4 @@ VALUES ('LOCAL', 'ivan@mail.com', 1, 1),
        ('LOCAL', 'KukuriChapko624@mail.com', 34, 34),
        ('LOCAL', 'NezdaUshakov899@mail.com', 35, 35),
        ('LOCAL', 'MiletiyChernyshov229@mail.com', 36, 36),
-       ('LOCAL', 'TarzhemanSokolov585@mail.com', 37, 37),
-       ('LOCAL', 'qwerty@gmail.com', 38, 38);
+       ('LOCAL', 'TarzhemanSokolov585@mail.com', 37, 37);

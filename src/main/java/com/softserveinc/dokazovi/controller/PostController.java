@@ -46,7 +46,8 @@ public class PostController {
 	private final PostService postService;
 	private final PostTypeService postTypeService;
 
-	@ApiOperation(value = "Save post of user")
+	@ApiOperation(value = "Save post of user",
+			authorizations = {@Authorization(value = "Authorization")})
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = PostDTO.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
@@ -121,7 +122,8 @@ public class PostController {
 				.body(postTypeService.findAll());
 	}
 
-	@ApiOperation(value = "Get post by Id, as a path variable.")
+	@ApiOperation(value = "Get post by Id, as a path variable.",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping(POST_GET_POST_BY_ID)
 	public ResponseEntity<PostDTO> getPostById(@PathVariable("postId") Integer postId) {
 		PostDTO postDTO = postService.findPostById(postId);
