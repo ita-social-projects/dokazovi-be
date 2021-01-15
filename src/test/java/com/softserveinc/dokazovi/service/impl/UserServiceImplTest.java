@@ -4,11 +4,11 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.mapper.UserMapper;
+import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,6 +23,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,6 +36,8 @@ class UserServiceImplTest {
 	private UserRepository userRepository;
 	@Mock
 	private VerificationTokenRepository tokenRepository;
+	@Mock
+	private PostRepository postRepository;
 	@Mock
 	private UserMapper userMapper;
 	@Mock
@@ -60,7 +63,7 @@ class UserServiceImplTest {
 	void getRandomExpertPreview() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
-		when(userRepository.findRandomActiveUsers(any(Pageable.class)))
+		when(userRepository.findRandomUsersByStatus(any(UserStatus.class), any(Pageable.class)))
 				.thenReturn(userEntityPage);
 		userService.findRandomExpertPreview(null, pageable);
 
@@ -72,7 +75,7 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> directionIds = Set.of(1, 2);
 
-		when(userRepository.findRandomActiveUsersByDirections(ArgumentMatchers.anySet(), any(Pageable.class)))
+		when(userRepository.findRandomUsersByDirectionsAndStatus(anySet(), any(UserStatus.class), any(Pageable.class)))
 				.thenReturn(userEntityPage);
 		userService.findRandomExpertPreview(directionIds, pageable);
 
@@ -83,8 +86,9 @@ class UserServiceImplTest {
 	void findAllExpertsByDirectionsAndRegions_NotFiltered() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
-		when(userRepository.findAllByStatus(
-				any(UserStatus.class),
+		when(userRepository.findAllActiveUsersOrderByRating(
+				any(Double.class),
+				any(Double.class),
 				any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(null, null, pageable);
@@ -97,9 +101,10 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
 
-		when(userRepository.findAllByMainInstitutionCityRegionIdInAndStatus(
-				ArgumentMatchers.anySet(),
-				any(UserStatus.class),
+		when(userRepository.findAllActiveUsersByRegionsIdsInOrderByRating(
+				anySet(),
+				any(Double.class),
+				any(Double.class),
 				any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(null, regionsIds, pageable);
@@ -112,9 +117,10 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> directionsIds = Set.of(1, 4, 6);
 
-		when(userRepository.findAllByMainDirectionIdInAndStatus(
-				ArgumentMatchers.anySet(),
-				any(UserStatus.class),
+		when(userRepository.findAllActiveUsersByDirectionsIdsInOrderByDirectionsMatchesThenByRating(
+				anySet(),
+				any(Double.class),
+				any(Double.class),
 				any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(directionsIds, null, pageable);
@@ -128,10 +134,11 @@ class UserServiceImplTest {
 		Set<Integer> directionsIds = Set.of(1, 4, 6);
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
 
-		when(userRepository.findAllByMainDirectionIdInAndMainInstitutionCityRegionIdInAndStatus(
-				ArgumentMatchers.anySet(),
-				ArgumentMatchers.anySet(),
-				any(UserStatus.class),
+		when(userRepository.findAllActiveUsersByDirectionsIdsInAndRegionsIdsInOrderByDirectionsMatchesThenByRating(
+				anySet(),
+				anySet(),
+				any(Double.class),
+				any(Double.class),
 				any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(directionsIds, regionsIds, pageable);

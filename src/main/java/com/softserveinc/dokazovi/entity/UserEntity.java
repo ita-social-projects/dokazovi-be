@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.entity.enumerations.UserPromotionLevel;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,8 +61,12 @@ public class UserEntity {
 
 	private String avatar;
 
-	@ColumnDefault("0")
-	private Integer promotionLevel;
+	@ColumnDefault("1.0")
+	private Double promotionScale;
+
+	@Enumerated(EnumType.STRING)
+	@ColumnDefault("BASIC")
+	private UserPromotionLevel promotionLevel;
 
 	@Column(name = "bio", columnDefinition = "TEXT")
 	private String bio;

@@ -86,8 +86,8 @@ public class PostEntity {
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_sources",
-			joinColumns = {@JoinColumn(name = "source_id")},
-			inverseJoinColumns = {@JoinColumn(name = "post_id")}
+			joinColumns = {@JoinColumn(name = "post_id")},
+			inverseJoinColumns = {@JoinColumn(name = "source_id")}
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude

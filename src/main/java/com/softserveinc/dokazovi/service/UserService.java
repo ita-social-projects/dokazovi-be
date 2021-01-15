@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
+import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,6 +23,10 @@ public interface UserService {
 			Pageable pageable);
 
 	Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
+
+	Integer getActiveUsersCountHavingPostWithStatus(PostStatus postsStatus);
+
+	Integer getAllPostsCountByStatus(PostStatus postStatus);
 
 	void setEnableTrue(UserEntity user);
 

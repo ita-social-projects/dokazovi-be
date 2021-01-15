@@ -26,8 +26,6 @@ public class UserDTO {
 
 	private String bio;
 
-	private DirectionDTO mainDirection;
-
 	private Set<DirectionDTO> directions;
 
 	private UserInstitutionDTO mainInstitution;

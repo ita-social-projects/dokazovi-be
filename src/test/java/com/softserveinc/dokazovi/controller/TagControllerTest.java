@@ -14,6 +14,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.Validator;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.TAG;
 import static com.softserveinc.dokazovi.controller.EndPoints.TAG_FIND_BY_VALUE;
@@ -34,10 +35,14 @@ class TagControllerTest {
 	@Mock
 	private TagService tagService;
 
+	@Mock
+	private Validator validator;
+
 	@BeforeEach
 	public void init() {
 		this.mockMvc = MockMvcBuilders
 				.standaloneSetup(tagController)
+				.setValidator(validator)
 				.build();
 	}
 

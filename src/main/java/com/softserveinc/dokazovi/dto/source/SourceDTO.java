@@ -1,4 +1,4 @@
-package com.softserveinc.dokazovi.dto.post;
+package com.softserveinc.dokazovi.dto.source;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,11 +12,11 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostTypeDTO {
+public class SourceDTO {
 
-	@NotNull(message = "PostType id are required")
+	@NotNull(message = "Source id are required")
 	private Integer id;
 
-	@NotBlank(message = "PostType name cannot be empty")
-	private String name;
+	@NotBlank(message = "Sources value cannot be empty")
+	private String value;
 }

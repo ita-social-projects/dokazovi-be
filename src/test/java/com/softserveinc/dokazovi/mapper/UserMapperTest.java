@@ -25,8 +25,8 @@ class UserMapperTest {
 	private UserEntity userEntity;
 	private InstitutionEntity mainInstitution;
 	private InstitutionEntity institution1;
-	private DirectionEntity mainUserDirection;
 	private DirectionEntity direction1;
+	private DirectionEntity direction2;
 	private CityEntity cityEntity1;
 	private CityEntity cityEntity2;
 	private PostEntity postEntity;
@@ -56,14 +56,14 @@ class UserMapperTest {
 				.city(cityEntity2)
 				.build();
 
-		mainUserDirection = DirectionEntity.builder()
+		direction1 = DirectionEntity.builder()
 				.id(1)
-				.name("Main direction")
+				.name("Direction 1")
 				.build();
 
-		direction1 = DirectionEntity.builder()
+		direction2 = DirectionEntity.builder()
 				.id(2)
-				.name("Direction 1")
+				.name("Direction 2")
 				.build();
 
 		userEntity = UserEntity.builder()
@@ -76,7 +76,6 @@ class UserMapperTest {
 				.avatar("Some avatar url")
 				.bio("bio 1")
 				.mainInstitution(mainInstitution)
-				.mainDirection(mainUserDirection)
 				.build();
 
 		postEntity = PostEntity.builder()
@@ -96,7 +95,7 @@ class UserMapperTest {
 				.build();
 
 		userEntity.setPosts(Set.of(postEntity, latestPostEntity));
-		userEntity.setDirections(Set.of(mainUserDirection, direction1));
+		userEntity.setDirections(Set.of(direction1, direction2));
 		userEntity.setInstitutions(Set.of(mainInstitution, institution1));
 	}
 
@@ -124,9 +123,6 @@ class UserMapperTest {
 		assertEquals(userDTO.getPhone(), userEntity.getPhone());
 		assertEquals(userDTO.getAvatar(), userEntity.getAvatar());
 		assertEquals(userDTO.getBio(), userEntity.getBio());
-
-		assertEquals(userDTO.getMainDirection().getId(), userEntity.getMainDirection().getId());
-		assertEquals(userDTO.getMainDirection().getName(), userEntity.getMainDirection().getName());
 
 		assertEquals(userDTO.getMainInstitution().getId(), userEntity.getMainInstitution().getId());
 		assertEquals(userDTO.getMainInstitution().getName(), userEntity.getMainInstitution().getName());
