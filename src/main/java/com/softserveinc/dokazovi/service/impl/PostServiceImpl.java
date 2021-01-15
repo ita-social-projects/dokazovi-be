@@ -25,6 +25,11 @@ public class PostServiceImpl implements PostService {
 	private final PostMapper postMapper;
 
 	@Override
+	public PostDTO findPostById(Integer postId) {
+		return postMapper.toPostDTO(postRepository.findById(postId).orElse(null));
+	}
+
+	@Override
 	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserEntity userEntity) {
 		Integer postId = postDTO.getId();
 		PostEntity mappedEntity;

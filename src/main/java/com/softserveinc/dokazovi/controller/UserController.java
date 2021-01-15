@@ -21,6 +21,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 
 @RestController
@@ -58,7 +59,7 @@ public class UserController {
 	}
 
 	@ApiOperation(value = "Get expert by Id, as a path variable.")
-	@GetMapping("/{userId}")
+	@GetMapping(USER_GET_USER_BY_ID)
 	public ResponseEntity<UserDTO> getExpertById(@PathVariable("userId") Integer userId) {
 		UserDTO userDTO = userService.findExpertById(userId);
 		return ResponseEntity

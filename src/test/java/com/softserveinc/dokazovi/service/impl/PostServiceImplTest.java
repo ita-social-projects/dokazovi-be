@@ -24,6 +24,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,6 +48,18 @@ class PostServiceImplTest {
 	@BeforeEach
 	void init() {
 		postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+	}
+
+	@Test
+	void findPostById() {
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.build();
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		postService.findPostById(id);
+		 verify(postMapper).toPostDTO(eq(postEntity));
 	}
 
 	@Test

@@ -19,6 +19,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
@@ -111,5 +113,14 @@ public class PostController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postTypeService.findAll());
+	}
+
+	@ApiOperation(value = "Get post by Id, as a path variable.")
+	@GetMapping(POST_GET_POST_BY_ID)
+	public ResponseEntity<PostDTO> getPostById(@PathVariable("postId") Integer postId) {
+		PostDTO postDTO = postService.findPostById(postId);
+		return ResponseEntity
+				.status((postDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+				.body(postDTO);
 	}
 }

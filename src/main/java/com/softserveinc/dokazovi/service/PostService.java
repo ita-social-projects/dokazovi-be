@@ -11,6 +11,8 @@ import java.util.Set;
 
 public interface PostService {
 
+	PostDTO findPostById(Integer postId);
+
 	Page<PostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
 	Page<PostDTO> findImportantPosts(Pageable pageable);

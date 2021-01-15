@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
@@ -33,6 +34,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,6 +63,31 @@ class PostControllerTest {
 				.setValidator(validator)
 				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
 				.build();
+	}
+
+	@Test
+	void getPostById_WhenExists_isOk() throws Exception {
+		Integer existingPostId = 1;
+		String uri = POST + "/" + existingPostId;
+		PostDTO postDTO = PostDTO.builder()
+				.id(existingPostId)
+				.build();
+
+		when(postService.findPostById(any(Integer.class))).thenReturn(postDTO);
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		verify(postService).findPostById(eq(existingPostId));
+	}
+
+	@Test
+	void getPostById_WhenNotExists_NotFound() throws Exception {
+		Integer notExistingPostId = 1;
+		String uri = POST + "/" + notExistingPostId;
+
+		when(postService.findPostById(any(Integer.class))).thenReturn(null);
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+
+		verify(postService).findPostById(eq(notExistingPostId));
 	}
 
 	@Test
