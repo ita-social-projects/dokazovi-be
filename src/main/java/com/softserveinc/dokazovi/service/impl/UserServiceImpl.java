@@ -61,20 +61,20 @@ public class UserServiceImpl implements UserService {
 
 		if (CollectionUtils.isEmpty(directionsIds) && CollectionUtils.isEmpty(regionsIds)) {
 			return userRepository.findAllActiveUsersOrderByRating(
-							allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
+					allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
 					.map(userMapper::toUserDTO);
 		} else if (CollectionUtils.isEmpty(directionsIds)) {
 			return userRepository.findAllActiveUsersByRegionsIdsInOrderByRating(regionsIds,
-							allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
+					allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
 					.map(userMapper::toUserDTO);
 		} else if (CollectionUtils.isEmpty(regionsIds)) {
 			return userRepository.findAllActiveUsersByDirectionsIdsInOrderByDirectionsMatchesThenByRating(
-						directionsIds, allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
+					directionsIds, allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
 					.map(userMapper::toUserDTO);
 		}
 
 		return userRepository.findAllActiveUsersByDirectionsIdsInAndRegionsIdsInOrderByDirectionsMatchesThenByRating(
-						directionsIds, regionsIds, allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
+				directionsIds, regionsIds, allPublishedPostsCount, averagePublishedPostsPerAuthor, pageable)
 				.map(userMapper::toUserDTO);
 	}
 
@@ -98,6 +98,7 @@ public class UserServiceImpl implements UserService {
 	public Integer getAllPostsCountByStatus(PostStatus postStatus) {
 		return postRepository.countAllByStatus(postStatus);
 	}
+
 	@Override
 	public void setEnableTrue(UserEntity user) {
 		UserEntity userEntity = userRepository.findById(user.getId()).orElse(null);
