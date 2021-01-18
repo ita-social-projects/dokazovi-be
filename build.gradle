@@ -85,6 +85,8 @@ sonarqube {
 		property "sonar.coverage.exclusions", "**/*.sql," +
 				"src/main/java/com/softserveinc/dokazovi/entity/**," +
 				"src/main/java/com/softserveinc/dokazovi/dto/**," +
+				"src/main/java/com/softserveinc/dokazovi/exception/**," +
+				"src/main/java/com/softserveinc/dokazovi/security/**," +
 				"src/main/java/com/softserveinc/dokazovi/config/**"
 	}
 }

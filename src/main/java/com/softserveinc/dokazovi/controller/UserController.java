@@ -21,6 +21,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 
 @RestController
@@ -42,12 +43,12 @@ public class UserController {
 				.body(userService.findRandomExpertPreview(directions, pageable));
 	}
 
-	@ApiOperation(value = "Get experts ordered by firstName then lastName, filtered by directions and regions."
+	@ApiOperation(value = "Get experts ordered by relevance, filtered by directions and regions."
 			+ " Default 6 per page.")
 	@ApiPageable
 	@GetMapping(USER_ALL_EXPERTS)
-	public ResponseEntity<Page<UserDTO>> getAllExpertsByDirectionsAndByRegions(
-			@PageableDefault(size = 6, sort = {"firstName", "lastName", "id"}) Pageable pageable,
+	public ResponseEntity<Page<UserDTO>> getAllExpertsByDirectionsAndByRegionsOrderedByRelevance(
+			@PageableDefault(size = 6) Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
 			@ApiParam(value = "Multiple comma-separated region IDs, e.g. ?regions=1,2,3,4", type = "string")
@@ -58,7 +59,7 @@ public class UserController {
 	}
 
 	@ApiOperation(value = "Get expert by Id, as a path variable.")
-	@GetMapping("/{userId}")
+	@GetMapping(USER_GET_USER_BY_ID)
 	public ResponseEntity<UserDTO> getExpertById(@PathVariable("userId") Integer userId) {
 		UserDTO userDTO = userService.findExpertById(userId);
 		return ResponseEntity
