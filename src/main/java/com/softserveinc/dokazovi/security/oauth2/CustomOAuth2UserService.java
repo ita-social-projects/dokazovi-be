@@ -74,9 +74,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private UserEntity registerNewUser(OAuth2UserRequest oauth2UserRequest, OAuth2UserInfo oauth2UserInfo) {
 		ProviderEntity provider = new ProviderEntity();
 		Set<RoleEntity> roleEntities = new HashSet<>();
-		if (roleRepository.getRoleEntityByName("ROLE_DOCTOR").isPresent()) {
-			roleEntities.add(roleRepository.getRoleEntityByName("ROLE_DOCTOR").get());
-		}
+		Optional<RoleEntity> roleEntity = roleRepository.getRoleEntityByName("ROLE_DOCTOR");
+		roleEntity.ifPresent(roleEntities::add);
 		provider.setName(oauth2UserRequest.getClientRegistration().getRegistrationId());
 		provider.setUserIdByProvider(oauth2UserInfo.getId());
 		UserEntity user = new UserEntity();
