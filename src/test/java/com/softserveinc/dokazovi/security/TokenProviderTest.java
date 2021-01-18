@@ -38,9 +38,8 @@ class TokenProviderTest {
 	}
 
 	private final Integer expectedId = 28;
-	private final String validToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCIsImlhdCI6MTYw"
-			+ "ODU2Mjk0MCwiZXhwIjoxNjA5NDI2OTQwfQ.nAVfHwasR868Ubo5cOhO2qxJpLWSQD7UJJYjl1p"
-			+ "bhUP1tEtyCuYjQBftPrkRkoL0LCMC6Mx16WfTmDmjA_q0vg";
+	private final String validToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCJ9."
+			+ "VP96n9CMQp_CgcTnV49gXAv1It6ZgLNAVLSM111eGQhNxBVrpYU2PTu9xPzVE4r4Vnw0PONRPRzAIPGzK5cIog";
 	private final String secret = "926D96C90030DD58429D2751AC1BDBBC";
 
 	@Test
