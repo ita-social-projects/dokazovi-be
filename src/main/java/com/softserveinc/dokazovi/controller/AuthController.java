@@ -51,7 +51,7 @@ public class AuthController {
 	private final ProviderService providerService;
 
 	@PostMapping(AUTH_LOGIN)
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
 						loginRequest.getEmail(),
@@ -71,7 +71,7 @@ public class AuthController {
 	}
 
 	@PostMapping(AUTH_SIGNUP)
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest)
+	public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest)
 			throws IOException, MessagingException {
 		if (providerService.existsByLocalEmail(signUpRequest.getEmail())) {
 			throw new BadRequestException("Email address already in use.");
@@ -87,7 +87,7 @@ public class AuthController {
 	}
 
 	@GetMapping(AUTH_VERIFICATION)
-	public ResponseEntity<?> registrationComplete(
+	public ResponseEntity<ApiResponse> registrationComplete(
 			@RequestParam(value = "token") String token) {
 		userService.setEnableTrue(userService.getVerificationToken(token).getUser());
 		return ResponseEntity.ok().body(new ApiResponse(true, "Email confirmed! redirect to login page!"));

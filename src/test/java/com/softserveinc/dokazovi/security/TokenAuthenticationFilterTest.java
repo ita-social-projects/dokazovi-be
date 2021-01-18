@@ -20,17 +20,8 @@ class TokenAuthenticationFilterTest {
 
 	@Mock
 	HttpServletRequest request;
-	@Mock
-	HttpServletResponse response;
-	@Mock
-	FilterChain chain;
 	@InjectMocks
 	TokenAuthenticationFilter tokenAuthenticationFilter;
-
-	@Test
-	void doFilterInternal() throws ServletException, IOException {
-		tokenAuthenticationFilter.doFilterInternal(request, response, chain);
-	}
 
 	@Test
 	void getJwtFromRequest() {
