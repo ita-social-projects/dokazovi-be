@@ -30,17 +30,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_SIGNUP;
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_VERIFICATION;
+import static com.softserveinc.dokazovi.controller.EndPoints.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,8 +49,6 @@ class AuthControllerTest {
     private AuthenticationManager authenticationManager;
     @Mock
     private MailSenderUtil mailSenderUtil;
-    @Mock
-    private PasswordEncoder passwordEncoder;
     @Mock
     private ProviderService providerService;
     @Mock
@@ -121,11 +113,11 @@ class AuthControllerTest {
         request.setName(user.getFirstName());
         request.setPassword(user.getPassword());
         Optional<ProviderEntity> providerEntity = Optional.ofNullable(ProviderEntity.builder().build());
-        when(userService.saveUser(any(UserEntity.class))).thenReturn(user);
-        doNothing().when(mailSenderUtil).sendMessage(any(UserEntity.class));
-        when(passwordEncoder.encode(anyString())).thenReturn(password);
+        when(providerService.existsByLocalEmail(anyString())).thenReturn(false);
+        when(userService.registerNewUser(any(SignUpRequest.class))).thenReturn(user);
         when(providerService.createLocalProviderEntityForUser(any(UserEntity.class), anyString()))
                 .thenReturn(providerEntity);
+        doNothing().when(mailSenderUtil).sendMessage(any(UserEntity.class));
         String uri = AUTH + AUTH_SIGNUP;
         mockMvc.perform(MockMvcRequestBuilders.post(uri)
                 .content(asJsonString(request))
@@ -133,12 +125,12 @@ class AuthControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         assertEquals(email, user.getEmail());
+        verify(providerService, times(1))
+                .existsByLocalEmail(anyString());
         verify(userService, times(1))
-                .saveUser(any(UserEntity.class));
+                .registerNewUser(any(SignUpRequest.class));
         verify(mailSenderUtil, times(1))
                 .sendMessage(any(UserEntity.class));
-        verify(passwordEncoder, times(1))
-                .encode(anyString());
         verify(providerService, times(1))
                 .createLocalProviderEntityForUser(any(UserEntity.class), anyString());
     }
