@@ -29,6 +29,6 @@ public class ProviderServiceImpl implements ProviderService {
 
 	@Override
 	public boolean existsByLocalEmail(String email) {
-		return providerRepository.existsByEmailAndAndName(email,AuthProvider.LOCAL.name());
+		return providerRepository.existsByEmailAndName(email, AuthProvider.LOCAL.name());
 	}
 }
