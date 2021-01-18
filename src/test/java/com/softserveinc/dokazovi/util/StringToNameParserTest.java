@@ -4,18 +4,21 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
 import com.softserveinc.dokazovi.security.oauth2.user.OAuth2UserInfo;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-
+@ExtendWith(MockitoExtension.class)
 class StringToNameParserTest {
 
-
-	SignUpRequest signUpRequest = new SignUpRequest();
+	@Mock
+	SignUpRequest signUpRequest;
 
 	@Mock
 	OAuth2UserInfo oauth2UserInfo;
@@ -27,16 +30,17 @@ class StringToNameParserTest {
 
 	@Test
 	void setUserNameFromRequest() {
-		signUpRequest.setName("test user");
+		when(signUpRequest.getName()).thenReturn("test user");
 		UserEntity userEntity2 = UserEntity.builder().firstName("test").lastName("user").build();
-		StringToNameParser.setUserNameFromRequest(signUpRequest,testUser);
+		StringToNameParser.setUserNameFromRequest(signUpRequest, testUser);
 		assertEquals(userEntity2, testUser);
 	}
 
 	@Test
 	void testSetUserNameFromRequest() {
+		when(oauth2UserInfo.getName()).thenReturn("test user");
 		UserEntity userEntity2 = UserEntity.builder().firstName("test").lastName("user").build();
-		StringToNameParser.parseString(Arrays.asList(name2.split(" ")),testUser);
+		StringToNameParser.setUserNameFromRequest(oauth2UserInfo, testUser);
 		assertEquals(userEntity2, testUser);
 	}
 
