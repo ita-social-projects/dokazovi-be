@@ -158,6 +158,7 @@ public class UserEntity {
 
 
 	@Column(name = "enabled")
+	@EqualsAndHashCode.Exclude
 	private Boolean enabled;
 
 	public PostEntity getLatestExpertPost() {
