@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.service.impl;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -15,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +35,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
+	@Mock
+	PasswordEncoder passwordEncoder;
 	@Mock
 	private UserRepository userRepository;
 	@Mock
@@ -234,5 +239,27 @@ class UserServiceImplTest {
 		when(userRepository.findAll(any(Pageable.class))).thenReturn(users);
 		userService.findAll(pageable);
 		verify(userRepository, times(1)).findAll(pageable);
+	}
+
+	@Test
+	void registerNewUser() {
+		when(passwordEncoder.encode(any(String.class))).thenReturn("password");
+		SignUpRequest signUpRequest = new SignUpRequest();
+		signUpRequest.setName("test user");
+		signUpRequest.setEmail("user@mail.com");
+		signUpRequest.setPassword("password");
+		UserEntity userEntity = UserEntity.builder()
+				.id(1)
+				.enabled(false)
+				.firstName("test")
+				.lastName("user")
+				.email("user@mail.com")
+				.status(UserStatus.NEW)
+				.build();
+		when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
+		userEntity = userService.registerNewUser(signUpRequest);
+		assertEquals(1, userEntity.getId());
+		verify(userRepository, times(1))
+				.save(any(UserEntity.class));
 	}
 }
