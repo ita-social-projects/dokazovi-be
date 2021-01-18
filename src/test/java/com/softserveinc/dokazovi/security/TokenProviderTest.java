@@ -33,13 +33,15 @@ class TokenProviderTest {
 	public void init() {
 		appProperties = new AppProperties();
 		appProperties.getAuth().setTokenSecret(secret);
-		appProperties.getAuth().setTokenExpirationMsec(864000000);
+		appProperties.getAuth().setTokenExpirationMsec(999999999999L);
 		tokenProvider = new TokenProvider(appProperties);
 	}
 
 	private final Integer expectedId = 28;
-	private final String validToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCJ9."
-			+ "VP96n9CMQp_CgcTnV49gXAv1It6ZgLNAVLSM111eGQhNxBVrpYU2PTu9xPzVE4r4Vnw0PONRPRzAIPGzK5cIog";
+	private final String validToken =
+			"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyOCIsImlhdCI6MTYxMDk3NjU3NiwiZXhw"
+					+ "IjoyNjEwOTc2NTc2LCJSb2xlcyI6IltdIn0.w2oJCcGzO7T716dH81p7E"
+					+ "vrZCM9HbgcR0DqcKR7_JB4Pys8ALUX7SoNHBDtXiX2bUlcc8K4S2egsOhridjWmkQ";
 	private final String secret = "926D96C90030DD58429D2751AC1BDBBC";
 
 	@Test
