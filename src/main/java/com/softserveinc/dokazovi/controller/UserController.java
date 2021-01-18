@@ -80,6 +80,7 @@ public class UserController {
 	@ApiOperation(value = "Get current user",
 			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping("/me")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('DOCTOR') or hasRole('TRUSTED_DOCTOR')")
 	public ResponseEntity<UserDTO> getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
 		UserDTO userDTO = userService.findExpertById(userPrincipal.getId());
 		return ResponseEntity
