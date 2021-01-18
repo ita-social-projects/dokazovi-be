@@ -32,16 +32,16 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 )
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private CustomUserDetailsService customUserDetailsService;
+	private final CustomUserDetailsService customUserDetailsService;
 
 
-	private CustomOAuth2UserService customOAuth2UserService;
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 
-	private OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
+	private final OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
 
 
-	private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
+	private final OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
 
 	@Autowired
 	public WebSecurityConfig(CustomUserDetailsService customUserDetailsService,

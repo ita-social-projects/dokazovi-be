@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,14 +33,6 @@ class CookieUtilsTest {
 		Optional<Cookie> expectedCookie = CookieUtils.getCookie(request, "test");
 		expectedCookie.ifPresent(value -> assertEquals(cookie, value));
 
-	}
-
-	@Test
-	void addCookie() {
-		String name = "name";
-		String value = "value";
-		int maxAge = 10000;
-		CookieUtils.addCookie(response, name, value, maxAge);
 	}
 
 	@Test
