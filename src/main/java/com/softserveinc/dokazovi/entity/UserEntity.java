@@ -1,5 +1,7 @@
 package com.softserveinc.dokazovi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserPromotionLevel;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
@@ -12,6 +14,7 @@ import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -70,6 +73,9 @@ public class UserEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "institution_id")
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private InstitutionEntity mainInstitution;
 
 	@Enumerated(EnumType.STRING)
@@ -78,11 +84,17 @@ public class UserEntity {
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<PostEntity> posts;
 
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<CharityEntity> charities;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -93,6 +105,9 @@ public class UserEntity {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<InstitutionEntity> institutions;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -103,6 +118,9 @@ public class UserEntity {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<RoleEntity> roles;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -113,15 +131,35 @@ public class UserEntity {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<DirectionEntity> directions;
 
 	@OneToMany(mappedBy = "user")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<SourceEntity> sources;
 
 	@CreationTimestamp
 	private Timestamp createdAt;
+
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
+	private Set<ProviderEntity> userProviderEntities;
+
+
+	@Column(name = "enabled")
+	@EqualsAndHashCode.Exclude
+	private Boolean enabled;
 
 	public PostEntity getLatestExpertPost() {
 		if (posts == null || posts.isEmpty()) {
@@ -131,5 +169,9 @@ public class UserEntity {
 				.filter(postEntity -> Objects.equals(postEntity.getStatus(), PostStatus.PUBLISHED))
 				.max(Comparator.comparing(PostEntity::getCreatedAt))
 				.orElse(null);
+	}
+
+	public boolean getEnabled() {
+		return this.enabled;
 	}
 }

@@ -3,6 +3,8 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.dto.tag.TagSaveDTO;
 import com.softserveinc.dokazovi.service.TagService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,8 @@ public class TagController {
 
 	private final TagService tagService;
 
+	@ApiOperation(value = "Find tag by value",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping(TAG_FIND_BY_VALUE)
 	public ResponseEntity<List<TagDTO>> findByValue(
 			@RequestParam String value,
@@ -35,6 +39,8 @@ public class TagController {
 				.body(tagService.findTagsByValue(value, limit));
 	}
 
+	@ApiOperation(value = "Save tag",
+			authorizations = {@Authorization(value = "Authorization")})
 	@PostMapping
 	public ResponseEntity<TagDTO> saveTag(@Valid @RequestBody TagSaveDTO tagSaveDTO) {
 		return ResponseEntity

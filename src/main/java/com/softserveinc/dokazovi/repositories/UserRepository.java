@@ -7,12 +7,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
-	UserEntity findByEmail(String email);
+	@Query(nativeQuery = true,
+			value = "SELECT * FROM users WHERE user_id= ("
+					+ "SELECT  u.user_id FROM providers u WHERE  u.email IN (:email) LIMIT 1)")
+	Optional<UserEntity> findByEmail(@Param("email") String email);
 
 	@Query("SELECT COUNT(U) FROM user_entity U "
 			+ "WHERE EXISTS(SELECT P.id FROM post_entity P WHERE P.author=U AND P.status=:postsStatus)")
@@ -105,4 +111,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	Page<UserEntity> findAllActiveUsersByDirectionsIdsInAndRegionsIdsInOrderByDirectionsMatchesThenByRating(
 			Iterable<Integer> directionsIds, Iterable<Integer> regionsIds, Double allPublishedPostsCount,
 			Double averagePublishedPostsPerUser, Pageable pageable);
+
+	Boolean existsByEmail(String email);
 }
