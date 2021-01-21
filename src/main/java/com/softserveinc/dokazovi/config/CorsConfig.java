@@ -10,13 +10,10 @@ public class CorsConfig implements WebMvcConfigurer {
 
     private static final long MAX_AGE_SEC = 3600;
 
-    @Value("${cors.origin}")
-    private String corsOrigin;
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(corsOrigin)
+                .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
