@@ -96,27 +96,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					.and()
 				.csrf()
 					.disable()
-				.formLogin()
-					.disable()
-				.httpBasic()
-					.disable()
-				.logout()
-					.disable()
+				.formLogin().disable()
+				.httpBasic().disable()
+				.logout().disable()
 				.exceptionHandling()
 					.authenticationEntryPoint(new RestAuthenticationEntryPoint())
 					.and()
 				.authorizeRequests()
-					.antMatchers(
-						"/error",
-						"/favicon.ico",
-						"/**/*.png",
-						"/**/*.gif",
-						"/**/*.svg",
-						"/**/*.jpg",
-						"/**/*.html",
-						"/**/*.css",
-						"/**/*.js")
-						.permitAll()
 				.antMatchers("/v3/api-docs/**", "/configuration/**", "/swagger*/**", "/webjars/**",
 						"/auth/**", "/oauth2/**")
 					.permitAll()

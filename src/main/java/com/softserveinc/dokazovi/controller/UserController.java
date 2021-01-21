@@ -3,7 +3,6 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.repositories.UserRepository;
-import com.softserveinc.dokazovi.security.CurrentUser;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,8 +68,7 @@ public class UserController {
 	}
 
 	@GetMapping(USER_GET_USER_BY_ID)
-	@ApiOperation(value = "Get expert by Id, as a path variable.",
-			authorizations = {@Authorization(value = "Authorization")})
+	@ApiOperation(value = "Get expert by Id, as a path variable.")
 	public ResponseEntity<UserDTO> getExpertById(@PathVariable("userId") Integer userId) {
 		UserDTO userDTO = userService.findExpertById(userId);
 		return ResponseEntity
@@ -78,15 +76,13 @@ public class UserController {
 				.body(userDTO);
 	}
 
+	@GetMapping(USER_GET_CURRENT_USER)
 	@ApiOperation(value = "Get current user",
 			authorizations = {@Authorization(value = "Authorization")})
-	@GetMapping(USER_GET_CURRENT_USER)
-	@PreAuthorize("hasRole('ADMIN') or hasRole('DOCTOR') or hasRole('TRUSTED_DOCTOR')")
-	public ResponseEntity<UserDTO> getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+	public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		UserDTO userDTO = userService.findExpertById(userPrincipal.getId());
 		return ResponseEntity
 				.status((userDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(userDTO);
 	}
-
 }
