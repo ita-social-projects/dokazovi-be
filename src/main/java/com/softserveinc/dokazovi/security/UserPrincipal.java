@@ -3,7 +3,9 @@ package com.softserveinc.dokazovi.security;
 
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -13,6 +15,8 @@ import java.util.Collections;
 import java.util.Map;
 
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserPrincipal implements OAuth2User, UserDetails {
 
 	private Integer id;
