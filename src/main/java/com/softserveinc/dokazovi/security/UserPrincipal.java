@@ -1,40 +1,33 @@
 package com.softserveinc.dokazovi.security;
 
 
+import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
+@Builder
 public class UserPrincipal implements OAuth2User, UserDetails {
 
 	private Integer id;
 	private String email;
 	private String password;
-	private Collection<? extends GrantedAuthority> authorities;
+	private RoleEntity role;
 	private transient Map<String, Object> attributes;
 
-	public UserPrincipal(Integer id, String email, String password,
-			Collection<? extends GrantedAuthority> authorities) {
-		this.id = id;
-		this.email = email;
-		this.password = password;
-		this.authorities = authorities;
-	}
-
 	public static UserPrincipal create(UserEntity user) {
-		List<GrantedAuthority> authorities = Collections.emptyList();
-		return new UserPrincipal(
-				user.getId(),
-				user.getEmail(),
-				user.getPassword(),
-				authorities
-		);
+		return UserPrincipal.builder()
+				.id(user.getId())
+				.email(user.getEmail())
+				.password(user.getPassword())
+				.role(user.getRole())
+				.build();
 	}
 
 	public static UserPrincipal create(UserEntity user, Map<String, Object> attributes) {
@@ -83,7 +76,10 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
+		if (role == null) {
+			return Collections.emptySet();
+		}
+		return role.getPermissions();
 	}
 
 	@Override

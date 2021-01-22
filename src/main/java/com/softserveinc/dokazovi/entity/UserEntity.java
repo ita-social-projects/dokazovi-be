@@ -46,19 +46,12 @@ public class UserEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private Integer id;
-
 	private String firstName;
-
 	private String lastName;
-
 	private String email;
-
 	private String password;
-
 	private String qualification;
-
 	private String phone;
-
 	private String avatar;
 
 	@ColumnDefault("1.0")
@@ -110,18 +103,9 @@ public class UserEntity {
 			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<InstitutionEntity> institutions;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "roles_users",
-			joinColumns = {@JoinColumn(name = "user_id")},
-			inverseJoinColumns = {@JoinColumn(name = "role_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private Set<RoleEntity> roles;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "role_id")
+	private RoleEntity role;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(

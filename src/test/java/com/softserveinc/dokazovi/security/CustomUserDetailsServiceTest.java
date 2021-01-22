@@ -42,13 +42,11 @@ class CustomUserDetailsServiceTest {
 	void loadUserByUsername() {
 		String email = "test@test.com";
 		RoleEntity roleEntity = RoleEntity.builder().id(1).name("ROLE_DOCTOR").build();
-		Set<RoleEntity> roleEntitySet = new HashSet<>();
-		roleEntitySet.add(roleEntity);
 		UserEntity user = UserEntity.builder()
 				.id(1)
 				.status(UserStatus.ACTIVE)
 				.email(email)
-				.roles(roleEntitySet)
+				.role(roleEntity)
 				.enabled(true)
 				.build();
 		ProviderEntity providerEntity = ProviderEntity.builder().id(1).email(email).name("LOCAL").userIdByProvider("1")
@@ -67,13 +65,11 @@ class CustomUserDetailsServiceTest {
 		Integer id = 1;
 		String email = "test@test.com";
 		RoleEntity roleEntity = RoleEntity.builder().id(1).name("ROLE_DOCTOR").build();
-		Set<RoleEntity> roleEntitySet = new HashSet<>();
-		roleEntitySet.add(roleEntity);
 		UserEntity userEntity = UserEntity.builder()
 				.id(1)
 				.status(UserStatus.ACTIVE)
 				.email(email)
-				.roles(roleEntitySet)
+				.role(roleEntity)
 				.enabled(true)
 				.build();
 		ProviderEntity providerEntity = ProviderEntity.builder().id(1).email(email).name("LOCAL").userIdByProvider("1")

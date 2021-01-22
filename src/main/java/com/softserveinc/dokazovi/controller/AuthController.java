@@ -41,13 +41,9 @@ public class AuthController {
 
 
 	private final AuthenticationManager authenticationManager;
-
 	private final TokenProvider tokenProvider;
-
 	private final MailSenderUtil mailSenderUtil;
-
 	private final UserService userService;
-
 	private final ProviderService providerService;
 
 	@PostMapping(AUTH_LOGIN)
