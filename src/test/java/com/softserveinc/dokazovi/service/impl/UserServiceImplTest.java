@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -56,7 +55,7 @@ class UserServiceImplTest {
 	void getRandomExpertPreview() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
-		when(userRepository.findRandomUsersByStatus(any(UserStatus.class), any(Pageable.class)))
+		when(userRepository.findRandomExperts(any(Pageable.class)))
 				.thenReturn(userEntityPage);
 		userService.findRandomExpertPreview(null, pageable);
 
@@ -68,7 +67,7 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> directionIds = Set.of(1, 2);
 
-		when(userRepository.findRandomUsersByDirectionsAndStatus(anySet(), any(UserStatus.class), any(Pageable.class)))
+		when(userRepository.findRandomUsersByDirectionsIdIn(anySet(), any(Pageable.class)))
 				.thenReturn(userEntityPage);
 		userService.findRandomExpertPreview(directionIds, pageable);
 
@@ -79,11 +78,8 @@ class UserServiceImplTest {
 	void findAllExpertsByDirectionsAndRegions_NotFiltered() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
-		when(userRepository.findAllActiveUsersOrderByRating(
-				any(Double.class),
-				any(Double.class),
-				any(Pageable.class)
-		)).thenReturn(userEntityPage);
+		when(userRepository.findDoctorsProfilesOrderByRatingThenByName(any(Pageable.class)))
+				.thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(null, null, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
@@ -94,12 +90,8 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
 
-		when(userRepository.findAllActiveUsersByRegionsIdsInOrderByRating(
-				anySet(),
-				any(Double.class),
-				any(Double.class),
-				any(Pageable.class)
-		)).thenReturn(userEntityPage);
+		when(userRepository.findDoctorsProfilesByRegionsIdsOrderByRatingThenByName(anySet(), any(Pageable.class)))
+				.thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(null, regionsIds, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
@@ -110,11 +102,8 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> directionsIds = Set.of(1, 4, 6);
 
-		when(userRepository.findAllActiveUsersByDirectionsIdsInOrderByDirectionsMatchesThenByRating(
-				anySet(),
-				any(Double.class),
-				any(Double.class),
-				any(Pageable.class)
+		when(userRepository.findDoctorsProfilesByDirectionsIdsOrderByDirectionsMatchesThenByRatingThenByName(
+				anySet(), any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(directionsIds, null, pageable);
 
@@ -127,13 +116,10 @@ class UserServiceImplTest {
 		Set<Integer> directionsIds = Set.of(1, 4, 6);
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
 
-		when(userRepository.findAllActiveUsersByDirectionsIdsInAndRegionsIdsInOrderByDirectionsMatchesThenByRating(
-				anySet(),
-				anySet(),
-				any(Double.class),
-				any(Double.class),
-				any(Pageable.class)
-		)).thenReturn(userEntityPage);
+		when(userRepository
+				.findDoctorsProfilesByDirectionsIdsAndRegionsIdsOrderByDirectionsMatchesThenByRatingThenByName(
+						anySet(), anySet(), any(Pageable.class))
+		).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(directionsIds, regionsIds, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));

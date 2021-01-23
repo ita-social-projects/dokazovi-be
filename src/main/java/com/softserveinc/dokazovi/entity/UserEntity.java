@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.entity;
 
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.entity.enumerations.UserPromotionLevel;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
@@ -23,8 +21,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Comparator;
@@ -52,25 +50,9 @@ public class UserEntity {
 
 	private String password;
 
-	private String qualification;
-
 	private String phone;
 
 	private String avatar;
-
-	@ColumnDefault("1.0")
-	private Double promotionScale;
-
-	@Enumerated(EnumType.STRING)
-	@ColumnDefault("BASIC")
-	private UserPromotionLevel promotionLevel;
-
-	@Column(name = "bio", columnDefinition = "TEXT")
-	private String bio;
-
-	@ManyToOne
-	@JoinColumn(name = "institution_id")
-	private InstitutionEntity mainInstitution;
 
 	@Enumerated(EnumType.STRING)
 	private UserStatus status;
@@ -79,21 +61,6 @@ public class UserEntity {
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<PostEntity> posts;
-
-	@OneToMany(mappedBy = "author")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<CharityEntity> charities;
-
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "users_institutions",
-			joinColumns = {@JoinColumn(name = "user_id")},
-			inverseJoinColumns = {@JoinColumn(name = "institution_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<InstitutionEntity> institutions;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -105,20 +72,13 @@ public class UserEntity {
 	@ToString.Exclude
 	private Set<RoleEntity> roles;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "users_directions",
-			joinColumns = {@JoinColumn(name = "user_id")},
-			inverseJoinColumns = {@JoinColumn(name = "direction_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<DirectionEntity> directions;
-
 	@OneToMany(mappedBy = "user")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<SourceEntity> sources;
+
+	@OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
+	private DoctorEntity doctor;
 
 	@CreationTimestamp
 	private Timestamp createdAt;

@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.dto.user.LatestUserPostDTO;
+import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.PostTypeEntity;
@@ -24,6 +25,7 @@ class PostMapperTest {
 	private final PostMapper postMapper = Mappers.getMapper(PostMapper.class);
 
 	private PostEntity post;
+	private DoctorEntity doctor;
 	private UserEntity author;
 	private PostTypeEntity type;
 	private InstitutionEntity mainInstitution;
@@ -41,8 +43,15 @@ class PostMapperTest {
 				.firstName("Some firstname")
 				.lastName("Some lastname")
 				.avatar("Some avatar url")
-				.mainInstitution(mainInstitution)
 				.build();
+
+		doctor = DoctorEntity.builder()
+				.id(2)
+				.mainInstitution(mainInstitution)
+				.profile(author)
+				.build();
+
+		author.setDoctor(doctor);
 
 		type = PostTypeEntity.builder()
 				.id(1)
@@ -53,7 +62,7 @@ class PostMapperTest {
 				.id(1)
 				.title("Post title")
 				.content("Post content")
-				.author(author)
+				.author(doctor)
 				.type(type)
 				.createdAt(createdAt)
 				.modifiedAt(modifiedAt)
@@ -83,8 +92,10 @@ class PostMapperTest {
 		assertEquals(postDTO.getAuthor().getFirstName(), author.getFirstName());
 		assertEquals(postDTO.getAuthor().getLastName(), author.getLastName());
 		assertEquals(postDTO.getAuthor().getAvatar(), author.getAvatar());
-		assertEquals(postDTO.getAuthor().getMainInstitution().getId(), author.getMainInstitution().getId());
-		assertEquals(postDTO.getAuthor().getMainInstitution().getName(), author.getMainInstitution().getName());
+		assertEquals(
+				postDTO.getAuthor().getMainInstitution().getId(), author.getDoctor().getMainInstitution().getId());
+		assertEquals(
+				postDTO.getAuthor().getMainInstitution().getName(), author.getDoctor().getMainInstitution().getName());
 		assertEquals(postDTO.getType().getId(), type.getId());
 		assertEquals(postDTO.getType().getName(), type.getName());
 		assertEquals(postDTO.getCreatedAt(), post.getCreatedAt());

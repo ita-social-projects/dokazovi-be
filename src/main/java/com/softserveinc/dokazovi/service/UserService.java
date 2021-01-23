@@ -22,8 +22,4 @@ public interface UserService {
 
 	Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
-	Integer getActiveUsersCountHavingPostWithStatus(PostStatus postsStatus);
-
-	Integer getAllPostsCountByStatus(PostStatus postStatus);
-
 }

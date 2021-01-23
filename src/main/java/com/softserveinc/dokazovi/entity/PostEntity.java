@@ -24,6 +24,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -52,7 +54,7 @@ public class PostEntity {
 	@ColumnDefault("false")
 	private Boolean important;
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinColumn(name = "author_id")
 	private UserEntity author;
 
