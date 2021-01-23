@@ -62,7 +62,7 @@ class PostMapperTest {
 				.id(1)
 				.title("Post title")
 				.content("Post content")
-				.author(doctor)
+				.author(author)
 				.type(type)
 				.createdAt(createdAt)
 				.modifiedAt(modifiedAt)

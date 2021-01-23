@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.entity;
 
-import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserPromotionLevel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,8 +29,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import java.util.Comparator;
-import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -55,7 +52,6 @@ public class DoctorEntity {
 	@ColumnDefault("1.0")
 	private Double promotionScale;
 
-	@Setter(AccessLevel.NONE)
 	private Long publishedPosts;
 
 	@Setter(AccessLevel.NONE)

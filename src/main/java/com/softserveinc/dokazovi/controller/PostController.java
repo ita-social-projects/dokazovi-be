@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusUpdateDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -35,7 +36,9 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SAVE_POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_UPDATE_POST_STATUS;
 
 @RestController
 @RequestMapping(EndPoints.POST)
@@ -50,11 +53,24 @@ public class PostController {
 			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = PostDTO.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
 	})
-	@PostMapping
+	@PostMapping(POST_SAVE_POST)
 	public ResponseEntity<PostDTO> save(@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(postService.saveFromUser(postSaveFromUserDTO, null));
+	}
+
+	@ApiOperation(value = "Update post status by Admin")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = HttpStatuses.OK, response = PostDTO.class),
+			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+	})
+	@PostMapping(POST_UPDATE_POST_STATUS)
+	public ResponseEntity<PostDTO> updatePostStatus(
+			@Valid @RequestBody PostStatusUpdateDTO postStatusUpdateDTO) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService.updatePostStatusByAdmin(postStatusUpdateDTO));
 	}
 
 	@ApiOperation(value = "Find latest published posts")

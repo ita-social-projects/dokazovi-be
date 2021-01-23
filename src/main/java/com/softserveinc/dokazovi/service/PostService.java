@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusUpdateDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,8 @@ import java.util.Set;
 public interface PostService {
 
 	PostDTO findPostById(Integer postId);
+
+	PostDTO updatePostStatusByAdmin(PostStatusUpdateDTO postStatusUpdateDTO);
 
 	Page<PostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
