@@ -3,8 +3,8 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.dto.post.PostStatusUpdateDTO;
+import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -36,7 +36,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_SAVE_POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_UPDATE_POST_STATUS;
 
@@ -53,7 +52,7 @@ public class PostController {
 			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = PostDTO.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
 	})
-	@PostMapping(POST_SAVE_POST)
+	@PostMapping
 	public ResponseEntity<PostDTO> save(@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
