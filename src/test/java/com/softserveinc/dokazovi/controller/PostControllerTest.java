@@ -30,6 +30,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SAVE_POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -120,7 +121,7 @@ class PostControllerTest {
 				"}";
 		ObjectMapper mapper = new ObjectMapper();
 		PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
-		mockMvc.perform(post(POST)
+		mockMvc.perform(post(POST + POST_SAVE_POST)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(content))
 				.andExpect(status().isCreated());
