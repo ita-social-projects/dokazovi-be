@@ -1,9 +1,9 @@
 package com.softserveinc.dokazovi.mapper;
 
-import com.softserveinc.dokazovi.dto.post.PostUserDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
+import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -23,6 +23,7 @@ class UserMapperTest {
 	private final Timestamp latestCreatedAt = Timestamp.valueOf("1992-05-22 10:10:10.0");
 	private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
 	private UserEntity userEntity;
+	private DoctorEntity doctorEntity;
 	private InstitutionEntity mainInstitution;
 	private InstitutionEntity institution1;
 	private DirectionEntity direction1;
@@ -71,12 +72,17 @@ class UserMapperTest {
 				.firstName("Some firstname")
 				.lastName("Some lastname")
 				.email("mail@mail.com")
-				.qualification("qualification 1")
 				.phone("380990099009")
 				.avatar("Some avatar url")
+				.build();
+
+		doctorEntity = DoctorEntity.builder()
+				.qualification("qualification 1")
 				.bio("bio 1")
 				.mainInstitution(mainInstitution)
 				.build();
+
+		userEntity.setDoctor(doctorEntity);
 
 		postEntity = PostEntity.builder()
 				.id(1)
@@ -95,20 +101,8 @@ class UserMapperTest {
 				.build();
 
 		userEntity.setPosts(Set.of(postEntity, latestPostEntity));
-		userEntity.setDirections(Set.of(direction1, direction2));
-		userEntity.setInstitutions(Set.of(mainInstitution, institution1));
-	}
-
-
-	@Test
-	void toPostUserDTO_whenMaps_thenCorrect() {
-		PostUserDTO postUserDTO = mapper.toPostUserDTO(userEntity);
-		assertEquals(userEntity.getId(), postUserDTO.getId());
-		assertEquals(userEntity.getFirstName(), postUserDTO.getFirstName());
-		assertEquals(userEntity.getLastName(), postUserDTO.getLastName());
-		assertEquals(userEntity.getAvatar(), postUserDTO.getAvatar());
-		assertEquals(userEntity.getMainInstitution().getId(), postUserDTO.getMainInstitution().getId());
-		assertEquals(userEntity.getMainInstitution().getName(), postUserDTO.getMainInstitution().getName());
+		doctorEntity.setDirections(Set.of(direction1, direction2));
+		doctorEntity.setInstitutions(Set.of(mainInstitution, institution1));
 	}
 
 	@Test
@@ -119,17 +113,17 @@ class UserMapperTest {
 		assertEquals(userDTO.getFirstName(), userEntity.getFirstName());
 		assertEquals(userDTO.getLastName(), userEntity.getLastName());
 		assertEquals(userDTO.getEmail(), userEntity.getEmail());
-		assertEquals(userDTO.getQualification(), userEntity.getQualification());
+		assertEquals(userDTO.getQualification(), userEntity.getDoctor().getQualification());
 		assertEquals(userDTO.getPhone(), userEntity.getPhone());
 		assertEquals(userDTO.getAvatar(), userEntity.getAvatar());
-		assertEquals(userDTO.getBio(), userEntity.getBio());
+		assertEquals(userDTO.getBio(), userEntity.getDoctor().getBio());
 
-		assertEquals(userDTO.getMainInstitution().getId(), userEntity.getMainInstitution().getId());
-		assertEquals(userDTO.getMainInstitution().getName(), userEntity.getMainInstitution().getName());
+		assertEquals(userDTO.getMainInstitution().getId(), userEntity.getDoctor().getMainInstitution().getId());
+		assertEquals(userDTO.getMainInstitution().getName(), userEntity.getDoctor().getMainInstitution().getName());
 		assertEquals(userDTO.getMainInstitution().getCity().getName(),
-				userEntity.getMainInstitution().getCity().getName());
+				userEntity.getDoctor().getMainInstitution().getCity().getName());
 		assertEquals(userDTO.getMainInstitution().getCity().getName(),
-				userEntity.getMainInstitution().getCity().getName());
+				userEntity.getDoctor().getMainInstitution().getCity().getName());
 
 		assertEquals(userDTO.getLastAddedPost().getId(), userEntity.getLatestExpertPost().getId());
 		assertEquals(userDTO.getLastAddedPost().getTitle(), userEntity.getLatestExpertPost().getTitle());
