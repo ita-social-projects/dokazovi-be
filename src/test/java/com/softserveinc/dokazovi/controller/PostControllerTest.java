@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusUpdateDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -31,6 +32,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_UPDATE_POST_STATUS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -125,6 +127,21 @@ class PostControllerTest {
 				.content(content))
 				.andExpect(status().isCreated());
 		verify(postService).saveFromUser(eq(post), any());
+	}
+
+	@Test
+	void updatePostStatus() throws Exception {
+		String content = "{" +
+			"  \"postId\": 1," +
+			"  \"postStatus\": \"PUBLISHED\"" +
+			"}";
+		ObjectMapper mapper = new ObjectMapper();
+		PostStatusUpdateDTO postStatusUpdateDTO = mapper.readValue(content, PostStatusUpdateDTO.class);
+		mockMvc.perform(post(POST + POST_UPDATE_POST_STATUS)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk());
+		verify(postService).updatePostStatusByAdmin(eq(postStatusUpdateDTO));
 	}
 
 	@Test

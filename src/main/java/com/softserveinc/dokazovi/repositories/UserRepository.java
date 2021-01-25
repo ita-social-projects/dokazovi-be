@@ -40,7 +40,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM DOCTORS D "
 					+ "     JOIN USERS U ON U.USER_ID = D.USER_ID "
-					+ " ORDER BY D.PROMOTION_LEVEL DESC, D.RATING, "
+					+ " ORDER BY D.PROMOTION_LEVEL DESC, D.RATING DESC, "
 					+ "          U.LAST_NAME, U.FIRST_NAME ")
 	Page<UserEntity> findDoctorsProfilesOrderByRatingThenByName(Pageable pageable);
 

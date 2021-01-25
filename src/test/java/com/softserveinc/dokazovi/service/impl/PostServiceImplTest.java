@@ -1,12 +1,15 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusUpdateDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
+import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +25,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,6 +39,8 @@ class PostServiceImplTest {
 
 	@Mock
 	private PostRepository postRepository;
+	@Mock
+	private DoctorRepository doctorRepository;
 	@Mock
 	private PostMapper postMapper;
 	@Mock
@@ -59,7 +65,7 @@ class PostServiceImplTest {
 				.build();
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
 		postService.findPostById(id);
-		 verify(postMapper).toPostDTO(eq(postEntity));
+		verify(postMapper).toPostDTO(eq(postEntity));
 	}
 
 	@Test
@@ -82,6 +88,80 @@ class PostServiceImplTest {
 		verify(postMapper, times(1)).updatePostEntityFromDTO(any(), any());
 		verify(postRepository, times(1)).findById(any());
 		verify(postMapper, times(1)).toPostDTO(any());
+	}
+
+	@Test
+	void updatePostStatusByAdmin_WhenStatusExists() {
+		PostEntity postEntity = PostEntity.builder()
+				.id(1)
+				.status(PostStatus.PUBLISHED)
+				.build();
+		PostStatusUpdateDTO dto = PostStatusUpdateDTO.builder()
+				.postId(1)
+				.postStatus(PostStatus.PUBLISHED)
+				.build();
+
+		when(postRepository.getOne(any(Integer.class))).thenReturn(postEntity);
+
+		postService.updatePostStatusByAdmin(dto);
+
+		verify(postRepository).getOne(1);
+		verify(postMapper).toPostDTO(any());
+	}
+
+	@Test
+	void updatePostStatusByAdmin_WhenStatusChange_NoPublishedPostsCount() {
+		PostEntity postEntity = PostEntity.builder()
+				.id(1)
+				.status(PostStatus.MODERATION_SECOND_SIGN)
+				.build();
+		PostStatusUpdateDTO dto = PostStatusUpdateDTO.builder()
+				.postId(1)
+				.postStatus(PostStatus.MODERATION_FIRST_SIGN)
+				.build();
+
+		when(postRepository.getOne(any(Integer.class))).thenReturn(postEntity);
+
+		postService.updatePostStatusByAdmin(dto);
+
+		verify(postRepository).getOne(1);
+		assertEquals(postEntity.getStatus(), dto.getPostStatus());
+		verify(postRepository).save(postEntity);
+		verify(postMapper).toPostDTO(any());
+	}
+
+	@Test
+	void updatePostStatusByAdmin_WhenStatusChange_PostsCount() {
+		DoctorEntity doctorEntity = DoctorEntity.builder()
+				.id(1)
+				.build();
+		UserEntity userEntity = UserEntity.builder()
+				.id(3)
+				.build();
+		PostEntity postEntity = PostEntity.builder()
+				.id(1)
+				.author(userEntity)
+				.status(PostStatus.PUBLISHED)
+				.build();
+
+		when(postRepository.getOne(any(Integer.class))).thenReturn(postEntity);
+		when(doctorRepository.getByProfileId(any(Integer.class))).thenReturn(doctorEntity);
+		when(postRepository.countAllByStatusAndAuthorId(any(PostStatus.class), any(Integer.class))).thenReturn(10L);
+
+		PostStatusUpdateDTO dto = PostStatusUpdateDTO.builder()
+				.postId(1)
+				.postStatus(PostStatus.MODERATION_SECOND_SIGN)
+				.build();
+		postService.updatePostStatusByAdmin(dto);
+
+		verify(postRepository).getOne(1);
+		assertEquals(postEntity.getStatus(), dto.getPostStatus());
+		verify(postRepository).save(postEntity);
+		verify(doctorRepository).getByProfileId(userEntity.getId());
+		verify(postRepository).countAllByStatusAndAuthorId(PostStatus.PUBLISHED, userEntity.getId());
+		assertEquals(doctorEntity.getPublishedPosts(), 10L);
+		verify(doctorRepository).save(doctorEntity);
+		verify(postMapper).toPostDTO(any());
 	}
 
 	@Test
