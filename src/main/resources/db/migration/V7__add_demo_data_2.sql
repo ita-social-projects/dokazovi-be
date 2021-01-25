@@ -5,7 +5,7 @@ DELETE FROM PUBLIC.ROLES_USERS;
 DELETE FROM PUBLIC.ROLES;
 
 INSERT INTO PUBLIC.ROLES (ROLE_NAME) VALUES
-('Admin'), ('Doctor'), ('Trusted Doctor');
+('ROLE_ADMIN'), ('ROLE_DOCTOR'), ('ROLE_TRUSTED_DOCTOR');
 
 INSERT INTO PUBLIC.ROLES_USERS (ROLE_ID, USER_ID) VALUES
 ('1', '9'), ('2', '4'), ('3', '2'), ('2', '1'), ('3', '3'), ('2', '5'), ('3', '7'), ('2', '6'), ('3', '8');
@@ -13,7 +13,7 @@ INSERT INTO PUBLIC.ROLES_USERS (ROLE_ID, USER_ID) VALUES
 INSERT INTO PUBLIC.USERS (EMAIL, PASSWORD, STATUS, FIRST_NAME, LAST_NAME, QUALIFICATION, PHONE, BIO,
                           CREATED_AT, AVATAR, DIRECTION_ID, INSTITUTION_ID)
 VALUES
-('stepan@mail.com', 'stepan', 'ACTIVE', 'Степан', 'Степанов', 'Лікар вищої категорії', '+380969123969'
+('stepan@mail.com', '$2y$10$CQdJOp/Jw5LmRoUt0W7wSO6lE4N0hM3k0gr1mCI8w8ZOp8ERZcjzO', 'ACTIVE', 'Степан', 'Степанов', 'Лікар вищої категорії', '+380969123969'
     , 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
       'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
       'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
@@ -21,7 +21,7 @@ VALUES
     NOW(), 'https://cdn.humanitycrew.org/wp-content/uploads/media/2019/06/113634857-person-gray-photo-placeholder-man-in-t-shirt-on-gray-background.jpg',
     '5', '5'),
 
-('danylo@mail.com', 'danylo', 'ACTIVE', 'Данило', 'Даниленко', 'Лікар-спеціаліст', '+380961233969'
+('danylo@mail.com', '$2y$10$dhLh3iKYde/riLznRRU1duits0zbiAFQ46l5AVRhDddJtUBHm3OHW', 'ACTIVE', 'Данило', 'Даниленко', 'Лікар-спеціаліст', '+380961233969'
     , 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
       'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
       'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
@@ -29,7 +29,7 @@ VALUES
  NOW(), 'https://cdn.humanitycrew.org/wp-content/uploads/media/2019/06/113634857-person-gray-photo-placeholder-man-in-t-shirt-on-gray-background.jpg',
  '1', '2'),
 
-('petro@mail.com', 'petro', 'ACTIVE', 'Петро', 'Петренко', 'Лікар-спеціаліст', '+380961456969'
+('petro@mail.com', '$2y$10$MAU64Cv9xZ629f3oTiTJZeY5LbkV1KrVzQ9BeHE0wymMlSqHjUovS', 'ACTIVE', 'Петро', 'Петренко', 'Лікар-спеціаліст', '+380961456969'
     , 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
       'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
       'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
@@ -37,7 +37,7 @@ VALUES
  NOW(), 'https://cdn.humanitycrew.org/wp-content/uploads/media/2019/06/113634857-person-gray-photo-placeholder-man-in-t-shirt-on-gray-background.jpg',
  '2', '3'),
 
-('masha@mail.com', 'masha', 'ACTIVE', 'Марія', 'Марієнко', 'Кандидат медичних наук', '+380956456969'
+('masha@mail.com', '$2y$10$igRjDpb3m9EuDvPiGr.RLuuLyjB0M9Snx3yeGW25zprYceSnBNfMq', 'ACTIVE', 'Марія', 'Марієнко', 'Кандидат медичних наук', '+380956456969'
     , 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
       'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
       'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
@@ -45,7 +45,7 @@ VALUES
  NOW(), 'https://cdn.humanitycrew.org/wp-content/uploads/media/2019/06/113634857-person-gray-photo-placeholder-man-in-t-shirt-on-gray-background.jpg',
  '4', '1'),
 
-('mykola@mail.com', 'mykola', 'ACTIVE', 'Микола', 'Миколенко', 'Кандидат медичних наук', '+380956412369'
+('mykola@mail.com', '$2y$10$IaiLTkeqRVSuUtr4weOYmODGOlUp4aBdPQTjQun1klh9CMTsQ12Zu', 'ACTIVE', 'Микола', 'Миколенко', 'Кандидат медичних наук', '+380956412369'
     , 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
       'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
       'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
@@ -53,7 +53,7 @@ VALUES
  NOW(), 'https://cdn.humanitycrew.org/wp-content/uploads/media/2019/06/113634857-person-gray-photo-placeholder-man-in-t-shirt-on-gray-background.jpg',
  '4', '5'),
 
-('taras@mail.com', 'taras', 'ACTIVE', 'Тарас', 'Шевченко', 'Лікар-спеціаліст', '+380956098369'
+('taras@mail.com', '$2y$10$dCSLVzPoFC7fAfFdgCFayui2u3Tt9Z6IXEZZkCKzuXFvqyWB3cmUO', 'ACTIVE', 'Тарас', 'Шевченко', 'Лікар-спеціаліст', '+380956098369'
     , 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
       'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
       'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
@@ -61,7 +61,7 @@ VALUES
  NOW(), 'https://cdn.humanitycrew.org/wp-content/uploads/media/2019/06/113634857-person-gray-photo-placeholder-man-in-t-shirt-on-gray-background.jpg',
  '3', '2'),
 
-('lesia@mail.com', 'lesia', 'ACTIVE', 'Леся', 'Українка', 'Лікар вищої категорії', '+380956765669'
+('lesia@mail.com', '$2y$10$TeNyf4iiE7xy0HFHmtRRLu2Q7BH4ceYjYudZpIUJ13qjhvapdjjHe', 'ACTIVE', 'Леся', 'Українка', 'Лікар вищої категорії', '+380956765669'
     , 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
       'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
       'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||
@@ -69,7 +69,7 @@ VALUES
  NOW(), 'https://cdn.humanitycrew.org/wp-content/uploads/media/2019/06/113634857-person-gray-photo-placeholder-man-in-t-shirt-on-gray-background.jpg',
  '2', '2'),
 
-('bohdan@mail.com', 'bohdan', 'ACTIVE', 'Богдан', 'Хмельницький', 'Лікар вищої категорії', '+380956761119'
+('bohdan@mail.com', '$2y$10$DYodORfhp4RQl/5mW5XUfO4suMshfRW7611eKSnb/4AVdrKwUb6wS', 'ACTIVE', 'Богдан', 'Хмельницький', 'Лікар вищої категорії', '+380956761119'
     , 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna ' ||
       'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ' ||
       'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur ' ||

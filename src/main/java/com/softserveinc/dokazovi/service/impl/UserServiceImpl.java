@@ -2,12 +2,19 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.entity.VerificationToken;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
+import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
+import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.UserService;
+import com.softserveinc.dokazovi.util.StringToNameParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -21,10 +28,12 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
+	private final VerificationTokenRepository tokenRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserEntity findByEmail(String email) {
-		return userRepository.findByEmail(email);
+		return userRepository.findByEmail(email).orElse(null);
 	}
 
 	@Override
@@ -71,4 +80,48 @@ public class UserServiceImpl implements UserService {
 				.map(userMapper::toUserDTO);
 	}
 
+	@Override
+	public void setEnableTrue(UserEntity user) {
+		UserEntity userEntity = userRepository.findById(user.getId()).orElse(null);
+		if (userEntity == null) {
+			throw new BadRequestException("Something went wrong!!!");
+		}
+		userEntity.setEnabled(true);
+		userRepository.save(userEntity);
+	}
+
+	@Override
+	public VerificationToken getVerificationToken(String verificationToken) {
+		return tokenRepository.findByToken(verificationToken);
+	}
+
+	@Override
+	public void createVerificationToken(UserEntity user, String token) {
+		VerificationToken myToken = VerificationToken.builder()
+				.user(user)
+				.token(token)
+				.build();
+		tokenRepository.save(myToken);
+	}
+
+	@Override
+	public Boolean existsByEmail(String email) {
+		return userRepository.existsByEmail(email);
+	}
+
+	@Override
+	public UserEntity saveUser(UserEntity user) {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public UserEntity registerNewUser(SignUpRequest signUpRequest) {
+		UserEntity user = new UserEntity();
+		StringToNameParser.setUserNameFromRequest(signUpRequest, user);
+		user.setEmail(signUpRequest.getEmail());
+		user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+		user.setStatus(UserStatus.NEW);
+		user.setEnabled(false);
+		return userRepository.save(user);
+	}
 }

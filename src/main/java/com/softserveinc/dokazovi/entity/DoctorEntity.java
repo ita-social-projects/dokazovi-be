@@ -1,5 +1,7 @@
 package com.softserveinc.dokazovi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserveinc.dokazovi.entity.enumerations.UserPromotionLevel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -63,20 +65,29 @@ public class DoctorEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "institution_id")
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private InstitutionEntity mainInstitution;
 
 	@OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private UserEntity profile;
 
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<CharityEntity> charities;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(
 			name = "doctors_institutions",
 			joinColumns = {@JoinColumn(name = "doctor_id")},
@@ -84,6 +95,9 @@ public class DoctorEntity {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<InstitutionEntity> institutions;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -94,6 +108,9 @@ public class DoctorEntity {
 	)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@JsonIdentityInfo(
+			property = "id",
+			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<DirectionEntity> directions;
 
 	private void updateUserRating() {

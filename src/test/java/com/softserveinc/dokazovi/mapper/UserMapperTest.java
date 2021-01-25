@@ -105,18 +105,6 @@ class UserMapperTest {
 		doctorEntity.setInstitutions(Set.of(mainInstitution, institution1));
 	}
 
-
-	@Test
-	void toPostUserDTO_whenMaps_thenCorrect() {
-//		PostUserDTO postUserDTO = mapper.toPostUserDTO(userEntity);
-//		assertEquals(userEntity.getId(), postUserDTO.getId());
-//		assertEquals(userEntity.getFirstName(), postUserDTO.getFirstName());
-//		assertEquals(userEntity.getLastName(), postUserDTO.getLastName());
-//		assertEquals(userEntity.getAvatar(), postUserDTO.getAvatar());
-//		assertEquals(userEntity.getDoctor().getMainInstitution().getId(), postUserDTO.getMainInstitution().getId());
-//		assertEquals(userEntity.getDoctor().getMainInstitution().getName(), postUserDTO.getMainInstitution().getName());
-	}
-
 	@Test
 	void toUserDTO() {
 		UserDTO userDTO = mapper.toUserDTO(userEntity);

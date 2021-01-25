@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +39,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_UPDATE_POST_STATUS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_UPDATE_POST_STATUS;
 
 @RestController
 @RequestMapping(EndPoints.POST)
@@ -47,7 +49,8 @@ public class PostController {
 	private final PostService postService;
 	private final PostTypeService postTypeService;
 
-	@ApiOperation(value = "Save post of user")
+	@ApiOperation(value = "Save post of user",
+			authorizations = {@Authorization(value = "Authorization")})
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = PostDTO.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
@@ -59,7 +62,8 @@ public class PostController {
 				.body(postService.saveFromUser(postSaveFromUserDTO, null));
 	}
 
-	@ApiOperation(value = "Update post status by Admin")
+	@ApiOperation(value = "Update post status by Admin",
+			authorizations = {@Authorization(value = "Authorization")})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = HttpStatuses.OK, response = PostDTO.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
@@ -72,7 +76,8 @@ public class PostController {
 				.body(postService.updatePostStatusByAdmin(postStatusUpdateDTO));
 	}
 
-	@ApiOperation(value = "Find latest published posts")
+	@ApiOperation(value = "Find latest published posts",
+			authorizations = {@Authorization(value = "Authorization")})
 	@ApiPageable
 	@GetMapping(POST_LATEST)
 	public ResponseEntity<Page<PostDTO>> findLatestPublished(
@@ -83,7 +88,8 @@ public class PostController {
 	}
 
 	@ApiPageable
-	@ApiOperation(value = "Find important posts")
+	@ApiOperation(value = "Find important posts",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping(POST_IMPORTANT)
 	public ResponseEntity<Page<PostDTO>> findImportant(
 			@PageableDefault(size = 3, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
@@ -93,7 +99,8 @@ public class PostController {
 	}
 
 	@ApiPageable
-	@ApiOperation(value = "Find latest posts by direction")
+	@ApiOperation(value = "Find latest posts by direction",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping(POST_LATEST_BY_DIRECTION)
 	public ResponseEntity<Page<PostDTO>> findLatestByDirection(
 			@PageableDefault(size = 6, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
@@ -109,7 +116,8 @@ public class PostController {
 	}
 
 	@ApiPageable
-	@ApiOperation(value = "Find latest posts by some expert")
+	@ApiOperation(value = "Find latest posts by some expert",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping(POST_LATEST_BY_EXPERT)
 	public ResponseEntity<Page<PostDTO>> findLatestByExpert(
 			@PageableDefault(size = 9, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
@@ -122,7 +130,8 @@ public class PostController {
 				.body(postService.findAllByExpert(expert, type, PostStatus.PUBLISHED, pageable));
 	}
 
-	@ApiOperation(value = "Find all types of posts")
+	@ApiOperation(value = "Find all types of posts",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping(POST_TYPE)
 	public ResponseEntity<List<PostTypeDTO>> findAllPostType() {
 		return ResponseEntity
@@ -130,7 +139,8 @@ public class PostController {
 				.body(postTypeService.findAll());
 	}
 
-	@ApiOperation(value = "Get post by Id, as a path variable.")
+	@ApiOperation(value = "Get post by Id, as a path variable.",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping(POST_GET_POST_BY_ID)
 	public ResponseEntity<PostDTO> getPostById(@PathVariable("postId") Integer postId) {
 		PostDTO postDTO = postService.findPostById(postId);

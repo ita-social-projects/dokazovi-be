@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -63,7 +64,7 @@ public class PostServiceImpl implements PostService {
 		PostStatus originalStatus = existingPost.getStatus();
 		PostStatus newStatus = postStatusUpdateDTO.getPostStatus();
 
-		if (originalStatus == newStatus) {
+		if (Objects.equals(originalStatus, newStatus)) {
 			return postMapper.toPostDTO(existingPost);
 		} else {
 			existingPost.setStatus(newStatus);
@@ -71,7 +72,8 @@ public class PostServiceImpl implements PostService {
 
 		PostEntity updatedPost = postRepository.save(existingPost);
 
-		if (originalStatus == PostStatus.PUBLISHED || newStatus == PostStatus.PUBLISHED) {
+		if (Objects.equals(originalStatus, PostStatus.PUBLISHED) ||
+				Objects.equals(newStatus, PostStatus.PUBLISHED)) {
 			Integer authorProfileId = existingPost.getAuthor().getId();
 
 			DoctorEntity doctor = doctorRepository.getByProfileId(authorProfileId);

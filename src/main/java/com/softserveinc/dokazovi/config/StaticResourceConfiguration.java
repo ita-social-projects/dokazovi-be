@@ -11,16 +11,16 @@ import java.nio.file.Path;
 @Configuration
 public class StaticResourceConfiguration implements WebMvcConfigurer {
 
-	@Value("${fs.root}")
-	private String fsPath;
+    @Value("${fs.root}")
+    private String fsPath;
 
-	@Value("${url.assets.path}")
-	private String urlAssetsPath;
+    @Value("${url.assets.path}")
+    private String urlAssetsPath;
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry
-				.addResourceHandler("/" + urlAssetsPath + "/**")
-				.addResourceLocations("file:///" + Path.of(fsPath).toAbsolutePath() + File.separator);
-	}
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+                .addResourceHandler("/" + urlAssetsPath + "/**")
+                .addResourceLocations("file:///" + Path.of(fsPath).toAbsolutePath() + File.separator);
+    }
 }
