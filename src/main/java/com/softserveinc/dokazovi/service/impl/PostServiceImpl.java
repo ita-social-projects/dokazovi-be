@@ -2,24 +2,19 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.dto.post.PostStatusUpdateDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
-import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
-import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -27,7 +22,6 @@ import java.util.Set;
 public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
-	private final DoctorRepository doctorRepository;
 	private final PostMapper postMapper;
 
 	@Override
@@ -55,34 +49,6 @@ public class PostServiceImpl implements PostService {
 
 		PostEntity savedEntity = postRepository.save(mappedEntity);
 		return postMapper.toPostDTO(savedEntity);
-	}
-
-	@Override
-	@Transactional
-	public PostDTO updatePostStatusByAdmin(PostStatusUpdateDTO postStatusUpdateDTO) {
-		PostEntity existingPost = postRepository.getOne(postStatusUpdateDTO.getPostId());
-		PostStatus originalStatus = existingPost.getStatus();
-		PostStatus newStatus = postStatusUpdateDTO.getPostStatus();
-
-		if (Objects.equals(originalStatus, newStatus)) {
-			return postMapper.toPostDTO(existingPost);
-		} else {
-			existingPost.setStatus(newStatus);
-		}
-
-		PostEntity updatedPost = postRepository.save(existingPost);
-
-		if (Objects.equals(originalStatus, PostStatus.PUBLISHED) ||
-				Objects.equals(newStatus, PostStatus.PUBLISHED)) {
-			Integer authorProfileId = existingPost.getAuthor().getId();
-
-			DoctorEntity doctor = doctorRepository.getByProfileId(authorProfileId);
-			doctor.setPublishedPosts(postRepository.countAllByStatusAndAuthorId(PostStatus.PUBLISHED, authorProfileId));
-
-			doctorRepository.save(doctor);
-		}
-
-		return postMapper.toPostDTO(updatedPost);
 	}
 
 	@Override

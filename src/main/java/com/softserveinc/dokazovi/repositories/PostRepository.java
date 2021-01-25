@@ -13,8 +13,6 @@ import java.util.Set;
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
-	Long countAllByStatusAndAuthorId(PostStatus postStatus, Integer authorId);
-
 	Page<PostEntity> findAllByImportantIsTrueAndStatus(PostStatus status, Pageable pageable);
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
