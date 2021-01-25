@@ -159,7 +159,7 @@ class PostServiceImplTest {
 		verify(postRepository).save(postEntity);
 		verify(doctorRepository).getByProfileId(userEntity.getId());
 		verify(postRepository).countAllByStatusAndAuthorId(PostStatus.PUBLISHED, userEntity.getId());
-		assertEquals(doctorEntity.getPublishedPosts(), 10L);
+		assertEquals(10L, doctorEntity.getPublishedPosts());
 		verify(doctorRepository).save(doctorEntity);
 		verify(postMapper).toPostDTO(any());
 	}

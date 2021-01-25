@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.validator;
 
 import com.softserveinc.dokazovi.repositories.PostRepository;
-import com.softserveinc.dokazovi.repositories.TagRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

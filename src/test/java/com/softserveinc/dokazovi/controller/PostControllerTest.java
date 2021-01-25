@@ -141,7 +141,7 @@ class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(content))
 				.andExpect(status().isOk());
-		verify(postService).updatePostStatusByAdmin(eq(postStatusUpdateDTO));
+		verify(postService).updatePostStatusByAdmin(postStatusUpdateDTO);
 	}
 
 	@Test

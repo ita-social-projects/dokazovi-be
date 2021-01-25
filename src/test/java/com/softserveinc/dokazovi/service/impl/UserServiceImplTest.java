@@ -79,7 +79,7 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> directionIds = Set.of(1, 2);
 
-		when(userRepository.findRandomUsersByDirectionsIdIn(anySet(), any(Pageable.class)))
+		when(userRepository.findRandomExpertsByDirectionsIdIn(anySet(), any(Pageable.class)))
 				.thenReturn(userEntityPage);
 		userService.findRandomExpertPreview(directionIds, pageable);
 

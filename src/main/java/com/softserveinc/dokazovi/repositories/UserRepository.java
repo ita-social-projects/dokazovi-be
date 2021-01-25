@@ -27,7 +27,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM ( "
 					+ "     SELECT DD.DOCTOR_ID FROM DOCTORS_DIRECTIONS DD "
-					+ "		WHERE DD.DIRECTION_ID IN (:directionsIds) "
+					+ "     WHERE DD.DIRECTION_ID IN (:directionsIds) "
 					+ "     GROUP BY DD.DOCTOR_ID "
 					+ " ) DOCS_DIRS "
 					+ "     JOIN DOCTORS D ON DOCS_DIRS.DOCTOR_ID=D.DOCTOR_ID "
@@ -35,7 +35,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ " ORDER BY RANDOM() ",
 			countQuery = " SELECT COUNT(DISTINCT DD.DOCTOR_ID) FROM DOCTORS_DIRECTIONS DD "
 					+ " WHERE DD.DIRECTION_ID IN (:directionsIds) ")
-	Page<UserEntity> findRandomUsersByDirectionsIdIn(Iterable<Integer> directionsIds, Pageable pageable);
+	Page<UserEntity> findRandomExpertsByDirectionsIdIn(Iterable<Integer> directionsIds, Pageable pageable);
 
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM DOCTORS D "
