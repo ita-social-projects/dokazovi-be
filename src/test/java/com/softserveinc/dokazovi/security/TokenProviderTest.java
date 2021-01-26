@@ -14,8 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 
-import java.util.HashSet;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +44,11 @@ class TokenProviderTest {
 
 	@Test
 	void createToken() {
-		UserPrincipal userPrincipal = new UserPrincipal(28, "test@test.com", "test", new HashSet<>());
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(28)
+				.email("test@test.com")
+				.password("test")
+				.build();
 		when(authentication.getPrincipal()).thenReturn(userPrincipal);
 		String token = tokenProvider.createToken(authentication);
 		String actualId = Jwts.parser()

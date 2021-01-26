@@ -1,7 +1,5 @@
 package com.softserveinc.dokazovi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import lombok.AllArgsConstructor;
@@ -22,8 +20,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -44,17 +41,11 @@ public class UserEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private Integer id;
-
 	private String firstName;
-
 	private String lastName;
-
 	private String email;
-
 	private String password;
-
 	private String phone;
-
 	private String avatar;
 
 	@Enumerated(EnumType.STRING)
@@ -63,36 +54,18 @@ public class UserEntity {
 	@OneToMany(mappedBy = "author")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<PostEntity> posts;
 
-	@ManyToMany
-	@JoinTable(
-			name = "roles_users",
-			joinColumns = {@JoinColumn(name = "user_id")},
-			inverseJoinColumns = {@JoinColumn(name = "role_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private Set<RoleEntity> roles;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "role_id")
+	private RoleEntity role;
 
 	@OneToMany(mappedBy = "user")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<SourceEntity> sources;
 
 	@OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private DoctorEntity doctor;
 
 	@CreationTimestamp
@@ -101,9 +74,6 @@ public class UserEntity {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<ProviderEntity> userProviderEntities;
 
 	@Column(name = "enabled")

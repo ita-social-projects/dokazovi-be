@@ -8,6 +8,7 @@ import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +29,6 @@ public class TagController {
 
 	private final TagService tagService;
 
-	@ApiOperation(value = "Find tag by value",
-			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping(TAG_FIND_BY_VALUE)
 	public ResponseEntity<List<TagDTO>> findByValue(
 			@RequestParam String value,
@@ -39,9 +38,10 @@ public class TagController {
 				.body(tagService.findTagsByValue(value, limit));
 	}
 
+	@PostMapping
+	@PreAuthorize("hasAuthority('SAVE_TAG')")
 	@ApiOperation(value = "Save tag",
 			authorizations = {@Authorization(value = "Authorization")})
-	@PostMapping
 	public ResponseEntity<TagDTO> saveTag(@Valid @RequestBody TagSaveDTO tagSaveDTO) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)

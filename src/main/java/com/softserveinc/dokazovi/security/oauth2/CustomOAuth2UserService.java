@@ -23,18 +23,14 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 	private final UserRepository userRepository;
-
 	private final ProviderRepository userProviderRepository;
-
 	private final RoleRepository roleRepository;
 
 	@Override
@@ -73,9 +69,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 	private UserEntity registerNewUser(OAuth2UserRequest oauth2UserRequest, OAuth2UserInfo oauth2UserInfo) {
 		ProviderEntity provider = new ProviderEntity();
-		Set<RoleEntity> roleEntities = new HashSet<>();
-		Optional<RoleEntity> roleEntity = roleRepository.getRoleEntityByName("ROLE_DOCTOR");
-		roleEntity.ifPresent(roleEntities::add);
 		provider.setName(oauth2UserRequest.getClientRegistration().getRegistrationId());
 		provider.setUserIdByProvider(oauth2UserInfo.getId());
 		UserEntity user = new UserEntity();
@@ -84,7 +77,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		user.setEmail(oauth2UserInfo.getEmail());
 		user.setAvatar(oauth2UserInfo.getImageUrl());
 		user.setStatus(UserStatus.NEW);
-		user.setRoles(roleEntities);
+		Optional<RoleEntity> roleEntity = roleRepository.getRoleEntityByName("Doctor");
+		user.setRole(roleEntity.orElse(null));
 		user.setEnabled(true);
 		UserEntity savedUser = userRepository.save(user);
 		provider.setUser(savedUser);

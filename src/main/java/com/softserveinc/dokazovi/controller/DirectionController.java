@@ -3,7 +3,6 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.service.DirectionService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +21,8 @@ public class DirectionController {
 
 	private final DirectionService directionService;
 
-	@ApiOperation(value = "Get all directions",
-			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping
+	@ApiOperation(value = "Get all directions")
 	public ResponseEntity<List<DirectionDTO>> getAllDirections() {
 		return ResponseEntity
 				.status(HttpStatus.OK)
