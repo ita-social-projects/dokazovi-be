@@ -37,19 +37,13 @@ public class PostSaveFromUserDTO {
 
 	@NotNull(message = "PostType are required")
 	@PostTypeExists
-	@Valid
 	private PostTypeDTO type;
 
 	@NotNull(message = "At least one topic are required")
 	@Size(min = 1, max = 3, message = "Number of chosen topics is from 1 to 3. ")
-	@Valid
 	private Set<@DirectionExists DirectionDTO> directions;
 
-	@NotNull(message = "At least one tag are required")
-	@Size(min = 1, max = 3, message = "Number of chosen tags is from 1 to 3. ")
-	@Valid
 	private Set<@TagExists TagDTO> tags;
 
-	@Valid
 	private Set<@SourceExists SourceDTO> sources;
 }
