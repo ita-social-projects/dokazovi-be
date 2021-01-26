@@ -52,7 +52,7 @@ public class PostEntity {
 	@ColumnDefault("false")
 	private Boolean important;
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
 	@JoinColumn(name = "author_id")
 	private UserEntity author;
 
