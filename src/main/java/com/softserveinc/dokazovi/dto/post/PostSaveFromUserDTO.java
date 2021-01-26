@@ -25,7 +25,6 @@ public class PostSaveFromUserDTO {
 
 	private Integer id;
 
-	@NotBlank(message = "Title field cannot be empty")
 	private String title;
 
 	@NotBlank(message = "Preview field cannot be empty")
