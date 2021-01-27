@@ -1,4 +1,4 @@
-package com.softserveinc.dokazovi.entity.payload;
+package com.softserveinc.dokazovi.dto.payload;
 
 import lombok.Data;
 
@@ -7,10 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Data
-public class SignUpRequest {
-
-	@NotBlank
-	private String name;
+public class LoginRequest {
 
 	@NotBlank
 	@Email
@@ -19,4 +16,5 @@ public class SignUpRequest {
 	@NotBlank
 	@Size(min = 3, max = 20, message = "Password length must be from 4 to 16 symbols")
 	private String password;
+
 }
