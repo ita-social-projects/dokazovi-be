@@ -4,7 +4,7 @@ import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
-import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
+import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.repositories.UserRepository;
