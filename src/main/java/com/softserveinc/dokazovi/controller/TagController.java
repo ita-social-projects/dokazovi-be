@@ -3,9 +3,12 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.dto.tag.TagSaveDTO;
 import com.softserveinc.dokazovi.service.TagService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +39,9 @@ public class TagController {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('SAVE_TAG')")
+	@ApiOperation(value = "Save tag",
+			authorizations = {@Authorization(value = "Authorization")})
 	public ResponseEntity<TagDTO> saveTag(@Valid @RequestBody TagSaveDTO tagSaveDTO) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)

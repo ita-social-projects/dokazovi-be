@@ -34,6 +34,4 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	Page<PostEntity> findAllByAuthorIdAndTypeIdInAndStatus(
 			Integer authorId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
-
-	Integer countAllByStatus(PostStatus postStatus);
 }

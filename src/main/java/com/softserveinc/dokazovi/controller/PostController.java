@@ -45,21 +45,21 @@ public class PostController {
 	private final PostService postService;
 	private final PostTypeService postTypeService;
 
+	@PostMapping
 	@ApiOperation(value = "Save post of user")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = PostDTO.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
 	})
-	@PostMapping
 	public ResponseEntity<PostDTO> save(@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(postService.saveFromUser(postSaveFromUserDTO, null));
 	}
 
-	@ApiOperation(value = "Find latest published posts")
-	@ApiPageable
 	@GetMapping(POST_LATEST)
+	@ApiPageable
+	@ApiOperation(value = "Find latest published posts")
 	public ResponseEntity<Page<PostDTO>> findLatestPublished(
 			@PageableDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity
@@ -67,9 +67,9 @@ public class PostController {
 				.body(postService.findAllByStatus(PostStatus.PUBLISHED, pageable));
 	}
 
+	@GetMapping(POST_IMPORTANT)
 	@ApiPageable
 	@ApiOperation(value = "Find important posts")
-	@GetMapping(POST_IMPORTANT)
 	public ResponseEntity<Page<PostDTO>> findImportant(
 			@PageableDefault(size = 3, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity
@@ -77,9 +77,9 @@ public class PostController {
 				.body(postService.findImportantPosts(pageable));
 	}
 
+	@GetMapping(POST_LATEST_BY_DIRECTION)
 	@ApiPageable
 	@ApiOperation(value = "Find latest posts by direction")
-	@GetMapping(POST_LATEST_BY_DIRECTION)
 	public ResponseEntity<Page<PostDTO>> findLatestByDirection(
 			@PageableDefault(size = 6, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@ApiParam(value = "Direction id")
@@ -93,9 +93,9 @@ public class PostController {
 				.body(postService.findAllByDirection(direction, type, tag, PostStatus.PUBLISHED, pageable));
 	}
 
+	@GetMapping(POST_LATEST_BY_EXPERT)
 	@ApiPageable
 	@ApiOperation(value = "Find latest posts by some expert")
-	@GetMapping(POST_LATEST_BY_EXPERT)
 	public ResponseEntity<Page<PostDTO>> findLatestByExpert(
 			@PageableDefault(size = 9, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@ApiParam(value = "Expert's id")
@@ -107,16 +107,16 @@ public class PostController {
 				.body(postService.findAllByExpert(expert, type, PostStatus.PUBLISHED, pageable));
 	}
 
-	@ApiOperation(value = "Find all types of posts")
 	@GetMapping(POST_TYPE)
+	@ApiOperation(value = "Find all types of posts")
 	public ResponseEntity<List<PostTypeDTO>> findAllPostType() {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postTypeService.findAll());
 	}
 
-	@ApiOperation(value = "Get post by Id, as a path variable.")
 	@GetMapping(POST_GET_POST_BY_ID)
+	@ApiOperation(value = "Get post by Id, as a path variable.")
 	public ResponseEntity<PostDTO> getPostById(@PathVariable("postId") Integer postId) {
 		PostDTO postDTO = postService.findPostById(postId);
 		return ResponseEntity

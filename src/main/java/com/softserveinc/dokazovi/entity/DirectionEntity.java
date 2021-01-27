@@ -43,5 +43,5 @@ public class DirectionEntity {
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	private Set<UserEntity> users;
+	private Set<DoctorEntity> users;
 }

@@ -21,8 +21,8 @@ public class DirectionController {
 
 	private final DirectionService directionService;
 
-	@ApiOperation("Get all directions")
 	@GetMapping
+	@ApiOperation(value = "Get all directions")
 	public ResponseEntity<List<DirectionDTO>> getAllDirections() {
 		return ResponseEntity
 				.status(HttpStatus.OK)

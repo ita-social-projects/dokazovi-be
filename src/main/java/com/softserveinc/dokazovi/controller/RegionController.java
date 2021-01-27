@@ -21,8 +21,8 @@ public class RegionController {
 
 	private final RegionService regionService;
 
-	@ApiOperation("Get all regions")
 	@GetMapping
+	@ApiOperation(value = "Get all regions")
 	public ResponseEntity<List<RegionDTO>> getAllRegions() {
 		return ResponseEntity
 				.status(HttpStatus.OK)

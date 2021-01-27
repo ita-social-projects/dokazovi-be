@@ -35,7 +35,7 @@ public class CharityEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "author_id")
-	private UserEntity author;
+	private DoctorEntity author;
 
 	@CreationTimestamp
 	private Timestamp createdAt;

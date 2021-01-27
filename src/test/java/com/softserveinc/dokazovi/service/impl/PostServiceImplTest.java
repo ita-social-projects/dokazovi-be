@@ -7,6 +7,7 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,8 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,6 +36,8 @@ class PostServiceImplTest {
 
 	@Mock
 	private PostRepository postRepository;
+	@Mock
+	private DoctorRepository doctorRepository;
 	@Mock
 	private PostMapper postMapper;
 	@Mock
@@ -59,7 +62,7 @@ class PostServiceImplTest {
 				.build();
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
 		postService.findPostById(id);
-		 verify(postMapper).toPostDTO(eq(postEntity));
+		verify(postMapper).toPostDTO(eq(postEntity));
 	}
 
 	@Test

@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -34,6 +36,8 @@ class UserControllerTest {
 
 	private MockMvc mockMvc;
 
+	@Mock
+	UserPrincipal userPrincipal;
 	@Mock
 	private UserService userService;
 	@InjectMocks
@@ -135,5 +139,18 @@ class UserControllerTest {
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
 		verify(userService).findAllExpertsByDirectionsAndRegions(eq(directionsIds), eq(regionsIds), eq(pageable));
+	}
+
+	@Test
+	void getCurrentUser_notFound() throws Exception {
+		Integer existingUserId = 9;
+		String uri = USER + USER_GET_CURRENT_USER;
+		UserDTO userDTO = UserDTO.builder()
+				.id(existingUserId)
+				.build();
+
+		when(userService.findExpertById(any(Integer.class))).thenReturn(userDTO);
+		when(userPrincipal.getId()).thenReturn(9);
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 	}
 }
