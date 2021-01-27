@@ -46,12 +46,6 @@ public class SwaggerConfig {
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
 				.title("Dokazovo API")
-				.description("Accounts for JWT authorization:\n" +
-						"\nAdministrator:\n" +
-						"username: admin; password: admin;\n" +
-						"\nUsers:\n" +
-						"username: userOne; password: userOne;\n" +
-						"username: userSecond; password: userSecond;")
 				.version(buildProperties.getVersion())
 				.build();
 	}

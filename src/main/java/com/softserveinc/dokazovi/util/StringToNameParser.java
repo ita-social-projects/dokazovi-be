@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.util;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.entity.payload.SignUpRequest;
+import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.security.oauth2.user.OAuth2UserInfo;
 
 import java.util.Arrays;
