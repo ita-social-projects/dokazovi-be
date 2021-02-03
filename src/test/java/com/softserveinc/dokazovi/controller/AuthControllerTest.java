@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.context.MessageSource;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,6 +66,8 @@ class AuthControllerTest {
     private ProviderService providerService;
     @Mock
     private UserService userService;
+    @Mock
+    private MessageSource messageSource;
     @InjectMocks
     private AuthController authController;
 
@@ -164,11 +168,13 @@ class AuthControllerTest {
     @Test
     void shouldRejectRegistrationWithNotUniqueEmailTest() throws Exception {
         String uri = AUTH + AUTH_SIGNUP;
+        String errorMessage = "Email address already in use.";
         SignUpRequest request = new SignUpRequest();
         request.setEmail("user@mail.com");
         request.setName("name");
         request.setPassword("password");
         when(providerService.existsByLocalEmail(anyString())).thenReturn(true);
+        when(messageSource.getMessage(eq("email.notunique"), any(), any())).thenReturn(errorMessage);
 
         mockMvc.perform(
                 post(uri)
@@ -176,12 +182,13 @@ class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadRequestException))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string((containsString("Email address already in use."))));
+                .andExpect(content().string((containsString(errorMessage))));
     }
 
     @Test
     void shouldRejectLoginWithUnconfirmedEmailTest() throws Exception {
         String uri = AUTH + AUTH_LOGIN;
+        String errorMessage = "Please confirm your email!";
         LoginRequest request = new LoginRequest();
         request.setEmail("user@mail.com");
         request.setPassword("password");
@@ -189,6 +196,7 @@ class AuthControllerTest {
                 .enabled(false)
                 .build();
         when(userService.findByEmail(anyString())).thenReturn(user);
+        when(messageSource.getMessage(eq("email.notconfirmed"), any(), any())).thenReturn(errorMessage);
 
         mockMvc.perform(
                 post(uri)
@@ -196,7 +204,7 @@ class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadRequestException))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string((containsString("Please confirm your email!"))));
+                .andExpect(content().string((containsString(errorMessage))));
     }
 
     public static String asJsonString(final Object obj) {
