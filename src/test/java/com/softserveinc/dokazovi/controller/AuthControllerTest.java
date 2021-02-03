@@ -6,6 +6,8 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.dto.payload.LoginRequest;
 import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
+import com.softserveinc.dokazovi.exception.BadRequestException;
+import com.softserveinc.dokazovi.exception.handler.CustomRestExceptionHandler;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
@@ -33,7 +35,9 @@ import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_SIGNUP;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_VERIFICATION;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -41,6 +45,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,6 +72,7 @@ class AuthControllerTest {
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(authController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .setControllerAdvice(new CustomRestExceptionHandler())
                 .build();
     }
 
@@ -152,6 +159,44 @@ class AuthControllerTest {
         verify(userService, times(1))
                 .getVerificationToken(anyString());
         assertEquals(token, verificationToken.getToken());
+    }
+
+    @Test
+    void shouldRejectRegistrationWithNotUniqueEmailTest() throws Exception {
+        String uri = AUTH + AUTH_SIGNUP;
+        SignUpRequest request = new SignUpRequest();
+        request.setEmail("user@mail.com");
+        request.setName("name");
+        request.setPassword("password");
+        when(providerService.existsByLocalEmail(anyString())).thenReturn(true);
+
+        mockMvc.perform(
+                post(uri)
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadRequestException))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string((containsString("Email address already in use."))));
+    }
+
+    @Test
+    void shouldRejectLoginWithUnconfirmedEmailTest() throws Exception {
+        String uri = AUTH + AUTH_LOGIN;
+        LoginRequest request = new LoginRequest();
+        request.setEmail("user@mail.com");
+        request.setPassword("password");
+        UserEntity user = UserEntity.builder()
+                .enabled(false)
+                .build();
+        when(userService.findByEmail(anyString())).thenReturn(user);
+
+        mockMvc.perform(
+                post(uri)
+                        .contentType(MediaType.APPLICATION_JSON).content(asJsonString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadRequestException))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string((containsString("Please confirm your email!"))));
     }
 
     public static String asJsonString(final Object obj) {
