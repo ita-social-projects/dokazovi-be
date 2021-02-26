@@ -92,6 +92,7 @@ sonarqube {
 				"src/main/java/com/softserveinc/dokazovi/dto/**," +
 				"src/main/java/com/softserveinc/dokazovi/exception/**," +
 				"src/main/java/com/softserveinc/dokazovi/security/**," +
-				"src/main/java/com/softserveinc/dokazovi/config/**"
+				"src/main/java/com/softserveinc/dokazovi/config/**" +
+				"src/main/java/com/softserveinc/dokazovi/util/CookieUtils.class"
 	}
 }
