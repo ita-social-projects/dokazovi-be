@@ -1,159 +1,292 @@
-SET STATEMENT_TIMEOUT = 0;
-SET LOCK_TIMEOUT = 0;
-SET IDLE_IN_TRANSACTION_SESSION_TIMEOUT = 0;
-SET CLIENT_ENCODING = 'UTF8';
-SET STANDARD_CONFORMING_STRINGS = ON;
-SELECT PG_CATALOG.SET_CONFIG('SEARCH_PATH', '', FALSE);
-SET CHECK_FUNCTION_BODIES = FALSE;
-SET XMLOPTION = CONTENT;
-SET CLIENT_MIN_MESSAGES = WARNING;
-SET ROW_SECURITY = OFF;
-
-SET DEFAULT_TABLESPACE = '';
-
-SET DEFAULT_TABLE_ACCESS_METHOD = HEAP;
-
-CREATE TABLE PUBLIC.USERS (
-  USER_ID SERIAL PRIMARY KEY,
-  EMAIL VARCHAR,
-  PASSWORD VARCHAR,
-  STATUS VARCHAR,
-  FIRST_NAME VARCHAR,
-  LAST_NAME VARCHAR,
-  QUALIFICATION VARCHAR,
-  PHONE VARCHAR,
-  BIO TEXT,
-  CREATED_AT TIMESTAMP DEFAULT (NOW())
+create table flyway_schema_history
+(
+	installed_rank integer not null
+		constraint flyway_schema_history_pk
+			primary key,
+	version varchar(50),
+	description varchar(200) not null,
+	type varchar(20) not null,
+	script varchar(1000) not null,
+	checksum integer,
+	installed_by varchar(100) not null,
+	installed_on timestamp default now() not null,
+	execution_time integer not null,
+	success boolean not null
 );
 
-CREATE TABLE PUBLIC.ROLES (
-  ROLE_ID SERIAL PRIMARY KEY,
-  ROLE_NAME VARCHAR
+alter table flyway_schema_history owner to postgres;
+
+create index flyway_schema_history_s_idx
+	on flyway_schema_history (success);
+
+create table roles
+(
+	role_id serial not null
+		constraint roles_pkey
+			primary key,
+	role_name varchar
 );
 
-CREATE TABLE PUBLIC.ROLES_USERS (
-  ROLE_ID INT,
-  USER_ID INT
+alter table roles owner to postgres;
+
+create table users
+(
+	user_id serial not null
+		constraint users_pkey
+			primary key,
+	email varchar,
+	password varchar,
+	status varchar,
+	first_name varchar,
+	last_name varchar,
+	phone varchar,
+	created_at timestamp default now(),
+	avatar varchar,
+	enabled boolean,
+	role_id integer
+		constraint users_role_id_fkey
+			references roles
 );
 
-CREATE TABLE PUBLIC.REGIONS (
-  REGION_ID SERIAL PRIMARY KEY,
-  NAME VARCHAR
+alter table users owner to postgres;
+
+create table regions
+(
+	region_id serial not null
+		constraint regions_pkey
+			primary key,
+	name varchar
 );
 
-CREATE TABLE PUBLIC.INSTITUTIONS (
-  INSTITUTION_ID SERIAL PRIMARY KEY,
-  NAME VARCHAR,
-  REGION_ID INT,
-  ADDRESS VARCHAR
+alter table regions owner to postgres;
+
+create table tags
+(
+	tag_id serial not null
+		constraint tags_pkey
+			primary key,
+	tag varchar
+		constraint unique_name
+			unique
 );
 
-CREATE TABLE PUBLIC.USERS_INSTITUTIONS (
-  USER_ID INT,
-  INSTITUTION_ID INT,
-  IS_PRIMARY BOOLEAN
+alter table tags owner to postgres;
+
+create table charities
+(
+	charity_id serial not null
+		constraint charities_pkey
+			primary key,
+	body text,
+	author_id integer
+		constraint charities_author_id_fkey
+			references users,
+	created_at timestamp default now(),
+	modified_at timestamp default now()
 );
 
-CREATE TABLE PUBLIC.TAGS (
-  TAG_ID SERIAL PRIMARY KEY,
-  TAG VARCHAR
+alter table charities owner to postgres;
+
+create table sources
+(
+	source_id serial not null
+		constraint sources_pkey
+			primary key,
+	type varchar,
+	value varchar,
+	user_id integer
+		constraint sources_user_id_fkey
+			references users
 );
 
-CREATE TABLE PUBLIC.POSTS_TAGS (
-  POST_ID INT,
-  TAG_ID INT
+alter table sources owner to postgres;
+
+create table directions
+(
+	direction_id serial not null
+		constraint directions_pkey
+			primary key,
+	label varchar,
+	color varchar(7) default NULL::character varying,
+	name varchar
 );
 
-CREATE TABLE PUBLIC.POSTS (
-  POST_ID SERIAL PRIMARY KEY,
-  AUTHOR_ID INT,
-  DIRECTION_ID INT,
-  TYPE_ID INT,
-  TITLE VARCHAR,
-  CONTENT TEXT,
-  STATUS VARCHAR,
-  IMPORTANT BOOLEAN,
-  TAGS VARCHAR,
-  CREATED_AT TIMESTAMP DEFAULT (NOW()),
-  MODIFIED_AT TIMESTAMP DEFAULT (NOW())
+alter table directions owner to postgres;
+
+create table post_types
+(
+	type_id serial not null
+		constraint post_types_pkey
+			primary key,
+	name varchar
 );
 
-CREATE TABLE PUBLIC.CHARITIES (
-  CHARITY_ID SERIAL PRIMARY KEY,
-  BODY TEXT,
-  AUTHOR_ID INT,
-  CREATED_AT TIMESTAMP DEFAULT (NOW()),
-  MODIFIED_AT TIMESTAMP DEFAULT (NOW())
+alter table post_types owner to postgres;
+
+create table posts
+(
+	post_id serial not null
+		constraint posts_pkey
+			primary key,
+	author_id integer
+		constraint posts_author_id_fkey
+			references users,
+	type_id integer
+		constraint posts_type_id_fkey
+			references post_types,
+	title varchar,
+	content text,
+	status varchar,
+	important boolean,
+	created_at timestamp default now(),
+	modified_at timestamp default now(),
+	preview text
 );
 
-CREATE TABLE PUBLIC.SOURCES (
-  SOURCE_ID SERIAL PRIMARY KEY,
-  TYPE VARCHAR,
-  VALUE VARCHAR
+alter table posts owner to postgres;
+
+create table posts_tags
+(
+	post_id integer
+		constraint posts_tags_post_id_fkey
+			references posts,
+	tag_id integer
+		constraint posts_tags_tag_id_fkey
+			references tags
 );
 
-CREATE TABLE PUBLIC.USERS_SOURCES (
-  USER_ID INT,
-  SOURCE_ID INT
+alter table posts_tags owner to postgres;
+
+create table posts_sources
+(
+	post_id integer
+		constraint posts_sources_post_id_fkey
+			references posts,
+	source_id integer
+		constraint posts_sources_source_id_fkey
+			references sources
 );
 
-CREATE TABLE PUBLIC.POSTS_SOURCES (
-  POST_ID INT,
-  SOURCE_ID INT
+alter table posts_sources owner to postgres;
+
+create table posts_directions
+(
+	post_id integer
+		constraint posts_directions_post_id_fkey
+			references posts,
+	direction_id integer
+		constraint posts_directions_direction_id_fkey
+			references directions
 );
 
-CREATE TABLE PUBLIC.USERS_DIRECTIONS (
-  USER_ID INT,
-  DIRECTION_ID INT
+alter table posts_directions owner to postgres;
+
+create table cities
+(
+	city_id integer generated by default as identity
+		constraint cities_pkey
+			primary key,
+	name varchar(255),
+	region_id integer
+		constraint cities_region_id_fkey
+			references regions
 );
 
-CREATE TABLE PUBLIC.DIRECTIONS (
-  DIRECTION_ID SERIAL PRIMARY KEY,
-  NAME VARCHAR
+alter table cities owner to postgres;
+
+create table institutions
+(
+	institution_id serial not null
+		constraint institutions_pkey
+			primary key,
+	name varchar,
+	address varchar,
+	city_id integer
+		constraint institutions_city_id_fkey
+			references cities
 );
 
-CREATE TABLE PUBLIC.POSTS_DIRECTIONS (
-  POST_ID INT,
-  DIRECTION_ID INT
+alter table institutions owner to postgres;
+
+create table verification_tokens
+(
+	id serial not null
+		constraint verification_tokens_pkey
+			primary key,
+	token varchar,
+	user_id integer
+		constraint verification_tokens_user_id_fkey
+			references users
 );
 
-CREATE TABLE PUBLIC.POST_TYPES (
-  TYPE_ID SERIAL PRIMARY KEY,
-  NAME VARCHAR
+alter table verification_tokens owner to postgres;
+
+create table providers
+(
+	provider_id serial not null
+		constraint providers_pkey
+			primary key,
+	provider_name varchar,
+	email varchar,
+	user_id_by_provider varchar,
+	user_id integer
+		constraint providers_user_id_fkey
+			references users
 );
 
-ALTER TABLE PUBLIC.ROLES_USERS ADD FOREIGN KEY (ROLE_ID) REFERENCES PUBLIC.ROLES(ROLE_ID);
+alter table providers owner to postgres;
 
-ALTER TABLE PUBLIC.ROLES_USERS ADD FOREIGN KEY (USER_ID) REFERENCES PUBLIC.USERS(USER_ID);
+create table doctors
+(
+	doctor_id serial not null
+		constraint doctors_pkey
+			primary key,
+	qualification varchar,
+	bio varchar,
+	user_id integer
+		constraint doctors_user_id_fkey
+			references users,
+	institution_id integer
+		constraint doctors_institution_id_fkey
+			references institutions,
+	promotion_scale real default 1.0,
+	promotion_level integer default 0,
+	published_posts bigint default 0,
+	rating bigint default 0
+);
 
-ALTER TABLE PUBLIC.INSTITUTIONS ADD FOREIGN KEY (REGION_ID) REFERENCES PUBLIC.REGIONS(REGION_ID);
+alter table doctors owner to postgres;
 
-ALTER TABLE PUBLIC.USERS_INSTITUTIONS ADD FOREIGN KEY (USER_ID) REFERENCES PUBLIC.USERS (USER_ID);
+create table doctors_institutions
+(
+	doctor_id integer
+		constraint doctors_institutions_doctor_id_fkey
+			references doctors,
+	institution_id integer
+		constraint doctors_institutions_institution_id_fkey
+			references institutions
+);
 
-ALTER TABLE PUBLIC.USERS_INSTITUTIONS ADD FOREIGN KEY (INSTITUTION_ID) REFERENCES PUBLIC.INSTITUTIONS (INSTITUTION_ID);
+alter table doctors_institutions owner to postgres;
 
-ALTER TABLE PUBLIC.POSTS_TAGS ADD FOREIGN KEY (POST_ID) REFERENCES PUBLIC.POSTS (POST_ID);
+create table doctors_directions
+(
+	doctor_id integer
+		constraint doctors_directions_doctor_id_fkey
+			references doctors,
+	direction_id integer
+		constraint doctors_directions_direction_id_fkey
+			references directions
+);
 
-ALTER TABLE PUBLIC.POSTS_TAGS ADD FOREIGN KEY (TAG_ID) REFERENCES PUBLIC.TAGS (TAG_ID);
+alter table doctors_directions owner to postgres;
 
-ALTER TABLE PUBLIC.POSTS ADD FOREIGN KEY (AUTHOR_ID) REFERENCES PUBLIC.USERS (USER_ID);
+create table role_permission
+(
+	role_id integer
+		constraint role_id_role_id_fk
+			references roles,
+	permissions varchar
+);
 
-ALTER TABLE PUBLIC.POSTS ADD FOREIGN KEY (TYPE_ID) REFERENCES PUBLIC.POST_TYPES (TYPE_ID);
-
-ALTER TABLE PUBLIC.CHARITIES ADD FOREIGN KEY (AUTHOR_ID) REFERENCES PUBLIC.USERS (USER_ID);
-
-ALTER TABLE PUBLIC.USERS_SOURCES ADD FOREIGN KEY (USER_ID) REFERENCES PUBLIC.USERS (USER_ID);
-
-ALTER TABLE PUBLIC.USERS_SOURCES ADD FOREIGN KEY (SOURCE_ID) REFERENCES PUBLIC.SOURCES (SOURCE_ID);
-
-ALTER TABLE PUBLIC.POSTS_SOURCES ADD FOREIGN KEY (POST_ID) REFERENCES PUBLIC.POSTS (POST_ID);
-
-ALTER TABLE PUBLIC.POSTS_SOURCES ADD FOREIGN KEY (SOURCE_ID) REFERENCES PUBLIC.SOURCES (SOURCE_ID);
-
-ALTER TABLE PUBLIC.USERS_DIRECTIONS ADD FOREIGN KEY (USER_ID) REFERENCES PUBLIC.USERS (USER_ID);
-
-ALTER TABLE PUBLIC.USERS_DIRECTIONS ADD FOREIGN KEY (DIRECTION_ID) REFERENCES PUBLIC.DIRECTIONS (DIRECTION_ID);
-
-ALTER TABLE PUBLIC.POSTS_DIRECTIONS ADD FOREIGN KEY (POST_ID) REFERENCES PUBLIC.POSTS (POST_ID);
-
-ALTER TABLE PUBLIC.POSTS_DIRECTIONS ADD FOREIGN KEY (DIRECTION_ID) REFERENCES PUBLIC.DIRECTIONS (DIRECTION_ID);
+alter table role_permission owner to postgres;
