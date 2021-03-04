@@ -1,292 +1,292 @@
-create table flyway_schema_history
+CREATE TABLE FLYWAY_SCHEMA_HISTORY
 (
-	installed_rank integer not null
-		constraint flyway_schema_history_pk
-			primary key,
-	version varchar(50),
-	description varchar(200) not null,
-	type varchar(20) not null,
-	script varchar(1000) not null,
-	checksum integer,
-	installed_by varchar(100) not null,
-	installed_on timestamp default now() not null,
-	execution_time integer not null,
-	success boolean not null
+	INSTALLED_RANK INTEGER NOT NULL
+		CONSTRAINT FLYWAY_SCHEMA_HISTORY_PK
+			PRIMARY KEY,
+	VERSION VARCHAR(50),
+	DESCRIPTION VARCHAR(200) NOT NULL,
+	TYPE VARCHAR(20) NOT NULL,
+	SCRIPT VARCHAR(1000) NOT NULL,
+	CHECKSUM INTEGER,
+	INSTALLED_BY VARCHAR(100) NOT NULL,
+	INSTALLED_ON TIMESTAMP DEFAULT NOW() NOT NULL,
+	EXECUTION_TIME INTEGER NOT NULL,
+	SUCCESS BOOLEAN NOT NULL
 );
 
-alter table flyway_schema_history owner to postgres;
+ALTER TABLE FLYWAY_SCHEMA_HISTORY OWNER TO POSTGRES;
 
-create index flyway_schema_history_s_idx
-	on flyway_schema_history (success);
+CREATE INDEX FLYWAY_SCHEMA_HISTORY_S_IDX
+	ON FLYWAY_SCHEMA_HISTORY (SUCCESS);
 
-create table roles
+CREATE TABLE ROLES
 (
-	role_id serial not null
-		constraint roles_pkey
-			primary key,
-	role_name varchar
+	ROLE_ID SERIAL NOT NULL
+		CONSTRAINT ROLES_PKEY
+			PRIMARY KEY,
+	ROLE_NAME VARCHAR
 );
 
-alter table roles owner to postgres;
+ALTER TABLE ROLES OWNER TO POSTGRES;
 
-create table users
+CREATE TABLE USERS
 (
-	user_id serial not null
-		constraint users_pkey
-			primary key,
-	email varchar,
-	password varchar,
-	status varchar,
-	first_name varchar,
-	last_name varchar,
-	phone varchar,
-	created_at timestamp default now(),
-	avatar varchar,
-	enabled boolean,
-	role_id integer
-		constraint users_role_id_fkey
-			references roles
+	USER_ID SERIAL NOT NULL
+		CONSTRAINT USERS_PKEY
+			PRIMARY KEY,
+	EMAIL VARCHAR,
+	PASSWORD VARCHAR,
+	STATUS VARCHAR,
+	FIRST_NAME VARCHAR,
+	LAST_NAME VARCHAR,
+	PHONE VARCHAR,
+	CREATED_AT TIMESTAMP DEFAULT NOW(),
+	AVATAR VARCHAR,
+	ENABLED BOOLEAN,
+	ROLE_ID INTEGER
+		CONSTRAINT USERS_ROLE_ID_FKEY
+			REFERENCES ROLES
 );
 
-alter table users owner to postgres;
+ALTER TABLE USERS OWNER TO POSTGRES;
 
-create table regions
+CREATE TABLE REGIONS
 (
-	region_id serial not null
-		constraint regions_pkey
-			primary key,
-	name varchar
+	REGION_ID SERIAL NOT NULL
+		CONSTRAINT REGIONS_PKEY
+			PRIMARY KEY,
+	NAME VARCHAR
 );
 
-alter table regions owner to postgres;
+ALTER TABLE REGIONS OWNER TO POSTGRES;
 
-create table tags
+CREATE TABLE TAGS
 (
-	tag_id serial not null
-		constraint tags_pkey
-			primary key,
-	tag varchar
-		constraint unique_name
-			unique
+	TAG_ID SERIAL NOT NULL
+		CONSTRAINT TAGS_PKEY
+			PRIMARY KEY,
+	TAG VARCHAR
+		CONSTRAINT UNIQUE_NAME
+			UNIQUE
 );
 
-alter table tags owner to postgres;
+ALTER TABLE TAGS OWNER TO POSTGRES;
 
-create table charities
+CREATE TABLE CHARITIES
 (
-	charity_id serial not null
-		constraint charities_pkey
-			primary key,
-	body text,
-	author_id integer
-		constraint charities_author_id_fkey
-			references users,
-	created_at timestamp default now(),
-	modified_at timestamp default now()
+	CHARITY_ID SERIAL NOT NULL
+		CONSTRAINT CHARITIES_PKEY
+			PRIMARY KEY,
+	BODY TEXT,
+	AUTHOR_ID INTEGER
+		CONSTRAINT CHARITIES_AUTHOR_ID_FKEY
+			REFERENCES USERS,
+	CREATED_AT TIMESTAMP DEFAULT NOW(),
+	MODIFIED_AT TIMESTAMP DEFAULT NOW()
 );
 
-alter table charities owner to postgres;
+ALTER TABLE CHARITIES OWNER TO POSTGRES;
 
-create table sources
+CREATE TABLE SOURCES
 (
-	source_id serial not null
-		constraint sources_pkey
-			primary key,
-	type varchar,
-	value varchar,
-	user_id integer
-		constraint sources_user_id_fkey
-			references users
+	SOURCE_ID SERIAL NOT NULL
+		CONSTRAINT SOURCES_PKEY
+			PRIMARY KEY,
+	TYPE VARCHAR,
+	VALUE VARCHAR,
+	USER_ID INTEGER
+		CONSTRAINT SOURCES_USER_ID_FKEY
+			REFERENCES USERS
 );
 
-alter table sources owner to postgres;
+ALTER TABLE SOURCES OWNER TO POSTGRES;
 
-create table directions
+CREATE TABLE DIRECTIONS
 (
-	direction_id serial not null
-		constraint directions_pkey
-			primary key,
-	label varchar,
-	color varchar(7) default NULL::character varying,
-	name varchar
+	DIRECTION_ID SERIAL NOT NULL
+		CONSTRAINT DIRECTIONS_PKEY
+			PRIMARY KEY,
+	LABEL VARCHAR,
+	COLOR VARCHAR(7) DEFAULT NULL::CHARACTER VARYING,
+	NAME VARCHAR
 );
 
-alter table directions owner to postgres;
+ALTER TABLE DIRECTIONS OWNER TO POSTGRES;
 
-create table post_types
+CREATE TABLE POST_TYPES
 (
-	type_id serial not null
-		constraint post_types_pkey
-			primary key,
-	name varchar
+	TYPE_ID SERIAL NOT NULL
+		CONSTRAINT POST_TYPES_PKEY
+			PRIMARY KEY,
+	NAME VARCHAR
 );
 
-alter table post_types owner to postgres;
+ALTER TABLE POST_TYPES OWNER TO POSTGRES;
 
-create table posts
+CREATE TABLE POSTS
 (
-	post_id serial not null
-		constraint posts_pkey
-			primary key,
-	author_id integer
-		constraint posts_author_id_fkey
-			references users,
-	type_id integer
-		constraint posts_type_id_fkey
-			references post_types,
-	title varchar,
-	content text,
-	status varchar,
-	important boolean,
-	created_at timestamp default now(),
-	modified_at timestamp default now(),
-	preview text
+	POST_ID SERIAL NOT NULL
+		CONSTRAINT POSTS_PKEY
+			PRIMARY KEY,
+	AUTHOR_ID INTEGER
+		CONSTRAINT POSTS_AUTHOR_ID_FKEY
+			REFERENCES USERS,
+	TYPE_ID INTEGER
+		CONSTRAINT POSTS_TYPE_ID_FKEY
+			REFERENCES POST_TYPES,
+	TITLE VARCHAR,
+	CONTENT TEXT,
+	STATUS VARCHAR,
+	IMPORTANT BOOLEAN,
+	CREATED_AT TIMESTAMP DEFAULT NOW(),
+	MODIFIED_AT TIMESTAMP DEFAULT NOW(),
+	PREVIEW TEXT
 );
 
-alter table posts owner to postgres;
+ALTER TABLE POSTS OWNER TO POSTGRES;
 
-create table posts_tags
+CREATE TABLE POSTS_TAGS
 (
-	post_id integer
-		constraint posts_tags_post_id_fkey
-			references posts,
-	tag_id integer
-		constraint posts_tags_tag_id_fkey
-			references tags
+	POST_ID INTEGER
+		CONSTRAINT POSTS_TAGS_POST_ID_FKEY
+			REFERENCES POSTS,
+	TAG_ID INTEGER
+		CONSTRAINT POSTS_TAGS_TAG_ID_FKEY
+			REFERENCES TAGS
 );
 
-alter table posts_tags owner to postgres;
+ALTER TABLE POSTS_TAGS OWNER TO POSTGRES;
 
-create table posts_sources
+CREATE TABLE POSTS_SOURCES
 (
-	post_id integer
-		constraint posts_sources_post_id_fkey
-			references posts,
-	source_id integer
-		constraint posts_sources_source_id_fkey
-			references sources
+	POST_ID INTEGER
+		CONSTRAINT POSTS_SOURCES_POST_ID_FKEY
+			REFERENCES POSTS,
+	SOURCE_ID INTEGER
+		CONSTRAINT POSTS_SOURCES_SOURCE_ID_FKEY
+			REFERENCES SOURCES
 );
 
-alter table posts_sources owner to postgres;
+ALTER TABLE POSTS_SOURCES OWNER TO POSTGRES;
 
-create table posts_directions
+CREATE TABLE POSTS_DIRECTIONS
 (
-	post_id integer
-		constraint posts_directions_post_id_fkey
-			references posts,
-	direction_id integer
-		constraint posts_directions_direction_id_fkey
-			references directions
+	POST_ID INTEGER
+		CONSTRAINT POSTS_DIRECTIONS_POST_ID_FKEY
+			REFERENCES POSTS,
+	DIRECTION_ID INTEGER
+		CONSTRAINT POSTS_DIRECTIONS_DIRECTION_ID_FKEY
+			REFERENCES DIRECTIONS
 );
 
-alter table posts_directions owner to postgres;
+ALTER TABLE POSTS_DIRECTIONS OWNER TO POSTGRES;
 
-create table cities
+CREATE TABLE CITIES
 (
-	city_id integer generated by default as identity
-		constraint cities_pkey
-			primary key,
-	name varchar(255),
-	region_id integer
-		constraint cities_region_id_fkey
-			references regions
+	CITY_ID INTEGER GENERATED BY DEFAULT AS IDENTITY
+		CONSTRAINT CITIES_PKEY
+			PRIMARY KEY,
+	NAME VARCHAR(255),
+	REGION_ID INTEGER
+		CONSTRAINT CITIES_REGION_ID_FKEY
+			REFERENCES REGIONS
 );
 
-alter table cities owner to postgres;
+ALTER TABLE CITIES OWNER TO POSTGRES;
 
-create table institutions
+CREATE TABLE INSTITUTIONS
 (
-	institution_id serial not null
-		constraint institutions_pkey
-			primary key,
-	name varchar,
-	address varchar,
-	city_id integer
-		constraint institutions_city_id_fkey
-			references cities
+	INSTITUTION_ID SERIAL NOT NULL
+		CONSTRAINT INSTITUTIONS_PKEY
+			PRIMARY KEY,
+	NAME VARCHAR,
+	ADDRESS VARCHAR,
+	CITY_ID INTEGER
+		CONSTRAINT INSTITUTIONS_CITY_ID_FKEY
+			REFERENCES CITIES
 );
 
-alter table institutions owner to postgres;
+ALTER TABLE INSTITUTIONS OWNER TO POSTGRES;
 
-create table verification_tokens
+CREATE TABLE VERIFICATION_TOKENS
 (
-	id serial not null
-		constraint verification_tokens_pkey
-			primary key,
-	token varchar,
-	user_id integer
-		constraint verification_tokens_user_id_fkey
-			references users
+	ID SERIAL NOT NULL
+		CONSTRAINT VERIFICATION_TOKENS_PKEY
+			PRIMARY KEY,
+	TOKEN VARCHAR,
+	USER_ID INTEGER
+		CONSTRAINT VERIFICATION_TOKENS_USER_ID_FKEY
+			REFERENCES USERS
 );
 
-alter table verification_tokens owner to postgres;
+ALTER TABLE VERIFICATION_TOKENS OWNER TO POSTGRES;
 
-create table providers
+CREATE TABLE PROVIDERS
 (
-	provider_id serial not null
-		constraint providers_pkey
-			primary key,
-	provider_name varchar,
-	email varchar,
-	user_id_by_provider varchar,
-	user_id integer
-		constraint providers_user_id_fkey
-			references users
+	PROVIDER_ID SERIAL NOT NULL
+		CONSTRAINT PROVIDERS_PKEY
+			PRIMARY KEY,
+	PROVIDER_NAME VARCHAR,
+	EMAIL VARCHAR,
+	USER_ID_BY_PROVIDER VARCHAR,
+	USER_ID INTEGER
+		CONSTRAINT PROVIDERS_USER_ID_FKEY
+			REFERENCES USERS
 );
 
-alter table providers owner to postgres;
+ALTER TABLE PROVIDERS OWNER TO POSTGRES;
 
-create table doctors
+CREATE TABLE DOCTORS
 (
-	doctor_id serial not null
-		constraint doctors_pkey
-			primary key,
-	qualification varchar,
-	bio varchar,
-	user_id integer
-		constraint doctors_user_id_fkey
-			references users,
-	institution_id integer
-		constraint doctors_institution_id_fkey
-			references institutions,
-	promotion_scale real default 1.0,
-	promotion_level integer default 0,
-	published_posts bigint default 0,
-	rating bigint default 0
+	DOCTOR_ID SERIAL NOT NULL
+		CONSTRAINT DOCTORS_PKEY
+			PRIMARY KEY,
+	QUALIFICATION VARCHAR,
+	BIO VARCHAR,
+	USER_ID INTEGER
+		CONSTRAINT DOCTORS_USER_ID_FKEY
+			REFERENCES USERS,
+	INSTITUTION_ID INTEGER
+		CONSTRAINT DOCTORS_INSTITUTION_ID_FKEY
+			REFERENCES INSTITUTIONS,
+	PROMOTION_SCALE REAL DEFAULT 1.0,
+	PROMOTION_LEVEL INTEGER DEFAULT 0,
+	PUBLISHED_POSTS BIGINT DEFAULT 0,
+	RATING BIGINT DEFAULT 0
 );
 
-alter table doctors owner to postgres;
+ALTER TABLE DOCTORS OWNER TO POSTGRES;
 
-create table doctors_institutions
+CREATE TABLE DOCTORS_INSTITUTIONS
 (
-	doctor_id integer
-		constraint doctors_institutions_doctor_id_fkey
-			references doctors,
-	institution_id integer
-		constraint doctors_institutions_institution_id_fkey
-			references institutions
+	DOCTOR_ID INTEGER
+		CONSTRAINT DOCTORS_INSTITUTIONS_DOCTOR_ID_FKEY
+			REFERENCES DOCTORS,
+	INSTITUTION_ID INTEGER
+		CONSTRAINT DOCTORS_INSTITUTIONS_INSTITUTION_ID_FKEY
+			REFERENCES INSTITUTIONS
 );
 
-alter table doctors_institutions owner to postgres;
+ALTER TABLE DOCTORS_INSTITUTIONS OWNER TO POSTGRES;
 
-create table doctors_directions
+CREATE TABLE DOCTORS_DIRECTIONS
 (
-	doctor_id integer
-		constraint doctors_directions_doctor_id_fkey
-			references doctors,
-	direction_id integer
-		constraint doctors_directions_direction_id_fkey
-			references directions
+	DOCTOR_ID INTEGER
+		CONSTRAINT DOCTORS_DIRECTIONS_DOCTOR_ID_FKEY
+			REFERENCES DOCTORS,
+	DIRECTION_ID INTEGER
+		CONSTRAINT DOCTORS_DIRECTIONS_DIRECTION_ID_FKEY
+			REFERENCES DIRECTIONS
 );
 
-alter table doctors_directions owner to postgres;
+ALTER TABLE DOCTORS_DIRECTIONS OWNER TO POSTGRES;
 
-create table role_permission
+CREATE TABLE ROLE_PERMISSION
 (
-	role_id integer
-		constraint role_id_role_id_fk
-			references roles,
-	permissions varchar
+	ROLE_ID INTEGER
+		CONSTRAINT ROLE_ID_ROLE_ID_FK
+			REFERENCES ROLES,
+	PERMISSIONS VARCHAR
 );
 
-alter table role_permission owner to postgres;
+ALTER TABLE ROLE_PERMISSION OWNER TO POSTGRES;
