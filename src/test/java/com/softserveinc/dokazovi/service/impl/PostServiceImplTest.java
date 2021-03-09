@@ -3,12 +3,16 @@ package com.softserveinc.dokazovi.service.impl;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
+import com.softserveinc.dokazovi.repositories.UserRepository;
+import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -37,6 +42,8 @@ class PostServiceImplTest {
 	@Mock
 	private PostRepository postRepository;
 	@Mock
+	private UserRepository userRepository;
+	@Mock
 	private DoctorRepository doctorRepository;
 	@Mock
 	private PostMapper postMapper;
@@ -48,9 +55,25 @@ class PostServiceImplTest {
 
 	private Page<PostEntity> postEntityPage;
 
+	private UserEntity userEntity;
+
+
 	@BeforeEach
 	void init() {
 		postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		Set<RolePermission> rolePermissions = new HashSet<>();
+		rolePermissions.add(RolePermission.SAVE_OWN_PUBLICATION);
+		RoleEntity roleEntity = RoleEntity.builder()
+				.id(1)
+				.name("Doctor")
+				.permissions(rolePermissions)
+				.build();
+		userEntity = UserEntity.builder()
+				.id(1)
+				.email("test@nail.com")
+				.password("12345")
+				.role(roleEntity)
+				.build();
 	}
 
 	@Test
@@ -68,7 +91,9 @@ class PostServiceImplTest {
 	@Test
 	void saveFromUser_WhenIdIsNull() {
 		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(new PostEntity());
-		postService.saveFromUser(new PostSaveFromUserDTO(), new UserEntity());
+		when(userRepository.getOne(any(Integer.class))).thenReturn(userEntity);
+		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
+		postService.saveFromUser(new PostSaveFromUserDTO(), userPrincipal);
 		verify(postMapper, times(1)).toPostEntity(any(PostSaveFromUserDTO.class));
 		verify(postRepository, times(1)).save(any(PostEntity.class));
 		verify(postMapper, times(1)).toPostDTO(any());
@@ -78,10 +103,12 @@ class PostServiceImplTest {
 	void saveFromUser_WhenIdIsPresent_isOk() {
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(new PostEntity()));
 		when(postMapper.updatePostEntityFromDTO(any(), any())).thenReturn(new PostEntity());
+		when(userRepository.getOne(any(Integer.class))).thenReturn(userEntity);
 		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
 				.id(1)
 				.build();
-		postService.saveFromUser(dto, new UserEntity());
+		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
+		postService.saveFromUser(dto, userPrincipal);
 		verify(postMapper, times(1)).updatePostEntityFromDTO(any(), any());
 		verify(postRepository, times(1)).findById(any());
 		verify(postMapper, times(1)).toPostDTO(any());
@@ -93,8 +120,8 @@ class PostServiceImplTest {
 		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
 				.id(1)
 				.build();
-		UserEntity userEntity = new UserEntity();
-		assertThrows(InvalidIdDtoException.class, () -> postService.saveFromUser(dto, userEntity));
+		UserPrincipal userPrincipal = new UserPrincipal();
+		assertThrows(InvalidIdDtoException.class, () -> postService.saveFromUser(dto, userPrincipal));
 	}
 
 
