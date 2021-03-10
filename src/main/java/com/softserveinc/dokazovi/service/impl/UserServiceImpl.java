@@ -51,20 +51,20 @@ public class UserServiceImpl implements UserService {
 	public Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds, Set<Integer> regionsIds,
 			Pageable pageable) {
 		if (CollectionUtils.isEmpty(directionsIds) && CollectionUtils.isEmpty(regionsIds)) {
-			return userRepository.findDoctorsProfilesOrderByRatingThenByName(pageable)
+			return userRepository.findDoctorsProfiles(pageable)
 					.map(userMapper::toUserDTO);
 		} else if (CollectionUtils.isEmpty(directionsIds)) {
-			return userRepository.findDoctorsProfilesByRegionsIdsOrderByRatingThenByName(regionsIds, pageable)
+			return userRepository.findDoctorsProfilesByRegionsIds(regionsIds, pageable)
 					.map(userMapper::toUserDTO);
 		} else if (CollectionUtils.isEmpty(regionsIds)) {
 			return userRepository
-					.findDoctorsProfilesByDirectionsIdsOrderByDirectionsMatchesThenByRatingThenByName(
+					.findDoctorsProfilesByDirectionsIds(
 							directionsIds, pageable)
 					.map(userMapper::toUserDTO);
 		}
 
 		return userRepository
-				.findDoctorsProfilesByDirectionsIdsAndRegionsIdsOrderByDirectionsMatchesThenByRatingThenByName(
+				.findDoctorsProfilesByDirectionsIdsAndRegionsIds(
 						directionsIds, regionsIds, pageable)
 				.map(userMapper::toUserDTO);
 	}
