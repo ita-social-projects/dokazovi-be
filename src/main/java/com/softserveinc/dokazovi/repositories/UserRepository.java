@@ -42,7 +42,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ "     JOIN USERS U ON U.USER_ID = D.USER_ID "
 					+ " ORDER BY D.PROMOTION_LEVEL DESC, D.RATING DESC, "
 					+ "          U.LAST_NAME, U.FIRST_NAME ")
-	Page<UserEntity> findDoctorsProfilesOrderByRatingThenByName(Pageable pageable);
+	Page<UserEntity> findDoctorsProfiles(Pageable pageable);
 
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM ( "
@@ -58,7 +58,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ "     JOIN INSTITUTIONS I ON D.INSTITUTION_ID=I.INSTITUTION_ID "
 					+ "     JOIN CITIES C ON I.CITY_ID=C.CITY_ID "
 					+ " WHERE C.REGION_ID IN (:regionsIds) ")
-	Page<UserEntity> findDoctorsProfilesByRegionsIdsOrderByRatingThenByName(
+	Page<UserEntity> findDoctorsProfilesByRegionsIds(
 			Iterable<Integer> regionsIds, Pageable pageable);
 
 	@Query(nativeQuery = true,
@@ -74,7 +74,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ "          U.LAST_NAME, U.FIRST_NAME ",
 			countQuery = " SELECT COUNT(DISTINCT DD.DOCTOR_ID) FROM DOCTORS_DIRECTIONS DD "
 					+ " WHERE DD.DIRECTION_ID IN (:directionsIds) ")
-	Page<UserEntity> findDoctorsProfilesByDirectionsIdsOrderByDirectionsMatchesThenByRatingThenByName(
+	Page<UserEntity> findDoctorsProfilesByDirectionsIds(
 			Iterable<Integer> directionsIds, Pageable pageable);
 
 	@Query(nativeQuery = true,
@@ -104,7 +104,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ "         SELECT DISTINCT DD.DOCTOR_ID FROM DOCTORS_DIRECTIONS DD "
 					+ "         WHERE DD.DIRECTION_ID IN (:directionsIds) "
 					+ "     ) DOCS_DIR ON DOCS_REG.DOCTOR_ID=DOCS_DIR.DOCTOR_ID ")
-	Page<UserEntity> findDoctorsProfilesByDirectionsIdsAndRegionsIdsOrderByDirectionsMatchesThenByRatingThenByName(
+	Page<UserEntity> findDoctorsProfilesByDirectionsIdsAndRegionsIds(
 			Iterable<Integer> directionsIds, Iterable<Integer> regionsIds, Pageable pageable);
 
 	Boolean existsByEmail(String email);
