@@ -49,6 +49,12 @@ public class PostEntity {
 	@Column(columnDefinition = "TEXT")
 	private String preview;
 
+	@Column(columnDefinition = "TEXT", name = "video_url")
+	private String videoUrl;
+
+	@Column(columnDefinition = "TEXT", name = "preview_image_url")
+	private String previewImageUrl;
+
 	@ColumnDefault("false")
 	private Boolean important;
 
