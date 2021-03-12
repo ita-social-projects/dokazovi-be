@@ -101,6 +101,8 @@ class PostControllerTest {
 				"  ],\n" +
 				"  \"id\": 1,\n" +
 				"  \"preview\": \"string\",\n" +
+				"  \"videoUrl\": \"string\",\n" +
+				"  \"previewImageUrl\": \"string\",\n" +
 				"  \"sources\": [\n" +
 				"    {\n" +
 				"      \"id\": 1\n" +
