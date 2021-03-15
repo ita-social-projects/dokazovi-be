@@ -18,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Service
@@ -52,7 +54,7 @@ public class PostServiceImpl implements PostService {
 		mappedEntity.setAuthor(userEntity);
 		mappedEntity.setImportant(false);
 		mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-
+		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		PostEntity savedEntity = postRepository.save(mappedEntity);
 		return postMapper.toPostDTO(savedEntity);
 	}

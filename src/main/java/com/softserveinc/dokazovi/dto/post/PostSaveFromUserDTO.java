@@ -27,6 +27,10 @@ public class PostSaveFromUserDTO {
 
 	private String title;
 
+	private String videoUrl;
+
+	private String previewImageUrl;
+
 	@NotBlank(message = "Preview field cannot be empty")
 	private String preview;
 

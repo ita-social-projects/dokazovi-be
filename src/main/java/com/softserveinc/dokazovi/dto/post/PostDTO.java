@@ -22,6 +22,8 @@ public class PostDTO {
 	private String title;
 	private String preview;
 	private String content;
+	private String videoUrl;
+	private String previewImageUrl;
 	private PostUserDTO author;
 	private Set<DirectionDTO> directions;
 	private Set<TagDTO> tags;
