@@ -93,6 +93,16 @@ public class PostEntity {
 	@ToString.Exclude
 	private Set<SourceEntity> sources;
 
+	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "posts_origins",
+			joinColumns = {@JoinColumn(name = "post_id")},
+			inverseJoinColumns = {@JoinColumn(name = "origin_id")}
+	)
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
+	private Set<OriginEntity> origins;
+
 	@CreationTimestamp
 	private Timestamp createdAt;
 

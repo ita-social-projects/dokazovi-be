@@ -1,10 +1,12 @@
 package com.softserveinc.dokazovi.dto.post;
 
 import com.softserveinc.dokazovi.annotations.DirectionExists;
+import com.softserveinc.dokazovi.annotations.OriginExists;
 import com.softserveinc.dokazovi.annotations.PostTypeExists;
 import com.softserveinc.dokazovi.annotations.SourceExists;
 import com.softserveinc.dokazovi.annotations.TagExists;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
+import com.softserveinc.dokazovi.dto.origin.OriginDTO;
 import com.softserveinc.dokazovi.dto.source.SourceDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import lombok.AllArgsConstructor;
@@ -44,4 +46,6 @@ public class PostSaveFromUserDTO {
 	private Set<@TagExists TagDTO> tags;
 
 	private Set<@SourceExists SourceDTO> sources;
+
+	private Set<@OriginExists OriginDTO> origins;
 }
