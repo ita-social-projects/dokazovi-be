@@ -1,14 +1,14 @@
-create table posts_origins
+CREATE TABLE POSTS_ORIGINS
 (
-    post_id   integer
-        constraint posts_origins_post_id_fkey
-            references posts,
-    origin_id integer
-        constraint posts_origins_origin_id_fkey
-            references origins
+    POST_ID   INTEGER
+        CONSTRAINT POSTS_ORIGINS_POST_ID_FKEY
+            REFERENCES POSTS,
+    ORIGIN_ID INTEGER
+        CONSTRAINT POSTS_ORIGINS_ORIGIN_ID_FKEY
+            REFERENCES ORIGINS
 );
 
-alter table posts_origins
-    owner to postgres;
+ALTER TABLE POSTS_ORIGINS
+    OWNER TO POSTGRES;
 
 

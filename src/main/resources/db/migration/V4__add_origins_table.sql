@@ -1,13 +1,13 @@
-create table origins
+CREATE TABLE ORIGINS
 (
-    origin_id  serial not null
-        constraint origins_pkey
-            primary key,
-    name       varchar,
-    parameters varchar
+    ORIGIN_ID  SERIAL NOT NULL
+        CONSTRAINT ORIGINS_PKEY
+            PRIMARY KEY,
+    NAME       VARCHAR,
+    PARAMETERS VARCHAR
 );
 
-alter table origins
-    owner to postgres;
+ALTER TABLE ORIGINS
+    OWNER TO POSTGRES;
 
 
