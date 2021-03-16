@@ -3,11 +3,9 @@ package com.softserveinc.dokazovi.dto.post;
 import com.softserveinc.dokazovi.annotations.DirectionExists;
 import com.softserveinc.dokazovi.annotations.OriginExists;
 import com.softserveinc.dokazovi.annotations.PostTypeExists;
-import com.softserveinc.dokazovi.annotations.SourceExists;
 import com.softserveinc.dokazovi.annotations.TagExists;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.origin.OriginDTO;
-import com.softserveinc.dokazovi.dto.source.SourceDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +27,10 @@ public class PostSaveFromUserDTO {
 
 	private String title;
 
+	private String videoUrl;
+
+	private String previewImageUrl;
+
 	@NotBlank(message = "Preview field cannot be empty")
 	private String preview;
 
@@ -44,8 +46,6 @@ public class PostSaveFromUserDTO {
 	private Set<@DirectionExists DirectionDTO> directions;
 
 	private Set<@TagExists TagDTO> tags;
-
-	private Set<@SourceExists SourceDTO> sources;
 
 	private Set<@OriginExists OriginDTO> origins;
 }

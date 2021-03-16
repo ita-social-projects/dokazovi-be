@@ -49,6 +49,12 @@ public class PostEntity {
 	@Column(columnDefinition = "TEXT")
 	private String preview;
 
+	@Column(name = "video_url")
+	private String videoUrl;
+
+	@Column(name = "preview_image_url")
+	private String previewImageUrl;
+
 	@ColumnDefault("false")
 	private Boolean important;
 
@@ -82,16 +88,6 @@ public class PostEntity {
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<TagEntity> tags;
-
-	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "posts_sources",
-			joinColumns = {@JoinColumn(name = "post_id")},
-			inverseJoinColumns = {@JoinColumn(name = "source_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<SourceEntity> sources;
 
 	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
 	@JoinTable(
