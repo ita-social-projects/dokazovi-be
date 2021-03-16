@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
@@ -89,17 +88,6 @@ public class PostEntity {
 	@ToString.Exclude
 	private Set<TagEntity> tags;
 
-	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "posts_sources",
-			joinColumns = {@JoinColumn(name = "post_id")},
-			inverseJoinColumns = {@JoinColumn(name = "source_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<SourceEntity> sources;
-
-	@CreationTimestamp
 	private Timestamp createdAt;
 
 	@UpdateTimestamp
