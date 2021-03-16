@@ -60,11 +60,6 @@ public class UserEntity {
 	@JoinColumn(name = "role_id")
 	private RoleEntity role;
 
-	@OneToMany(mappedBy = "user")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<SourceEntity> sources;
-
 	@OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
 	private DoctorEntity doctor;
 

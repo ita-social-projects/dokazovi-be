@@ -83,7 +83,6 @@ class PostMapperTest {
 						.build())
 				.directions(new HashSet<>())
 				.tags(new HashSet<>())
-				.sources(new HashSet<>())
 				.build();
 	}
 
@@ -125,7 +124,6 @@ class PostMapperTest {
 		assertEquals(postEntity.getType().getName(), postSaveFromUserDTO.getType().getName());
 		assertEquals(postEntity.getDirections().hashCode(), postSaveFromUserDTO.getDirections().hashCode());
 		assertEquals(postEntity.getTags().hashCode(), postSaveFromUserDTO.getTags().hashCode());
-		assertEquals(postEntity.getSources().hashCode(), postSaveFromUserDTO.getSources().hashCode());
 	}
 
 	@Test
@@ -140,6 +138,5 @@ class PostMapperTest {
 		assertEquals(postEntity.getType().getName(), postSaveFromUserDTO.getType().getName());
 		assertEquals(postEntity.getDirections().hashCode(), postSaveFromUserDTO.getDirections().hashCode());
 		assertEquals(postEntity.getTags().hashCode(), postSaveFromUserDTO.getTags().hashCode());
-		assertEquals(postEntity.getSources().hashCode(), postSaveFromUserDTO.getSources().hashCode());
 	}
 }
