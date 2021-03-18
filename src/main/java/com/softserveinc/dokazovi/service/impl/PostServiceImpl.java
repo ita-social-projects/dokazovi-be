@@ -6,15 +6,20 @@ import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
+import com.softserveinc.dokazovi.repositories.UserRepository;
+import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Service
@@ -23,6 +28,7 @@ public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
+	private final UserRepository userRepository;
 
 	@Override
 	public PostDTO findPostById(Integer postId) {
@@ -30,7 +36,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserEntity userEntity) {
+	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserPrincipal userPrincipal) {
 		Integer postId = postDTO.getId();
 		PostEntity mappedEntity;
 		if (postId == null) {
@@ -43,10 +49,12 @@ public class PostServiceImpl implements PostService {
 					.orElseThrow(() -> new InvalidIdDtoException(postDTO));
 		}
 
+		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
+		userEntity.setStatus(UserStatus.ACTIVE);
 		mappedEntity.setAuthor(userEntity);
 		mappedEntity.setImportant(false);
 		mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-
+		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		PostEntity savedEntity = postRepository.save(mappedEntity);
 		return postMapper.toPostDTO(savedEntity);
 	}
