@@ -56,7 +56,7 @@ public class PostServiceImpl implements PostService {
 		mappedEntity.setAuthor(userEntity);
 		mappedEntity.setImportant(false);
 		mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-
+		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		PostEntity savedEntity = postRepository.save(mappedEntity);
 		return postMapper.toPostDTO(savedEntity);
 	}
