@@ -1,10 +1,10 @@
 package com.softserveinc.dokazovi.exception;
 
 public class EntityNotFoundException extends RuntimeException {
-	final private static String message = "Entity not found";
+	private static final String MESSAGE = "Entity not found";
 
 	public EntityNotFoundException() {
-		super(message);
+		super(MESSAGE);
 	}
 
 	public EntityNotFoundException(String msg) {
