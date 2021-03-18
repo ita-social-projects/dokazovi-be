@@ -7,6 +7,7 @@ import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -18,6 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -103,4 +107,14 @@ public class PostServiceImpl implements PostService {
 				.map(postMapper::toPostDTO);
 	}
 
+	@Override
+	public Boolean archivePostById(Integer postId) throws EntityNotFoundException {
+		Optional<PostEntity> postEntity = postRepository.findById(postId);
+		postEntity.ifPresent(e -> {
+			e.setStatus(PostStatus.ARCHIVED);
+			e.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+			postRepository.save(e);
+		});
+		return postEntity.isPresent();
+	}
 }

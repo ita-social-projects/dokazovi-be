@@ -12,6 +12,7 @@ public final class EndPoints {
 	public static final String POST_LATEST = "/latest";
 	public static final String POST_IMPORTANT = "/important";
 	public static final String POST_GET_POST_BY_ID = "/{postId}";
+	public static final String POST_DELETE_BY_ID = "/{postId}";
 	public static final String USER = "/user";
 	public static final String USER_RANDOM_EXPERTS = "/random-experts";
 	public static final String USER_ALL_EXPERTS = "/all-experts";
