@@ -1,17 +1,23 @@
 package com.softserveinc.dokazovi.entity;
 
+import com.softserveinc.dokazovi.entity.enumerations.SourceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Set;
 
@@ -19,20 +25,25 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "origin_entity")
-@Table(name = "origins")
-public class OriginEntity {
+@Entity(name = "source_entity")
+@Table(name = "sources")
+public class SourceEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "origin_id")
+	@Column(name = "source_id")
 	private Integer id;
 
-	private String name;
+	@Enumerated(EnumType.STRING)
+	private SourceType type;
 
-	private String parameters;
+	private String value;
 
-	@ManyToMany(mappedBy = "origins")
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
+
+	@ManyToMany(mappedBy = "sources")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	private Set<PostEntity> posts;

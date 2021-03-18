@@ -2,8 +2,8 @@ package com.softserveinc.dokazovi.service;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,5 +22,5 @@ public interface PostService {
 
 	Page<PostDTO> findAllByExpert(Integer expertId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 
-	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
+	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserEntity user);
 }

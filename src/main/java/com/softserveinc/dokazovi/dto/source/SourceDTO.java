@@ -1,4 +1,4 @@
-package com.softserveinc.dokazovi.dto.origin;
+package com.softserveinc.dokazovi.dto.source;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,14 +12,11 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OriginDTO {
+public class SourceDTO {
 
-	@NotNull(message = "Origin id are required")
+	@NotNull(message = "Source id are required")
 	private Integer id;
 
-	@NotBlank(message = "Origin name cannot be empty")
-	private String name;
-
-	@NotBlank(message = "Origin parameter cannot be empty")
-	private String parameter;
+	@NotBlank(message = "Sources value cannot be empty")
+	private String value;
 }

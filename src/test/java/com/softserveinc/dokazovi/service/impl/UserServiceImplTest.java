@@ -90,7 +90,7 @@ class UserServiceImplTest {
 	void findAllExpertsByDirectionsAndRegions_NotFiltered() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
-		when(userRepository.findDoctorsProfiles(any(Pageable.class)))
+		when(userRepository.findDoctorsProfilesOrderByRatingThenByName(any(Pageable.class)))
 				.thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(null, null, pageable);
 
@@ -102,7 +102,7 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
 
-		when(userRepository.findDoctorsProfilesByRegionsIds(anySet(), any(Pageable.class)))
+		when(userRepository.findDoctorsProfilesByRegionsIdsOrderByRatingThenByName(anySet(), any(Pageable.class)))
 				.thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(null, regionsIds, pageable);
 
@@ -114,7 +114,7 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> directionsIds = Set.of(1, 4, 6);
 
-		when(userRepository.findDoctorsProfilesByDirectionsIds(
+		when(userRepository.findDoctorsProfilesByDirectionsIdsOrderByDirectionsMatchesThenByRatingThenByName(
 				anySet(), any(Pageable.class)
 		)).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(directionsIds, null, pageable);
@@ -129,7 +129,7 @@ class UserServiceImplTest {
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
 
 		when(userRepository
-				.findDoctorsProfilesByDirectionsIdsAndRegionsIds(
+				.findDoctorsProfilesByDirectionsIdsAndRegionsIdsOrderByDirectionsMatchesThenByRatingThenByName(
 						anySet(), anySet(), any(Pageable.class))
 		).thenReturn(userEntityPage);
 		userService.findAllExpertsByDirectionsAndRegions(directionsIds, regionsIds, pageable);

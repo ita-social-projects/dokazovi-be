@@ -21,13 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.DIRECTION;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST;
-import static com.softserveinc.dokazovi.controller.EndPoints.REGION;
-import static com.softserveinc.dokazovi.controller.EndPoints.TAG;
-import static com.softserveinc.dokazovi.controller.EndPoints.USER;
-import static com.softserveinc.dokazovi.controller.EndPoints.VERSION;
-import static com.softserveinc.dokazovi.controller.EndPoints.openApi;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -113,8 +106,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/v3/api-docs/**", "/configuration/**", "/swagger*/**", "/webjars/**",
 						"/auth/**", "/oauth2/**")
 					.permitAll()
-				.antMatchers(openApi(USER), openApi(POST), openApi(TAG), openApi(DIRECTION), openApi(REGION),
-							 openApi(VERSION))
+				.antMatchers("/user/**", "/post/**", "/tag/**", "/direction/**", "/region/**")
 					.permitAll()
 				.anyRequest()
 					.authenticated()
