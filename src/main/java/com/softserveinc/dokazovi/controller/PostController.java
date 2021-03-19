@@ -142,8 +142,8 @@ public class PostController {
 		try {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(postService.archivePostById(postId))
-					.message("post " + postId + " delete"
-							+ "d successfully")
+					.message("post " + postId + " deleted"
+							+ " successfully")
 					.build();
 		} catch (EntityNotFoundException e) {
 			apiResponseMessage = ApiResponseMessage.builder()
