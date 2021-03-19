@@ -180,7 +180,9 @@ class PostControllerTest {
 
 		mockMvc.perform(delete("/post/1", existingPostId))
 				.andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers.content().string("{\"success\":true,\"message\":\"post 1 deleted successfully\"}"));
+				.andExpect(MockMvcResultMatchers
+						.content()
+						.string("{\"success\":true,\"message\":\"post 1 deleted successfully\"}"));
 	}
 
 	@Test
@@ -191,6 +193,8 @@ class PostControllerTest {
 
 		mockMvc.perform(delete("/post/1", notExistingPostId))
 				.andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers.content().string("{\"success\":false,\"message\":\"post 1 deleted successfully\"}"));
+				.andExpect(MockMvcResultMatchers
+						.content()
+						.string("{\"success\":false,\"message\":\"post 1 deleted successfully\"}"));
 	}
 }
