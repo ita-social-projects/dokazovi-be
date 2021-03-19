@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -173,7 +174,7 @@ class PostControllerTest {
 	}
 
 	@Test
-	void deletePostById_WhenExists_isOk() throws Exception {
+	void archivePostById_WhenExists_isOk() throws Exception {
 		Integer existingPostId = 1;
 
 		Mockito.when(postService.archivePostById(existingPostId)).thenReturn(true);
@@ -186,15 +187,27 @@ class PostControllerTest {
 	}
 
 	@Test
-	void deletePostById_WhenNotExists_NotFound() throws Exception {
-		Integer notExistingPostId = 1;
+	void archivePostById_WhenNotExists_NotFound() throws Exception {
+		Integer notExistingPostId = -1;
 
 		Mockito.when(postService.archivePostById(notExistingPostId)).thenReturn(false);
 
-		mockMvc.perform(delete("/post/1", notExistingPostId))
+		mockMvc.perform(delete("/post/-1", notExistingPostId))
 				.andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers
 						.content()
-						.string("{\"success\":false,\"message\":\"post 1 deleted successfully\"}"));
+						.string("{\"success\":false,\"message\":\"post -1 deleted successfully\"}"));
+	}
+
+	@Test
+	void archivePostById_WhenNotExists_NotFound_ThrowException() throws Exception {
+		Integer notExistingPostId = -1;
+
+		Mockito.when(postService.archivePostById(notExistingPostId)).thenThrow(new EntityNotFoundException());
+		mockMvc.perform(delete("/post/-1", notExistingPostId))
+				.andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers
+						.content()
+						.string("{\"success\":false,\"message\":\"Entity not found\"}"));
 	}
 }
