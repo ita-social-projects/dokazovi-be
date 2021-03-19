@@ -60,6 +60,35 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	public Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(Set<Integer> directionIds, Set<Integer> typeIds,
+			Set<Integer> originIds, Pageable pageable) {
+		if (directionIds == null && typeIds != null && originIds == null) {
+			return postRepository.findAllByPostTypes(typeIds, pageable)
+					.map(postMapper::toPostDTO);
+		} else if (directionIds != null && typeIds == null && originIds == null) {
+			return postRepository.findAllByDirections(directionIds, pageable)
+					.map(postMapper::toPostDTO);
+		} else if (directionIds == null && typeIds == null && originIds != null) {
+			return postRepository.findAllByOrigins(originIds, pageable)
+					.map(postMapper::toPostDTO);
+		} else if (directionIds != null && typeIds != null && originIds == null) {
+			return postRepository.findAllByDirectionsAndByPostTypes(directionIds, typeIds, pageable)
+					.map(postMapper::toPostDTO);
+		} else if (directionIds != null && typeIds == null && originIds != null) {
+			return postRepository.findAllByDirectionsAndByOrigins(directionIds, originIds, pageable)
+					.map(postMapper::toPostDTO);
+		} else if (directionIds == null && typeIds != null && originIds != null) {
+			return postRepository.findAllByPostTypesAndByOrigins(typeIds, originIds, pageable)
+					.map(postMapper::toPostDTO);
+		} else if (directionIds == null && typeIds == null && originIds == null) {
+			return postRepository.findAll(pageable)
+					.map(postMapper::toPostDTO);
+		}
+		return postRepository.findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable)
+				.map(postMapper::toPostDTO);
+	}
+
+	@Override
 	public Page<PostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable) {
 		return postRepository.findAllByStatus(postStatus, pageable)
 				.map(postMapper::toPostDTO);

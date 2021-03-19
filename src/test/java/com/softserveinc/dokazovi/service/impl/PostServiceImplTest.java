@@ -2,7 +2,9 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
+import com.softserveinc.dokazovi.entity.OriginEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.entity.PostTypeEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
@@ -57,6 +59,10 @@ class PostServiceImplTest {
 
 	private UserEntity userEntity;
 
+	private PostEntity postEntity1;
+
+	private PostEntity postEntity2;
+
 
 	@BeforeEach
 	void init() {
@@ -73,6 +79,47 @@ class PostServiceImplTest {
 				.email("test@nail.com")
 				.password("12345")
 				.role(roleEntity)
+				.build();
+
+		PostTypeEntity postTypeEntity1 = PostTypeEntity.builder()
+				.id(1)
+				.name("Відео")
+				.build();
+		PostTypeEntity postTypeEntity2 = PostTypeEntity.builder()
+				.id(2)
+				.name("Допис")
+				.build();
+		DirectionEntity directionEntity1 = DirectionEntity.builder()
+				.id(1)
+				.name("Covid-19")
+				.build();
+		DirectionEntity directionEntity2 = DirectionEntity.builder()
+				.id(2)
+				.name("Хірургія")
+				.build();
+		Set<DirectionEntity> directionEntities1 = Set.of(directionEntity1, directionEntity2);
+		Set<DirectionEntity> directionEntities2 = Set.of(directionEntity2);
+		OriginEntity originEntity1 = OriginEntity.builder()
+				.id(1)
+				.name("Wikipedia")
+				.build();
+		OriginEntity originEntity2 = OriginEntity.builder()
+				.id(2)
+				.name("YouTube")
+				.build();
+		Set<OriginEntity> originEntities1 = Set.of(originEntity1, originEntity2);
+		Set<OriginEntity> originEntities2 = Set.of(originEntity2);
+		postEntity1 = PostEntity.builder()
+				.id(1)
+				.type(postTypeEntity1)
+				.directions(directionEntities1)
+				.origins(originEntities1)
+				.build();
+		postEntity2 = PostEntity.builder()
+				.id(2)
+				.type(postTypeEntity2)
+				.directions(directionEntities2)
+				.origins(originEntities2)
 				.build();
 	}
 
@@ -202,6 +249,19 @@ class PostServiceImplTest {
 				anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByDirectionsAndByPostTypesAndByOrigins_FilteredBySourceTypesOnly() {
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(postEntity1));
+		Set<Integer> typesIds = Set.of(1, 6);
+
+		when(postRepository.findAllByPostTypes(
+				anySet(), any(Pageable.class)
+		)).thenReturn(postEntityPage);
+		postService.findAllByDirectionsAndByPostTypesAndByOrigins(null, typesIds, null, pageable);
+
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 }
