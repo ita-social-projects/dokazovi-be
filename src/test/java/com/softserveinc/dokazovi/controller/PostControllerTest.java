@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
@@ -35,6 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -167,5 +170,27 @@ class PostControllerTest {
 	void findAllPostType() throws Exception {
 		mockMvc.perform(get(POST + POST_TYPE)).andExpect(status().isOk());
 		verify(postTypeService).findAll();
+	}
+
+	@Test
+	void deletePostById_WhenExists_isOk() throws Exception {
+		Integer existingPostId = 1;
+
+		Mockito.when(postService.archivePostById(existingPostId)).thenReturn(true);
+
+		mockMvc.perform(delete("/post/1", existingPostId))
+				.andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.content().string("{\"success\":true,\"message\":\"post 1 deleted successfully\"}"));
+	}
+
+	@Test
+	void deletePostById_WhenNotExists_NotFound() throws Exception {
+		Integer notExistingPostId = 1;
+
+		Mockito.when(postService.archivePostById(notExistingPostId)).thenReturn(false);
+
+		mockMvc.perform(delete("/post/1", notExistingPostId))
+				.andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.content().string("{\"success\":false,\"message\":\"post 1 deleted successfully\"}"));
 	}
 }

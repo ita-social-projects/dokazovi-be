@@ -7,12 +7,14 @@ import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -203,5 +205,24 @@ class PostServiceImplTest {
 				.thenReturn(postEntityPage);
 		postService.findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void archivePostById_WhenExists_isOk() {
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.build();
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		when(postRepository.save(postEntity)).thenReturn(postEntity);
+		Assertions.assertThat(postService.archivePostById(id)).isTrue();
+	}
+
+	@Test
+	void archivePostById_WhenNotExists_NotFound_ThrowException() {
+		Integer id = -1;
+
+		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(id));
 	}
 }

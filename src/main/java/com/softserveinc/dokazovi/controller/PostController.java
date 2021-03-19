@@ -37,7 +37,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_DELETE_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -135,7 +134,7 @@ public class PostController {
 				.body(postDTO);
 	}
 
-	@DeleteMapping(POST_DELETE_BY_ID)
+	@DeleteMapping(POST_GET_POST_BY_ID)
 	@ApiOperation(value = "Delete post by Id, as a path variable.")
 	public ResponseEntity<ApiResponseMessage> archivePostById(@PathVariable("postId") Integer postId) {
 		ApiResponseMessage apiResponseMessage;

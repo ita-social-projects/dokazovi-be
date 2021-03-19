@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -109,12 +108,12 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Boolean archivePostById(Integer postId) throws EntityNotFoundException {
-		Optional<PostEntity> postEntity = postRepository.findById(postId);
-		postEntity.ifPresent(e -> {
-			e.setStatus(PostStatus.ARCHIVED);
-			e.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-			postRepository.save(e);
-		});
-		return postEntity.isPresent();
+		PostEntity postEntity = postRepository
+				.findById(postId)
+				.orElseThrow(EntityNotFoundException::new);
+		postEntity.setStatus(PostStatus.ARCHIVED);
+		postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+		postRepository.save(postEntity);
+		return true;
 	}
 }
