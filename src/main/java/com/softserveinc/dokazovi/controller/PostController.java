@@ -135,7 +135,9 @@ public class PostController {
 	}
 
 	@DeleteMapping(POST_GET_POST_BY_ID)
-	@ApiOperation(value = "Delete post by Id, as a path variable.")
+	@PreAuthorize("hasAuthority('DELETE_POST')")
+	@ApiOperation(value = "Delete post by Id, as a path variable.",
+			authorizations = {@Authorization(value = "Authorization")})
 	public ResponseEntity<ApiResponseMessage> archivePostById(@PathVariable("postId") Integer postId) {
 		ApiResponseMessage apiResponseMessage;
 		try {
