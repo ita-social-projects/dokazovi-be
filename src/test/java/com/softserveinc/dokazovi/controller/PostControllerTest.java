@@ -185,7 +185,8 @@ class PostControllerTest {
 	@Test
 	void archivePostById_WhenNotExists_NotFound() throws Exception {
 		Integer notExistingPostId = -1;
-		Mockito.when(postService.archivePostById(notExistingPostId)).thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
+		Mockito.when(postService.archivePostById(notExistingPostId))
+				.thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
 
 		mockMvc.perform(delete("/post/-1")).andExpect(status().isOk()).andExpect(result ->
 				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
@@ -196,7 +197,8 @@ class PostControllerTest {
 	void archivePostById_WhenNotExists_NotFound_ThrowException() {
 		Integer notExistingPostId = -1;
 
-		Mockito.when(postService.archivePostById(notExistingPostId)).thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
+		Mockito.when(postService.archivePostById(notExistingPostId))
+				.thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
 		Assertions.assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(notExistingPostId));
 	}
 }
