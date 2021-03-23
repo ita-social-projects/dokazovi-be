@@ -2788,8 +2788,6 @@ VALUES (1, 'SAVE_OWN_PUBLICATION');
 INSERT INTO public.role_permission (role_id, permissions)
 VALUES (1, 'SAVE_TAG');
 INSERT INTO public.role_permission (role_id, permissions)
-VALUES (1, 'DELETE_POST');
-INSERT INTO public.role_permission (role_id, permissions)
 VALUES (2, 'SAVE_OWN_PUBLICATION');
 INSERT INTO public.role_permission (role_id, permissions)
 VALUES (2, 'SAVE_TAG');

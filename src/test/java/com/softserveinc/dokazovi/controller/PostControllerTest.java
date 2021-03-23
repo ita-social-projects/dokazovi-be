@@ -7,6 +7,7 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,12 +23,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
 import java.util.Set;
-
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -176,38 +175,28 @@ class PostControllerTest {
 	@Test
 	void archivePostById_WhenExists_isOk() throws Exception {
 		Integer existingPostId = 1;
-
 		Mockito.when(postService.archivePostById(existingPostId)).thenReturn(true);
 
-		mockMvc.perform(delete("/post/1", existingPostId))
-				.andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers
-						.content()
-						.string("{\"success\":true,\"message\":\"post 1 deleted successfully\"}"));
+		mockMvc.perform(delete("/post/1")).andExpect(status().isOk()).andExpect(result ->
+				Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 deleted successfully\"}",
+						result.getResponse().getContentAsString()));
 	}
 
 	@Test
 	void archivePostById_WhenNotExists_NotFound() throws Exception {
 		Integer notExistingPostId = -1;
+		Mockito.when(postService.archivePostById(notExistingPostId)).thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
 
-		Mockito.when(postService.archivePostById(notExistingPostId)).thenReturn(false);
-
-		mockMvc.perform(delete("/post/-1", notExistingPostId))
-				.andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers
-						.content()
-						.string("{\"success\":false,\"message\":\"post -1 deleted successfully\"}"));
+		mockMvc.perform(delete("/post/-1")).andExpect(status().isOk()).andExpect(result ->
+				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
+						result.getResponse().getContentAsString()));
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException() throws Exception {
+	void archivePostById_WhenNotExists_NotFound_ThrowException() {
 		Integer notExistingPostId = -1;
 
-		Mockito.when(postService.archivePostById(notExistingPostId)).thenThrow(new EntityNotFoundException());
-		mockMvc.perform(delete("/post/-1", notExistingPostId))
-				.andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers
-						.content()
-						.string("{\"success\":false,\"message\":\"Entity not found\"}"));
+		Mockito.when(postService.archivePostById(notExistingPostId)).thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
+		Assertions.assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(notExistingPostId));
 	}
 }

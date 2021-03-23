@@ -110,7 +110,7 @@ public class PostServiceImpl implements PostService {
 	public Boolean archivePostById(Integer postId) throws EntityNotFoundException {
 		PostEntity postEntity = postRepository
 				.findById(postId)
-				.orElseThrow(EntityNotFoundException::new);
+				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
 		postEntity.setStatus(PostStatus.ARCHIVED);
 		postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
 		postRepository.save(postEntity);
