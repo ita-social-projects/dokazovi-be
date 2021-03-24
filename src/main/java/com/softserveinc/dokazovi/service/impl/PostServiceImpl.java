@@ -7,6 +7,7 @@ import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.exception.ResourceNotFoundException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
@@ -147,4 +148,14 @@ public class PostServiceImpl implements PostService {
 				.map(postMapper::toPostDTO);
 	}
 
+	@Override
+	public Boolean archivePostById(Integer postId) throws EntityNotFoundException {
+		PostEntity postEntity = postRepository
+				.findById(postId)
+				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
+		postEntity.setStatus(PostStatus.ARCHIVED);
+		postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+		postRepository.save(postEntity);
+		return true;
+	}
 }

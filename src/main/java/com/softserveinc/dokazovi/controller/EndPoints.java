@@ -28,4 +28,8 @@ public final class EndPoints {
 	public static final String AUTH_VERIFICATION = "/verification";
 	public static final String AUTH_LOGIN = "/login";
 	public static final String AUTH_SIGNUP = "/signup";
+
+	public static String openApi(String api) {
+		return api + "/**";
+	}
 }
