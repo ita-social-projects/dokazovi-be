@@ -142,8 +142,15 @@ public class PostController {
 			@RequestParam(required = false) Set<Integer> types,
 			@ApiParam(value = "Multiple comma-separated origins IDs, e.g. ?origins=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> origins) {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(postService.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable));
+		try {
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.body(postService
+							.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable));
+		} catch (RuntimeException e) {
+			return ResponseEntity
+					.status(HttpStatus.NO_CONTENT)
+					.body(null);
+		}
 	}
 }
