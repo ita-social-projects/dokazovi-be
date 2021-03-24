@@ -1,10 +1,12 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -22,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -129,5 +132,25 @@ public class PostController {
 		return ResponseEntity
 				.status((postDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(postDTO);
+	}
+
+	@DeleteMapping(POST_GET_POST_BY_ID)
+	@PreAuthorize("hasAuthority('DELETE_POST')")
+	@ApiOperation(value = "Delete post by Id, as a path variable.",
+			authorizations = {@Authorization(value = "Authorization")})
+	public ResponseEntity<ApiResponseMessage> archivePostById(@PathVariable("postId") Integer postId) {
+		ApiResponseMessage apiResponseMessage;
+		try {
+			apiResponseMessage = ApiResponseMessage.builder()
+					.success(postService.archivePostById(postId))
+					.message(String.format("post %s deleted successfully", postId))
+					.build();
+		} catch (EntityNotFoundException e) {
+			apiResponseMessage = ApiResponseMessage.builder()
+					.success(false)
+					.message(e.getMessage())
+					.build();
+		}
+		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 }
