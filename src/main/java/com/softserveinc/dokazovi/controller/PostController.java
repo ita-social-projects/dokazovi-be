@@ -1,10 +1,12 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -22,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +37,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -129,5 +133,48 @@ public class PostController {
 		return ResponseEntity
 				.status((postDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(postDTO);
+	}
+
+	@GetMapping(POST_ALL_POSTS)
+	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
+	public ResponseEntity<Page<PostDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
+			@PageableDefault Pageable pageable,
+			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> directions,
+			@ApiParam(value = "Multiple comma-separated post types IDs, e.g. ?post types=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> types,
+			@ApiParam(value = "Multiple comma-separated origins IDs, e.g. ?origins=1,2,3,4...", type = "string")
+			@RequestParam(required = false) Set<Integer> origins) {
+		try {
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.body(postService
+							.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable));
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity
+					.status(HttpStatus.NO_CONTENT)
+					.body(null);
+		}
+	}
+
+
+	@DeleteMapping(POST_GET_POST_BY_ID)
+	@PreAuthorize("hasAuthority('DELETE_POST')")
+	@ApiOperation(value = "Delete post by Id, as a path variable.",
+			authorizations = {@Authorization(value = "Authorization")})
+	public ResponseEntity<ApiResponseMessage> archivePostById(@PathVariable("postId") Integer postId) {
+		ApiResponseMessage apiResponseMessage;
+		try {
+			apiResponseMessage = ApiResponseMessage.builder()
+					.success(postService.archivePostById(postId))
+					.message(String.format("post %s deleted successfully", postId))
+					.build();
+		} catch (EntityNotFoundException e) {
+			apiResponseMessage = ApiResponseMessage.builder()
+					.success(false)
+					.message(e.getMessage())
+					.build();
+		}
+		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 }

@@ -1,13 +1,15 @@
 package com.softserveinc.dokazovi.dto.payload;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class ApiResponse {
+@Builder
+public class ApiResponseMessage {
     private boolean success;
     private String message;
 
-    public ApiResponse(boolean success, String message) {
+    public ApiResponseMessage(boolean success, String message) {
         this.success = success;
         this.message = message;
     }

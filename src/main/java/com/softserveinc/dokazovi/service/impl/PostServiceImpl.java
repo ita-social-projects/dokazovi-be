@@ -7,28 +7,40 @@ import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.DirectionRepository;
+import com.softserveinc.dokazovi.repositories.OriginRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
+import com.softserveinc.dokazovi.repositories.PostTypeRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
+	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
+
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
+	private final PostTypeRepository postTypeRepository;
+	private final DirectionRepository directionRepository;
+	private final OriginRepository originRepository;
 
 	@Override
 	public PostDTO findPostById(Integer postId) {
@@ -57,6 +69,30 @@ public class PostServiceImpl implements PostService {
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		PostEntity savedEntity = postRepository.save(mappedEntity);
 		return postMapper.toPostDTO(savedEntity);
+	}
+
+	@Override
+	public Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(Set<Integer> directionIds, Set<Integer> typeIds,
+			Set<Integer> originIds, Pageable pageable) {
+		if (directionIds == null && typeIds == null && originIds == null) {
+			return postRepository.findAll(pageable)
+					.map(postMapper::toPostDTO);
+		}
+		Set<Integer> directions = validateIdsValues(directionIds);
+		Set<Integer> types = validateIdsValues(typeIds);
+		Set<Integer> origins = validateIdsValues(originIds);
+		try {
+			return postRepository.findAllByDirectionsAndByPostTypesAndByOrigins(types, origins, directions, pageable)
+					.map(postMapper::toPostDTO);
+		} catch (Exception e) {
+			logger.error(String.format("Fail with posts filter with params directionIds=%s, typeIds=%s, originIds=%s",
+					directionIds, typeIds, originIds));
+			throw new EntityNotFoundException("Id does not exist");
+		}
+	}
+
+	private Set<Integer> validateIdsValues(Set<Integer> ids) {
+		return ids != null ? ids : new HashSet<>();
 	}
 
 	@Override
@@ -105,4 +141,14 @@ public class PostServiceImpl implements PostService {
 				.map(postMapper::toPostDTO);
 	}
 
+	@Override
+	public Boolean archivePostById(Integer postId) throws EntityNotFoundException {
+		PostEntity postEntity = postRepository
+				.findById(postId)
+				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
+		postEntity.setStatus(PostStatus.ARCHIVED);
+		postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+		postRepository.save(postEntity);
+		return true;
+	}
 }
