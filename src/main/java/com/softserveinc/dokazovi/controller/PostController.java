@@ -37,6 +37,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -133,6 +134,29 @@ public class PostController {
 				.status((postDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(postDTO);
 	}
+
+	@GetMapping(POST_ALL_POSTS)
+	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
+	public ResponseEntity<Page<PostDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
+			@PageableDefault Pageable pageable,
+			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> directions,
+			@ApiParam(value = "Multiple comma-separated post types IDs, e.g. ?post types=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> types,
+			@ApiParam(value = "Multiple comma-separated origins IDs, e.g. ?origins=1,2,3,4...", type = "string")
+			@RequestParam(required = false) Set<Integer> origins) {
+		try {
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.body(postService
+							.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable));
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity
+					.status(HttpStatus.NO_CONTENT)
+					.body(null);
+		}
+	}
+
 
 	@DeleteMapping(POST_GET_POST_BY_ID)
 	@PreAuthorize("hasAuthority('DELETE_POST')")

@@ -6,6 +6,7 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import java.util.Set;
 
 public interface PostService {
@@ -22,6 +23,9 @@ public interface PostService {
 	Page<PostDTO> findAllByExpert(Integer expertId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 
 	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
+
+	Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(
+			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Pageable pageable);
 
 	Boolean archivePostById(Integer postId);
 }

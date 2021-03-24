@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -205,6 +207,104 @@ class PostServiceImplTest {
 				.thenReturn(postEntityPage);
 		postService.findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllPosts() {
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		Set<Integer> typesIds = null;
+		Set<Integer> originsIds = null;
+		Set<Integer> directionsIds = null;
+
+		Mockito.when(postRepository.findAll(any(Pageable.class))).thenReturn(postEntityPage);
+		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllPosts_WhenIdsAreWrong_ReturnEmptyPage() {
+		Set<Integer> typesIds = Set.of(1220, 1999);
+		Set<Integer> originsIds = Set.of(12340, 1999);
+		Set<Integer> directionsIds = Set.of(1234, 1999);
+		Page<PostEntity> postEntityPage = Page.empty();
+
+		Mockito.when(postRepository
+				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.thenReturn(postEntityPage);
+		assertEquals(postEntityPage.getContent(),
+				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
+						.getContent());
+	}
+
+	@Test
+	void findAllPostsByDirections() {
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		Set<Integer> typesIds = new HashSet<>();
+		Set<Integer> originsIds = new HashSet<>();
+		Set<Integer> directionsIds = Set.of(1, 2);
+
+		Mockito.when(postRepository
+				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.thenReturn(postEntityPage);
+		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllPostsByDirections_WhenIdsAreWrong_ReturnEmptyPage() {
+		Set<Integer> typesIds = new HashSet<>();
+		Set<Integer> originsIds = new HashSet<>();
+		Set<Integer> directionsIds = Set.of(-1, -2, -3);
+		Page<PostEntity> postEntityPage = Page.empty();
+
+		Mockito.when(postRepository
+				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.thenReturn(postEntityPage);
+		assertEquals(postEntityPage.getContent(),
+				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
+						.getContent());
+	}
+
+	@Test
+	void findAllPostsByDirections_ThrowException() {
+		Set<Integer> typesIds = new HashSet<>();
+		Set<Integer> originsIds = new HashSet<>();
+		Set<Integer> directionsIds = null;
+
+		Mockito.when(postRepository
+				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.thenThrow(new EntityNotFoundException("Id does not exist"));
+		assertThrows(EntityNotFoundException.class, () -> postService
+				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
+	}
+
+	@Test
+	void findAllByPostTypesAndOrigins() {
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		Set<Integer> typesIds = Set.of(1, 2);
+		Set<Integer> originsIds = Set.of(2, 3);
+		Set<Integer> directionsIds = new HashSet<>();
+
+		Mockito.when(postRepository
+				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.thenReturn(postEntityPage);
+		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllPostsByPostTypesAndOrigins_WhenIdsAreWrong_ReturnEmptyPage() {
+		Set<Integer> typesIds = Set.of(-1, -2);
+		Set<Integer> originsIds = Set.of(-1, -2, -3);
+		Set<Integer> directionsIds = new HashSet<>();
+		Page<PostEntity> postEntityPage = Page.empty();
+
+		Mockito.when(postRepository
+				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.thenReturn(postEntityPage);
+		assertEquals(postEntityPage.getContent(),
+				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
+						.getContent());
 	}
 
 	@Test
