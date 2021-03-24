@@ -266,6 +266,19 @@ class PostServiceImplTest {
 	}
 
 	@Test
+	void findAllPostsByDirections_ThrowException() {
+		Set<Integer> typesIds = new HashSet<>();
+		Set<Integer> originsIds = new HashSet<>();
+		Set<Integer> directionsIds = null;
+
+		Mockito.when(postRepository
+				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.thenThrow(new EntityNotFoundException("Id does not exist"));
+		assertThrows(EntityNotFoundException.class, () -> postService
+				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
+	}
+
+	@Test
 	void findAllByPostTypesAndOrigins() {
 		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
 		Set<Integer> typesIds = Set.of(1, 2);
