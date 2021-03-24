@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 @Repository
@@ -61,7 +60,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "                        WHERE ORIGIN_ID IN (:originsIds)))) "
 					+ "   AND P1.STATUS IN ('PUBLISHED') "
 	)
-	Page<PostEntity> findAllByDirectionsAndByPostTypesAndByOrigins(Set<Integer> typesIds, Set<Integer> originsIds, Set<Integer> directionsIds,
-			Pageable pageable);
+	Page<PostEntity> findAllByDirectionsAndByPostTypesAndByOrigins(Set<Integer> typesIds, Set<Integer> originsIds,
+			Set<Integer> directionsIds, Pageable pageable);
 
 }

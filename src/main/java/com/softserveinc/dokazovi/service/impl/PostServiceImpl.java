@@ -9,19 +9,15 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
-import com.softserveinc.dokazovi.exception.ResourceNotFoundException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.OriginRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.PostTypeRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
-import com.softserveinc.dokazovi.security.RestAuthenticationEntryPoint;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
-import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Not;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -30,11 +26,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -94,7 +87,7 @@ public class PostServiceImpl implements PostService {
 		} catch (Exception e) {
 			logger.error(String.format("Fail with posts filter with params directionIds=%s, typeIds=%s, originIds=%s",
 					directionIds, typeIds, originIds));
-			throw new RuntimeException("Id does not exist");
+			throw new EntityNotFoundException("Id does not exist");
 		}
 	}
 

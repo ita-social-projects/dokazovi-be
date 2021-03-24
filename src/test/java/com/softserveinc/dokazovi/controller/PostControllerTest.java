@@ -3,19 +3,14 @@ package com.softserveinc.dokazovi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
 import org.junit.jupiter.api.Assertions;
-import io.jsonwebtoken.lang.Assert;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,13 +28,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
 import java.util.List;
 import java.util.Set;
+
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
@@ -225,8 +221,7 @@ class PostControllerTest {
 				.build();
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
 		Mockito.when(postService.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable))
-				.thenReturn(
-						page);
+				.thenReturn(page);
 		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=1,2&types=1,3&origins=2,3"))
 				.andExpect(status().isOk())
 				.andExpect(result -> Assertions.assertEquals(1,
@@ -247,7 +242,6 @@ class PostControllerTest {
 		return 0;
 	}
 
-	//Todo change exception
 	@Test
 	void findAllPostsByDirectionsByPostTypesAndByOrigins_ThrowException() {
 		Set<Integer> directionIds = null;
@@ -256,25 +250,33 @@ class PostControllerTest {
 		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(
 				postService.findAllByDirectionsAndByPostTypesAndByOrigins(null, null, null, pageable))
-				.thenThrow(new RuntimeException(
+				.thenThrow(new EntityNotFoundException(
 						String.format("Fail to filter posts with params directionIds=%s, typeIds=%s, originIds=%s",
 								directionIds, typeIds, originIds)));
 
-		Assertions.assertThrows(RuntimeException.class, () -> postService
+		Assertions.assertThrows(EntityNotFoundException.class, () -> postService
 				.findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable));
 	}
 
 	@Test
 	void findAllPostsByDirectionsByPostTypesAndByOrigins_NotFound() throws Exception {
-		Set<Integer> directionIds = Set.of(-1, 1111);
-		Set<Integer> typeIds = Set.of(123, 2345);
-		Set<Integer> originIds = Set.of(1234, 1231);
-		Pageable pageable = PageRequest.of(0, 1);
-		String uri = POST + POST_ALL_POSTS + "?directions=-1,1111&types=123,2345&origins=1234,1231";
+		Set<Integer> directions = Set.of(-1, 1111);
+		Set<Integer> types = Set.of(123, 2345);
+		Set<Integer> origins = Set.of(1234, 1231);
+		Pageable pageable = PageRequest.of(0, 10);
+		PostDTO postDTO = PostDTO.builder()
+				.id(0)
+				.build();
+		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
 
-		Mockito.when(
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable))
-				.thenReturn(null);
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+		Mockito.when(postService.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable))
+				.thenReturn(page);
+		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=-1,1111&types=123,2345&origins=1234,1231"))
+				.andExpect(status().isOk())
+				.andExpect(result -> Assertions.assertEquals(0,
+						getIdFromResponse(result.getResponse().getContentAsString()))
+				);
+
+		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable);
 	}
 }

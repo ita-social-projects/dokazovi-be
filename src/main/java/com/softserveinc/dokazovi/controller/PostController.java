@@ -150,7 +150,7 @@ public class PostController {
 					.status(HttpStatus.OK)
 					.body(postService
 							.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable));
-		} catch (RuntimeException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity
 					.status(HttpStatus.NO_CONTENT)
 					.body(null);

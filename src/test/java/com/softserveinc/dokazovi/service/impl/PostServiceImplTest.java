@@ -2,23 +2,16 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
-import com.softserveinc.dokazovi.entity.OriginEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
-import com.softserveinc.dokazovi.entity.PostTypeEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
-import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
-import com.softserveinc.dokazovi.exception.ResourceNotFoundException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
-import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
-import com.softserveinc.dokazovi.repositories.OriginRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
-import com.softserveinc.dokazovi.repositories.PostTypeRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.assertj.core.api.Assertions;
@@ -38,10 +31,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -229,71 +221,19 @@ class PostServiceImplTest {
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
-	//Todo change RuntimeException to EntityNotFoundException
 	@Test
-	void findAllPosts_ThrowException() {
+	void findAllPosts_WhenIdsAreWrong_ReturnEmptyPage() {
 		Set<Integer> typesIds = Set.of(1220, 1999);
 		Set<Integer> originsIds = Set.of(12340, 1999);
 		Set<Integer> directionsIds = Set.of(1234, 1999);
-
-		assertThrows(RuntimeException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
-	}
-
-	@Test
-	void findAllPostsByPostTypes() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
-		Set<Integer> typesIds = Set.of(1, 2, 3);
-		Set<Integer> originsIds = new HashSet<>();
-		Set<Integer> directionsIds = new HashSet<>();
+		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
 				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
 				.thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
-	}
-
-	//Todo change RuntimeException to EntityNotFoundException
-	@Test
-	void findAllPostsByPostTypes_ThrowException() {
-		Set<Integer> typesIds = Set.of(-12133, -223);
-		Set<Integer> originsIds = new HashSet<>();
-		Set<Integer> directionsIds = new HashSet<>();
-
-		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
-				.thenThrow(new RuntimeException());
-		assertThrows(RuntimeException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
-	}
-
-	@Test
-	void findAllPostsByOrigins() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
-		Set<Integer> typesIds = new HashSet<>();
-		Set<Integer> originsIds = Set.of(1, 2);
-		Set<Integer> directionsIds = new HashSet<>();
-
-		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
-				.thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
-	}
-
-	//Todo change RuntimeException to EntityNotFoundException
-	@Test
-	void findAllPostsByOrigins_ThrowException() {
-		Set<Integer> typesIds = new HashSet<>();
-		Set<Integer> originsIds = Set.of(-1, -2, -3);
-		Set<Integer> directionsIds = new HashSet<>();
-
-		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
-				.thenThrow(new RuntimeException());
-		assertThrows(RuntimeException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
+		assertEquals(postEntityPage.getContent(),
+				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
+						.getContent());
 	}
 
 	@Test
@@ -310,19 +250,19 @@ class PostServiceImplTest {
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
-	//Todo change RuntimeException to EntityNotFoundException
 	@Test
-	void findAllPostsByDirections_ThrowException() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+	void findAllPostsByDirections_WhenIdsAreWrong_ReturnEmptyPage() {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(-1, -2, -3);
+		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
 				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
-				.thenThrow(new RuntimeException());
-		assertThrows(RuntimeException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
+				.thenReturn(postEntityPage);
+		assertEquals(postEntityPage.getContent(),
+				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
+						.getContent());
 	}
 
 	@Test
@@ -339,74 +279,19 @@ class PostServiceImplTest {
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
-	//Todo change RuntimeException to EntityNotFoundException
 	@Test
-	void findAllPostsByPostTypesAndOrigins_ThrowException() {
+	void findAllPostsByPostTypesAndOrigins_WhenIdsAreWrong_ReturnEmptyPage() {
 		Set<Integer> typesIds = Set.of(-1, -2);
 		Set<Integer> originsIds = Set.of(-1, -2, -3);
 		Set<Integer> directionsIds = new HashSet<>();
-
-		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
-				.thenThrow(new RuntimeException());
-		assertThrows(RuntimeException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
-	}
-
-	@Test
-	void findAllPostsByOriginsAndDirections() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
-		Set<Integer> typesIds = new HashSet<>();
-		Set<Integer> originsIds = Set.of(2, 3);
-		Set<Integer> directionsIds = Set.of(1, 2, 3);
+		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
 				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
 				.thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
-	}
-
-	//Todo change RuntimeException to EntityNotFoundException
-	@Test
-	void findAllPostsByOriginsAndDirections_ThrowException() {
-		Set<Integer> typesIds = new HashSet<>();
-		Set<Integer> originsIds = Set.of(-1, -2, -3);
-		Set<Integer> directionsIds = Set.of(2);
-
-		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
-				.thenThrow(new RuntimeException());
-		assertThrows(RuntimeException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
-	}
-
-	@Test
-	void findAllPostsByPostTypesAndDirections() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
-		Set<Integer> typesIds = Set.of(2, 4);
-		Set<Integer> originsIds = new HashSet<>();
-		Set<Integer> directionsIds = Set.of(1, 2, 3);
-
-		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
-				.thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
-	}
-
-	//Todo change RuntimeException to EntityNotFoundException
-	@Test
-	void findAllPostsByPostTypesAndDirections_ThrowException() {
-		Set<Integer> typesIds = Set.of(-1, -2, -3);
-		Set<Integer> originsIds = new HashSet<>();
-		Set<Integer> directionsIds = Set.of(-2);
-
-		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
-				.thenThrow(new RuntimeException());
-		assertThrows(RuntimeException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
+		assertEquals(postEntityPage.getContent(),
+				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
+						.getContent());
 	}
 
 	@Test
