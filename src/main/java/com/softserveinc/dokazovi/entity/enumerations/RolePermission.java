@@ -4,7 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 public enum RolePermission implements GrantedAuthority {
 	SAVE_OWN_PUBLICATION,
-	SAVE_TAG;
+	SAVE_TAG,
+	DELETE_POST;
 
 	@Override
 	public String getAuthority() {
