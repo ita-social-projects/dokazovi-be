@@ -32,7 +32,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
