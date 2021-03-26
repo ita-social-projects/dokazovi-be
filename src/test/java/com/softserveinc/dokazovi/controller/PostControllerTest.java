@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
@@ -243,23 +244,28 @@ class PostControllerTest {
 	}
 
 	@Test
-	void findAllPostsByDirectionsByPostTypesAndByOrigins_ThrowException() {
+	void findAllPostsByDirectionsByPostTypesAndByOrigins_CatchException() throws Exception {
 		Set<Integer> directionIds = null;
 		Set<Integer> typeIds = null;
 		Set<Integer> originIds = null;
 		Pageable pageable = PageRequest.of(0, 10);
+		Page<PostDTO> page = null;
+
 		Mockito.when(
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(null, null, null, pageable))
+				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable))
 				.thenThrow(new EntityNotFoundException(
 						String.format("Fail to filter posts with params directionIds=%s, typeIds=%s, originIds=%s",
-								directionIds, typeIds, originIds)));
+								directionIds, typeIds, originIds)))
+				.thenReturn(page);
 
-		Assertions.assertThrows(EntityNotFoundException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable));
+		mockMvc.perform(get(POST + POST_ALL_POSTS))
+				.andExpect(status().isNoContent())
+				.andExpect(result -> Assertions.assertEquals(0, result.getResponse().getContentLength()));
+		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable);
 	}
 
 	@Test
-	void findAllPostsByDirectionsByPostTypesAndByOrigins_NotFound() throws Exception {
+	void findAllPostsByDirectionsByPostTypesAndByOrigins_EmptyPage() throws Exception {
 		Set<Integer> directions = Set.of(-1, 1111);
 		Set<Integer> types = Set.of(123, 2345);
 		Set<Integer> origins = Set.of(1234, 1231);
