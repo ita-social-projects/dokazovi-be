@@ -1,14 +1,14 @@
 package com.softserveinc.dokazovi.service;
 
+import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
-import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
+import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Set;
-
 
 public interface UserService {
 
@@ -18,8 +18,18 @@ public interface UserService {
 
 	UserDTO findExpertById(Integer userId);
 
-	Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds, Set<Integer> regionsIds,
-			Pageable pageable);
+	Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable);
+
+	Page<UserDTO> findAllExpertsWithoutConditions(Pageable pageable);
+
+	Page<UserDTO> findAllExpertsByName(String name, Pageable pageable);
+
+	Page<UserDTO> findAllExpertsByDirections(Set<Integer> directionsIds, Pageable pageable);
+
+	Page<UserDTO> findAllExpertsByRegions(Set<Integer> regionsIds, Pageable pageable);
+
+	Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds,
+			Set<Integer> regionsIds, Pageable pageable);
 
 	Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 

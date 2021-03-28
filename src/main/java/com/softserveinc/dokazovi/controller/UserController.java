@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -52,14 +53,10 @@ public class UserController {
 	@ApiOperation(value = "Get experts ordered by firstName then lastName, filtered by directions and regions."
 			+ " Default 6 per page.")
 	public ResponseEntity<Page<UserDTO>> getAllExpertsByDirectionsAndByRegionsOrderedByRelevance(
-			@PageableDefault(size = 6) Pageable pageable,
-			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
-			@RequestParam(required = false) Set<Integer> directions,
-			@ApiParam(value = "Multiple comma-separated region IDs, e.g. ?regions=1,2,3,4", type = "string")
-			@RequestParam(required = false) Set<Integer> regions) {
+			@PageableDefault(size = 6) Pageable pageable, UserSearchCriteria userSearchCriteria) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(userService.findAllExpertsByDirectionsAndRegions(directions, regions, pageable));
+				.body(userService.findAllExperts(userSearchCriteria, pageable));
 	}
 
 	@GetMapping(USER_GET_USER_BY_ID)

@@ -107,5 +107,41 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	Page<UserEntity> findDoctorsProfilesByDirectionsIdsAndRegionsIds(
 			Iterable<Integer> directionsIds, Iterable<Integer> regionsIds, Pageable pageable);
 
+	@Query(nativeQuery = true,
+			value = " SELECT U.* FROM USERS U"
+					+ "   JOIN DOCTORS D ON U.USER_ID = D.USER_ID"
+					+ "     WHERE U.FIRST_NAME LIKE CONCAT(:name, '%') OR "
+					+ "          U.LAST_NAME LIKE CONCAT(:name, '%')")
+	Page<UserEntity> findDoctorsByName(@Param("name") String name, Pageable pageable);
+
+	/**
+	 *Sorts the experts according to the coincidence.
+	 *First, the experts with the same firstname and  lastname are displayed.
+	 *Through   the CASE...WHEN...THEN statement, the TURN parameter is defined.
+	 *Then results of the SELECT statement are sorted according to the parameter TURN
+	 */
+	@Query(nativeQuery = true,
+			value = "SELECT *, "
+					+ "  CASE "
+					+ "         WHEN ((U.FIRST_NAME LIKE CONCAT(:firstName, '%') "
+					+ "               AND U.LAST_NAME LIKE CONCAT(:lastName, '%'))) "
+					+ "           OR ((U.FIRST_NAME LIKE CONCAT(:lastName, '%')"
+					+ "               AND U.LAST_NAME LIKE CONCAT(:firstName, '%')))  THEN 1"
+					+ "         WHEN (U.LAST_NAME LIKE CONCAT(:lastName, '%')) "
+					+ "           OR (U.LAST_NAME LIKE CONCAT(:firstName, '%'))"
+					+ "           OR (U.FIRST_NAME LIKE CONCAT(:firstName, '%')) "
+					+ "           OR (U.FIRST_NAME LIKE CONCAT(:lastName, '%'))       THEN 2"
+					+ "                                                               ELSE 3 "
+					+ "     END as TURN "
+					+ "   FROM USERS U "
+					+ "     JOIN DOCTORS D ON U.USER_ID = D.USER_ID "
+					+ "       WHERE (U.LAST_NAME LIKE CONCAT(:lastName, '%')) "
+					+ "         OR (U.LAST_NAME LIKE CONCAT(:firstName, '%'))"
+					+ "         OR (U.FIRST_NAME LIKE CONCAT(:lastName, '%'))"
+					+ "         OR (U.FIRST_NAME LIKE CONCAT(:firstName, '%'))"
+					+ "       ORDER BY TURN")
+	Page<UserEntity> findDoctorsByFirstNameAndLastName(
+			@Param("firstName") String firstName, @Param("lastName") String lastName, Pageable pageable);
+
 	Boolean existsByEmail(String email);
 }
