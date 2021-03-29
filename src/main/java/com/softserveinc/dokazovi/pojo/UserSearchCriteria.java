@@ -4,19 +4,20 @@ import io.swagger.annotations.ApiParam;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class UserSearchCriteria {
 
 	public static final String PATTERN_NAME = "[A-Z,А-Я,a-z,а-я\\s\\-]{1,}";
 
 	@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
-	Set<Integer> directions;
+	private Set<Integer> directions;
 
-	@ApiParam(value = "Multiple comma-separated region IDs, e.g. ?regions=1,2,3,4", type = "string")
+	private @ApiParam(value = "Multiple comma-separated region IDs, e.g. ?regions=1,2,3,4", type = "string")
 	Set<Integer> regions;
 
 	@ApiParam(value = "User name", type = "string")
-	String userName = "";
+	private String userName = "";
 
 	public Set<Integer> getDirections() {
 		return directions;
@@ -39,7 +40,24 @@ public class UserSearchCriteria {
 	}
 
 	public void setUserName(String userName) {
+		userName = userName.trim();
+
+		if (!Pattern.matches(PATTERN_NAME, userName)) {
+			throw new IllegalArgumentException("Wrong Name");
+		}
 		this.userName = userName;
+	}
+
+	public void setUserNameForTesting(String userName) {
+		this.userName = userName;
+	}
+
+	public boolean isEmpty(Set set) {
+		return set.isEmpty() || set == null;
+	}
+
+	public boolean isEmpty(String str) {
+		return str.isEmpty() || str == null;
 	}
 
 	@Override

@@ -24,7 +24,6 @@ import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +33,6 @@ public class UserServiceImpl implements UserService {
 	private final UserMapper userMapper;
 	private final VerificationTokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
-
-	public static final String PATTERN_NAME = "[A-Z,А-Я,a-z,а-я\\s\\-]{1,}";
 
 	@Override
 	public UserEntity findByEmail(String email) {
@@ -56,90 +53,52 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
-		boolean directionsIsEmpty = userSearchCriteria.getDirections().isEmpty();
-		boolean regionsIsEmpty = userSearchCriteria.getRegions().isEmpty();
-		boolean nameIsEmpty = userSearchCriteria.getUserName().isEmpty();
+		Set directions = userSearchCriteria.getDirections();
+		Set regions = userSearchCriteria.getRegions();
+		String name = userSearchCriteria.getUserName();
+
+		boolean directionsIsEmpty = userSearchCriteria.isEmpty(directions);
+		boolean regionsIsEmpty = userSearchCriteria.isEmpty(regions);
+		boolean nameIsEmpty = userSearchCriteria.isEmpty(name);
 
 		if (directionsIsEmpty && regionsIsEmpty && nameIsEmpty) {
-			return findAllExpertsWithoutConditions(pageable);
+			return userRepository.findDoctorsProfiles(pageable).map(userMapper::toUserDTO);
 		}
 
 		if (directionsIsEmpty && regionsIsEmpty) {
-			return findAllExpertsByName(userSearchCriteria.getUserName(), pageable);
-		}
 
-		if (directionsIsEmpty && nameIsEmpty) {
-			return findAllExpertsByRegions(userSearchCriteria.getRegions(), pageable);
-		}
-
-		if (regionsIsEmpty && nameIsEmpty) {
-			return findAllExpertsByDirections(userSearchCriteria.getDirections(), pageable);
-		}
-
-		if (nameIsEmpty) {
-			return findAllExpertsByDirectionsAndRegions(userSearchCriteria.getDirections(),
-					userSearchCriteria.getRegions(), pageable);
-		}
-
-		throw new EntityNotFoundException("Wrong search parameters");
-	}
-
-	@Override
-	@Transactional
-	public Page<UserDTO> findAllExpertsWithoutConditions(Pageable pageable) {
-		return userRepository.findDoctorsProfiles(pageable)
-				.map(userMapper::toUserDTO);
-	}
-
-	@Override
-	@Transactional
-	public Page<UserDTO> findAllExpertsByDirections(Set<Integer> directionsIds, Pageable pageable) {
-		return userRepository
-				.findDoctorsProfilesByDirectionsIds(
-						directionsIds, pageable)
-				.map(userMapper::toUserDTO);
-	}
-
-	@Override
-	@Transactional
-	public Page<UserDTO> findAllExpertsByRegions(Set<Integer> regionsIds, Pageable pageable) {
-		return userRepository
-				.findDoctorsProfilesByRegionsIds(
-						regionsIds, pageable)
-				.map(userMapper::toUserDTO);
-	}
-
-	@Override
-	@Transactional
-	public Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds,
-			Set<Integer> regionsIds, Pageable pageable) {
-
-		return userRepository
-				.findDoctorsProfilesByDirectionsIdsAndRegionsIds(directionsIds, regionsIds, pageable)
-				.map(userMapper::toUserDTO);
-	}
-
-	@Override
-	@Transactional
-	public Page<UserDTO> findAllExpertsByName(String userName, Pageable pageable) {
-
-		userName = userName.trim();
-
-		if (Pattern.matches(PATTERN_NAME, userName)) {
-			if (userName.contains(" ")) {
-				String[] searchCriterias = userName.split(" ");
+			if (name.contains(" ")) {
+				String[] searchCriterias = name.split(" ");
 				Arrays.sort(searchCriterias, Collections.reverseOrder());
 
 				return userRepository
-						.findDoctorsByFirstNameAndLastName(searchCriterias[0], searchCriterias[1], pageable)
+						.findDoctorsByName(searchCriterias[0], searchCriterias[1], pageable)
 						.map(userMapper::toUserDTO);
 			} else {
 
-				return userRepository
-						.findDoctorsByName(userName, pageable).map(userMapper::toUserDTO);
+				return userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
 			}
 		}
-		throw new IllegalArgumentException("Wrong Name");
+
+		if (directionsIsEmpty && name.isEmpty()) {
+			return userRepository.findDoctorsProfilesByRegionsIds(
+					userSearchCriteria.getRegions(), pageable)
+					.map(userMapper::toUserDTO);
+		}
+
+		if (regionsIsEmpty && name.isEmpty()) {
+			return userRepository.findDoctorsProfilesByDirectionsIds(
+					userSearchCriteria.getDirections(), pageable)
+					.map(userMapper::toUserDTO);
+		}
+
+		if (name.isEmpty()) {
+			return userRepository
+					.findDoctorsProfiles(userSearchCriteria.getDirections(), userSearchCriteria.getRegions(), pageable)
+					.map(userMapper::toUserDTO);
+		}
+
+		throw new EntityNotFoundException("Wrong search parameters");
 	}
 
 	@Override

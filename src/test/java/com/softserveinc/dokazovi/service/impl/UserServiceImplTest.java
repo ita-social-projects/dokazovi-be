@@ -93,7 +93,7 @@ class UserServiceImplTest {
 
 		Set<Integer> set = new HashSet<>();
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
-		userSearchCriteria.setUserName("");
+		userSearchCriteria.setUserNameForTesting("");
 		userSearchCriteria.setDirections(set);
 		userSearchCriteria.setRegions(set);
 
@@ -129,7 +129,7 @@ class UserServiceImplTest {
 		Set<Integer> setReg = new HashSet<>();
 		setReg.add(1);
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
-		userSearchCriteria.setUserName("");
+		userSearchCriteria.setUserNameForTesting("");
 		userSearchCriteria.setDirections(setDir);
 		userSearchCriteria.setRegions(setReg);
 
@@ -145,7 +145,7 @@ class UserServiceImplTest {
 	void findAllExperts_ByDirections() {
 
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
-		userSearchCriteria.setUserName("");
+		userSearchCriteria.setUserNameForTesting("");
 		Set<Integer> setDir = new HashSet<>();
 		Set<Integer> setReg = new HashSet<>();
 		setDir.add(1);
@@ -168,14 +168,13 @@ class UserServiceImplTest {
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
 		setDir.add(1);
 		setReg.add(1);
-		userSearchCriteria.setUserName("");
+		userSearchCriteria.setUserNameForTesting("");
 		userSearchCriteria.setDirections(setDir);
 		userSearchCriteria.setRegions(setReg);
 
 		Page<UserEntity> userEntityPage = Page.empty();
 
-
-		when(userRepository.findDoctorsProfilesByDirectionsIdsAndRegionsIds(userSearchCriteria.getDirections(),
+		when(userRepository.findDoctorsProfiles(userSearchCriteria.getDirections(),
 				userSearchCriteria.getRegions(), pageable)).thenReturn(userEntityPage);
 
 		assertEquals(userEntityPage, userService.findAllExperts(userSearchCriteria, pageable));
@@ -199,10 +198,15 @@ class UserServiceImplTest {
 	void findAllExpertsByDirectionsAndRegions_NotFiltered() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
+		Set<Integer> set = new HashSet<>();
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+		userSearchCriteria.setDirections(set);
+		userSearchCriteria.setRegions(set);
+
 		when(userRepository.findDoctorsProfiles(any(Pageable.class)))
 				.thenReturn(userEntityPage);
-		userService.findAllExpertsWithoutConditions(pageable);
 
+		userService.findAllExperts(userSearchCriteria, pageable);
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
 
@@ -210,10 +214,14 @@ class UserServiceImplTest {
 	void findAllExpertsByDirectionsAndRegions_FilteredByRegionsOnly() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
+		Set<Integer> set = new HashSet<>();
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+		userSearchCriteria.setDirections(set);
+		userSearchCriteria.setRegions(regionsIds);
 
 		when(userRepository.findDoctorsProfilesByRegionsIds(anySet(), any(Pageable.class)))
 				.thenReturn(userEntityPage);
-		userService.findAllExpertsByRegions(regionsIds, pageable);
+		userService.findAllExperts(userSearchCriteria, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
@@ -222,11 +230,16 @@ class UserServiceImplTest {
 	void findAllExpertsByDirectionsAndRegions_FilteredByDirectionsOnly() {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> directionsIds = Set.of(1, 4, 6);
+		Set<Integer> set = new HashSet<>();
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+		userSearchCriteria.setDirections(directionsIds);
+		userSearchCriteria.setRegions(set);
 
 		when(userRepository.findDoctorsProfilesByDirectionsIds(
 				anySet(), any(Pageable.class)
 		)).thenReturn(userEntityPage);
-		userService.findAllExpertsByDirections(directionsIds, pageable);
+
+		userService.findAllExperts(userSearchCriteria, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
@@ -236,60 +249,90 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 		Set<Integer> directionsIds = Set.of(1, 4, 6);
 		Set<Integer> regionsIds = Set.of(1, 4, 6);
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+
+		userSearchCriteria.setDirections(directionsIds);
+		userSearchCriteria.setRegions(regionsIds);
 
 		when(userRepository
-				.findDoctorsProfilesByDirectionsIdsAndRegionsIds(
+				.findDoctorsProfiles(
 						anySet(), anySet(), any(Pageable.class))
 		).thenReturn(userEntityPage);
-		userService.findAllExpertsByDirectionsAndRegions(directionsIds, regionsIds, pageable);
+		userService.findAllExperts(userSearchCriteria, pageable);
 
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
 
 	@Test
 	void findAllExpertsByName() {
+
+		Set<Integer> set = new HashSet<>();
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+		userSearchCriteria.setUserName("B");
+		userSearchCriteria.setDirections(set);
+		userSearchCriteria.setRegions(set);
+
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
 		when(userRepository
-				.findDoctorsByName(anyString(), any(Pageable.class)))
+				.findDoctorsByName("B", pageable))
 				.thenReturn(userEntityPage);
-		userService.findAllExpertsByName("NAME", pageable);
 
+		userService.findAllExperts(userSearchCriteria, pageable);
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
 
 	@Test
 	void findAllExpertsByName_WhenNotFound_ThrowException() {
 
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+		Set<Integer> set = new HashSet<>();
+		userSearchCriteria.setUserName("Иван");
+		userSearchCriteria.setDirections(set);
+		userSearchCriteria.setRegions(set);
+
 		when(userRepository
 				.findDoctorsByName("Иван", pageable))
 				.thenThrow(new EntityNotFoundException("User does not exist"));
 
 		assertThrows(EntityNotFoundException.class, () -> userService
-				.findAllExpertsByName("Иван", pageable));
+				.findAllExperts(userSearchCriteria, pageable));
 	}
 
 	@Test
 	void findAllExpertsByFirstNameAndLastName() {
+
+		Set<Integer> set = new HashSet<>();
+
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+		userSearchCriteria.setUserName("И И");
+		userSearchCriteria.setDirections(set);
+		userSearchCriteria.setRegions(set);
+
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
 		when(userRepository
-				.findDoctorsByFirstNameAndLastName(anyString(), anyString(), any(Pageable.class)))
+				.findDoctorsByName(anyString(), anyString(), any(Pageable.class)))
 				.thenReturn(userEntityPage);
-		userService.findAllExpertsByName("Name Name", pageable);
-
+		userService.findAllExperts(userSearchCriteria, pageable);
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
 	}
 
 	@Test
 	void findAllExpertsByFirstNameAndLastName_WhenNotFound_ThrowException() {
 
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+		Set<Integer> set = new HashSet<>();
+		userSearchCriteria.setUserName("И И");
+		userSearchCriteria.setDirections(set);
+		userSearchCriteria.setRegions(set);
+
 		when(userRepository
-				.findDoctorsByFirstNameAndLastName("И", "И", pageable))
+				.findDoctorsByName("И", "И", pageable))
 				.thenThrow(new EntityNotFoundException("User does not exist"));
 
 		assertThrows(EntityNotFoundException.class, () -> userService
-				.findAllExpertsByName("И И", pageable));
+				.findAllExperts(userSearchCriteria, pageable));
 	}
 
 	@Test

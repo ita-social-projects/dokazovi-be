@@ -20,17 +20,6 @@ public interface UserService {
 
 	Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable);
 
-	Page<UserDTO> findAllExpertsWithoutConditions(Pageable pageable);
-
-	Page<UserDTO> findAllExpertsByName(String name, Pageable pageable);
-
-	Page<UserDTO> findAllExpertsByDirections(Set<Integer> directionsIds, Pageable pageable);
-
-	Page<UserDTO> findAllExpertsByRegions(Set<Integer> regionsIds, Pageable pageable);
-
-	Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds,
-			Set<Integer> regionsIds, Pageable pageable);
-
 	Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
 	void setEnableTrue(UserEntity user);
