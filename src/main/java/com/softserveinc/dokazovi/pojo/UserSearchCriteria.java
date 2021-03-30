@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,13 +26,14 @@ public class UserSearchCriteria {
 
 
 	public List<String> getUserNameList() {
-		String PATTERN_NAME = "[A-Z,А-Я,a-z,а-я\\s\\-]{1,}";
+		String patternName = "[A-Z,А-Я,a-z,а-я\\s\\-]{1,}";
 
 		String name = this.userName.trim();
 
-		if (!Pattern.matches(PATTERN_NAME, name)) {
+		if (!Pattern.matches(patternName, name)) {
 			return new ArrayList<>();
 		}
+
 		List<String> result = Arrays.asList(name.split(" "));
 		Collections.sort(result, Collections.reverseOrder());
 
