@@ -80,19 +80,19 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 
-		if (directionsIsEmpty && name.isEmpty()) {
+		if (directionsIsEmpty && nameIsEmpty) {
 			return userRepository.findDoctorsProfilesByRegionsIds(
 					userSearchCriteria.getRegions(), pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		if (regionsIsEmpty && name.isEmpty()) {
+		if (regionsIsEmpty && nameIsEmpty) {
 			return userRepository.findDoctorsProfilesByDirectionsIds(
 					userSearchCriteria.getDirections(), pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		if (name.isEmpty()) {
+		if (nameIsEmpty) {
 			return userRepository
 					.findDoctorsProfiles(userSearchCriteria.getDirections(), userSearchCriteria.getRegions(), pageable)
 					.map(userMapper::toUserDTO);
