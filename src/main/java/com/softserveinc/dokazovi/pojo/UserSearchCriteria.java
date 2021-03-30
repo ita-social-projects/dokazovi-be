@@ -1,6 +1,8 @@
 package com.softserveinc.dokazovi.pojo;
 
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,7 +26,7 @@ public class UserSearchCriteria {
 	@ApiParam(value = "User name", type = "string")
 	private String userName = "";
 
-
+	@ApiModelProperty(hidden = true)
 	public List<String> getUserNameList() {
 		String patternName = "[A-Z,А-Я,a-z,а-я\\s\\-]{1,}";
 
