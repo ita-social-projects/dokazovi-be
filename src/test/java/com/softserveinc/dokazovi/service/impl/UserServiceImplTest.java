@@ -93,7 +93,7 @@ class UserServiceImplTest {
 
 		Set<Integer> set = new HashSet<>();
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
-		userSearchCriteria.setUserNameForTesting("");
+
 		userSearchCriteria.setDirections(set);
 		userSearchCriteria.setRegions(set);
 
@@ -129,7 +129,6 @@ class UserServiceImplTest {
 		Set<Integer> setReg = new HashSet<>();
 		setReg.add(1);
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
-		userSearchCriteria.setUserNameForTesting("");
 		userSearchCriteria.setDirections(setDir);
 		userSearchCriteria.setRegions(setReg);
 
@@ -145,7 +144,6 @@ class UserServiceImplTest {
 	void findAllExperts_ByDirections() {
 
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
-		userSearchCriteria.setUserNameForTesting("");
 		Set<Integer> setDir = new HashSet<>();
 		Set<Integer> setReg = new HashSet<>();
 		setDir.add(1);
@@ -168,7 +166,6 @@ class UserServiceImplTest {
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
 		setDir.add(1);
 		setReg.add(1);
-		userSearchCriteria.setUserNameForTesting("");
 		userSearchCriteria.setDirections(setDir);
 		userSearchCriteria.setRegions(setReg);
 

@@ -1,14 +1,20 @@
 package com.softserveinc.dokazovi.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiParam;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+@Data
+@EqualsAndHashCode
 public class UserSearchCriteria {
-
-	public static final String PATTERN_NAME = "[A-Z,А-Я,a-z,а-я\\s\\-]{1,}";
 
 	@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
 	private Set<Integer> directions;
@@ -19,62 +25,30 @@ public class UserSearchCriteria {
 	@ApiParam(value = "User name", type = "string")
 	private String userName = "";
 
-	public Set<Integer> getDirections() {
-		return directions;
-	}
 
-	public void setDirections(Set<Integer> directions) {
-		this.directions = directions;
-	}
+	public List<String> getUserNameList() {
+		String PATTERN_NAME = "[A-Z,А-Я,a-z,а-я\\s\\-]{1,}";
 
-	public Set<Integer> getRegions() {
-		return regions;
-	}
+		String name = this.userName.trim();
 
-	public void setRegions(Set<Integer> regions) {
-		this.regions = regions;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		userName = userName.trim();
-
-		if (!Pattern.matches(PATTERN_NAME, userName)) {
-			throw new IllegalArgumentException("Wrong Name");
+		if (!Pattern.matches(PATTERN_NAME, name)) {
+			return new ArrayList<>();
 		}
-		this.userName = userName;
+		List<String> result = Arrays.asList(name.split(" "));
+		Collections.sort(result, Collections.reverseOrder());
+
+		return result;
 	}
 
-	public void setUserNameForTesting(String userName) {
-		this.userName = userName;
+	public boolean hasRegions() {
+		return this.regions != null && !this.regions.isEmpty();
 	}
 
-	public boolean isEmpty(Set set) {
-		return set.isEmpty() || set == null;
+	public boolean hasDirections() {
+		return this.directions != null && !this.directions.isEmpty();
 	}
 
-	public boolean isEmpty(String str) {
-		return str.isEmpty() || str == null;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		UserSearchCriteria that = (UserSearchCriteria) o;
-		return Objects.equals(directions, that.directions) && Objects.equals(regions, that.regions)
-				&& Objects.equals(userName, that.userName);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(directions, regions, userName);
+	public boolean hasName() {
+		return this.userName.length() > 0;
 	}
 }

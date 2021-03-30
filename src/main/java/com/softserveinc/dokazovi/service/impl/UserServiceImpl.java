@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.Collections;
+
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -53,46 +53,36 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
-		Set directions = userSearchCriteria.getDirections();
-		Set regions = userSearchCriteria.getRegions();
-		String name = userSearchCriteria.getUserName();
-
-		boolean directionsIsEmpty = userSearchCriteria.isEmpty(directions);
-		boolean regionsIsEmpty = userSearchCriteria.isEmpty(regions);
-		boolean nameIsEmpty = userSearchCriteria.isEmpty(name);
-
-		if (directionsIsEmpty && regionsIsEmpty && nameIsEmpty) {
+		if (!userSearchCriteria.hasDirections() && !userSearchCriteria.hasRegions() && !userSearchCriteria.hasName()) {
 			return userRepository.findDoctorsProfiles(pageable).map(userMapper::toUserDTO);
 		}
 
-		if (directionsIsEmpty && regionsIsEmpty) {
+		List<String> userName = userSearchCriteria.getUserNameList();
 
-			if (name.contains(" ")) {
-				String[] searchCriterias = name.split(" ");
-				Arrays.sort(searchCriterias, Collections.reverseOrder());
-
-				return userRepository
-						.findDoctorsByName(searchCriterias[0], searchCriterias[1], pageable)
-						.map(userMapper::toUserDTO);
-			} else {
-
-				return userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
-			}
+		if (!userSearchCriteria.hasDirections() && !userSearchCriteria.hasRegions() && userName.size() == 1) {
+			final String name = userName.get(0);
+			return userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
 		}
 
-		if (directionsIsEmpty && nameIsEmpty) {
+		if (!userSearchCriteria.hasDirections() && !userSearchCriteria.hasRegions() && userName.size() == 2) {
+			final String firstName = userName.get(0);
+			final String lastName = userName.get(0);
+			return userRepository.findDoctorsByName(firstName, lastName, pageable).map(userMapper::toUserDTO);
+		}
+
+		if (!userSearchCriteria.hasDirections() && !userSearchCriteria.hasName()) {
 			return userRepository.findDoctorsProfilesByRegionsIds(
 					userSearchCriteria.getRegions(), pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		if (regionsIsEmpty && nameIsEmpty) {
+		if (!userSearchCriteria.hasRegions() && !userSearchCriteria.hasName()) {
 			return userRepository.findDoctorsProfilesByDirectionsIds(
 					userSearchCriteria.getDirections(), pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		if (nameIsEmpty) {
+		if (!userSearchCriteria.hasName()) {
 			return userRepository
 					.findDoctorsProfiles(userSearchCriteria.getDirections(), userSearchCriteria.getRegions(), pageable)
 					.map(userMapper::toUserDTO);
