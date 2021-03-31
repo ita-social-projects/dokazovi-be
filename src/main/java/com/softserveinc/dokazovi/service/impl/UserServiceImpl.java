@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
 		if ((validateParameters(userSearchCriteria, hasNoDirections, hasNoRegions)) && userName.size() == 2) {
 			final String firstName = userName.get(0);
-			final String lastName = userName.get(0);
+			final String lastName = userName.get(1);
 			return userRepository.findDoctorsByName(firstName, lastName, pageable).map(userMapper::toUserDTO);
 		}
 
@@ -102,18 +102,16 @@ public class UserServiceImpl implements UserService {
 					.hasDirections();
 		}
 
-		if (args.length == 2 && (args[0].contains(hasNoDirections) || args[0].contains(hasNoRegions))
-				&& (args[1].contains(hasNoDirections) || args[1].contains(hasNoRegions))) {
+		if (args.length == 2 && args[0].contains(hasNoDirections) && args[1].contains(hasNoRegions)) {
 			return !userSearchCriteria.hasRegions() && !userSearchCriteria.hasDirections();
 		}
 
-		if (args.length == 2 && (args[0].contains(hasNoDirections) || args[0].contains(hasNoUserName))
-				&& (args[1].contains(hasNoUserName) || args[1].contains(hasNoDirections))) {
+		if (args.length == 2 && args[0].contains(hasNoDirections) && args[1].contains(hasNoUserName)) {
 			return !userSearchCriteria.hasDirections() && !userSearchCriteria.hasName();
 		}
 
-		if (args.length == 2 && (args[0].contains(hasNoRegions) || args[0].contains(hasNoUserName))
-				&& (args[1].contains(hasNoUserName) || args[1].contains(hasNoRegions))) {
+		if (args.length == 2 && args[0].contains(hasNoRegions) && args[1].contains(hasNoUserName)) {
+
 			return !userSearchCriteria.hasRegions() && !userSearchCriteria.hasName();
 		}
 
