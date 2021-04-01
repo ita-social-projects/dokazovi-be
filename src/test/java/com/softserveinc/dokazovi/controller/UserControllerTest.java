@@ -44,22 +44,12 @@ class UserControllerTest {
 	@InjectMocks
 	private UserController userController;
 
-	Set<Integer> directionsIds;
-	Set<Integer> regionsIds;
-
-	Pageable pageable;
-
 	@BeforeEach
 	public void init() {
 		this.mockMvc = MockMvcBuilders
 				.standaloneSetup(userController)
 				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
 				.build();
-
-		directionsIds = Set.of(1, 4, 6);
-		regionsIds = Set.of(1, 4, 6);
-
-		pageable = PageRequest.of(0, 6);
 	}
 
 	@Test
@@ -77,7 +67,7 @@ class UserControllerTest {
 	void getRandomExpertPreview_GetWithPaginationByDirections_isOk() throws Exception {
 		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0&directions=1,3,5";
 
-		directionsIds = Set.of(1, 3, 5);
+		Set<Integer> directionsIds = Set.of(1, 3, 5);
 
 		Pageable pageable = PageRequest.of(0, 12);
 
@@ -120,6 +110,8 @@ class UserControllerTest {
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
+		Pageable pageable = PageRequest.of(0, 6);
+
 		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
 	}
 
@@ -129,9 +121,13 @@ class UserControllerTest {
 
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
 
+		Set<Integer> regionsIds = Set.of(1, 4, 6);
+
 		userSearchCriteria.setRegions(regionsIds);
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		Pageable pageable = PageRequest.of(0, 6);
 
 		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
 	}
@@ -142,9 +138,13 @@ class UserControllerTest {
 
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
 
+		Set<Integer> directionsIds = Set.of(1, 4, 6);
+
 		userSearchCriteria.setDirections(directionsIds);
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		Pageable pageable = PageRequest.of(0, 6);
 
 		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
 	}
@@ -155,10 +155,15 @@ class UserControllerTest {
 
 		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
 
+		Set<Integer> directionsIds = Set.of(1, 4, 6);
+		Set<Integer> regionsIds = Set.of(1, 4, 6);
+
 		userSearchCriteria.setDirections(directionsIds);
 		userSearchCriteria.setRegions(regionsIds);
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		Pageable pageable = PageRequest.of(0, 6);
 
 		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
 	}
@@ -171,6 +176,8 @@ class UserControllerTest {
 		userSearchCriteria.setUserName("Ivan Ivanov");
 
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		Pageable pageable = PageRequest.of(0, 6);
 
 		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
 	}

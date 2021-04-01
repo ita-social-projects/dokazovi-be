@@ -10,7 +10,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class UserSearchCriteriaTest {
+class UserSearchCriteriaTest {
 
 	@InjectMocks
 	private UserSearchCriteria userSearchCriteria;

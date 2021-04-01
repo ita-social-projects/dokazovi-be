@@ -28,7 +28,7 @@ public class UserSearchCriteria {
 
 	@ApiModelProperty(hidden = true)
 	public List<String> getUserNameList() {
-		String patternName = "[A-Z,А-Я,a-z,а-я\\s\\-]{1,}";
+		String patternName = "[A-Z,А-Я,a-z,а-я,А-Ща-щЬьЮюЯяЇїІіЄєҐґ\\s\\'\\s''\\-]{1,}";
 
 		String name = this.userName.trim();
 

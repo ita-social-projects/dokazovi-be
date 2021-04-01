@@ -34,9 +34,9 @@ public class UserServiceImpl implements UserService {
 	private final VerificationTokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
 
-	private final String hasNoDirections = "hasNoDirections";
-	private final String hasNoRegions = "hasNoRegions";
-	private final String hasNoUserName = "hasNoUserName";
+	private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
+	private static final String HAS_NO_REGIONS = "hasNoRegions";
+	private static final String HAS_NO_USERNAME = "hasNoUserName";
 
 	@Override
 	public UserEntity findByEmail(String email) {
@@ -57,36 +57,36 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
-		if (validateParameters(userSearchCriteria, hasNoDirections, hasNoRegions, hasNoUserName)) {
+		if (validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS, HAS_NO_USERNAME)) {
 			return userRepository.findDoctorsProfiles(pageable).map(userMapper::toUserDTO);
 		}
 
 		List<String> userName = userSearchCriteria.getUserNameList();
 
-		if ((validateParameters(userSearchCriteria, hasNoDirections, hasNoRegions)) && userName.size() == 1) {
+		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS)) && userName.size() == 1) {
 			final String name = userName.get(0);
 			return userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
 		}
 
-		if ((validateParameters(userSearchCriteria, hasNoDirections, hasNoRegions)) && userName.size() == 2) {
+		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS)) && userName.size() == 2) {
 			final String firstName = userName.get(0);
 			final String lastName = userName.get(1);
 			return userRepository.findDoctorsByName(firstName, lastName, pageable).map(userMapper::toUserDTO);
 		}
 
-		if ((validateParameters(userSearchCriteria, hasNoDirections, hasNoUserName))) {
+		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_USERNAME))) {
 			return userRepository.findDoctorsProfilesByRegionsIds(
 					userSearchCriteria.getRegions(), pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		if ((validateParameters(userSearchCriteria, hasNoRegions, hasNoUserName))) {
+		if ((validateParameters(userSearchCriteria, HAS_NO_REGIONS, HAS_NO_USERNAME))) {
 			return userRepository.findDoctorsProfilesByDirectionsIds(
 					userSearchCriteria.getDirections(), pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		if ((validateParameters(userSearchCriteria, hasNoUserName))) {
+		if ((validateParameters(userSearchCriteria, HAS_NO_USERNAME))) {
 			return userRepository
 					.findDoctorsProfiles(userSearchCriteria.getDirections(), userSearchCriteria.getRegions(), pageable)
 					.map(userMapper::toUserDTO);
@@ -102,20 +102,20 @@ public class UserServiceImpl implements UserService {
 					.hasDirections();
 		}
 
-		if (args.length == 2 && args[0].contains(hasNoDirections) && args[1].contains(hasNoRegions)) {
+		if (args.length == 2 && args[0].contains(HAS_NO_DIRECTIONS) && args[1].contains(HAS_NO_REGIONS)) {
 			return !userSearchCriteria.hasRegions() && !userSearchCriteria.hasDirections();
 		}
 
-		if (args.length == 2 && args[0].contains(hasNoDirections) && args[1].contains(hasNoUserName)) {
+		if (args.length == 2 && args[0].contains(HAS_NO_DIRECTIONS) && args[1].contains(HAS_NO_USERNAME)) {
 			return !userSearchCriteria.hasDirections() && !userSearchCriteria.hasName();
 		}
 
-		if (args.length == 2 && args[0].contains(hasNoRegions) && args[1].contains(hasNoUserName)) {
+		if (args.length == 2 && args[0].contains(HAS_NO_REGIONS) && args[1].contains(HAS_NO_USERNAME)) {
 
 			return !userSearchCriteria.hasRegions() && !userSearchCriteria.hasName();
 		}
 
-		if (args.length == 1 && args[0].contains(hasNoUserName)) {
+		if (args.length == 1 && args[0].contains(HAS_NO_USERNAME)) {
 			return !userSearchCriteria.hasName();
 		}
 
