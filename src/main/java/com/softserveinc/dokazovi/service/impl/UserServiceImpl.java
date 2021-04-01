@@ -1,12 +1,14 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
-import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.exception.BadRequestException;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
+import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.UserService;
@@ -19,8 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.util.Set;
 
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +33,10 @@ public class UserServiceImpl implements UserService {
 	private final UserMapper userMapper;
 	private final VerificationTokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
+
+	private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
+	private static final String HAS_NO_REGIONS = "hasNoRegions";
+	private static final String HAS_NO_USERNAME = "hasNoUserName";
 
 	@Override
 	public UserEntity findByEmail(String email) {
@@ -48,25 +55,71 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public Page<UserDTO> findAllExpertsByDirectionsAndRegions(Set<Integer> directionsIds, Set<Integer> regionsIds,
-			Pageable pageable) {
-		if (CollectionUtils.isEmpty(directionsIds) && CollectionUtils.isEmpty(regionsIds)) {
-			return userRepository.findDoctorsProfiles(pageable)
-					.map(userMapper::toUserDTO);
-		} else if (CollectionUtils.isEmpty(directionsIds)) {
-			return userRepository.findDoctorsProfilesByRegionsIds(regionsIds, pageable)
-					.map(userMapper::toUserDTO);
-		} else if (CollectionUtils.isEmpty(regionsIds)) {
-			return userRepository
-					.findDoctorsProfilesByDirectionsIds(
-							directionsIds, pageable)
+	public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
+
+		if (validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS, HAS_NO_USERNAME)) {
+			return userRepository.findDoctorsProfiles(pageable).map(userMapper::toUserDTO);
+		}
+
+		List<String> userName = userSearchCriteria.getUserNameList();
+
+		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS)) && userName.size() == 1) {
+			final String name = userName.get(0);
+			return userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
+		}
+
+		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS)) && userName.size() == 2) {
+			final String firstName = userName.get(0);
+			final String lastName = userName.get(1);
+			return userRepository.findDoctorsByName(firstName, lastName, pageable).map(userMapper::toUserDTO);
+		}
+
+		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_USERNAME))) {
+			return userRepository.findDoctorsProfilesByRegionsIds(
+					userSearchCriteria.getRegions(), pageable)
 					.map(userMapper::toUserDTO);
 		}
 
-		return userRepository
-				.findDoctorsProfilesByDirectionsIdsAndRegionsIds(
-						directionsIds, regionsIds, pageable)
-				.map(userMapper::toUserDTO);
+		if ((validateParameters(userSearchCriteria, HAS_NO_REGIONS, HAS_NO_USERNAME))) {
+			return userRepository.findDoctorsProfilesByDirectionsIds(
+					userSearchCriteria.getDirections(), pageable)
+					.map(userMapper::toUserDTO);
+		}
+
+		if ((validateParameters(userSearchCriteria, HAS_NO_USERNAME))) {
+			return userRepository
+					.findDoctorsProfiles(userSearchCriteria.getDirections(), userSearchCriteria.getRegions(), pageable)
+					.map(userMapper::toUserDTO);
+		}
+
+		throw new EntityNotFoundException("Wrong search parameters");
+	}
+
+	private boolean validateParameters(UserSearchCriteria userSearchCriteria, String... args) {
+
+		if (args.length == 3) {
+			return !userSearchCriteria.hasName() && !userSearchCriteria.hasRegions() && !userSearchCriteria
+					.hasDirections();
+		}
+
+		if (args.length == 2 && args[0].contains(HAS_NO_DIRECTIONS) && args[1].contains(HAS_NO_REGIONS)) {
+			return !userSearchCriteria.hasRegions() && !userSearchCriteria.hasDirections();
+		}
+
+		if (args.length == 2 && args[0].contains(HAS_NO_DIRECTIONS) && args[1].contains(HAS_NO_USERNAME)) {
+			return !userSearchCriteria.hasDirections() && !userSearchCriteria.hasName();
+		}
+
+		if (args.length == 2 && args[0].contains(HAS_NO_REGIONS) && args[1].contains(HAS_NO_USERNAME)) {
+
+			return !userSearchCriteria.hasRegions() && !userSearchCriteria.hasName();
+		}
+
+		if (args.length == 1 && args[0].contains(HAS_NO_USERNAME)) {
+			return !userSearchCriteria.hasName();
+		}
+
+		return false;
 	}
 
 	@Override
