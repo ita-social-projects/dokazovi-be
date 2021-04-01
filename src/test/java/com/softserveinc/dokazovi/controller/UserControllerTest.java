@@ -112,7 +112,7 @@ class UserControllerTest {
 
 		Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
+		verify(userService).findAllExperts(userSearchCriteria, pageable);
 	}
 
 	@Test
@@ -129,7 +129,7 @@ class UserControllerTest {
 
 		Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
+		verify(userService).findAllExperts(userSearchCriteria, pageable);
 	}
 
 	@Test
@@ -146,7 +146,7 @@ class UserControllerTest {
 
 		Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
+		verify(userService).findAllExperts(userSearchCriteria, pageable);
 	}
 
 	@Test
@@ -165,7 +165,7 @@ class UserControllerTest {
 
 		Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
+		verify(userService).findAllExperts(userSearchCriteria, pageable);
 	}
 
 	@Test
@@ -179,7 +179,7 @@ class UserControllerTest {
 
 		Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(eq(userSearchCriteria), eq(pageable));
+		verify(userService).findAllExperts(userSearchCriteria, pageable);
 	}
 
 	@Test
