@@ -161,9 +161,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Boolean archivePostById(Integer postId) throws EntityNotFoundException {
-		// достать authority
-		// отфильтровать authority
-
+		
 		PostEntity postEntity = postRepository
 				.findById(postId)
 				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
