@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +38,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
@@ -46,7 +48,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 
 @RestController
-@RequestMapping(EndPoints.POST)
+@RequestMapping(POST)
 @RequiredArgsConstructor
 public class PostController {
 
@@ -159,7 +161,7 @@ public class PostController {
 
 
 	@DeleteMapping(POST_GET_POST_BY_ID)
-	@PreAuthorize("hasAuthority('DELETE_POST')")
+	@PreAuthorize("hasAuthority('DELETE_POST') and hasAuthority('DELETE_OWN_POST')")
 	@ApiOperation(value = "Delete post by Id, as a path variable.",
 			authorizations = {@Authorization(value = "Authorization")})
 	public ResponseEntity<ApiResponseMessage> archivePostById(@PathVariable("postId") Integer postId) {
@@ -168,6 +170,29 @@ public class PostController {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(postService.archivePostById(postId))
 					.message(String.format("post %s deleted successfully", postId))
+					.build();
+		} catch (EntityNotFoundException e) {
+			apiResponseMessage = ApiResponseMessage.builder()
+					.success(false)
+					.message(e.getMessage())
+					.build();
+		}
+		return ResponseEntity.ok().body(apiResponseMessage);
+	}
+
+	@PutMapping(POST_GET_POST_BY_ID)
+	@PreAuthorize("hasAuthority('UPDATE_POST') and hasAuthority('UPDATE_OWN_POST')")
+	@ApiOperation(value = "Update post by Id, as a path variable.",
+			authorizations = {@Authorization(value = "Authorization")})
+	public ResponseEntity<ApiResponseMessage> updatePostById(
+			@AuthenticationPrincipal UserPrincipal userPrincipal,
+			@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO) {
+
+		ApiResponseMessage apiResponseMessage;
+		try {
+			apiResponseMessage = ApiResponseMessage.builder()
+					.success(postService.updatePostById(userPrincipal, postSaveFromUserDTO))
+					.message(String.format("post %s updated successfully", postSaveFromUserDTO.getId()))
 					.build();
 		} catch (EntityNotFoundException e) {
 			apiResponseMessage = ApiResponseMessage.builder()

@@ -28,4 +28,6 @@ public interface PostService {
 			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Pageable pageable);
 
 	Boolean archivePostById(Integer postId);
+
+	Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveFromUserDTO);
 }
