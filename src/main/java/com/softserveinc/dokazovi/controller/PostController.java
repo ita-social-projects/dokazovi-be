@@ -7,6 +7,7 @@ import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
+import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -161,7 +162,7 @@ public class PostController {
 
 
 	@DeleteMapping(POST_GET_POST_BY_ID)
-	@PreAuthorize("hasAuthority('DELETE_POST') and hasAuthority('DELETE_OWN_POST')")
+	@PreAuthorize("hasAnyAuthority('DELETE_POST', 'DELETE_OWN_POST')")
 	@ApiOperation(value = "Delete post by Id, as a path variable.",
 			authorizations = {@Authorization(value = "Authorization")})
 	public ResponseEntity<ApiResponseMessage> archivePostById(@PathVariable("postId") Integer postId) {
@@ -180,8 +181,8 @@ public class PostController {
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
-	@PutMapping(POST_GET_POST_BY_ID)
-	@PreAuthorize("hasAuthority('UPDATE_POST') and hasAuthority('UPDATE_OWN_POST')")
+	@PutMapping()
+	@PreAuthorize("hasAnyAuthority('UPDATE_POST', 'UPDATE_OWN_POST')")
 	@ApiOperation(value = "Update post by Id, as a path variable.",
 			authorizations = {@Authorization(value = "Authorization")})
 	public ResponseEntity<ApiResponseMessage> updatePostById(
@@ -194,7 +195,7 @@ public class PostController {
 					.success(postService.updatePostById(userPrincipal, postSaveFromUserDTO))
 					.message(String.format("post %s updated successfully", postSaveFromUserDTO.getId()))
 					.build();
-		} catch (EntityNotFoundException e) {
+		} catch (EntityNotFoundException | ForbiddenPermissionsException e) {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(false)
 					.message(e.getMessage())

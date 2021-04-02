@@ -50,7 +50,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserPrincipal userPrincipal) {
-		PostEntity mappedEntity = getPostId(postDTO);
+		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
 
 		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
 		userEntity.setStatus(UserStatus.ACTIVE);
@@ -61,16 +61,16 @@ public class PostServiceImpl implements PostService {
 		PostEntity savedEntity = postRepository.save(mappedEntity);
 
 		Integer userId = userPrincipal.getId();
-		Integer id = savedEntity.getAuthor().getId();
+		Integer authorId = savedEntity.getAuthor().getId();
 
 		try {
-			if (userId.equals(id) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+			if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("SAVE_OWN_POST"))) {
 				savedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
 				postRepository.save(savedEntity);
 			}
 
-			if (!userId.equals(id) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+			if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("SAVE_POST"))) {
 				savedEntity.setStatus(PostStatus.PUBLISHED);
 				postRepository.save(savedEntity);
@@ -161,7 +161,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Boolean archivePostById(Integer postId) throws EntityNotFoundException {
-		
+
 		PostEntity postEntity = postRepository
 				.findById(postId)
 				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
@@ -175,32 +175,33 @@ public class PostServiceImpl implements PostService {
 	public Boolean updatePostById(UserPrincipal userPrincipal, PostSaveFromUserDTO postDTO)
 			throws EntityNotFoundException {
 
-		PostEntity mappedEntity = getPostId(postDTO);
+		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
 		mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-		PostEntity savedEntity = postRepository.save(mappedEntity);
 
 		Integer userId = userPrincipal.getId();
-		Integer id = savedEntity.getAuthor().getId();
+		Integer authorId = mappedEntity.getAuthor().getId();
 
 		try {
-			if (userId.equals(id) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+			if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("UPDATE_OWN_POST"))) {
-				savedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-				postRepository.save(savedEntity);
+				mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+				postRepository.save(mappedEntity);
 			}
 
-			if (!userId.equals(id) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+			if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
-				savedEntity.setStatus(PostStatus.PUBLISHED);
-				postRepository.save(savedEntity);
+				mappedEntity.setStatus(PostStatus.PUBLISHED);
+				postRepository.save(mappedEntity);
 			}
 
-			if (userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("UPDATE_OWN_POST"))
-					|| userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+			if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+					grantedAuthority.getAuthority().equals("UPDATE_OWN_POST")))
+					&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
 				throw new ForbiddenPermissionsException();
 			}
+		} catch (ForbiddenPermissionsException e) {
+			throw new ForbiddenPermissionsException();
 		} catch (Exception e) {
 			throw new EntityNotFoundException();
 		}
@@ -208,7 +209,7 @@ public class PostServiceImpl implements PostService {
 		return true;
 	}
 
-	private PostEntity getPostId(PostSaveFromUserDTO postDTO) {
+	private PostEntity getPostEntityFromPostDTO(PostSaveFromUserDTO postDTO) {
 		Integer postId = postDTO.getId();
 		PostEntity mappedEntity;
 		if (postId == null) {
