@@ -1,6 +1,13 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.annotations.DirectionExists;
+import com.softserveinc.dokazovi.annotations.OriginExists;
+import com.softserveinc.dokazovi.annotations.TagExists;
+import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
+import com.softserveinc.dokazovi.dto.origin.OriginDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
+import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
@@ -26,6 +33,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import javax.management.relation.Role;
+import java.security.Permission;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -320,9 +329,138 @@ class PostServiceImplTest {
 	}
 
 	@Test
+	void updatePostById_WhenExists_isOk() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.UPDATE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(1);
+		roleEntity.setName("Administrator");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("string");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("string");
+		directionDTO.setLabel("string");
+		directionDTO.setColor("string");
+
+		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+		directions.add(directionDTO);
+
+		TagDTO tagDTO = new TagDTO();
+		tagDTO.setId(1);
+		tagDTO.setTag("tag");
+
+		Set<@TagExists TagDTO> tags = new HashSet<>();
+		tags.add(tagDTO);
+
+		OriginDTO originDTO = new OriginDTO();
+		originDTO.setId(1);
+		originDTO.setName("string");
+		originDTO.setParameter("string");
+
+		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		origins.add(originDTO);
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(27)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.id(1)
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.type(postTypeDTO)
+				.directions(directions)
+				.tags(tags)
+				.origins(origins)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.build();
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		when(postRepository.save(postEntity)).thenReturn(postEntity);
+		Assertions.assertThat(postService.updatePostById(userPrincipal, dto)).isTrue();
+	}
+
+	@Test
 	void archivePostById_WhenNotExists_NotFound_ThrowException() {
 		Integer id = -1;
 
 		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(id));
+	}
+
+	@Test
+	void updatePostById_WhenNotExists_NotFound_ThrowException() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.UPDATE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(1);
+		roleEntity.setName("Administrator");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("string");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("string");
+		directionDTO.setLabel("string");
+		directionDTO.setColor("string");
+
+		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+		directions.add(directionDTO);
+
+		TagDTO tagDTO = new TagDTO();
+		tagDTO.setId(1);
+		tagDTO.setTag("tag");
+
+		Set<@TagExists TagDTO> tags = new HashSet<>();
+		tags.add(tagDTO);
+
+		OriginDTO originDTO = new OriginDTO();
+		originDTO.setId(1);
+		originDTO.setName("string");
+		originDTO.setParameter("string");
+
+		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		origins.add(originDTO);
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(27)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.id(-1)
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.type(postTypeDTO)
+				.directions(directions)
+				.tags(tags)
+				.origins(origins)
+				.build();
+
+		assertThrows(EntityNotFoundException.class, () -> postService.updatePostById(userPrincipal, dto));
 	}
 }
