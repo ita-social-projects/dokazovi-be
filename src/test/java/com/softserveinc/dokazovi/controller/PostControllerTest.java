@@ -3,7 +3,6 @@ package com.softserveinc.dokazovi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -221,22 +220,6 @@ class PostControllerTest {
 				"  }\n" +
 				"}";
 
-		/*StringBuilder buf = new StringBuilder();
-		buf.append("{").append("\"success\":true")
-				.append("\"message\":\"").append("post ").append(1)
-				.append(" updated successfully\"")
-				.append("}");
-
-		RequestBuilder builder = MockMvcRequestBuilders.put("/post/1")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(buf.toString());*/
-
-		//Mockito.when(postService.updatePostById(userPrincipal, )).thenReturn(true);
-
-		/*mockMvc.perform(put("/post/1")).andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 updated successfully\"}",
-						result.getResponse().getContentAsString()));*/
-
 		Mockito.when(postService.updatePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
 				.thenReturn(true);
 		mockMvc.perform(put("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
@@ -290,24 +273,6 @@ class PostControllerTest {
 				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
 						result.getResponse().getContentAsString()));
 	}
-
-/*	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException() {
-		Integer notExistingPostId = -1;
-
-		Mockito.when(postService.archivePostById(notExistingPostId))
-				.thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
-		Assertions.assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(notExistingPostId));
-	}
-
-	@Test
-	void updatePostById_WhenNotExists_NotFound_ThrowException() {
-		Integer notExistingPostId = -1;
-
-		Mockito.when(postService.updatePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
-				.thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
-		Assertions.assertThrows(EntityNotFoundException.class, () -> postService.updatePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)));
-	}*/
 
 	@Test
 	void findAllPostsByDirectionsByPostTypesAndByOrigins_isOk() throws Exception {
