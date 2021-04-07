@@ -9,4 +9,5 @@ public class RegionDTO {
 
 	private Integer id;
 	private String name;
+	private boolean usersPresent;
 }

@@ -23,6 +23,8 @@ class RegionServiceImplTest {
 	private RegionRepository regionRepository;
 	@Mock
 	private RegionMapper regionMapper;
+	@Mock
+	private RegionServiceImpl regionServiceMock;
 	@InjectMocks
 	private RegionServiceImpl regionService;
 
@@ -34,5 +36,14 @@ class RegionServiceImplTest {
 		regionService.findAllRegions();
 
 		verify(regionMapper, times(regions.size())).toRegionDTO(any(RegionEntity.class));
+	}
+
+	@Test
+	void updateRegionsStatus() {
+
+		regionServiceMock.updateRegionsStatus();
+		regionServiceMock.updateRegionsStatus();
+
+		verify(regionServiceMock, times(2)).updateRegionsStatus();
 	}
 }
