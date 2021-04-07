@@ -35,4 +35,11 @@ class DirectionServiceImplTest {
 
 		verify(directionMapper, times(directions.size())).toDirectionDTO(any(DirectionEntity.class));
 	}
+
+	@Test
+	void updateDirectionsStatusTest() {
+		directionService.updateDirectionsStatus();
+		verify(directionRepository, times(1))
+				.updateDirectionsStatus();
+	}
 }

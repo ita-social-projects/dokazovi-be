@@ -7,4 +7,6 @@ import java.util.List;
 public interface DirectionService {
 
 	List<DirectionDTO> findAllDirections();
+
+	void updateDirectionsStatus();
 }
