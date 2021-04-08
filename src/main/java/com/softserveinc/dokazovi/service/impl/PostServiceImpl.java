@@ -219,7 +219,7 @@ public class PostServiceImpl implements PostService {
 			mappedEntity = postRepository
 					.findById(postId)
 					.map(postEntity -> postMapper.updatePostEntityFromDTO(postDTO, postEntity))
-					.orElseThrow(() -> new InvalidIdDtoException(postDTO));
+					.orElseThrow(EntityNotFoundException::new);
 		}
 		return mappedEntity;
 	}

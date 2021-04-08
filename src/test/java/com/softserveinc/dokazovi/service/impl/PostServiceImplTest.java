@@ -338,13 +338,13 @@ class PostServiceImplTest {
 
 		PostTypeDTO postTypeDTO = new PostTypeDTO();
 		postTypeDTO.setId(1);
-		postTypeDTO.setName("string");
+		postTypeDTO.setName("type");
 
 		DirectionDTO directionDTO = new DirectionDTO();
 		directionDTO.setId(1);
-		directionDTO.setName("string");
-		directionDTO.setLabel("string");
-		directionDTO.setColor("string");
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
 
 		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
 		directions.add(directionDTO);
@@ -358,13 +358,20 @@ class PostServiceImplTest {
 
 		OriginDTO originDTO = new OriginDTO();
 		originDTO.setId(1);
-		originDTO.setName("string");
-		originDTO.setParameter("string");
+		originDTO.setName("name");
+		originDTO.setParameter("param");
 
 		Set<@OriginExists OriginDTO> origins = new HashSet<>();
 		origins.add(originDTO);
 
 		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(27)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		UserEntity userEntity = UserEntity.builder()
 				.id(27)
 				.email("admin@mail.com")
 				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
@@ -388,10 +395,16 @@ class PostServiceImplTest {
 		PostEntity postEntity = PostEntity
 				.builder()
 				.id(id)
+				.author(userEntity)
 				.build();
-		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
-		when(postRepository.save(postEntity)).thenReturn(postEntity);
+
+		when(postMapper.updatePostEntityFromDTO(any(), any())).thenReturn(postEntity);
+		when(postRepository.findById(1)).thenReturn(Optional.of(postEntity));
 		Assertions.assertThat(postService.updatePostById(userPrincipal, dto)).isTrue();
+
+		/*when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		when(postRepository.save(postEntity)).thenReturn(postEntity);
+		Assertions.assertThat(postService.updatePostById(userPrincipal, dto)).isTrue();*/
 	}
 
 	@Test
@@ -413,13 +426,13 @@ class PostServiceImplTest {
 
 		PostTypeDTO postTypeDTO = new PostTypeDTO();
 		postTypeDTO.setId(1);
-		postTypeDTO.setName("string");
+		postTypeDTO.setName("name");
 
 		DirectionDTO directionDTO = new DirectionDTO();
 		directionDTO.setId(1);
-		directionDTO.setName("string");
-		directionDTO.setLabel("string");
-		directionDTO.setColor("string");
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
 
 		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
 		directions.add(directionDTO);
@@ -433,8 +446,8 @@ class PostServiceImplTest {
 
 		OriginDTO originDTO = new OriginDTO();
 		originDTO.setId(1);
-		originDTO.setName("string");
-		originDTO.setParameter("string");
+		originDTO.setName("name");
+		originDTO.setParameter("param");
 
 		Set<@OriginExists OriginDTO> origins = new HashSet<>();
 		origins.add(originDTO);
