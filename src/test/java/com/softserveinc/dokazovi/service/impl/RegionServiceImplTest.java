@@ -42,8 +42,9 @@ class RegionServiceImplTest {
 	void updateRegionsStatus() {
 
 		regionServiceMock.updateRegionsStatus();
-		regionServiceMock.updateRegionsStatus();
+		regionRepository.updateRegionsStatus();
 
-		verify(regionServiceMock, times(2)).updateRegionsStatus();
+		verify(regionServiceMock, times(1)).updateRegionsStatus();
+		verify(regionRepository, times(1)).updateRegionsStatus();
 	}
 }
