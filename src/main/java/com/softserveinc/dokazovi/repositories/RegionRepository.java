@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 public interface RegionRepository extends JpaRepository<RegionEntity, Integer> {
 	@Query(nativeQuery = true, value = "UPDATE REGIONS\n"
 			+ "SET USERS_PRESENT=TRUE\n"
-			+ "          WHERE   REGION_ID IN (SELECT  REGION_ID FROM CITIES\n"
-			+ "          WHERE  CITY_ID IN (SELECT  CITY_ID FROM INSTITUTIONS\n"
-			+ "          WHERE  INSTITUTION_ID IN (SELECT  INSTITUTION_ID FROM DOCTORS)))")
+			+ "          WHERE  DISTINCT REGION_ID IN (SELECT  REGION_ID FROM CITIES\n"
+			+ "          WHERE DISTINCT CITY_ID IN (SELECT  CITY_ID FROM INSTITUTIONS\n"
+			+ "          WHERE DISTINCT INSTITUTION_ID IN (SELECT  INSTITUTION_ID FROM DOCTORS)))")
 	@Modifying
 	void updateRegionsStatus();
 }

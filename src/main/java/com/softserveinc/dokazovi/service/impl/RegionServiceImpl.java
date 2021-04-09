@@ -28,7 +28,7 @@ public class RegionServiceImpl implements RegionService {
 
 	@Override
 	@Transactional
-	@Scheduled(cron = "0 0 * * * *")
+	@Scheduled(cron = "0 0 */4 * * *")
 	public void updateRegionsStatus() {
 		regionRepository.updateRegionsStatus();
 	}
