@@ -31,6 +31,8 @@ public class RegionEntity {
 
 	private String name;
 
+	private Boolean usersPresent;
+
 	@OneToMany(mappedBy = "region")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
