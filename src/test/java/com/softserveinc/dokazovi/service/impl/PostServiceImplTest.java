@@ -10,6 +10,7 @@ import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -49,6 +50,8 @@ class PostServiceImplTest {
 	private UserRepository userRepository;
 	@Mock
 	private DoctorRepository doctorRepository;
+	@Mock
+	private DirectionRepository directionRepository;
 	@Mock
 	private PostMapper postMapper;
 	@Mock

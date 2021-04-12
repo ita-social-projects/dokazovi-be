@@ -8,5 +8,7 @@ public interface DirectionService {
 
 	List<DirectionDTO> findAllDirections();
 
-	void updateDirectionsStatus();
+	void updateDirectionsHasDoctorsStatus();
+
+	void updateDirectionsHasPostsStatus();
 }

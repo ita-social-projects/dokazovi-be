@@ -68,6 +68,7 @@ public class PostServiceImpl implements PostService {
 		mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		PostEntity savedEntity = postRepository.save(mappedEntity);
+		directionRepository.updateDirectionsHasPostsStatus();
 		return postMapper.toPostDTO(savedEntity);
 	}
 
@@ -149,6 +150,7 @@ public class PostServiceImpl implements PostService {
 		postEntity.setStatus(PostStatus.ARCHIVED);
 		postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
 		postRepository.save(postEntity);
+		directionRepository.updateDirectionsHasPostsStatus();
 		return true;
 	}
 }

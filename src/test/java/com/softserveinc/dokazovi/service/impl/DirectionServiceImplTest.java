@@ -37,9 +37,16 @@ class DirectionServiceImplTest {
 	}
 
 	@Test
-	void updateDirectionsStatusTest() {
-		directionService.updateDirectionsStatus();
+	void updateDirectionsHasDoctorsStatusTest() {
+		directionService.updateDirectionsHasDoctorsStatus();
 		verify(directionRepository, times(1))
-				.updateDirectionsStatus();
+				.updateDirectionsHasDoctorsStatus();
+	}
+
+	@Test
+	void updateDirectionsHasPostsStatusTest() {
+		directionService.updateDirectionsHasPostsStatus();
+		verify(directionRepository, times(1))
+				.updateDirectionsHasPostsStatus();
 	}
 }

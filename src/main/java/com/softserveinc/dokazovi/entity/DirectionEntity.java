@@ -39,6 +39,9 @@ public class DirectionEntity {
 	@ColumnDefault("false")
 	private Boolean hasDoctors;
 
+	@ColumnDefault("false")
+	private Boolean hasPosts;
+
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude

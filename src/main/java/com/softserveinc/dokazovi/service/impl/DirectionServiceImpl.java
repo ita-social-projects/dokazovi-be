@@ -28,8 +28,14 @@ public class DirectionServiceImpl implements DirectionService {
 
 	@Override
 	@Transactional
-	@Scheduled(cron = "*/5 * * * * *")
-	public void updateDirectionsStatus() {
-		directionRepository.updateDirectionsStatus();
+	@Scheduled(cron = "0 0 */4 * * *")
+	public void updateDirectionsHasDoctorsStatus() {
+		directionRepository.updateDirectionsHasDoctorsStatus();
+	}
+
+	@Override
+	@Transactional
+	public void updateDirectionsHasPostsStatus() {
+		directionRepository.updateDirectionsHasPostsStatus();
 	}
 }

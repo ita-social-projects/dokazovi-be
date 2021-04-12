@@ -12,8 +12,15 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
 	@Query(nativeQuery = true,
 	value = " UPDATE DIRECTIONS"
 			+ " SET HAS_DOCTORS = TRUE"
-			+ " WHERE DIRECTION_ID IN (SELECT DIRECTION_ID FROM DOCTORS_DIRECTIONS) ")
+			+ " WHERE DIRECTION_ID IN (SELECT DISTINCT DIRECTION_ID FROM DOCTORS_DIRECTIONS) ")
 	@Modifying
-	void updateDirectionsStatus();
+	void updateDirectionsHasDoctorsStatus();
+
+	@Query(nativeQuery = true,
+	value = "UPDATE DIRECTIONS"
+			+ " SET HAS_POSTS = TRUE"
+			+ " WHERE DIRECTION_ID IN (SELECT DISTINCT DIRECTION_ID FROM POSTS_DIRECTIONS)")
+	@Modifying
+	void updateDirectionsHasPostsStatus();
 }
 
