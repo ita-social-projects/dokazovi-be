@@ -317,7 +317,7 @@ class PostServiceImplTest {
 	@Test
 	void archivePostById_WhenExists_isOk() {
 		Set<RolePermission> permissions = new HashSet<>();
-		permissions.add(RolePermission.UPDATE_POST);
+		permissions.add(RolePermission.DELETE_POST);
 
 		RoleEntity roleEntity = new RoleEntity();
 		roleEntity.setId(1);
@@ -440,7 +440,7 @@ class PostServiceImplTest {
 	@Test
 	void archivePostById_WhenNotExists_NotFound_ThrowException() {
 		Set<RolePermission> permissions = new HashSet<>();
-		permissions.add(RolePermission.UPDATE_POST);
+		permissions.add(RolePermission.DELETE_POST);
 
 		RoleEntity roleEntity = new RoleEntity();
 		roleEntity.setId(1);
