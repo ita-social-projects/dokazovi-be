@@ -27,7 +27,7 @@ public interface PostService {
 	Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(
 			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Pageable pageable);
 
-	Boolean archivePostById(Integer postId);
+	Boolean archivePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveFromUserDTO);
 
 	Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveFromUserDTO);
 }

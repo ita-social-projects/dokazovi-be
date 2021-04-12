@@ -159,14 +159,47 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Boolean archivePostById(Integer postId) throws EntityNotFoundException {
+	public Boolean archivePostById(UserPrincipal userPrincipal, PostSaveFromUserDTO postDTO)
+			throws EntityNotFoundException {
+
+		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
+		mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+
+		Integer userId = userPrincipal.getId();
+		Integer authorId = mappedEntity.getAuthor().getId();
 
 		PostEntity postEntity = postRepository
-				.findById(postId)
-				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
-		postEntity.setStatus(PostStatus.ARCHIVED);
-		postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-		postRepository.save(postEntity);
+				.findById(postDTO.getId())
+				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postDTO.getId())));
+
+		try {
+			if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+					grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) {
+				mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+				postEntity.setStatus(PostStatus.ARCHIVED);
+				postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+				postRepository.save(mappedEntity);
+			}
+
+			if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+					grantedAuthority.getAuthority().equals("DELETE_POST"))) {
+				postEntity.setStatus(PostStatus.ARCHIVED);
+				postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+				postRepository.save(mappedEntity);
+			}
+
+			if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+					grantedAuthority.getAuthority().equals("DELETE_OWN_POST")))
+					&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+					grantedAuthority.getAuthority().equals("DELETE_POST"))) {
+				throw new ForbiddenPermissionsException();
+			}
+		} catch (ForbiddenPermissionsException e) {
+			throw new ForbiddenPermissionsException();
+		} catch (Exception e) {
+			throw new EntityNotFoundException();
+		}
+
 		return true;
 	}
 
@@ -215,10 +248,14 @@ public class PostServiceImpl implements PostService {
 			mappedEntity = postMapper.toPostEntity(postDTO);
 
 		} else {
-			mappedEntity = postRepository
+			PostEntity byId = postRepository.findById(postId)
+					.orElseThrow(EntityNotFoundException::new);
+			mappedEntity = postMapper.updatePostEntityFromDTO(postDTO, byId);
+
+			/*mappedEntity = postRepository
 					.findById(postId)
 					.map(postEntity -> postMapper.updatePostEntityFromDTO(postDTO, postEntity))
-					.orElseThrow(EntityNotFoundException::new);
+					.orElseThrow(EntityNotFoundException::new);*/
 		}
 		return mappedEntity;
 	}

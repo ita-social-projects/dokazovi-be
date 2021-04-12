@@ -184,10 +184,34 @@ class PostControllerTest {
 
 	@Test
 	void archivePostById_WhenExists_isOk() throws Exception {
-		Integer existingPostId = 1;
-		Mockito.when(postService.archivePostById(existingPostId)).thenReturn(true);
+		String content = "{\n" +
+				"  \"content\": \"string\",\n" +
+				"  \"directions\": [\n" +
+				"    {\n" +
+				"      \"id\": 1\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"id\": 1,\n" +
+				"  \"preview\": \"string\",\n" +
+				"  \"videoUrl\": \"string\",\n" +
+				"  \"previewImageUrl\": \"string\",\n" +
+				"  \"tags\": [\n" +
+				"    {\n" +
+				"      \"id\": 1,\n" +
+				"      \"tag\": \"string\"\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"title\": \"string\",\n" +
+				"  \"type\": {\n" +
+				"    \"id\": 1,\n" +
+				"    \"name\": \"string\"\n" +
+				"  }\n" +
+				"}";
 
-		mockMvc.perform(delete("/post/1")).andExpect(status().isOk()).andExpect(result ->
+		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
+				.thenReturn(true);
+		mockMvc.perform(delete("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk()).andExpect(result ->
 				Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 deleted successfully\"}",
 						result.getResponse().getContentAsString()));
 	}
@@ -228,12 +252,36 @@ class PostControllerTest {
 
 	@Test
 	void archivePostById_WhenNotExists_NotFound() throws Exception {
-		Integer notExistingPostId = -1;
-		Mockito.when(postService.archivePostById(notExistingPostId))
-				.thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
+		String content = "{\n" +
+				"  \"content\": \"string\",\n" +
+				"  \"directions\": [\n" +
+				"    {\n" +
+				"      \"id\": 1\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"id\": -1,\n" +
+				"  \"preview\": \"string\",\n" +
+				"  \"videoUrl\": \"string\",\n" +
+				"  \"previewImageUrl\": \"string\",\n" +
+				"  \"tags\": [\n" +
+				"    {\n" +
+				"      \"id\": 1,\n" +
+				"      \"tag\": \"string\"\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"title\": \"string\",\n" +
+				"  \"type\": {\n" +
+				"    \"id\": 1,\n" +
+				"    \"name\": \"string\"\n" +
+				"  }\n" +
+				"}";
 
-		mockMvc.perform(delete("/post/-1")).andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
+		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
+				.thenThrow(new EntityNotFoundException("Post with -1 not found"));
+
+		mockMvc.perform(delete("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk()).andExpect(result ->
+				Assertions.assertEquals("{\"success\":false,\"message\":\"post -1 deleted successfully\"}",
 						result.getResponse().getContentAsString()));
 	}
 
