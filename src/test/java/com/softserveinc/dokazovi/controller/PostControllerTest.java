@@ -208,9 +208,9 @@ class PostControllerTest {
 				"  }\n" +
 				"}";
 
-		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
+		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(Integer.class)))
 				.thenReturn(true);
-		mockMvc.perform(delete("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
+		mockMvc.perform(delete("/post/1").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk()).andExpect(result ->
 				Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 deleted successfully\"}",
 						result.getResponse().getContentAsString()));
@@ -276,12 +276,12 @@ class PostControllerTest {
 				"  }\n" +
 				"}";
 
-		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
+		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(Integer.class)))
 				.thenThrow(new EntityNotFoundException("Post with -1 not found"));
 
-		mockMvc.perform(delete("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
+		mockMvc.perform(delete("/post/-1").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":false,\"message\":\"post -1 deleted successfully\"}",
+				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
 						result.getResponse().getContentAsString()));
 	}
 

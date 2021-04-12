@@ -159,32 +159,28 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Boolean archivePostById(UserPrincipal userPrincipal, PostSaveFromUserDTO postDTO)
+	public Boolean archivePostById(UserPrincipal userPrincipal, Integer postId)
 			throws EntityNotFoundException {
 
-		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
-		mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+		PostEntity mappedEntity = postRepository
+				.findById(postId)
+				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
 
 		Integer userId = userPrincipal.getId();
 		Integer authorId = mappedEntity.getAuthor().getId();
 
-		PostEntity postEntity = postRepository
-				.findById(postDTO.getId())
-				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postDTO.getId())));
-
 		try {
 			if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) {
-				mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-				postEntity.setStatus(PostStatus.ARCHIVED);
-				postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+				mappedEntity.setStatus(PostStatus.ARCHIVED);
+				mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
 				postRepository.save(mappedEntity);
 			}
 
 			if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("DELETE_POST"))) {
-				postEntity.setStatus(PostStatus.ARCHIVED);
-				postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+				mappedEntity.setStatus(PostStatus.ARCHIVED);
+				mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
 				postRepository.save(mappedEntity);
 			}
 

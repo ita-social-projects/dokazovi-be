@@ -334,24 +334,6 @@ class PostServiceImplTest {
 		directionDTO.setLabel("label");
 		directionDTO.setColor("color");
 
-		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
-		directions.add(directionDTO);
-
-		TagDTO tagDTO = new TagDTO();
-		tagDTO.setId(1);
-		tagDTO.setTag("tag");
-
-		Set<@TagExists TagDTO> tags = new HashSet<>();
-		tags.add(tagDTO);
-
-		OriginDTO originDTO = new OriginDTO();
-		originDTO.setId(1);
-		originDTO.setName("name");
-		originDTO.setParameter("param");
-
-		Set<@OriginExists OriginDTO> origins = new HashSet<>();
-		origins.add(originDTO);
-
 		UserPrincipal userPrincipal = UserPrincipal.builder()
 				.id(27)
 				.email("admin@mail.com")
@@ -366,19 +348,6 @@ class PostServiceImplTest {
 				.role(roleEntity)
 				.build();
 
-		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
-				.id(1)
-				.title("title")
-				.videoUrl("videoUrl")
-				.previewImageUrl("previewImageUrl")
-				.preview("preview")
-				.content("content")
-				.type(postTypeDTO)
-				.directions(directions)
-				.tags(tags)
-				.origins(origins)
-				.build();
-
 		Integer id = 1;
 		PostEntity postEntity = PostEntity
 				.builder()
@@ -388,7 +357,7 @@ class PostServiceImplTest {
 
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
 		when(postRepository.save(postEntity)).thenReturn(postEntity);
-		Assertions.assertThat(postService.archivePostById(userPrincipal, dto)).isTrue();
+		Assertions.assertThat(postService.archivePostById(userPrincipal, id)).isTrue();
 	}
 
 	@Test
@@ -488,24 +457,7 @@ class PostServiceImplTest {
 		directionDTO.setLabel("label");
 		directionDTO.setColor("color");
 
-		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
-		directions.add(directionDTO);
-
-		TagDTO tagDTO = new TagDTO();
-		tagDTO.setId(1);
-		tagDTO.setTag("tag");
-
-		Set<@TagExists TagDTO> tags = new HashSet<>();
-		tags.add(tagDTO);
-
-		OriginDTO originDTO = new OriginDTO();
-		originDTO.setId(1);
-		originDTO.setName("name");
-		originDTO.setParameter("param");
-
-		Set<@OriginExists OriginDTO> origins = new HashSet<>();
-		origins.add(originDTO);
-
+		Integer id = -1;
 		UserPrincipal userPrincipal = UserPrincipal.builder()
 				.id(27)
 				.email("admin@mail.com")
@@ -513,21 +465,8 @@ class PostServiceImplTest {
 				.role(roleEntity)
 				.build();
 
-		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
-				.id(-1)
-				.title("title")
-				.videoUrl("videoUrl")
-				.previewImageUrl("previewImageUrl")
-				.preview("preview")
-				.content("content")
-				.type(postTypeDTO)
-				.directions(directions)
-				.tags(tags)
-				.origins(origins)
-				.build();
-
 		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
-		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(userPrincipal, dto));
+		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(userPrincipal, id));
 	}
 
 	@Test

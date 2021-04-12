@@ -160,19 +160,19 @@ public class PostController {
 		}
 	}
 
-
-	@DeleteMapping()
+	@DeleteMapping(POST_GET_POST_BY_ID)
 	@PreAuthorize("hasAnyAuthority('DELETE_POST', 'DELETE_OWN_POST')")
 	@ApiOperation(value = "Delete post by Id, as a path variable.",
 			authorizations = {@Authorization(value = "Authorization")})
 	public ResponseEntity<ApiResponseMessage> archivePostById(
 			@AuthenticationPrincipal UserPrincipal userPrincipal,
-			@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO) {
+			@PathVariable("postId") Integer postId
+			) {
 		ApiResponseMessage apiResponseMessage;
 		try {
 			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.updatePostById(userPrincipal, postSaveFromUserDTO))
-					.message(String.format("post %s deleted successfully", postSaveFromUserDTO.getId()))
+					.success(postService.archivePostById(userPrincipal, postId))
+					.message(String.format("post %s deleted successfully", postId))
 					.build();
 		} catch (EntityNotFoundException e) {
 			apiResponseMessage = ApiResponseMessage.builder()
