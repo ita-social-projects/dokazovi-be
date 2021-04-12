@@ -356,7 +356,6 @@ class PostServiceImplTest {
 				.build();
 
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
-		when(postRepository.save(postEntity)).thenReturn(postEntity);
 		Assertions.assertThat(postService.archivePostById(userPrincipal, id)).isTrue();
 	}
 
