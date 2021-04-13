@@ -132,7 +132,7 @@ class PostServiceImplTest {
 				.id(1)
 				.build();
 		UserPrincipal userPrincipal = new UserPrincipal();
-		assertThrows(InvalidIdDtoException.class, () -> postService.saveFromUser(dto, userPrincipal));
+		assertThrows(EntityNotFoundException.class, () -> postService.saveFromUser(dto, userPrincipal));
 	}
 
 
