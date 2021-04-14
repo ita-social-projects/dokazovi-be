@@ -55,29 +55,29 @@ public class PostServiceImpl implements PostService {
 
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
-			if (userEntity.getId().equals(authorId) && userPrincipal.getAuthorities().stream()
-					.anyMatch(grantedAuthority -> grantedAuthority
-							.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
-				mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-				mappedEntity.setAuthor(userEntity);
-				postRepository.save(mappedEntity);
-			}
+		if (userEntity.getId().equals(authorId) && userPrincipal.getAuthorities().stream()
+				.anyMatch(grantedAuthority -> grantedAuthority
+						.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
+			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+			mappedEntity.setAuthor(userEntity);
+			postRepository.save(mappedEntity);
+		}
 
-			if (!userEntity.getId().equals(authorId) && userPrincipal.getAuthorities()
-					.stream().anyMatch(grantedAuthority ->
-							grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
-				mappedEntity.setStatus(PostStatus.PUBLISHED);
-				mappedEntity.setAuthor(userRepository.getOne(authorId));
-				postRepository.save(mappedEntity);
-			}
+		if (!userEntity.getId().equals(authorId) && userPrincipal.getAuthorities()
+				.stream().anyMatch(grantedAuthority ->
+						grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
+			mappedEntity.setStatus(PostStatus.PUBLISHED);
+			mappedEntity.setAuthor(userRepository.getOne(authorId));
+			postRepository.save(mappedEntity);
+		}
 
-			if (!userEntity.getId().equals(authorId) || userPrincipal.getAuthorities().stream()
-					.noneMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("SAVE_OWN_PUBLICATION"))
-					&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
-				throw new ForbiddenPermissionsException();
-			}
+		if (!userEntity.getId().equals(authorId) || userPrincipal.getAuthorities().stream()
+				.noneMatch(grantedAuthority ->
+						grantedAuthority.getAuthority().equals("SAVE_OWN_PUBLICATION"))
+				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
+			throw new ForbiddenPermissionsException();
+		}
 
 		return postMapper.toPostDTO(mappedEntity);
 	}
@@ -163,31 +163,25 @@ public class PostServiceImpl implements PostService {
 		Integer userId = userPrincipal.getId();
 		Integer authorId = mappedEntity.getAuthor().getId();
 
-		try {
-			if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) {
-				mappedEntity.setStatus(PostStatus.ARCHIVED);
-				mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-				postRepository.save(mappedEntity);
-			}
+		if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) {
+			mappedEntity.setStatus(PostStatus.ARCHIVED);
+			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+			postRepository.save(mappedEntity);
+		}
 
-			if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("DELETE_POST"))) {
-				mappedEntity.setStatus(PostStatus.ARCHIVED);
-				mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-				postRepository.save(mappedEntity);
-			}
+		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_POST"))) {
+			mappedEntity.setStatus(PostStatus.ARCHIVED);
+			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+			postRepository.save(mappedEntity);
+		}
 
-			if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("DELETE_OWN_POST")))
-					&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("DELETE_POST"))) {
-				throw new ForbiddenPermissionsException();
-			}
-		} catch (ForbiddenPermissionsException e) {
+		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_OWN_POST")))
+				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_POST"))) {
 			throw new ForbiddenPermissionsException();
-		} catch (Exception e) {
-			throw new EntityNotFoundException();
 		}
 
 		return true;
@@ -203,29 +197,23 @@ public class PostServiceImpl implements PostService {
 		Integer userId = userPrincipal.getId();
 		Integer authorId = mappedEntity.getAuthor().getId();
 
-		try {
-			if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("UPDATE_OWN_POST"))) {
-				mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-				postRepository.save(mappedEntity);
-			}
+		if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_OWN_POST"))) {
+			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+			postRepository.save(mappedEntity);
+		}
 
-			if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
-				mappedEntity.setStatus(PostStatus.PUBLISHED);
-				postRepository.save(mappedEntity);
-			}
+		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
+			mappedEntity.setStatus(PostStatus.PUBLISHED);
+			postRepository.save(mappedEntity);
+		}
 
-			if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("UPDATE_OWN_POST")))
-					&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
-				throw new ForbiddenPermissionsException();
-			}
-		} catch (ForbiddenPermissionsException e) {
+		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_OWN_POST")))
+				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
 			throw new ForbiddenPermissionsException();
-		} catch (Exception e) {
-			throw new EntityNotFoundException();
 		}
 
 		return true;
