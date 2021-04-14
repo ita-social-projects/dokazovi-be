@@ -11,14 +11,12 @@ import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
-import com.softserveinc.dokazovi.entity.ProviderEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
-import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -105,19 +103,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void saveFromUser_WhenIdIsNull() {
-		when(postRepository.save(any())).thenReturn(new PostEntity());
-		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(new PostEntity());
-		when(userRepository.getOne(any(Integer.class))).thenReturn(userEntity);
-		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
-		postService.saveFromUser(new PostSaveFromUserDTO(), userPrincipal, 1);
-		verify(postMapper, times(1)).toPostEntity(any(PostSaveFromUserDTO.class));
-		verify(postRepository, times(1)).save(any(PostEntity.class));
-		verify(postMapper, times(1)).toPostDTO(any());
-	}
-
-	@Test
-	void saveFromUser_WhenIdIsPresent_isOk() {
+	void saveFromUser_WhenIdIsPresent_isNull() {
 
 		Set<RolePermission> rolePermissions = new HashSet<>();
 		rolePermissions.add(RolePermission.SAVE_OWN_PUBLICATION);
