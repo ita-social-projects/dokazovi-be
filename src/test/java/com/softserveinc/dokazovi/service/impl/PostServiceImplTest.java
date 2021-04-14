@@ -454,7 +454,7 @@ class PostServiceImplTest {
 				.build();
 
 		UserEntity adminUserEntity = UserEntity.builder()
-				.id(27)
+				.id(28)
 				.email("admin@mail.com")
 				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
 				.role(roleEntity)
@@ -562,7 +562,7 @@ class PostServiceImplTest {
 				.build();
 
 		UserEntity adminUserEntity = UserEntity.builder()
-				.id(27)
+				.id(28)
 				.email("admin@mail.com")
 				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
 				.role(roleEntity)

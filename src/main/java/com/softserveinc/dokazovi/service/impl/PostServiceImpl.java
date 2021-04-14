@@ -168,7 +168,6 @@ public class PostServiceImpl implements PostService {
 			mappedEntity.setStatus(PostStatus.ARCHIVED);
 			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
 			postRepository.save(mappedEntity);
-			return true;
 		}
 
 		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
@@ -176,7 +175,6 @@ public class PostServiceImpl implements PostService {
 			mappedEntity.setStatus(PostStatus.ARCHIVED);
 			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
 			postRepository.save(mappedEntity);
-			return true;
 		}
 
 		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
