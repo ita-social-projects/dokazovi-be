@@ -47,7 +47,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserPrincipal userPrincipal) {
+	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserPrincipal userPrincipal, Integer authorId) {
 		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
 
 		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
@@ -56,7 +56,7 @@ public class PostServiceImpl implements PostService {
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
 		try {
-			if (userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities().stream()
+			if (userEntity.getId().equals(authorId) && userPrincipal.getAuthorities().stream()
 					.anyMatch(grantedAuthority -> grantedAuthority
 							.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
 				mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
@@ -64,10 +64,11 @@ public class PostServiceImpl implements PostService {
 				postRepository.save(mappedEntity);
 			}
 
-			if (!userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
+			if (!userEntity.getId().equals(authorId) && userPrincipal.getAuthorities()
+					.stream().anyMatch(grantedAuthority ->
+							grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
 				mappedEntity.setStatus(PostStatus.PUBLISHED);
-				mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
+				mappedEntity.setAuthor(userRepository.getOne(authorId));
 				postRepository.save(mappedEntity);
 			}
 

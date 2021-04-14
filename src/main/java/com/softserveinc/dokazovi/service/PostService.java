@@ -22,7 +22,7 @@ public interface PostService {
 
 	Page<PostDTO> findAllByExpert(Integer expertId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 
-	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
+	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user, Integer authorId);
 
 	Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(
 			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Pageable pageable);
