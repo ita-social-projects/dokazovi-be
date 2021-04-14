@@ -25,6 +25,8 @@ public class PostSaveFromUserDTO {
 
 	private Integer id;
 
+	private Integer authorId;
+
 	private String title;
 
 	private String videoUrl;

@@ -6,7 +6,6 @@ import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
@@ -52,40 +51,37 @@ public class PostServiceImpl implements PostService {
 		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
 
 		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
-		userEntity.setStatus(UserStatus.ACTIVE);
-		mappedEntity.setAuthor(userEntity);
 		mappedEntity.setImportant(false);
 
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-		PostEntity savedEntity = postRepository.save(mappedEntity);
-
-		Integer userId = userPrincipal.getId();
-		Integer authorId = savedEntity.getAuthor().getId();
 
 		try {
-			if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("SAVE_OWN_POST"))) {
-				savedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-				postRepository.save(savedEntity);
+			if (userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities().stream()
+					.anyMatch(grantedAuthority -> grantedAuthority
+							.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
+				mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+				mappedEntity.setAuthor(userEntity);
+				postRepository.save(mappedEntity);
 			}
 
-			if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("SAVE_POST"))) {
-				savedEntity.setStatus(PostStatus.PUBLISHED);
-				postRepository.save(savedEntity);
+			if (!userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+					grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
+				mappedEntity.setStatus(PostStatus.PUBLISHED);
+				mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
+				postRepository.save(mappedEntity);
 			}
 
 			if (userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("SAVE_OWN_POST"))
+					grantedAuthority.getAuthority().equals("SAVE_OWN_PUBLICATION"))
 					|| userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-					grantedAuthority.getAuthority().equals("SAVE_POST"))) {
+					grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
 				throw new ForbiddenPermissionsException();
 			}
 		} catch (Exception e) {
 			throw new EntityNotFoundException();
 		}
 
-		return postMapper.toPostDTO(savedEntity);
+		return postMapper.toPostDTO(mappedEntity);
 	}
 
 	@Override

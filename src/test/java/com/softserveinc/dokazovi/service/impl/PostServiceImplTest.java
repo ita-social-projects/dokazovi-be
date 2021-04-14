@@ -101,6 +101,7 @@ class PostServiceImplTest {
 
 	@Test
 	void saveFromUser_WhenIdIsNull() {
+		when(postRepository.save(any())).thenReturn(new PostEntity());
 		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(new PostEntity());
 		when(userRepository.getOne(any(Integer.class))).thenReturn(userEntity);
 		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
