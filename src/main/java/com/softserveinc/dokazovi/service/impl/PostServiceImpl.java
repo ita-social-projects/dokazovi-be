@@ -241,11 +241,6 @@ public class PostServiceImpl implements PostService {
 			PostEntity byId = postRepository.findById(postId)
 					.orElseThrow(EntityNotFoundException::new);
 			mappedEntity = postMapper.updatePostEntityFromDTO(postDTO, byId);
-
-			/*mappedEntity = postRepository
-					.findById(postId)
-					.map(postEntity -> postMapper.updatePostEntityFromDTO(postDTO, postEntity))
-					.orElseThrow(EntityNotFoundException::new);*/
 		}
 		return mappedEntity;
 	}
