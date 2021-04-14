@@ -134,7 +134,7 @@ class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(content))
 				.andExpect(status().isCreated());
-		verify(postService).saveFromUser(eq(post), any());
+		verify(postService).saveFromUser(eq(post), any(), any());
 	}
 
 	@Test

@@ -72,9 +72,9 @@ public class PostServiceImpl implements PostService {
 				postRepository.save(mappedEntity);
 			}
 
-			if (userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+			if (!userEntity.getId().equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("SAVE_OWN_PUBLICATION"))
-					|| userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+					&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
 				throw new ForbiddenPermissionsException();
 			}

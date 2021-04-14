@@ -9,11 +9,14 @@ import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
+import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.entity.ProviderEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
@@ -33,6 +36,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -105,7 +110,7 @@ class PostServiceImplTest {
 		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(new PostEntity());
 		when(userRepository.getOne(any(Integer.class))).thenReturn(userEntity);
 		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
-		postService.saveFromUser(new PostSaveFromUserDTO(), userPrincipal);
+		postService.saveFromUser(new PostSaveFromUserDTO(), userPrincipal, 1);
 		verify(postMapper, times(1)).toPostEntity(any(PostSaveFromUserDTO.class));
 		verify(postRepository, times(1)).save(any(PostEntity.class));
 		verify(postMapper, times(1)).toPostDTO(any());
@@ -113,16 +118,50 @@ class PostServiceImplTest {
 
 	@Test
 	void saveFromUser_WhenIdIsPresent_isOk() {
-		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(new PostEntity()));
-		when(postMapper.updatePostEntityFromDTO(any(), any())).thenReturn(new PostEntity());
-		when(userRepository.getOne(any(Integer.class))).thenReturn(userEntity);
-		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+
+		Set<RolePermission> rolePermissions = new HashSet<>();
+		rolePermissions.add(RolePermission.SAVE_OWN_PUBLICATION);
+		RoleEntity roleEntity = RoleEntity.builder()
 				.id(1)
+				.name("Doctor")
+				.permissions(rolePermissions)
 				.build();
+		UserEntity author = UserEntity.builder()
+				.id(1)
+				.email("test@nail.com")
+				.password("12345")
+				.role(roleEntity)
+				.firstName("test")
+				.lastName("test")
+				.avatar("test")
+				.status(UserStatus.ACTIVE)
+				.createdAt(Timestamp.valueOf(LocalDateTime.now()))
+				.doctor(new DoctorEntity())
+				.phone("test")
+				.userProviderEntities(new HashSet<>())
+				.enabled(true)
+				.build();
+
+		PostEntity postEntity = PostEntity.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(postEntity);
+		when(userRepository.getOne(any(Integer.class))).thenReturn(author);
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
 		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
-		postService.saveFromUser(dto, userPrincipal);
-		verify(postMapper, times(1)).updatePostEntityFromDTO(any(), any());
-		verify(postRepository, times(1)).findById(any());
+		postService.saveFromUser(dto, userPrincipal, 1);
 		verify(postMapper, times(1)).toPostDTO(any());
 	}
 
@@ -133,7 +172,7 @@ class PostServiceImplTest {
 				.id(1)
 				.build();
 		UserPrincipal userPrincipal = new UserPrincipal();
-		assertThrows(EntityNotFoundException.class, () -> postService.saveFromUser(dto, userPrincipal));
+		assertThrows(EntityNotFoundException.class, () -> postService.saveFromUser(dto, userPrincipal, 1));
 	}
 
 
