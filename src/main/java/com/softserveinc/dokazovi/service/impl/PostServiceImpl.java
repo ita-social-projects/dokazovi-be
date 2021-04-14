@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService {
 						.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
 			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
 			mappedEntity.setAuthor(userEntity);
-			postRepository.save(mappedEntity);
+			return postMapper.toPostDTO(postRepository.save(mappedEntity));
 		}
 
 		if (!userEntity.getId().equals(authorId) && userPrincipal.getAuthorities()
@@ -68,7 +68,7 @@ public class PostServiceImpl implements PostService {
 						grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userRepository.getOne(authorId));
-			postRepository.save(mappedEntity);
+			return postMapper.toPostDTO(postRepository.save(mappedEntity));
 		}
 
 		if (!userEntity.getId().equals(authorId) || userPrincipal.getAuthorities().stream()
@@ -168,6 +168,7 @@ public class PostServiceImpl implements PostService {
 			mappedEntity.setStatus(PostStatus.ARCHIVED);
 			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
 			postRepository.save(mappedEntity);
+			return true;
 		}
 
 		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
@@ -175,6 +176,7 @@ public class PostServiceImpl implements PostService {
 			mappedEntity.setStatus(PostStatus.ARCHIVED);
 			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
 			postRepository.save(mappedEntity);
+			return true;
 		}
 
 		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->

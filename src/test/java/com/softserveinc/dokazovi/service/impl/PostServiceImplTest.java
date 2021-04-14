@@ -104,7 +104,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void saveFromUser_WhenIdIsPresent_isNull() {
+	void saveFromUser_WhenIdIsPresent_isNull_Doctor() {
 
 		Set<RolePermission> rolePermissions = new HashSet<>();
 		rolePermissions.add(RolePermission.SAVE_OWN_PUBLICATION);
@@ -149,6 +149,54 @@ class PostServiceImplTest {
 
 		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
 		postService.saveFromUser(dto, userPrincipal, 1);
+		verify(postMapper, times(1)).toPostDTO(any());
+	}
+
+	@Test
+	void saveFromUser_WhenIdIsPresent_isNull_Admin() {
+		Set<RolePermission> rolePermissions = new HashSet<>();
+		rolePermissions.add(RolePermission.SAVE_PUBLICATION);
+		RoleEntity roleEntity = RoleEntity.builder()
+				.id(1)
+				.name("Administrator")
+				.permissions(rolePermissions)
+				.build();
+		UserEntity author = UserEntity.builder()
+				.id(1)
+				.email("test@nail.com")
+				.password("12345")
+				.role(roleEntity)
+				.firstName("test")
+				.lastName("test")
+				.avatar("test")
+				.status(UserStatus.ACTIVE)
+				.createdAt(Timestamp.valueOf(LocalDateTime.now()))
+				.doctor(new DoctorEntity())
+				.phone("test")
+				.userProviderEntities(new HashSet<>())
+				.enabled(true)
+				.build();
+
+		PostEntity postEntity = PostEntity.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(postEntity);
+		when(userRepository.getOne(any(Integer.class))).thenReturn(author);
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		UserPrincipal userPrincipal = UserPrincipal.create(author);
+		postService.saveFromUser(dto, userPrincipal, 2);
 		verify(postMapper, times(1)).toPostDTO(any());
 	}
 
