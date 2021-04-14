@@ -6,9 +6,8 @@ import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
-import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
+import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.OriginRepository;
@@ -48,27 +47,39 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserPrincipal userPrincipal) {
-		Integer postId = postDTO.getId();
-		PostEntity mappedEntity;
-		if (postId == null) {
-			mappedEntity = postMapper.toPostEntity(postDTO);
-
-		} else {
-			mappedEntity = postRepository
-					.findById(postId)
-					.map(postEntity -> postMapper.updatePostEntityFromDTO(postDTO, postEntity))
-					.orElseThrow(() -> new InvalidIdDtoException(postDTO));
-		}
+	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserPrincipal userPrincipal, Integer authorId) {
+		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
 
 		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
-		userEntity.setStatus(UserStatus.ACTIVE);
-		mappedEntity.setAuthor(userEntity);
 		mappedEntity.setImportant(false);
-		mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-		PostEntity savedEntity = postRepository.save(mappedEntity);
-		return postMapper.toPostDTO(savedEntity);
+
+		if (userEntity.getId().equals(authorId) && userPrincipal.getAuthorities().stream()
+				.anyMatch(grantedAuthority -> grantedAuthority
+						.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
+			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+			mappedEntity.setAuthor(userEntity);
+			return postMapper.toPostDTO(postRepository.save(mappedEntity));
+		}
+
+		if (!userEntity.getId().equals(authorId) && userPrincipal.getAuthorities()
+				.stream().anyMatch(grantedAuthority ->
+						grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
+			mappedEntity.setStatus(PostStatus.PUBLISHED);
+			mappedEntity.setAuthor(userRepository.getOne(authorId));
+			return postMapper.toPostDTO(postRepository.save(mappedEntity));
+		}
+
+		if (!userEntity.getId().equals(authorId) || userPrincipal.getAuthorities().stream()
+				.noneMatch(grantedAuthority ->
+						grantedAuthority.getAuthority().equals("SAVE_OWN_PUBLICATION"))
+				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
+			throw new ForbiddenPermissionsException();
+		}
+
+		return postMapper.toPostDTO(mappedEntity);
 	}
 
 	@Override
@@ -142,13 +153,83 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Boolean archivePostById(Integer postId) throws EntityNotFoundException {
-		PostEntity postEntity = postRepository
+	public Boolean archivePostById(UserPrincipal userPrincipal, Integer postId)
+			throws EntityNotFoundException {
+
+		PostEntity mappedEntity = postRepository
 				.findById(postId)
 				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
-		postEntity.setStatus(PostStatus.ARCHIVED);
-		postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-		postRepository.save(postEntity);
+
+		Integer userId = userPrincipal.getId();
+		Integer authorId = mappedEntity.getAuthor().getId();
+
+		if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) {
+			mappedEntity.setStatus(PostStatus.ARCHIVED);
+			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+			postRepository.save(mappedEntity);
+		}
+
+		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_POST"))) {
+			mappedEntity.setStatus(PostStatus.ARCHIVED);
+			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+			postRepository.save(mappedEntity);
+		}
+
+		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_OWN_POST")))
+				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_POST"))) {
+			throw new ForbiddenPermissionsException();
+		}
+
 		return true;
+	}
+
+	@Override
+	public Boolean updatePostById(UserPrincipal userPrincipal, PostSaveFromUserDTO postDTO)
+			throws EntityNotFoundException {
+
+		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
+		mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+
+		Integer userId = userPrincipal.getId();
+		Integer authorId = mappedEntity.getAuthor().getId();
+
+		if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_OWN_POST"))) {
+			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+			postRepository.save(mappedEntity);
+		}
+
+		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
+			mappedEntity.setStatus(PostStatus.PUBLISHED);
+			postRepository.save(mappedEntity);
+		}
+
+		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_OWN_POST")))
+				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
+			throw new ForbiddenPermissionsException();
+		}
+
+		return true;
+	}
+
+	private PostEntity getPostEntityFromPostDTO(PostSaveFromUserDTO postDTO) {
+		Integer postId = postDTO.getId();
+		PostEntity mappedEntity;
+		if (postId == null) {
+			mappedEntity = postMapper.toPostEntity(postDTO);
+
+		} else {
+			PostEntity byId = postRepository.findById(postId)
+					.orElseThrow(EntityNotFoundException::new);
+			mappedEntity = postMapper.updatePostEntityFromDTO(postDTO, byId);
+		}
+		return mappedEntity;
 	}
 }

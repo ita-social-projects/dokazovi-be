@@ -1,14 +1,23 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.annotations.DirectionExists;
+import com.softserveinc.dokazovi.annotations.OriginExists;
+import com.softserveinc.dokazovi.annotations.TagExists;
+import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
+import com.softserveinc.dokazovi.dto.origin.OriginDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
+import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
+import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
-import com.softserveinc.dokazovi.exception.InvalidIdDtoException;
+import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -26,6 +35,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -93,39 +104,147 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void saveFromUser_WhenIdIsNull() {
-		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(new PostEntity());
-		when(userRepository.getOne(any(Integer.class))).thenReturn(userEntity);
+	void saveFromUser_WhenIdIsPresent_isNull_Doctor() {
+
+		Set<RolePermission> rolePermissions = new HashSet<>();
+		rolePermissions.add(RolePermission.SAVE_OWN_PUBLICATION);
+		RoleEntity roleEntity = RoleEntity.builder()
+				.id(1)
+				.name("Doctor")
+				.permissions(rolePermissions)
+				.build();
+		UserEntity author = UserEntity.builder()
+				.id(1)
+				.email("test@nail.com")
+				.password("12345")
+				.role(roleEntity)
+				.firstName("test")
+				.lastName("test")
+				.avatar("test")
+				.status(UserStatus.ACTIVE)
+				.createdAt(Timestamp.valueOf(LocalDateTime.now()))
+				.doctor(new DoctorEntity())
+				.phone("test")
+				.userProviderEntities(new HashSet<>())
+				.enabled(true)
+				.build();
+
+		PostEntity postEntity = PostEntity.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(postEntity);
+		when(userRepository.getOne(any(Integer.class))).thenReturn(author);
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
 		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
-		postService.saveFromUser(new PostSaveFromUserDTO(), userPrincipal);
-		verify(postMapper, times(1)).toPostEntity(any(PostSaveFromUserDTO.class));
-		verify(postRepository, times(1)).save(any(PostEntity.class));
+		postService.saveFromUser(dto, userPrincipal, 1);
 		verify(postMapper, times(1)).toPostDTO(any());
 	}
 
 	@Test
-	void saveFromUser_WhenIdIsPresent_isOk() {
-		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(new PostEntity()));
-		when(postMapper.updatePostEntityFromDTO(any(), any())).thenReturn(new PostEntity());
-		when(userRepository.getOne(any(Integer.class))).thenReturn(userEntity);
-		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+	void saveFromUser_WhenIdIsPresent_isNull_Admin() {
+		Set<RolePermission> rolePermissions = new HashSet<>();
+		rolePermissions.add(RolePermission.SAVE_PUBLICATION);
+		RoleEntity roleEntity = RoleEntity.builder()
 				.id(1)
+				.name("Administrator")
+				.permissions(rolePermissions)
 				.build();
-		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
-		postService.saveFromUser(dto, userPrincipal);
-		verify(postMapper, times(1)).updatePostEntityFromDTO(any(), any());
-		verify(postRepository, times(1)).findById(any());
+		UserEntity author = UserEntity.builder()
+				.id(1)
+				.email("test@nail.com")
+				.password("12345")
+				.role(roleEntity)
+				.firstName("test")
+				.lastName("test")
+				.avatar("test")
+				.status(UserStatus.ACTIVE)
+				.createdAt(Timestamp.valueOf(LocalDateTime.now()))
+				.doctor(new DoctorEntity())
+				.phone("test")
+				.userProviderEntities(new HashSet<>())
+				.enabled(true)
+				.build();
+
+		PostEntity postEntity = PostEntity.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(postEntity);
+		when(userRepository.getOne(any(Integer.class))).thenReturn(author);
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		UserPrincipal userPrincipal = UserPrincipal.create(author);
+		postService.saveFromUser(dto, userPrincipal, 2);
 		verify(postMapper, times(1)).toPostDTO(any());
 	}
 
 	@Test
 	void saveFromUser_WhenIdIsWrong_ThrowException() {
-		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
-		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+		Set<RolePermission> rolePermissions = new HashSet<>();
+		rolePermissions.add(RolePermission.DELETE_OWN_POST);
+		RoleEntity roleEntity = RoleEntity.builder()
 				.id(1)
+				.name("Doctor")
+				.permissions(rolePermissions)
 				.build();
-		UserPrincipal userPrincipal = new UserPrincipal();
-		assertThrows(InvalidIdDtoException.class, () -> postService.saveFromUser(dto, userPrincipal));
+		UserEntity author = UserEntity.builder()
+				.id(1)
+				.email("test@nail.com")
+				.password("12345")
+				.role(roleEntity)
+				.firstName("test")
+				.lastName("test")
+				.avatar("test")
+				.status(UserStatus.ACTIVE)
+				.createdAt(Timestamp.valueOf(LocalDateTime.now()))
+				.doctor(new DoctorEntity())
+				.phone("test")
+				.userProviderEntities(new HashSet<>())
+				.enabled(true)
+				.build();
+
+		PostEntity postEntity = PostEntity.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(postEntity);
+		when(userRepository.getOne(any(Integer.class))).thenReturn(author);
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		UserPrincipal userPrincipal = UserPrincipal.create(author);
+		assertThrows(ForbiddenPermissionsException.class, () -> postService.saveFromUser(dto, userPrincipal, 1));
 	}
 
 
@@ -308,21 +427,434 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenExists_isOk() {
+	void archivePostById_WhenExists_isOk_Admin() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.DELETE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(1);
+		roleEntity.setName("Administrator");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("type");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(27)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		UserEntity adminUserEntity = UserEntity.builder()
+				.id(28)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
 		Integer id = 1;
 		PostEntity postEntity = PostEntity
 				.builder()
 				.id(id)
+				.author(adminUserEntity)
 				.build();
+
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
-		when(postRepository.save(postEntity)).thenReturn(postEntity);
-		Assertions.assertThat(postService.archivePostById(id)).isTrue();
+		Assertions.assertThat(postService.archivePostById(userPrincipal, id)).isTrue();
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException() {
-		Integer id = -1;
+	void archivePostById_WhenExists_isOk_Doctor() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.DELETE_OWN_POST);
 
-		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(id));
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(3);
+		roleEntity.setName("Doctor");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("type");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		UserEntity doctorUserEntity = UserEntity.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.author(doctorUserEntity)
+				.build();
+
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		Assertions.assertThat(postService.archivePostById(userPrincipal, id)).isTrue();
+	}
+
+	@Test
+	void updatePostById_WhenExists_isOk_Admin() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.UPDATE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(1);
+		roleEntity.setName("Administrator");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("type");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+		directions.add(directionDTO);
+
+		TagDTO tagDTO = new TagDTO();
+		tagDTO.setId(1);
+		tagDTO.setTag("tag");
+
+		Set<@TagExists TagDTO> tags = new HashSet<>();
+		tags.add(tagDTO);
+
+		OriginDTO originDTO = new OriginDTO();
+		originDTO.setId(1);
+		originDTO.setName("name");
+		originDTO.setParameter("param");
+
+		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		origins.add(originDTO);
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(27)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		UserEntity adminUserEntity = UserEntity.builder()
+				.id(28)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.id(1)
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.type(postTypeDTO)
+				.directions(directions)
+				.tags(tags)
+				.origins(origins)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.author(adminUserEntity)
+				.build();
+
+		when(postMapper.updatePostEntityFromDTO(dto, postEntity)).thenReturn(postEntity);
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		Assertions.assertThat(postService.updatePostById(userPrincipal, dto)).isTrue();
+	}
+
+	@Test
+	void updatePostById_WhenExists_isOk_Doctor() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.UPDATE_OWN_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(3);
+		roleEntity.setName("Doctor");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("type");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+		directions.add(directionDTO);
+
+		TagDTO tagDTO = new TagDTO();
+		tagDTO.setId(1);
+		tagDTO.setTag("tag");
+
+		Set<@TagExists TagDTO> tags = new HashSet<>();
+		tags.add(tagDTO);
+
+		OriginDTO originDTO = new OriginDTO();
+		originDTO.setId(1);
+		originDTO.setName("name");
+		originDTO.setParameter("param");
+
+		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		origins.add(originDTO);
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		UserEntity doctorUserEntity = UserEntity.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.id(1)
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.type(postTypeDTO)
+				.directions(directions)
+				.tags(tags)
+				.origins(origins)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.author(doctorUserEntity)
+				.build();
+
+		when(postMapper.updatePostEntityFromDTO(dto, postEntity)).thenReturn(postEntity);
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		Assertions.assertThat(postService.updatePostById(userPrincipal, dto)).isTrue();
+	}
+
+	@Test
+	void archivePostById_WhenNotExists_NotFound_ThrowException_Admin() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.DELETE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(1);
+		roleEntity.setName("Administrator");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("name");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		Integer id = -1;
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(27)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
+		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(userPrincipal, id));
+	}
+
+	@Test
+	void archivePostById_WhenNotExists_NotFound_ThrowException_Doctor() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.DELETE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(3);
+		roleEntity.setName("Doctor");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("name");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		Integer id = -1;
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
+		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(userPrincipal, id));
+	}
+
+	@Test
+	void updatePostById_WhenNotExists_NotFound_ThrowException_Admin() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.UPDATE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(1);
+		roleEntity.setName("Administrator");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("name");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+		directions.add(directionDTO);
+
+		TagDTO tagDTO = new TagDTO();
+		tagDTO.setId(1);
+		tagDTO.setTag("tag");
+
+		Set<@TagExists TagDTO> tags = new HashSet<>();
+		tags.add(tagDTO);
+
+		OriginDTO originDTO = new OriginDTO();
+		originDTO.setId(1);
+		originDTO.setName("name");
+		originDTO.setParameter("param");
+
+		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		origins.add(originDTO);
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(27)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.id(-1)
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.type(postTypeDTO)
+				.directions(directions)
+				.tags(tags)
+				.origins(origins)
+				.build();
+
+		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
+		assertThrows(EntityNotFoundException.class, () -> postService.updatePostById(userPrincipal, dto));
+	}
+
+	@Test
+	void updatePostById_WhenNotExists_NotFound_ThrowException_Doctor() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.UPDATE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(3);
+		roleEntity.setName("Doctor");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("name");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+		directions.add(directionDTO);
+
+		TagDTO tagDTO = new TagDTO();
+		tagDTO.setId(1);
+		tagDTO.setTag("tag");
+
+		Set<@TagExists TagDTO> tags = new HashSet<>();
+		tags.add(tagDTO);
+
+		OriginDTO originDTO = new OriginDTO();
+		originDTO.setId(1);
+		originDTO.setName("name");
+		originDTO.setParameter("param");
+
+		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		origins.add(originDTO);
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.id(-1)
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.type(postTypeDTO)
+				.directions(directions)
+				.tags(tags)
+				.origins(origins)
+				.build();
+
+		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
+		assertThrows(EntityNotFoundException.class, () -> postService.updatePostById(userPrincipal, dto));
 	}
 }
