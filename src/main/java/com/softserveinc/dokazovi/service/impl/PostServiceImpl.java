@@ -55,7 +55,6 @@ public class PostServiceImpl implements PostService {
 
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
-		try {
 			if (userEntity.getId().equals(authorId) && userPrincipal.getAuthorities().stream()
 					.anyMatch(grantedAuthority -> grantedAuthority
 							.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
@@ -72,15 +71,13 @@ public class PostServiceImpl implements PostService {
 				postRepository.save(mappedEntity);
 			}
 
-			if (!userEntity.getId().equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+			if (!userEntity.getId().equals(authorId) || userPrincipal.getAuthorities().stream()
+					.noneMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("SAVE_OWN_PUBLICATION"))
 					&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
 					grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
 				throw new ForbiddenPermissionsException();
 			}
-		} catch (Exception e) {
-			throw new EntityNotFoundException();
-		}
 
 		return postMapper.toPostDTO(mappedEntity);
 	}

@@ -17,6 +17,7 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
+import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -153,12 +154,49 @@ class PostServiceImplTest {
 
 	@Test
 	void saveFromUser_WhenIdIsWrong_ThrowException() {
-		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
-		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+		Set<RolePermission> rolePermissions = new HashSet<>();
+		rolePermissions.add(RolePermission.DELETE_OWN_POST);
+		RoleEntity roleEntity = RoleEntity.builder()
 				.id(1)
+				.name("Doctor")
+				.permissions(rolePermissions)
 				.build();
-		UserPrincipal userPrincipal = new UserPrincipal();
-		assertThrows(EntityNotFoundException.class, () -> postService.saveFromUser(dto, userPrincipal, 1));
+		UserEntity author = UserEntity.builder()
+				.id(1)
+				.email("test@nail.com")
+				.password("12345")
+				.role(roleEntity)
+				.firstName("test")
+				.lastName("test")
+				.avatar("test")
+				.status(UserStatus.ACTIVE)
+				.createdAt(Timestamp.valueOf(LocalDateTime.now()))
+				.doctor(new DoctorEntity())
+				.phone("test")
+				.userProviderEntities(new HashSet<>())
+				.enabled(true)
+				.build();
+
+		PostEntity postEntity = PostEntity.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(postEntity);
+		when(userRepository.getOne(any(Integer.class))).thenReturn(author);
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.build();
+
+		UserPrincipal userPrincipal = UserPrincipal.create(author);
+		assertThrows(ForbiddenPermissionsException.class, () -> postService.saveFromUser(dto, userPrincipal, 1));
 	}
 
 
