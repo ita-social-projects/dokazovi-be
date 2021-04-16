@@ -78,7 +78,7 @@ public class PostServiceImpl implements PostService {
 				grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
 			throw new ForbiddenPermissionsException();
 		}
-
+		directionRepository.updateDirectionsHasPostsStatus();
 		return postMapper.toPostDTO(mappedEntity);
 	}
 
@@ -183,7 +183,7 @@ public class PostServiceImpl implements PostService {
 				grantedAuthority.getAuthority().equals("DELETE_POST"))) {
 			throw new ForbiddenPermissionsException();
 		}
-
+		directionRepository.updateDirectionsHasPostsStatus();
 		return true;
 	}
 
@@ -215,7 +215,7 @@ public class PostServiceImpl implements PostService {
 				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
 			throw new ForbiddenPermissionsException();
 		}
-
+		directionRepository.updateDirectionsHasPostsStatus();
 		return true;
 	}
 

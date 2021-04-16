@@ -35,4 +35,18 @@ class DirectionServiceImplTest {
 
 		verify(directionMapper, times(directions.size())).toDirectionDTO(any(DirectionEntity.class));
 	}
+
+	@Test
+	void updateDirectionsHasDoctorsStatusTest() {
+		directionService.updateDirectionsHasDoctorsStatus();
+		verify(directionRepository, times(1))
+				.updateDirectionsHasDoctorsStatus();
+	}
+
+	@Test
+	void updateDirectionsHasPostsStatusTest() {
+		directionService.updateDirectionsHasPostsStatus();
+		verify(directionRepository, times(1))
+				.updateDirectionsHasPostsStatus();
+	}
 }

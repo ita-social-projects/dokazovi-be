@@ -24,4 +24,8 @@ public class DirectionDTO {
 	private String label;
 
 	private String color;
+
+	private Boolean hasDoctors;
+
+	private Boolean hasPosts;
 }
