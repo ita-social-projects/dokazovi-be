@@ -8,6 +8,8 @@ public interface DirectionService {
 
 	List<DirectionDTO> findAllDirections();
 
+	List<DirectionDTO> findAllDirectionsByUserId(Integer userId);
+
 	void updateDirectionsHasDoctorsStatus();
 
 	void updateDirectionsHasPostsStatus();
