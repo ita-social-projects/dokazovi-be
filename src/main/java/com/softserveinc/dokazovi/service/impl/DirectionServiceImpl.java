@@ -27,6 +27,13 @@ public class DirectionServiceImpl implements DirectionService {
 	}
 
 	@Override
+	public List<DirectionDTO> findAllDirectionsByUserId(Integer userId) {
+		return directionRepository.findAllDirectionsByUserId(userId).stream()
+				.map(directionMapper::toDirectionDTO)
+				.collect(Collectors.toList());
+	}
+
+	@Override
 	@Transactional
 	@Scheduled(cron = "0 0 */4 * * *")
 	public void updateDirectionsHasDoctorsStatus() {
@@ -38,4 +45,5 @@ public class DirectionServiceImpl implements DirectionService {
 	public void updateDirectionsHasPostsStatus() {
 		directionRepository.updateDirectionsHasPostsStatus();
 	}
+
 }

@@ -43,4 +43,15 @@ class DirectionControllerTest {
 
 		verify(directionService).findAllDirections();
 	}
+
+	@Test
+	void getAllDirectionsByUserId() throws Exception {
+		String uri = DIRECTION + "/1";
+
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		verify(directionService).findAllDirectionsByUserId(1);
+
+	}
+
 }
