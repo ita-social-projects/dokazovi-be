@@ -7,4 +7,6 @@ import java.util.List;
 public interface PostTypeService {
 
 	List<PostTypeDTO> findAll();
+
+	List<PostTypeDTO> findAllPostTypesByUserId(Integer userId);
 }
