@@ -24,4 +24,12 @@ public class PostTypeServiceImpl implements PostTypeService {
 				.map(postTypeMapper::toPostTypeDTO)
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<PostTypeDTO> findAllPostTypesByUserId(Integer userId) {
+		return postTypeRepository.findAllPostTypesByUserId(userId)
+				.stream()
+				.map(postTypeMapper::toPostTypeDTO)
+				.collect(Collectors.toList());
+	}
 }

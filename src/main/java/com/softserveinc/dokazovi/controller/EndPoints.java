@@ -29,6 +29,8 @@ public final class EndPoints {
 	public static final String AUTH_VERIFICATION = "/verification";
 	public static final String AUTH_LOGIN = "/login";
 	public static final String AUTH_SIGNUP = "/signup";
+	public static final String POST_TYPES = "/post-types";
+	public static final String POST_TYPES_ALL_TYPES_BY_USER = "/{userId}";
 
 	public static String openApi(String api) {
 		return api + "/**";
