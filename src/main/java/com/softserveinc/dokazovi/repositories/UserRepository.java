@@ -110,8 +110,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM USERS U"
 					+ "   JOIN DOCTORS D ON U.USER_ID = D.USER_ID"
-					+ "     WHERE U.FIRST_NAME LIKE CONCAT(:name, '%') OR "
-					+ "          U.LAST_NAME LIKE CONCAT(:name, '%')")
+					+ "     WHERE UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:name), '%') OR "
+					+ "          UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:name), '%')")
 	Page<UserEntity> findDoctorsByName(@Param("name") String name, Pageable pageable);
 
 	/**
@@ -122,22 +122,22 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	@Query(nativeQuery = true,
 			value = "SELECT *, "
 					+ "  CASE "
-					+ "         WHEN ((U.FIRST_NAME LIKE CONCAT(:firstName, '%') "
-					+ "               AND U.LAST_NAME LIKE CONCAT(:lastName, '%'))) "
-					+ "           OR ((U.FIRST_NAME LIKE CONCAT(:lastName, '%')"
-					+ "               AND U.LAST_NAME LIKE CONCAT(:firstName, '%')))  THEN 1"
-					+ "         WHEN (U.LAST_NAME LIKE CONCAT(:lastName, '%')) "
-					+ "           OR (U.LAST_NAME LIKE CONCAT(:firstName, '%'))"
-					+ "           OR (U.FIRST_NAME LIKE CONCAT(:firstName, '%')) "
-					+ "           OR (U.FIRST_NAME LIKE CONCAT(:lastName, '%'))       THEN 2"
+					+ "         WHEN ((UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:firstName), '%') "
+					+ "               AND UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:lastName), '%'))) "
+					+ "           OR ((UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:lastName), '%')"
+					+ "               AND UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:firstName), '%')))  THEN 1"
+					+ "         WHEN (UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:lastName), '%')) "
+					+ "           OR (UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:firstName), '%'))"
+					+ "           OR (UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:firstName), '%')) "
+					+ "           OR (UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:lastName), '%'))       THEN 2"
 					+ "                                                               ELSE 3 "
 					+ "     END as TURN "
 					+ "   FROM USERS U "
 					+ "     JOIN DOCTORS D ON U.USER_ID = D.USER_ID "
-					+ "       WHERE (U.LAST_NAME LIKE CONCAT(:lastName, '%')) "
-					+ "         OR (U.LAST_NAME LIKE CONCAT(:firstName, '%'))"
-					+ "         OR (U.FIRST_NAME LIKE CONCAT(:lastName, '%'))"
-					+ "         OR (U.FIRST_NAME LIKE CONCAT(:firstName, '%'))"
+					+ "       WHERE (UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:lastName), '%')) "
+					+ "         OR (UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:firstName), '%'))"
+					+ "         OR (UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:lastName), '%'))"
+					+ "         OR (UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:firstName), '%'))"
 					+ "       ORDER BY TURN")
 	Page<UserEntity> findDoctorsByName(
 			@Param("firstName") String firstName, @Param("lastName") String lastName, Pageable pageable);

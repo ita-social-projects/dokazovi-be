@@ -32,7 +32,7 @@ public class DirectionController {
 	}
 
 	@GetMapping(POST_GET_USER_BY_ID)
-	@ApiOperation(value = "Get all directions")
+	@ApiOperation(value = "Get all directions by user id")
 	public ResponseEntity<List<DirectionDTO>> getAllDirectionsByUserId(@PathVariable("userId") Integer userId) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
