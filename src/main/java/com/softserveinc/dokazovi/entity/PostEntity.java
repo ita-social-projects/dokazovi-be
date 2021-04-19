@@ -104,4 +104,7 @@ public class PostEntity {
 
 	@UpdateTimestamp
 	private Timestamp modifiedAt;
+
+	@CreationTimestamp
+	private Timestamp publishedAt;
 }
