@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DirectionRepository extends JpaRepository<DirectionEntity, Integer> {
 
@@ -22,5 +24,13 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
 			+ " WHERE DIRECTION_ID IN (SELECT DISTINCT DIRECTION_ID FROM POSTS_DIRECTIONS)")
 	@Modifying
 	void updateDirectionsHasPostsStatus();
+
+	@Query(nativeQuery = true,
+			value = "SELECT * FROM DIRECTIONS"
+					+ " WHERE DIRECTION_ID IN (SELECT DISTINCT DIRECTION_ID FROM POSTS_DIRECTIONS "
+					+ " WHERE POST_ID IN (SELECT DISTINCT POST_ID FROM POSTS "
+					+ " WHERE AUTHOR_ID IN (:userId) ))")
+	@Modifying
+	List<DirectionEntity> findAllDirectionsByUserId(Integer userId);
 }
 
