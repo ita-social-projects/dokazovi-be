@@ -17,6 +17,7 @@ public final class EndPoints {
 	public static final String USER_RANDOM_EXPERTS = "/random-experts";
 	public static final String USER_ALL_EXPERTS = "/all-experts";
 	public static final String USER_GET_USER_BY_ID = "/{userId}";
+	public static final String POST_GET_USER_BY_ID = "/{userId}";
 	public static final String USER_GET_CURRENT_USER = "/me";
 	public static final String TAG = "/tag";
 	public static final String TAG_FIND_BY_VALUE = "/find-by-value";
@@ -28,6 +29,8 @@ public final class EndPoints {
 	public static final String AUTH_VERIFICATION = "/verification";
 	public static final String AUTH_LOGIN = "/login";
 	public static final String AUTH_SIGNUP = "/signup";
+	public static final String POST_TYPES = "/post-types";
+	public static final String POST_TYPES_ALL_TYPES_BY_USER = "/{userId}";
 
 	public static String openApi(String api) {
 		return api + "/**";

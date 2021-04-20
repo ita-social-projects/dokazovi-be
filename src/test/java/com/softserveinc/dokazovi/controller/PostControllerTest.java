@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
+import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
 import org.junit.jupiter.api.Assertions;
@@ -48,6 +49,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -132,7 +134,7 @@ class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(content))
 				.andExpect(status().isCreated());
-		verify(postService).saveFromUser(eq(post), any());
+		verify(postService).saveFromUser(eq(post), any(), any());
 	}
 
 	@Test
@@ -182,32 +184,140 @@ class PostControllerTest {
 
 	@Test
 	void archivePostById_WhenExists_isOk() throws Exception {
-		Integer existingPostId = 1;
-		Mockito.when(postService.archivePostById(existingPostId)).thenReturn(true);
+		String content = "{\n" +
+				"  \"content\": \"string\",\n" +
+				"  \"directions\": [\n" +
+				"    {\n" +
+				"      \"id\": 1\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"id\": 1,\n" +
+				"  \"preview\": \"string\",\n" +
+				"  \"videoUrl\": \"string\",\n" +
+				"  \"previewImageUrl\": \"string\",\n" +
+				"  \"tags\": [\n" +
+				"    {\n" +
+				"      \"id\": 1,\n" +
+				"      \"tag\": \"string\"\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"title\": \"string\",\n" +
+				"  \"type\": {\n" +
+				"    \"id\": 1,\n" +
+				"    \"name\": \"string\"\n" +
+				"  }\n" +
+				"}";
 
-		mockMvc.perform(delete("/post/1")).andExpect(status().isOk()).andExpect(result ->
+		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(Integer.class)))
+				.thenReturn(true);
+		mockMvc.perform(delete("/post/1").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk()).andExpect(result ->
 				Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 deleted successfully\"}",
 						result.getResponse().getContentAsString()));
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound() throws Exception {
-		Integer notExistingPostId = -1;
-		Mockito.when(postService.archivePostById(notExistingPostId))
-				.thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
+	void updatePostById_WhenExists_isOk() throws Exception {
+		String content = "{\n" +
+				"  \"content\": \"string\",\n" +
+				"  \"directions\": [\n" +
+				"    {\n" +
+				"      \"id\": 1\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"id\": 1,\n" +
+				"  \"preview\": \"string\",\n" +
+				"  \"videoUrl\": \"string\",\n" +
+				"  \"previewImageUrl\": \"string\",\n" +
+				"  \"tags\": [\n" +
+				"    {\n" +
+				"      \"id\": 1,\n" +
+				"      \"tag\": \"string\"\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"title\": \"string\",\n" +
+				"  \"type\": {\n" +
+				"    \"id\": 1,\n" +
+				"    \"name\": \"string\"\n" +
+				"  }\n" +
+				"}";
 
-		mockMvc.perform(delete("/post/-1")).andExpect(status().isOk()).andExpect(result ->
+		Mockito.when(postService.updatePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
+				.thenReturn(true);
+		mockMvc.perform(put("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk()).andExpect(result ->
+				Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 updated successfully\"}",
+						result.getResponse().getContentAsString()));
+	}
+
+	@Test
+	void archivePostById_WhenNotExists_NotFound() throws Exception {
+		String content = "{\n" +
+				"  \"content\": \"string\",\n" +
+				"  \"directions\": [\n" +
+				"    {\n" +
+				"      \"id\": 1\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"id\": -1,\n" +
+				"  \"preview\": \"string\",\n" +
+				"  \"videoUrl\": \"string\",\n" +
+				"  \"previewImageUrl\": \"string\",\n" +
+				"  \"tags\": [\n" +
+				"    {\n" +
+				"      \"id\": 1,\n" +
+				"      \"tag\": \"string\"\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"title\": \"string\",\n" +
+				"  \"type\": {\n" +
+				"    \"id\": 1,\n" +
+				"    \"name\": \"string\"\n" +
+				"  }\n" +
+				"}";
+
+		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(Integer.class)))
+				.thenThrow(new EntityNotFoundException("Post with -1 not found"));
+
+		mockMvc.perform(delete("/post/-1").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk()).andExpect(result ->
 				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
 						result.getResponse().getContentAsString()));
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException() {
-		Integer notExistingPostId = -1;
+	void updatePostById_WhenNotExists_NotFound() throws Exception {
+		String content = "{\n" +
+				"  \"content\": \"string\",\n" +
+				"  \"directions\": [\n" +
+				"    {\n" +
+				"      \"id\": 1\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"id\": -1,\n" +
+				"  \"preview\": \"string\",\n" +
+				"  \"videoUrl\": \"string\",\n" +
+				"  \"previewImageUrl\": \"string\",\n" +
+				"  \"tags\": [\n" +
+				"    {\n" +
+				"      \"id\": 1,\n" +
+				"      \"tag\": \"string\"\n" +
+				"    }\n" +
+				"  ],\n" +
+				"  \"title\": \"string\",\n" +
+				"  \"type\": {\n" +
+				"    \"id\": 1,\n" +
+				"    \"name\": \"string\"\n" +
+				"  }\n" +
+				"}";
 
-		Mockito.when(postService.archivePostById(notExistingPostId))
-				.thenThrow(new EntityNotFoundException(String.format("Post with %s not found", notExistingPostId)));
-		Assertions.assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(notExistingPostId));
+		Mockito.when(postService.updatePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
+				.thenThrow(new EntityNotFoundException("Post with -1 not found"));
+
+		mockMvc.perform(put("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk()).andExpect(result ->
+				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
+						result.getResponse().getContentAsString()));
 	}
 
 	@Test

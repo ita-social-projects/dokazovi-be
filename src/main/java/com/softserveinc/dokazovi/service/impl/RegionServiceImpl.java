@@ -5,8 +5,10 @@ import com.softserveinc.dokazovi.mapper.RegionMapper;
 import com.softserveinc.dokazovi.repositories.RegionRepository;
 import com.softserveinc.dokazovi.service.RegionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,5 +24,12 @@ public class RegionServiceImpl implements RegionService {
 		return regionRepository.findAll().stream()
 				.map(regionMapper::toRegionDTO)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional
+	@Scheduled(cron = "0 0 */4 * * *")
+	public void updateRegionsStatus() {
+		regionRepository.updateRegionsStatus();
 	}
 }

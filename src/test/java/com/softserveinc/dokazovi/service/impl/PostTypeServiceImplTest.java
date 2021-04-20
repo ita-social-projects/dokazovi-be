@@ -42,4 +42,11 @@ class PostTypeServiceImplTest {
 		postTypeService.findAll();
 		verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
 	}
+
+	@Test
+	void findAllPostTypesByUserId() {
+		when(postTypeRepository.findAllPostTypesByUserId(2)).thenReturn(postTypeEntities);
+		postTypeService.findAllPostTypesByUserId(2);
+		verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
+	}
 }

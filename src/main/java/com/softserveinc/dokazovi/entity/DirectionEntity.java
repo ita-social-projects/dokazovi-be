@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,6 +35,12 @@ public class DirectionEntity {
 
 	@Column(length = 7)
 	private String color;
+
+	@ColumnDefault("false")
+	private Boolean hasDoctors;
+
+	@ColumnDefault("false")
+	private Boolean hasPosts;
 
 	@ManyToMany(mappedBy = "directions")
 	@EqualsAndHashCode.Exclude

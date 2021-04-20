@@ -35,4 +35,28 @@ class DirectionServiceImplTest {
 
 		verify(directionMapper, times(directions.size())).toDirectionDTO(any(DirectionEntity.class));
 	}
+
+	@Test
+	void findAllDirectionsByUserId() {
+		List<DirectionEntity> directions = List.of(new DirectionEntity(), new DirectionEntity());
+
+		when(directionRepository.findAllDirectionsByUserId(1)).thenReturn(directions);
+		directionService.findAllDirectionsByUserId(1);
+
+		verify(directionMapper, times(directions.size())).toDirectionDTO(any(DirectionEntity.class));
+	}
+
+	@Test
+	void updateDirectionsHasDoctorsStatusTest() {
+		directionService.updateDirectionsHasDoctorsStatus();
+		verify(directionRepository, times(1))
+				.updateDirectionsHasDoctorsStatus();
+	}
+
+	@Test
+	void updateDirectionsHasPostsStatusTest() {
+		directionService.updateDirectionsHasPostsStatus();
+		verify(directionRepository, times(1))
+				.updateDirectionsHasPostsStatus();
+	}
 }

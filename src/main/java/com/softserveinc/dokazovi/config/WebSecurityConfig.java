@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static com.softserveinc.dokazovi.controller.EndPoints.DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPES;
 import static com.softserveinc.dokazovi.controller.EndPoints.REGION;
 import static com.softserveinc.dokazovi.controller.EndPoints.TAG;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
@@ -114,7 +115,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/auth/**", "/oauth2/**")
 					.permitAll()
 				.antMatchers(openApi(USER), openApi(POST), openApi(TAG), openApi(DIRECTION), openApi(REGION),
-							 openApi(VERSION))
+							 openApi(VERSION), openApi(POST_TYPES))
 					.permitAll()
 				.anyRequest()
 					.authenticated()

@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.service.DirectionService;
+import com.softserveinc.dokazovi.service.PostTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,45 +13,33 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.DIRECTION;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPES;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-class DirectionControllerTest {
+public class PostTypesControllerTest {
 
 	private MockMvc mockMvc;
 
 	@Mock
-	private DirectionService directionService;
+	private PostTypeService postTypeService;
 	@InjectMocks
-	private DirectionController directionController;
+	private PostTypesController postTypesController;
 
 	@BeforeEach
 	void setUp() {
 		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(directionController)
+				.standaloneSetup(postTypesController)
 				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
 				.build();
 	}
 
 	@Test
-	void getAllDirections() throws Exception {
-		mockMvc.perform(get(DIRECTION)).andExpect(status().isOk());
-
-		verify(directionService).findAllDirections();
+	void getAllPostTypesByUserId() throws Exception {
+		mockMvc.perform(get(POST_TYPES + "/1")).andExpect(status().isOk());
+		verify(postTypeService).findAllPostTypesByUserId(1);
 	}
-
-	@Test
-	void getAllDirectionsByUserId() throws Exception {
-		String uri = DIRECTION + "/1";
-
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
-
-		verify(directionService).findAllDirectionsByUserId(1);
-
-	}
-
 }
