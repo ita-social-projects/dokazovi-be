@@ -11,6 +11,7 @@ import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.util.MailSenderUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,7 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Locale;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
@@ -44,6 +46,9 @@ public class AuthController {
 	private final MailSenderUtil mailSenderUtil;
 	private final UserService userService;
 	private final ProviderService providerService;
+	private final MessageSource messageSource;
+
+	private static final Locale DEFAULT_LOCALE = Locale.getDefault();
 
 	@PostMapping(AUTH_LOGIN)
 	public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -57,7 +62,8 @@ public class AuthController {
 		String token = tokenProvider.createToken(authentication);
 		UserEntity userEntity = userService.findByEmail(loginRequest.getEmail());
 		if (!userEntity.getEnabled()) {
-			throw new BadRequestException("Please confirm your email!");
+			String errorMessage = messageSource.getMessage("email.notconfirmed", null, DEFAULT_LOCALE);
+			throw new BadRequestException(errorMessage);
 		} else {
 			AuthResponse authResponse = new AuthResponse(token);
 			authResponse.setAccessToken(token);
@@ -69,7 +75,8 @@ public class AuthController {
 	public ResponseEntity<ApiResponseMessage> registerUser(@Valid @RequestBody SignUpRequest signUpRequest)
 			throws IOException, MessagingException {
 		if (providerService.existsByLocalEmail(signUpRequest.getEmail())) {
-			throw new BadRequestException("Email address already in use.");
+			String errorMessage = messageSource.getMessage("email.notunique", null, DEFAULT_LOCALE);
+			throw new BadRequestException(errorMessage);
 		}
 		UserEntity user = userService.registerNewUser(signUpRequest);
 		providerService.createLocalProviderEntityForUser(user, signUpRequest.getEmail());

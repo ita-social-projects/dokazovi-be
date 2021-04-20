@@ -6,6 +6,8 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.dto.payload.LoginRequest;
 import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
+import com.softserveinc.dokazovi.exception.BadRequestException;
+import com.softserveinc.dokazovi.exception.handler.CustomRestExceptionHandler;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
@@ -18,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.context.MessageSource;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,14 +36,19 @@ import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_SIGNUP;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_VERIFICATION;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,6 +66,8 @@ class AuthControllerTest {
     private ProviderService providerService;
     @Mock
     private UserService userService;
+    @Mock
+    private MessageSource messageSource;
     @InjectMocks
     private AuthController authController;
 
@@ -66,6 +76,7 @@ class AuthControllerTest {
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(authController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .setControllerAdvice(new CustomRestExceptionHandler())
                 .build();
     }
 
@@ -152,6 +163,46 @@ class AuthControllerTest {
         verify(userService, times(1))
                 .getVerificationToken(anyString());
         assertEquals(token, verificationToken.getToken());
+    }
+
+    @Test
+    void shouldRejectRegistrationWithNotUniqueEmailTest() throws Exception {
+        SignUpRequest request = new SignUpRequest();
+        request.setEmail("user@mail.com");
+        request.setName("name");
+        request.setPassword("password");
+        String errorMessage = "Email address already in use.";
+        when(providerService.existsByLocalEmail(anyString())).thenReturn(true);
+        when(messageSource.getMessage(eq("email.notunique"), any(), any())).thenReturn(errorMessage);
+        String uri = AUTH + AUTH_SIGNUP;
+        mockMvc.perform(
+                post(uri)
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadRequestException))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string((containsString(errorMessage))));
+    }
+
+    @Test
+    void shouldRejectLoginWithUnconfirmedEmailTest() throws Exception {
+        LoginRequest request = new LoginRequest();
+        request.setEmail("user@mail.com");
+        request.setPassword("password");
+        UserEntity user = UserEntity.builder()
+                .enabled(false)
+                .build();
+        when(userService.findByEmail(anyString())).thenReturn(user);
+        String errorMessage = "Please confirm your email!";
+        when(messageSource.getMessage(eq("email.notconfirmed"), any(), any())).thenReturn(errorMessage);
+        String uri = AUTH + AUTH_LOGIN;
+        mockMvc.perform(
+                post(uri)
+                        .contentType(MediaType.APPLICATION_JSON).content(asJsonString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadRequestException))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string((containsString(errorMessage))));
     }
 
     public static String asJsonString(final Object obj) {
