@@ -66,7 +66,6 @@ public class PostController {
 	})
 	public ResponseEntity<PostDTO> save(@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		System.out.println(postSaveFromUserDTO.toString());
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(postService.saveFromUser(postSaveFromUserDTO, userPrincipal));
