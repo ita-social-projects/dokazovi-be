@@ -37,7 +37,7 @@ public class UserSearchCriteria {
 		}
 
 		List<String> result = Arrays.asList(name.split(" "));
-		Collections.sort(result, Collections.reverseOrder());
+		result.sort(Collections.reverseOrder());
 
 		return result;
 	}

@@ -2,7 +2,7 @@ package com.softserveinc.dokazovi.mapper;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
+import com.softserveinc.dokazovi.dto.post.PostTypeIdOnlyDTO;
 import com.softserveinc.dokazovi.dto.user.LatestUserPostDTO;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
@@ -77,12 +77,10 @@ class PostMapperTest {
 				.content("PostSaveFromUserDTO content")
 				.previewImageUrl("PostSaveFromUserDTO previewImageUrl")
 				.videoUrl("PostSaveFromUserDTO videoUrl")
-				.type(PostTypeDTO.builder()
+				.type(PostTypeIdOnlyDTO.builder()
 						.id(1)
-						.name("1")
 						.build())
 				.directions(new HashSet<>())
-				.tags(new HashSet<>())
 				.build();
 	}
 
@@ -121,9 +119,7 @@ class PostMapperTest {
 		assertEquals(postEntity.getPreview(), postSaveFromUserDTO.getPreview());
 		assertEquals(postEntity.getContent(), postSaveFromUserDTO.getContent());
 		assertEquals(postEntity.getType().getId(), postSaveFromUserDTO.getType().getId());
-		assertEquals(postEntity.getType().getName(), postSaveFromUserDTO.getType().getName());
 		assertEquals(postEntity.getDirections().hashCode(), postSaveFromUserDTO.getDirections().hashCode());
-		assertEquals(postEntity.getTags().hashCode(), postSaveFromUserDTO.getTags().hashCode());
 	}
 
 	@Test
@@ -135,8 +131,6 @@ class PostMapperTest {
 		assertEquals(postEntity.getPreview(), postSaveFromUserDTO.getPreview());
 		assertEquals(postEntity.getContent(), postSaveFromUserDTO.getContent());
 		assertEquals(postEntity.getType().getId(), postSaveFromUserDTO.getType().getId());
-		assertEquals(postEntity.getType().getName(), postSaveFromUserDTO.getType().getName());
 		assertEquals(postEntity.getDirections().hashCode(), postSaveFromUserDTO.getDirections().hashCode());
-		assertEquals(postEntity.getTags().hashCode(), postSaveFromUserDTO.getTags().hashCode());
 	}
 }

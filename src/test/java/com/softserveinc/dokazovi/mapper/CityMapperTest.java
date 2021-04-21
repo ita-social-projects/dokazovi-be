@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.mapper;
 
-import com.softserveinc.dokazovi.dto.user.UserInstitutionCityDTO;
 import com.softserveinc.dokazovi.dto.post.PostUserInstitutionCityDTO;
+import com.softserveinc.dokazovi.dto.user.UserInstitutionCityDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -3,10 +3,8 @@ package com.softserveinc.dokazovi.dto.post;
 import com.softserveinc.dokazovi.annotations.DirectionExists;
 import com.softserveinc.dokazovi.annotations.OriginExists;
 import com.softserveinc.dokazovi.annotations.PostTypeExists;
-import com.softserveinc.dokazovi.annotations.TagExists;
-import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
-import com.softserveinc.dokazovi.dto.origin.OriginDTO;
-import com.softserveinc.dokazovi.dto.tag.TagDTO;
+import com.softserveinc.dokazovi.dto.direction.DirectionDTOForSavingPost;
+import com.softserveinc.dokazovi.dto.origin.OriginDTOForSavingPost;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +23,9 @@ public class PostSaveFromUserDTO {
 
 	private Integer id;
 
+	@NotNull(message = "Author id is required")
+	private Integer authorId;
+
 	private String title;
 
 	private String videoUrl;
@@ -39,13 +40,11 @@ public class PostSaveFromUserDTO {
 
 	@NotNull(message = "PostType are required")
 	@PostTypeExists
-	private PostTypeDTO type;
+	private PostTypeIdOnlyDTO type;
 
 	@NotNull(message = "At least one topic are required")
 	@Size(min = 1, max = 3, message = "Number of chosen topics is from 1 to 3. ")
-	private Set<@DirectionExists DirectionDTO> directions;
+	private Set<@DirectionExists DirectionDTOForSavingPost> directions;
 
-	private Set<@TagExists TagDTO> tags;
-
-	private Set<@OriginExists OriginDTO> origins;
+	private Set<@OriginExists OriginDTOForSavingPost> origins;
 }
