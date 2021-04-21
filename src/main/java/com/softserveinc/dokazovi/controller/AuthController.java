@@ -1,10 +1,10 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.payload.AuthResponse;
 import com.softserveinc.dokazovi.dto.payload.LoginRequest;
 import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;

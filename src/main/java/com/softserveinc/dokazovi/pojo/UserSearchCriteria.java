@@ -2,7 +2,6 @@ package com.softserveinc.dokazovi.pojo;
 
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
