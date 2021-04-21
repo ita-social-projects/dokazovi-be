@@ -36,11 +36,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -167,7 +169,7 @@ public class PostController {
 	public ResponseEntity<ApiResponseMessage> archivePostById(
 			@AuthenticationPrincipal UserPrincipal userPrincipal,
 			@PathVariable("postId") Integer postId
-			) {
+	) {
 		ApiResponseMessage apiResponseMessage;
 		try {
 			apiResponseMessage = ApiResponseMessage.builder()
@@ -204,5 +206,18 @@ public class PostController {
 					.build();
 		}
 		return ResponseEntity.ok().body(apiResponseMessage);
+	}
+
+	@GetMapping(POST_GET_POST_BY_AUTHOR_ID)
+	@ApiOperation(value = "Get post by author Id, as a path variable, and directions.")
+	public ResponseEntity<Page<PostDTO>> getPostsByAuthorIdAndDirections(
+			@PageableDefault(size = 12) Pageable pageable, @NotNull Integer authorId,
+			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
+			@RequestParam(required = false) @NotNull Set<Integer> directions) {
+		Page<PostDTO> posts = postService
+				.findPostsByAuthorIdAndDirections(pageable, authorId, directions);
+		return ResponseEntity
+				.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+				.body(posts);
 	}
 }

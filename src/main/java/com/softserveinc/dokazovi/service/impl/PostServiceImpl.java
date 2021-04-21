@@ -153,6 +153,14 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	public Page<PostDTO> findPostsByAuthorIdAndDirections(
+			Pageable pageable, Integer authorId, Set<Integer> directions) {
+
+		return postRepository.findPostsByAuthorIdAndDirections(pageable, authorId, directions)
+				.map(postMapper::toPostDTO);
+	}
+
+	@Override
 	public Boolean archivePostById(UserPrincipal userPrincipal, Integer postId)
 			throws EntityNotFoundException {
 

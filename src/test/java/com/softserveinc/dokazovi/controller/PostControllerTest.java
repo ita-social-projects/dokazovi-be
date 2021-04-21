@@ -37,6 +37,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
@@ -163,6 +164,41 @@ class PostControllerTest {
 				get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tag=3,4,5,6"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByDirection(directionId, type, tag, PostStatus.PUBLISHED, pageable);
+	}
+
+	@Test
+	void getPostsByAuthorIdAndDirections_WhenExists_isOk() throws Exception {
+		Set<Integer> directions = Set.of(1, 4);
+		Pageable pageable = PageRequest.of(0, 12);
+
+		String uri = POST + POST_GET_POST_BY_AUTHOR_ID + "?authorId=1&directions=1,4";
+		PostDTO postDTO = PostDTO.builder()
+				.id(1)
+				.build();
+
+		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
+
+		when(postService.findPostsByAuthorIdAndDirections(any(), any(), any())).thenReturn(page);
+
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		verify(postService).findPostsByAuthorIdAndDirections(pageable, 1, directions);
+	}
+
+	@Test
+	void getPostsByAuthorIdAndDirections_WhenNotExists_NotFound() throws Exception {
+		Set<Integer> directions = Set.of(1, 4);
+		Pageable pageable = PageRequest.of(0, 12);
+
+		String uri = POST + POST_GET_POST_BY_AUTHOR_ID + "?authorId=1&directions=1,4";
+
+		Page<PostDTO> page = new PageImpl<>(List.of());
+
+		when(postService.findPostsByAuthorIdAndDirections(any(), any(), any())).thenReturn(page);
+
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+
+		verify(postService).findPostsByAuthorIdAndDirections(pageable, 1, directions);
 	}
 
 	@Test
