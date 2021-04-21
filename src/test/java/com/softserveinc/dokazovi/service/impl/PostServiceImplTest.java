@@ -36,6 +36,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
@@ -268,6 +269,26 @@ class PostServiceImplTest {
 		when(postRepository.findAllByImportantIsTrueAndStatus(any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findImportantPosts(pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findPostsByAuthorIdAndDirections_WhenWrong_ThrowException() {
+		Set<Integer> directions = Set.of(1, 4);
+		Pageable pageable = PageRequest.of(0, 12);
+		when(postRepository.findPostsByAuthorIdAndDirections(any(), any(), any()))
+				.thenThrow(new EntityNotFoundException("Id does not exist"));
+		assertThrows(EntityNotFoundException.class, () -> postService
+				.findPostsByAuthorIdAndDirections(pageable, 1, directions));
+	}
+
+	@Test
+	void findPostsByAuthorIdAndDirections() {
+		Set<Integer> directions = Set.of(1, 4);
+		Pageable pageable = PageRequest.of(0, 12);
+		when(postRepository.findPostsByAuthorIdAndDirections(any(), any(), any()))
+				.thenReturn(postEntityPage);
+		postService.findPostsByAuthorIdAndDirections(pageable, 1, directions);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 

@@ -63,4 +63,12 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findAllByDirectionsAndByPostTypesAndByOrigins(Set<Integer> typesIds, Set<Integer> originsIds,
 			Set<Integer> directionsIds, Pageable pageable);
 
+	@Query(nativeQuery = true,
+			value = "SELECT * FROM POSTS P"
+					+ " JOIN USERS U ON P.AUTHOR_ID = U.USER_ID  "
+					+ "  WHERE P.POST_ID  IN (SELECT DISTINCT P.POST_ID FROM POSTS_DIRECTIONS PD"
+					+ "  WHERE PD.DIRECTION_ID IN (:directionsIds))"
+					+ "  AND   P.AUTHOR_ID IN (:authorId)")
+	Page<PostEntity> findPostsByAuthorIdAndDirections(Pageable pageable, Integer authorId, Set<Integer> directionsIds);
+
 }
