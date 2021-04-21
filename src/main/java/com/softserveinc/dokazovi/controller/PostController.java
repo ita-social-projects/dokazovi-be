@@ -42,7 +42,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -208,7 +208,7 @@ public class PostController {
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
-	@GetMapping(POST_GET_POST_BY_AUTHOR_ID)
+	@GetMapping(POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS)
 	@ApiOperation(value = "Get post by author Id, as a path variable, and directions.")
 	public ResponseEntity<Page<PostDTO>> getPostsByAuthorIdAndDirections(
 			@PageableDefault(size = 12) Pageable pageable, @NotNull Integer authorId,

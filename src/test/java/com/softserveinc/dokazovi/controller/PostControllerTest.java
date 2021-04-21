@@ -37,7 +37,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
@@ -171,7 +171,7 @@ class PostControllerTest {
 		Set<Integer> directions = Set.of(1, 4);
 		Pageable pageable = PageRequest.of(0, 12);
 
-		String uri = POST + POST_GET_POST_BY_AUTHOR_ID + "?authorId=1&directions=1,4";
+		String uri = POST + POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS + "?authorId=1&directions=1,4";
 		PostDTO postDTO = PostDTO.builder()
 				.id(1)
 				.build();
@@ -190,7 +190,7 @@ class PostControllerTest {
 		Set<Integer> directions = Set.of(1, 4);
 		Pageable pageable = PageRequest.of(0, 12);
 
-		String uri = POST + POST_GET_POST_BY_AUTHOR_ID + "?authorId=1&directions=1,4";
+		String uri = POST + POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS + "?authorId=1&directions=1,4";
 
 		Page<PostDTO> page = new PageImpl<>(List.of());
 
