@@ -67,10 +67,10 @@ public class PostController {
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
 	})
 	public ResponseEntity<PostDTO> save(@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO,
-			@AuthenticationPrincipal UserPrincipal userPrincipal, Integer authorId) {
+			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
-				.body(postService.saveFromUser(postSaveFromUserDTO, userPrincipal, authorId));
+				.body(postService.saveFromUser(postSaveFromUserDTO, userPrincipal));
 	}
 
 	@GetMapping(POST_LATEST)

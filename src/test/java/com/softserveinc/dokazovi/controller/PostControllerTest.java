@@ -8,10 +8,10 @@ import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
-import org.junit.jupiter.api.Assertions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -106,36 +106,34 @@ class PostControllerTest {
 
 	@Test
 	void savePost() throws Exception {
-		String content = "{\n" +
-				"  \"content\": \"string\",\n" +
-				"  \"directions\": [\n" +
-				"    {\n" +
-				"      \"id\": 1\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"id\": 1,\n" +
-				"  \"preview\": \"string\",\n" +
-				"  \"videoUrl\": \"string\",\n" +
-				"  \"previewImageUrl\": \"string\",\n" +
-				"  \"tags\": [\n" +
-				"    {\n" +
-				"      \"id\": 1,\n" +
-				"      \"tag\": \"string\"\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"title\": \"string\",\n" +
-				"  \"type\": {\n" +
-				"    \"id\": 1,\n" +
-				"    \"name\": \"string\"\n" +
-				"  }\n" +
-				"}";
+		String content = "{\n"
+				+ "  \"authorId\": 1,\n"
+				+ "  \"content\": \"string\",\n"
+				+ "  \"directions\": [\n"
+				+ "    {\n"
+				+ "      \"id\": 0\n"
+				+ "    }\n"
+				+ "  ],\n"
+				+ "  \"origins\": [\n"
+				+ "    {\n"
+				+ "      \"id\": 0\n"
+				+ "    }\n"
+				+ "  ],\n"
+				+ "  \"preview\": \"string\",\n"
+				+ "  \"previewImageUrl\": \"string\",\n"
+				+ "  \"title\": \"string\",\n"
+				+ "  \"type\": {\n"
+				+ "    \"id\": 0\n"
+				+ "  },\n"
+				+ "  \"videoUrl\": \"string\"\n"
+				+ "}";
 		ObjectMapper mapper = new ObjectMapper();
 		PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
 		mockMvc.perform(post(POST)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(content))
 				.andExpect(status().isCreated());
-		verify(postService).saveFromUser(eq(post), any(), any());
+		verify(postService).saveFromUser(eq(post), any());
 	}
 
 	@Test
