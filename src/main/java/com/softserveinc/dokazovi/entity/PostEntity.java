@@ -69,7 +69,7 @@ public class PostEntity {
 	@Enumerated(EnumType.STRING)
 	private PostStatus status;
 
-	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_directions",
 			joinColumns = {@JoinColumn(name = "post_id")},
