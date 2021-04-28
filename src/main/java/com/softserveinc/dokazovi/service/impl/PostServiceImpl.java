@@ -162,6 +162,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	@Transactional
 	public Boolean archivePostById(UserPrincipal userPrincipal, Integer postId)
 			throws EntityNotFoundException {
 
