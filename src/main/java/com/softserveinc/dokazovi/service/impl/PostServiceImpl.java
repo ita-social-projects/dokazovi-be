@@ -216,6 +216,7 @@ public class PostServiceImpl implements PostService {
 		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
 				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
+			mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
 			postRepository.save(mappedEntity);
 		}
 
