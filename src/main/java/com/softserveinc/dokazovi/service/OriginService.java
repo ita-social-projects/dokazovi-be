@@ -5,6 +5,4 @@ import java.util.List;
 
 public interface OriginService {
 	List<OriginDTO> findAllOrigins();
-
-	List<OriginDTO> findAllOriginsByUserId(Integer userId);
 }

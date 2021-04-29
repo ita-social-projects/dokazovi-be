@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import static com.softserveinc.dokazovi.controller.EndPoints.ORIGIN;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_USER_BY_ID;
 
 @RestController
 @RequestMapping(ORIGIN)
@@ -26,13 +25,5 @@ public class OriginController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(originService.findAllOrigins());
-	}
-
-	@GetMapping(POST_GET_USER_BY_ID)
-	@ApiOperation(value = "Get all origins by user id")
-	public ResponseEntity<List<OriginDTO>> getAllOriginsByUserId(@PathVariable("userId") Integer userId) {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(originService.findAllOriginsByUserId(userId));
 	}
 }

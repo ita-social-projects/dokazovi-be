@@ -22,11 +22,4 @@ public class OriginServiceImpl implements OriginService {
 				.map(originMapper::toOriginDTO)
 				.collect(Collectors.toList());
 	}
-
-	@Override
-	public List<OriginDTO> findAllOriginsByUserId(Integer userId) {
-		return originRepository.findAllOriginsByUserId(userId).stream()
-				.map(originMapper::toOriginDTO)
-				.collect(Collectors.toList());
-	}
 }

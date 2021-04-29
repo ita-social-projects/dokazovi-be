@@ -43,13 +43,4 @@ class OriginControllerTest {
 
 		verify(originService).findAllOrigins();
 	}
-
-	@Test
-	void getAllOriginsByUserId() throws Exception {
-		String uri = ORIGIN + "/1";
-
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
-
-		verify(originService).findAllOriginsByUserId(1);
-	}
 }
