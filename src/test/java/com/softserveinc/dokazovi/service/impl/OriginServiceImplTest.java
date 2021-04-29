@@ -40,7 +40,7 @@ class OriginServiceImplTest {
 		List<OriginEntity> origins = List.of(new OriginEntity(), new OriginEntity());
 
 		when(originRepository.findAllOriginsByUserId(1)).thenReturn(origins);
-		originRepository.findAllOriginsByUserId(1);
+		originService.findAllOriginsByUserId(1);
 
 		verify(originMapper, times(origins.size())).toOriginDTO(any(OriginEntity.class));
 	}
