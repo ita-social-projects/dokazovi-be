@@ -18,7 +18,7 @@ class OriginMapperTest {
 		originEntity = OriginEntity.builder()
 				.id(1)
 				.name("Some name")
-				.parameters("Some parameters")
+				.parameters(null)
 				.build();
 	}
 
@@ -28,6 +28,6 @@ class OriginMapperTest {
 
 		assertEquals(originDTO.getId(), originEntity.getId());
 		assertEquals(originDTO.getName(), originEntity.getName());
-		assertEquals(originDTO.getName(), originEntity.getParameters());
+		assertEquals(originDTO.getParameter(), originEntity.getParameters());
 	}
 }
