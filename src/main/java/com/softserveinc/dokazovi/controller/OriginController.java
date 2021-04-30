@@ -12,11 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import static com.softserveinc.dokazovi.controller.EndPoints.ORIGIN;
 
+/**
+ * Implements logic for getting all origins.
+ */
+
 @RestController
 @RequestMapping(ORIGIN)
 @RequiredArgsConstructor
 public class OriginController {
 	private final OriginService originService;
+
+	/**
+	 * This method will get all origins from db.
+	 *
+	 * @return this returns all origins.
+	 */
 
 	@GetMapping
 	@ApiOperation(value = "Get all origins")

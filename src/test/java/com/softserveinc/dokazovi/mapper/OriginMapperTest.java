@@ -28,5 +28,6 @@ class OriginMapperTest {
 
 		assertEquals(originDTO.getId(), originEntity.getId());
 		assertEquals(originDTO.getName(), originEntity.getName());
+		assertEquals(originDTO.getName(), originEntity.getParameters());
 	}
 }

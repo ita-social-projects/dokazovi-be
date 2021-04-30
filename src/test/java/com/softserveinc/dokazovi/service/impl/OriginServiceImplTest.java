@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -33,5 +33,6 @@ class OriginServiceImplTest {
 		originService.findAllOrigins();
 
 		verify(originMapper, times(origins.size())).toOriginDTO(any(OriginEntity.class));
+		assertEquals(originService.findAllOrigins().size(), origins.size());
 	}
 }
