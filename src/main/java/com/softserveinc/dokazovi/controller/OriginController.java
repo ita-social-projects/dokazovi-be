@@ -25,7 +25,7 @@ public class OriginController {
 	/**
 	 * This method will get all origins from db.
 	 *
-	 * @return this returns all origins.
+	 * @return this returns list of all origins.
 	 */
 
 	@GetMapping
