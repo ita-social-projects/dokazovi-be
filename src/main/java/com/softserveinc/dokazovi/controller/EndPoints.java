@@ -3,6 +3,9 @@ package com.softserveinc.dokazovi.controller;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Endpoints for all controllers that point the route to certain method or class.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EndPoints {
 
@@ -33,6 +36,12 @@ public final class EndPoints {
 	public static final String POST_TYPES = "/post-types";
 	public static final String POST_TYPES_ALL_TYPES_BY_USER = "/{userId}";
 
+	/**
+	 * Method that adds slash after each endpoint while calling
+	 *
+	 * @param api endpoint route
+	 * @return full endpoint route
+	 */
 	public static String openApi(String api) {
 		return api + "/**";
 	}
