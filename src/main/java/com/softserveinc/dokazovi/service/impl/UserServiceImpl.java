@@ -24,6 +24,12 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The UserServiceImpl is responsible for doing any logic
+ * required with the user data received by the User Controller.
+ * It provides logic to operate on the data sent to and from the User repository.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -37,21 +43,46 @@ public class UserServiceImpl implements UserService {
 	private static final String HAS_NO_REGIONS = "hasNoRegions";
 	private static final String HAS_NO_USERNAME = "hasNoUserName";
 
+	/**
+	 * Gets user by email.
+	 *
+	 * @param email id of post that we want to get
+	 * @return found user by email from user repository
+	 */
 	@Override
 	public UserEntity findByEmail(String email) {
 		return userRepository.findByEmail(email).orElse(null);
 	}
 
+	/**
+	 * Gets all users.
+	 *
+	 * @param pageable received from User controller
+	 * @return found all users from user repository
+	 */
 	@Override
 	public Page<UserEntity> findAll(Pageable pageable) {
 		return userRepository.findAll(pageable);
 	}
 
+	/**
+	 * Gets user by id.
+	 *
+	 * @param userId received from User controller
+	 * @return found  doctor by id from user repository
+	 */
 	@Override
 	public UserDTO findExpertById(Integer userId) {
 		return userMapper.toUserDTO(userRepository.findById(userId).orElse(null));
 	}
 
+	/**
+	 * Gets doctors by criteria.
+	 *
+	 * @param userSearchCriteria received from User controller
+	 * @param pageable received from User controller
+	 * @return found doctor by criteria
+	 */
 	@Override
 	@Transactional
 	public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
@@ -121,6 +152,14 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 
+	/**
+	 * Gets random experts by directions.
+	 * If directions are empty, gets random experts without filters
+	 *
+	 * @param directionsIds received from User controller
+	 * @param pageable received from User controller
+	 * @return found doctor by directions
+	 */
 	@Override
 	public Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable) {
 		if (CollectionUtils.isEmpty(directionsIds)) {
@@ -132,6 +171,11 @@ public class UserServiceImpl implements UserService {
 				.map(userMapper::toUserDTO);
 	}
 
+	/**
+	 * Sets the user is enabled.
+	 *
+	 * @param user received from Auth controller
+	 */
 	@Override
 	public void setEnableTrue(UserEntity user) {
 		UserEntity userEntity = userRepository.findById(user.getId()).orElse(null);
@@ -142,11 +186,23 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(userEntity);
 	}
 
+	/**
+	 * Gets the verification token received from tokenRepository.
+	 *
+	 * @param verificationToken received from Auth controller
+	 * @return found VerificationToken
+	 */
 	@Override
 	public VerificationToken getVerificationToken(String verificationToken) {
 		return tokenRepository.findByToken(verificationToken);
 	}
 
+	/**
+	 * Gets the verification token received from tokenRepository.
+	 *
+	 * @param user received from Mail Sender
+	 * @param token received from Mail Sender
+	 */
 	@Override
 	public void createVerificationToken(UserEntity user, String token) {
 		VerificationToken myToken = VerificationToken.builder()
@@ -156,16 +212,34 @@ public class UserServiceImpl implements UserService {
 		tokenRepository.save(myToken);
 	}
 
+	/**
+	 * Checks whether the user exists by email.
+	 *
+	 * @param email received from Mail Sender
+	 * @return  true or false
+	 */
 	@Override
 	public Boolean existsByEmail(String email) {
 		return userRepository.existsByEmail(email);
 	}
 
+	/**
+	 * Saves received user.
+	 *
+	 * @param user received from ???
+	 * @return  user entity
+	 */
 	@Override
 	public UserEntity saveUser(UserEntity user) {
 		return userRepository.save(user);
 	}
 
+	/**
+	 * Register new user received user.
+	 *
+	 * @param signUpRequest received from Auth controller
+	 * @return  user entity
+	 */
 	@Override
 	public UserEntity registerNewUser(SignUpRequest signUpRequest) {
 		UserEntity user = new UserEntity();

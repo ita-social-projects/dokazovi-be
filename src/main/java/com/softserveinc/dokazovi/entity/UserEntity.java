@@ -29,6 +29,10 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * The User Entity is responsible for correlating with User table in the database.
+ */
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -75,6 +79,9 @@ public class UserEntity {
 	@EqualsAndHashCode.Exclude
 	private Boolean enabled;
 
+	/**
+	 * Gets Latest Expert Post, if it exists.	 *
+	 */
 	public PostEntity getLatestExpertPost() {
 		if (posts == null || posts.isEmpty()) {
 			return null;

@@ -6,6 +6,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+/**
+ * The User Mapper is responsible for conversions between the user entity and the user DTO.
+ */
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 

@@ -29,6 +29,10 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_US
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 
+/**
+ * The User controller is responsible for handling requests for users.
+ */
+
 @RestController
 @RequestMapping(USER)
 @RequiredArgsConstructor
@@ -36,6 +40,15 @@ public class UserController {
 
 	private final UserService userService;
 
+	/**
+	 * Gets preview of random experts,
+	 * filtered by directions.
+	 * Default 12 max per page.
+	 *
+	 * @param pageable interface for pagination information
+	 * @param directions direction id
+	 * @return page with found posts and 'OK' httpStatus
+	 */
 	@GetMapping(USER_RANDOM_EXPERTS)
 	@ApiPageable
 	@ApiOperation(value = "Get preview of random experts, filtered by directions. Default 12 max per page.")
@@ -48,9 +61,18 @@ public class UserController {
 				.body(userService.findRandomExpertPreview(directions, pageable));
 	}
 
+	/**
+	 * Gets all experts depending on the parameters coming through the request,
+	 * ordered by relevance.
+	 * Default 6 max per page.
+	 *
+	 * @param pageable interface for pagination information
+	 * @param userSearchCriteria binds request parameters to an object
+	 * @return page with found experts and 'OK' httpStatus
+	 */
 	@GetMapping(USER_ALL_EXPERTS)
 	@ApiPageable
-	@ApiOperation(value = "Get experts ordered by firstName then lastName, filtered by directions and regions."
+	@ApiOperation(value = "Get experts ordered by name, then filtered by directions and/or regions."
 			+ " Default 6 per page.")
 	public ResponseEntity<Page<UserDTO>> getAllExpertsByDirectionsAndByRegionsOrderedByRelevance(
 			@PageableDefault(size = 6) Pageable pageable, UserSearchCriteria userSearchCriteria) {
@@ -59,6 +81,13 @@ public class UserController {
 				.body(userService.findAllExperts(userSearchCriteria, pageable));
 	}
 
+	/**
+	 * Gets the user by its id.
+	 * Checks if the user exists. If no - returns HttpStatus 'NOT FOUND'.
+	 *
+	 * @param userId id of user that we want to get
+	 * @return found user and HttpStatus 'OK'
+	 */
 	@GetMapping(USER_GET_USER_BY_ID)
 	@ApiOperation(value = "Get expert by Id, as a path variable.")
 	public ResponseEntity<UserDTO> getExpertById(@PathVariable("userId") Integer userId) {
@@ -68,6 +97,14 @@ public class UserController {
 				.body(userDTO);
 	}
 
+	/**
+	 * Gets current user.
+	 * Checks if userPrincipal exists via findExpertById method.
+	 * If no - returns HttpStatus 'NOT FOUND'.
+	 *
+	 * @param userPrincipal id of user that we want to get
+	 * @return found user and HttpStatus 'OK'
+	 */
 	@GetMapping(USER_GET_CURRENT_USER)
 	@ApiOperation(value = "Get current user",
 			authorizations = {@Authorization(value = "Authorization")})
