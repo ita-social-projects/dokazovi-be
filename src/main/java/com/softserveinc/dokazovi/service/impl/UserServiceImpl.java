@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Gets user by email.
 	 *
-	 * @param email id of post that we want to get
+	 * @param email email of user that we want to get
 	 * @return found user by email from user repository
 	 */
 	@Override
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
 	 * Gets all users.
 	 *
 	 * @param pageable received from User controller
-	 * @return found all users from user repository
+	 * @return all found users
 	 */
 	@Override
 	public Page<UserEntity> findAll(Pageable pageable) {
@@ -77,7 +77,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * Gets doctors by criteria.
+	 * Gets doctors by search criteria.
+	 * For example, if directions, regions and user name fields
+	 * are empty, the findDoctorsProfiles method without parameters is called
 	 *
 	 * @param userSearchCriteria received from User controller
 	 * @param pageable received from User controller
@@ -156,7 +158,7 @@ public class UserServiceImpl implements UserService {
 	 * Gets random experts by directions.
 	 * If directions are empty, gets random experts without filters
 	 *
-	 * @param directionsIds received from User controller
+	 * @param directionsIds the directions ids received from User controller
 	 * @param pageable received from User controller
 	 * @return found doctor by directions
 	 */
@@ -174,7 +176,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Sets the user is enabled.
 	 *
-	 * @param user received from Auth controller
+	 * @param user user received from Auth controller
 	 */
 	@Override
 	public void setEnableTrue(UserEntity user) {
@@ -200,8 +202,8 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Gets the verification token received from tokenRepository.
 	 *
-	 * @param user received from Mail Sender
-	 * @param token received from Mail Sender
+	 * @param user user received from Mail Sender
+	 * @param token token received from Mail Sender
 	 */
 	@Override
 	public void createVerificationToken(UserEntity user, String token) {
@@ -226,8 +228,8 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Saves received user.
 	 *
-	 * @param user received from ???
-	 * @return  user entity
+	 * @param user the user for saving
+	 * @return the resulting user entity
 	 */
 	@Override
 	public UserEntity saveUser(UserEntity user) {
@@ -235,10 +237,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * Register new user received user.
+	 * Registers a new user.
 	 *
-	 * @param signUpRequest received from Auth controller
-	 * @return  user entity
+	 * @param signUpRequest register request received from Auth controller
+	 * @return saved user entity
 	 */
 	@Override
 	public UserEntity registerNewUser(SignUpRequest signUpRequest) {

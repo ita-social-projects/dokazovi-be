@@ -80,7 +80,10 @@ public class UserEntity {
 	private Boolean enabled;
 
 	/**
-	 * Gets Latest Expert Post, if it exists.	 *
+	 * Gets latest expert post, if it exists.
+	 * If not - returns null
+	 *
+	 * @return the resulting post entity
 	 */
 	public PostEntity getLatestExpertPost() {
 		if (posts == null || posts.isEmpty()) {
