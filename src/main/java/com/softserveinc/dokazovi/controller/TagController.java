@@ -22,6 +22,9 @@ import java.util.List;
 import static com.softserveinc.dokazovi.controller.EndPoints.TAG;
 import static com.softserveinc.dokazovi.controller.EndPoints.TAG_FIND_BY_VALUE;
 
+/**
+ * The Class TagController responsible for handling requests for regions
+ */
 @RestController
 @RequestMapping(TAG)
 @RequiredArgsConstructor
@@ -29,6 +32,13 @@ public class TagController {
 
 	private final TagService tagService;
 
+	/**
+	 * Find tag by its name (or by several letters it contains).
+	 *
+	 * @param value the name of tag
+	 * @param limit the limit of results amount
+	 * @return list with limited amount of found tags and 'OK' http status
+	 */
 	@GetMapping(TAG_FIND_BY_VALUE)
 	public ResponseEntity<List<TagDTO>> findByValue(
 			@RequestParam String value,
@@ -38,6 +48,14 @@ public class TagController {
 				.body(tagService.findTagsByValue(value, limit));
 	}
 
+	/**
+	 * Saves (creates) new tag.
+	 *
+	 * <p>Checks if user has authority to save new tag.</p>
+	 *
+	 * @param tagSaveDTO DTO that contains new tag info.
+	 * @return saved tag and 'CREATED' http status.
+	 */
 	@PostMapping
 	@PreAuthorize("hasAuthority('SAVE_TAG')")
 	@ApiOperation(value = "Save tag",

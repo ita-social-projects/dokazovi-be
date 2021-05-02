@@ -3,6 +3,9 @@ package com.softserveinc.dokazovi.controller;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Http statuses for setting them to Api responses.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpStatuses {
 
