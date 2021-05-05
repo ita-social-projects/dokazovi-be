@@ -8,10 +8,10 @@ import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
-import org.junit.jupiter.api.Assertions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +37,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
@@ -105,36 +106,34 @@ class PostControllerTest {
 
 	@Test
 	void savePost() throws Exception {
-		String content = "{\n" +
-				"  \"content\": \"string\",\n" +
-				"  \"directions\": [\n" +
-				"    {\n" +
-				"      \"id\": 1\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"id\": 1,\n" +
-				"  \"preview\": \"string\",\n" +
-				"  \"videoUrl\": \"string\",\n" +
-				"  \"previewImageUrl\": \"string\",\n" +
-				"  \"tags\": [\n" +
-				"    {\n" +
-				"      \"id\": 1,\n" +
-				"      \"tag\": \"string\"\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"title\": \"string\",\n" +
-				"  \"type\": {\n" +
-				"    \"id\": 1,\n" +
-				"    \"name\": \"string\"\n" +
-				"  }\n" +
-				"}";
+		String content = "{\n"
+				+ "  \"authorId\": 1,\n"
+				+ "  \"content\": \"string\",\n"
+				+ "  \"directions\": [\n"
+				+ "    {\n"
+				+ "      \"id\": 0\n"
+				+ "    }\n"
+				+ "  ],\n"
+				+ "  \"origins\": [\n"
+				+ "    {\n"
+				+ "      \"id\": 0\n"
+				+ "    }\n"
+				+ "  ],\n"
+				+ "  \"preview\": \"string\",\n"
+				+ "  \"previewImageUrl\": \"string\",\n"
+				+ "  \"title\": \"string\",\n"
+				+ "  \"type\": {\n"
+				+ "    \"id\": 0\n"
+				+ "  },\n"
+				+ "  \"videoUrl\": \"string\"\n"
+				+ "}";
 		ObjectMapper mapper = new ObjectMapper();
 		PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
 		mockMvc.perform(post(POST)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(content))
 				.andExpect(status().isCreated());
-		verify(postService).saveFromUser(eq(post), any(), any());
+		verify(postService).saveFromUser(eq(post), any());
 	}
 
 	@Test
@@ -163,6 +162,41 @@ class PostControllerTest {
 				get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tag=3,4,5,6"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByDirection(directionId, type, tag, PostStatus.PUBLISHED, pageable);
+	}
+
+	@Test
+	void getPostsByAuthorIdAndDirections_WhenExists_isOk() throws Exception {
+		Set<Integer> directions = Set.of(1, 4);
+		Pageable pageable = PageRequest.of(0, 12);
+
+		String uri = POST + POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS + "?authorId=1&directions=1,4";
+		PostDTO postDTO = PostDTO.builder()
+				.id(1)
+				.build();
+
+		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
+
+		when(postService.findPostsByAuthorIdAndDirections(any(), any(), any())).thenReturn(page);
+
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		verify(postService).findPostsByAuthorIdAndDirections(pageable, 1, directions);
+	}
+
+	@Test
+	void getPostsByAuthorIdAndDirections_WhenNotExists_NotFound() throws Exception {
+		Set<Integer> directions = Set.of(1, 4);
+		Pageable pageable = PageRequest.of(0, 12);
+
+		String uri = POST + POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS + "?authorId=1&directions=1,4";
+
+		Page<PostDTO> page = new PageImpl<>(List.of());
+
+		when(postService.findPostsByAuthorIdAndDirections(any(), any(), any())).thenReturn(page);
+
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+
+		verify(postService).findPostsByAuthorIdAndDirections(pageable, 1, directions);
 	}
 
 	@Test

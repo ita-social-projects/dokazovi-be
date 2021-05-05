@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.validator;
 
-import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
+import com.softserveinc.dokazovi.dto.post.PostTypeIdOnlyDTO;
 import com.softserveinc.dokazovi.repositories.PostTypeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class PostTypeExistsValidatorTest {
 	@Test
 	void isValid_WhenIdNotNull_ReturnTrue() {
 		when(repository.existsById(anyInt())).thenReturn(true);
-		PostTypeDTO dto = PostTypeDTO.builder()
+		PostTypeIdOnlyDTO dto = PostTypeIdOnlyDTO.builder()
 				.id(1)
 				.build();
 		assertTrue(validator.isValid(dto, null));
@@ -33,7 +33,7 @@ class PostTypeExistsValidatorTest {
 
 	@Test
 	void isValid_WhenIdIsNull_ReturnFalse() {
-		PostTypeDTO dto = PostTypeDTO.builder()
+		PostTypeIdOnlyDTO dto = PostTypeIdOnlyDTO.builder()
 				.id(null)
 				.build();
 		assertFalse(validator.isValid(dto, null));

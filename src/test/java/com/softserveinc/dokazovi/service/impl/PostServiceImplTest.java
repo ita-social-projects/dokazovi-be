@@ -4,9 +4,11 @@ import com.softserveinc.dokazovi.annotations.DirectionExists;
 import com.softserveinc.dokazovi.annotations.OriginExists;
 import com.softserveinc.dokazovi.annotations.TagExists;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
-import com.softserveinc.dokazovi.dto.origin.OriginDTO;
+import com.softserveinc.dokazovi.dto.direction.DirectionDTOForSavingPost;
+import com.softserveinc.dokazovi.dto.origin.OriginDTOForSavingPost;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
+import com.softserveinc.dokazovi.dto.post.PostTypeIdOnlyDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
@@ -34,6 +36,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
@@ -143,6 +146,7 @@ class PostServiceImplTest {
 		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(postEntity);
 		when(userRepository.getOne(any(Integer.class))).thenReturn(author);
 		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.authorId(1)
 				.title("title")
 				.videoUrl("videoUrl")
 				.previewImageUrl("previewImageUrl")
@@ -151,7 +155,7 @@ class PostServiceImplTest {
 				.build();
 
 		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
-		postService.saveFromUser(dto, userPrincipal, 1);
+		postService.saveFromUser(dto, userPrincipal);
 		verify(postMapper, times(1)).toPostDTO(any());
 	}
 
@@ -191,6 +195,7 @@ class PostServiceImplTest {
 		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(postEntity);
 		when(userRepository.getOne(any(Integer.class))).thenReturn(author);
 		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.authorId(2)
 				.title("title")
 				.videoUrl("videoUrl")
 				.previewImageUrl("previewImageUrl")
@@ -199,7 +204,7 @@ class PostServiceImplTest {
 				.build();
 
 		UserPrincipal userPrincipal = UserPrincipal.create(author);
-		postService.saveFromUser(dto, userPrincipal, 2);
+		postService.saveFromUser(dto, userPrincipal);
 		verify(postMapper, times(1)).toPostDTO(any());
 	}
 
@@ -239,6 +244,7 @@ class PostServiceImplTest {
 		when(postMapper.toPostEntity(any(PostSaveFromUserDTO.class))).thenReturn(postEntity);
 		when(userRepository.getOne(any(Integer.class))).thenReturn(author);
 		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.authorId(1)
 				.title("title")
 				.videoUrl("videoUrl")
 				.previewImageUrl("previewImageUrl")
@@ -247,7 +253,7 @@ class PostServiceImplTest {
 				.build();
 
 		UserPrincipal userPrincipal = UserPrincipal.create(author);
-		assertThrows(ForbiddenPermissionsException.class, () -> postService.saveFromUser(dto, userPrincipal, 1));
+		assertThrows(ForbiddenPermissionsException.class, () -> postService.saveFromUser(dto, userPrincipal));
 	}
 
 
@@ -263,6 +269,26 @@ class PostServiceImplTest {
 		when(postRepository.findAllByImportantIsTrueAndStatus(any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findImportantPosts(pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findPostsByAuthorIdAndDirections_WhenWrong_ThrowException() {
+		Set<Integer> directions = Set.of(1, 4);
+		Pageable pageable = PageRequest.of(0, 12);
+		when(postRepository.findPostsByAuthorIdAndDirections(any(), any(), any()))
+				.thenThrow(new EntityNotFoundException("Id does not exist"));
+		assertThrows(EntityNotFoundException.class, () -> postService
+				.findPostsByAuthorIdAndDirections(pageable, 1, directions));
+	}
+
+	@Test
+	void findPostsByAuthorIdAndDirections() {
+		Set<Integer> directions = Set.of(1, 4);
+		Pageable pageable = PageRequest.of(0, 12);
+		when(postRepository.findPostsByAuthorIdAndDirections(any(), any(), any()))
+				.thenReturn(postEntityPage);
+		postService.findPostsByAuthorIdAndDirections(pageable, 1, directions);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -529,17 +555,14 @@ class PostServiceImplTest {
 		roleEntity.setName("Administrator");
 		roleEntity.setPermissions(permissions);
 
-		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		PostTypeIdOnlyDTO postTypeDTO = new PostTypeIdOnlyDTO();
 		postTypeDTO.setId(1);
-		postTypeDTO.setName("type");
 
-		DirectionDTO directionDTO = new DirectionDTO();
+		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
 		directionDTO.setId(1);
-		directionDTO.setName("name");
-		directionDTO.setLabel("label");
-		directionDTO.setColor("color");
 
-		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+
+		Set<@DirectionExists DirectionDTOForSavingPost> directions = new HashSet<>();
 		directions.add(directionDTO);
 
 		TagDTO tagDTO = new TagDTO();
@@ -549,12 +572,10 @@ class PostServiceImplTest {
 		Set<@TagExists TagDTO> tags = new HashSet<>();
 		tags.add(tagDTO);
 
-		OriginDTO originDTO = new OriginDTO();
+		OriginDTOForSavingPost originDTO = new OriginDTOForSavingPost();
 		originDTO.setId(1);
-		originDTO.setName("name");
-		originDTO.setParameter("param");
 
-		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		Set<@OriginExists OriginDTOForSavingPost> origins = new HashSet<>();
 		origins.add(originDTO);
 
 		UserPrincipal userPrincipal = UserPrincipal.builder()
@@ -580,7 +601,6 @@ class PostServiceImplTest {
 				.content("content")
 				.type(postTypeDTO)
 				.directions(directions)
-				.tags(tags)
 				.origins(origins)
 				.build();
 
@@ -606,17 +626,14 @@ class PostServiceImplTest {
 		roleEntity.setName("Doctor");
 		roleEntity.setPermissions(permissions);
 
-		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		PostTypeIdOnlyDTO postTypeDTO = new PostTypeIdOnlyDTO();
 		postTypeDTO.setId(1);
-		postTypeDTO.setName("type");
 
-		DirectionDTO directionDTO = new DirectionDTO();
+
+		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
 		directionDTO.setId(1);
-		directionDTO.setName("name");
-		directionDTO.setLabel("label");
-		directionDTO.setColor("color");
 
-		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+		Set<@DirectionExists DirectionDTOForSavingPost> directions = new HashSet<>();
 		directions.add(directionDTO);
 
 		TagDTO tagDTO = new TagDTO();
@@ -626,12 +643,10 @@ class PostServiceImplTest {
 		Set<@TagExists TagDTO> tags = new HashSet<>();
 		tags.add(tagDTO);
 
-		OriginDTO originDTO = new OriginDTO();
+		OriginDTOForSavingPost originDTO = new OriginDTOForSavingPost();
 		originDTO.setId(1);
-		originDTO.setName("name");
-		originDTO.setParameter("param");
 
-		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		Set<@OriginExists OriginDTOForSavingPost> origins = new HashSet<>();
 		origins.add(originDTO);
 
 		UserPrincipal userPrincipal = UserPrincipal.builder()
@@ -650,6 +665,7 @@ class PostServiceImplTest {
 
 		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
 				.id(1)
+				.authorId(1)
 				.title("title")
 				.videoUrl("videoUrl")
 				.previewImageUrl("previewImageUrl")
@@ -657,7 +673,6 @@ class PostServiceImplTest {
 				.content("content")
 				.type(postTypeDTO)
 				.directions(directions)
-				.tags(tags)
 				.origins(origins)
 				.build();
 
@@ -747,32 +762,19 @@ class PostServiceImplTest {
 		roleEntity.setName("Administrator");
 		roleEntity.setPermissions(permissions);
 
-		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		PostTypeIdOnlyDTO postTypeDTO = new PostTypeIdOnlyDTO();
 		postTypeDTO.setId(1);
-		postTypeDTO.setName("name");
 
-		DirectionDTO directionDTO = new DirectionDTO();
+		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
 		directionDTO.setId(1);
-		directionDTO.setName("name");
-		directionDTO.setLabel("label");
-		directionDTO.setColor("color");
 
-		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+		Set<@DirectionExists DirectionDTOForSavingPost> directions = new HashSet<>();
 		directions.add(directionDTO);
 
-		TagDTO tagDTO = new TagDTO();
-		tagDTO.setId(1);
-		tagDTO.setTag("tag");
-
-		Set<@TagExists TagDTO> tags = new HashSet<>();
-		tags.add(tagDTO);
-
-		OriginDTO originDTO = new OriginDTO();
+		OriginDTOForSavingPost originDTO = new OriginDTOForSavingPost();
 		originDTO.setId(1);
-		originDTO.setName("name");
-		originDTO.setParameter("param");
 
-		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		Set<@OriginExists OriginDTOForSavingPost> origins = new HashSet<>();
 		origins.add(originDTO);
 
 		UserPrincipal userPrincipal = UserPrincipal.builder()
@@ -784,6 +786,7 @@ class PostServiceImplTest {
 
 		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
 				.id(-1)
+				.authorId(1)
 				.title("title")
 				.videoUrl("videoUrl")
 				.previewImageUrl("previewImageUrl")
@@ -791,7 +794,6 @@ class PostServiceImplTest {
 				.content("content")
 				.type(postTypeDTO)
 				.directions(directions)
-				.tags(tags)
 				.origins(origins)
 				.build();
 
@@ -809,32 +811,19 @@ class PostServiceImplTest {
 		roleEntity.setName("Doctor");
 		roleEntity.setPermissions(permissions);
 
-		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		PostTypeIdOnlyDTO postTypeDTO = new PostTypeIdOnlyDTO();
 		postTypeDTO.setId(1);
-		postTypeDTO.setName("name");
 
-		DirectionDTO directionDTO = new DirectionDTO();
+		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
 		directionDTO.setId(1);
-		directionDTO.setName("name");
-		directionDTO.setLabel("label");
-		directionDTO.setColor("color");
 
-		Set<@DirectionExists DirectionDTO> directions = new HashSet<>();
+		Set<@DirectionExists DirectionDTOForSavingPost> directions = new HashSet<>();
 		directions.add(directionDTO);
 
-		TagDTO tagDTO = new TagDTO();
-		tagDTO.setId(1);
-		tagDTO.setTag("tag");
-
-		Set<@TagExists TagDTO> tags = new HashSet<>();
-		tags.add(tagDTO);
-
-		OriginDTO originDTO = new OriginDTO();
+		OriginDTOForSavingPost originDTO = new OriginDTOForSavingPost();
 		originDTO.setId(1);
-		originDTO.setName("name");
-		originDTO.setParameter("param");
 
-		Set<@OriginExists OriginDTO> origins = new HashSet<>();
+		Set<@OriginExists OriginDTOForSavingPost> origins = new HashSet<>();
 		origins.add(originDTO);
 
 		UserPrincipal userPrincipal = UserPrincipal.builder()
@@ -846,6 +835,7 @@ class PostServiceImplTest {
 
 		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
 				.id(-1)
+				.authorId(1)
 				.title("title")
 				.videoUrl("videoUrl")
 				.previewImageUrl("previewImageUrl")
@@ -853,7 +843,6 @@ class PostServiceImplTest {
 				.content("content")
 				.type(postTypeDTO)
 				.directions(directions)
-				.tags(tags)
 				.origins(origins)
 				.build();
 

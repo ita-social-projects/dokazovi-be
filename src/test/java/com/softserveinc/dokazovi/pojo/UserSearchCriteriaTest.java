@@ -7,7 +7,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class UserSearchCriteriaTest {
@@ -22,13 +23,13 @@ class UserSearchCriteriaTest {
 
 		userSearchCriteria.setDirections(directionsIds);
 
-		assertEquals(true, userSearchCriteria.hasDirections());
+		assertTrue(userSearchCriteria.hasDirections());
 	}
 
 	@Test
 	void hasNotDirections() {
 
-		assertEquals(false, userSearchCriteria.hasDirections());
+		assertFalse(userSearchCriteria.hasDirections());
 	}
 
 	@Test
@@ -38,12 +39,12 @@ class UserSearchCriteriaTest {
 
 		userSearchCriteria.setRegions(regionsIds);
 
-		assertEquals(true, userSearchCriteria.hasRegions());
+		assertTrue(userSearchCriteria.hasRegions());
 	}
 
 	@Test
 	void hasNotRegions() {
 
-		assertEquals(false, userSearchCriteria.hasRegions());
+		assertFalse(userSearchCriteria.hasRegions());
 	}
 }

@@ -22,12 +22,15 @@ public interface PostService {
 
 	Page<PostDTO> findAllByExpert(Integer expertId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 
-	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user, Integer authorId);
+	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
 	Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(
 			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Pageable pageable);
 
+	Page<PostDTO> findPostsByAuthorIdAndDirections(
+			Pageable pageable, Integer expertId, Set<Integer> directions);
+
 	Boolean archivePostById(UserPrincipal userId, Integer postId);
 
-	Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveFromUserDTO);
+	Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveDTO);
 }

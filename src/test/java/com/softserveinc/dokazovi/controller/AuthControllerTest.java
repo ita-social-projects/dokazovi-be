@@ -1,11 +1,11 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserveinc.dokazovi.dto.payload.LoginRequest;
+import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.entity.ProviderEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
-import com.softserveinc.dokazovi.dto.payload.LoginRequest;
-import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;

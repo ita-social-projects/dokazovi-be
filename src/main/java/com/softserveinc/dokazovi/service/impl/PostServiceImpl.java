@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -47,7 +48,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserPrincipal userPrincipal, Integer authorId) {
+	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserPrincipal userPrincipal) {
 		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
 
 		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
@@ -55,7 +56,7 @@ public class PostServiceImpl implements PostService {
 
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
-		if (userEntity.getId().equals(authorId) && userPrincipal.getAuthorities().stream()
+		if (userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities().stream()
 				.anyMatch(grantedAuthority -> grantedAuthority
 						.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
 			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
@@ -63,15 +64,15 @@ public class PostServiceImpl implements PostService {
 			return postMapper.toPostDTO(postRepository.save(mappedEntity));
 		}
 
-		if (!userEntity.getId().equals(authorId) && userPrincipal.getAuthorities()
+		if (!userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities()
 				.stream().anyMatch(grantedAuthority ->
 						grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
-			mappedEntity.setAuthor(userRepository.getOne(authorId));
+			mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
 			return postMapper.toPostDTO(postRepository.save(mappedEntity));
 		}
 
-		if (!userEntity.getId().equals(authorId) || userPrincipal.getAuthorities().stream()
+		if (!userEntity.getId().equals(postDTO.getAuthorId()) || userPrincipal.getAuthorities().stream()
 				.noneMatch(grantedAuthority ->
 						grantedAuthority.getAuthority().equals("SAVE_OWN_PUBLICATION"))
 				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
@@ -153,6 +154,15 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	public Page<PostDTO> findPostsByAuthorIdAndDirections(
+			Pageable pageable, Integer authorId, Set<Integer> directions) {
+
+		return postRepository.findPostsByAuthorIdAndDirections(pageable, authorId, directions)
+				.map(postMapper::toPostDTO);
+	}
+
+	@Override
+	@Transactional
 	public Boolean archivePostById(UserPrincipal userPrincipal, Integer postId)
 			throws EntityNotFoundException {
 
@@ -188,6 +198,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	@Transactional
 	public Boolean updatePostById(UserPrincipal userPrincipal, PostSaveFromUserDTO postDTO)
 			throws EntityNotFoundException {
 
@@ -206,6 +217,7 @@ public class PostServiceImpl implements PostService {
 		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
 				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
+			mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
 			postRepository.save(mappedEntity);
 		}
 
