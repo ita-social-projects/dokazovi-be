@@ -14,6 +14,9 @@ import java.util.List;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.REGION;
 
+/**
+ * The Class RegionController responsible for handling requests for regions
+ */
 @RestController
 @RequestMapping(REGION)
 @RequiredArgsConstructor
@@ -21,6 +24,11 @@ public class RegionController {
 
 	private final RegionService regionService;
 
+	/**
+	 * Gets all regions method returns all regions from db.
+	 *
+	 * @return all regions and HttpStatus 'OK'
+	 */
 	@GetMapping
 	@ApiOperation(value = "Get all regions")
 	public ResponseEntity<List<RegionDTO>> getAllRegions() {

@@ -16,6 +16,9 @@ import java.util.List;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPES;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPES_ALL_TYPES_BY_USER;
 
+/**
+ * Class PostTypesController responsible for handling requests for post types
+ */
 @RestController
 @RequestMapping(POST_TYPES)
 @RequiredArgsConstructor
@@ -23,6 +26,12 @@ public class PostTypesController {
 
 	private final PostTypeService postTypeService;
 
+	/**
+	 * getAllPostTypesByUserId method returns all post types of posts published by certain user
+	 *
+	 * @param userId  Id of user whose materials we want to receive
+	 * @return 'OK' HttpStatus and method call from service
+	 */
 	@GetMapping(POST_TYPES_ALL_TYPES_BY_USER)
 	@ApiOperation(value = "Get all types of materials by userId")
 	public ResponseEntity<List<PostTypeDTO>> getAllPostTypesByUserId(@PathVariable("userId") Integer userId) {
