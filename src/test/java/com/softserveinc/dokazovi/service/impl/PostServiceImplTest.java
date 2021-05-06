@@ -110,7 +110,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void saveFromUser_WhenIdIsPresent_isNull_Doctor() {
+	void saveFromUser_WhenIdIsPresent_isNull_DoctorRole() {
 
 		Set<RolePermission> rolePermissions = new HashSet<>();
 		rolePermissions.add(RolePermission.SAVE_OWN_PUBLICATION);
@@ -160,7 +160,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void saveFromUser_WhenIdIsPresent_isNull_Admin() {
+	void saveFromUser_WhenIdIsPresent_isNull_AdminRole() {
 		Set<RolePermission> rolePermissions = new HashSet<>();
 		rolePermissions.add(RolePermission.SAVE_PUBLICATION);
 		RoleEntity roleEntity = RoleEntity.builder()
@@ -456,7 +456,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenExists_isOk_Admin() {
+	void archivePostById_WhenExists_isOk_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_POST);
 
@@ -501,7 +501,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenExists_isOk_Doctor() {
+	void archivePostById_WhenExists_isOk_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_OWN_POST);
 
@@ -546,7 +546,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void updatePostById_WhenExists_isOk_Admin() {
+	void updatePostById_WhenExists_isOk_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.UPDATE_POST);
 
@@ -617,7 +617,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void updatePostById_WhenExists_isOk_Doctor() {
+	void updatePostById_WhenExists_isOk_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.UPDATE_OWN_POST);
 
@@ -689,7 +689,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException_Admin() {
+	void archivePostById_WhenNotExists_NotFound_ThrowException_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_POST);
 
@@ -721,7 +721,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException_Doctor() {
+	void archivePostById_WhenNotExists_NotFound_ThrowException_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_POST);
 
@@ -753,7 +753,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void updatePostById_WhenNotExists_NotFound_ThrowException_Admin() {
+	void updatePostById_WhenNotExists_NotFound_ThrowException_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.UPDATE_POST);
 
@@ -802,7 +802,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void updatePostById_WhenNotExists_NotFound_ThrowException_Doctor() {
+	void updatePostById_WhenNotExists_NotFound_ThrowException_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.UPDATE_POST);
 
