@@ -10,20 +10,44 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * The User Repository is responsible for encapsulation a set of
+ * User objects stored in the database and operations that can be performed on them. *
+ */
+
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
+	/**
+	 * Gets the user by its email.
+	 *
+	 * @param email user email from service
+	 * @return optional user entity page
+	 */
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM users u WHERE user_id= ("
 					+ "SELECT  u.user_id FROM providers u WHERE  u.email IN (:email) LIMIT 1)")
 	Optional<UserEntity> findByEmail(@Param("email") String email);
 
+	/**
+	 * Gets the page of random doctors.
+	 *
+	 * @param pageable interface for pagination information received from user service
+	 * @return the resulting user entity page
+	 */
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM DOCTORS D "
 					+ "     JOIN USERS U ON D.USER_ID = U.USER_ID "
 					+ " ORDER BY RANDOM() ")
 	Page<UserEntity> findRandomExperts(Pageable pageable);
 
+	/**
+	 * Gets the page of doctors by directions id.
+	 *
+	 * @param pageable interface for pagination information received from user service
+	 * @param directionsIds received from user service
+	 * @return the resulting user entity page
+	 */
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM ( "
 					+ "     SELECT DD.DOCTOR_ID FROM DOCTORS_DIRECTIONS DD "
@@ -37,6 +61,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ " WHERE DD.DIRECTION_ID IN (:directionsIds) ")
 	Page<UserEntity> findRandomExpertsByDirectionsIdIn(Iterable<Integer> directionsIds, Pageable pageable);
 
+	/**
+	 * Gets the page of doctors order by promotion level and rating.
+	 *
+	 * @param pageable interface for pagination information received from user service
+	 * @return the resulting user entity page
+	 */
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM DOCTORS D "
 					+ "     JOIN USERS U ON U.USER_ID = D.USER_ID "
@@ -44,6 +74,14 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ "          U.LAST_NAME, U.FIRST_NAME ")
 	Page<UserEntity> findDoctorsProfiles(Pageable pageable);
 
+	/**
+	 * Gets the page of doctors by directions ids and regions Ids.
+	 *
+	 * @param pageable interface for pagination information received from user service
+	 * @param directionsIds received from user service
+	 * @param regionsIds received from user service
+	 * @return the resulting user entity page
+	 */
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM ( "
 					+ "     SELECT DOCTOR_ID FROM DOCTORS D "
@@ -74,6 +112,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	Page<UserEntity> findDoctorsProfiles(
 			Iterable<Integer> directionsIds, Iterable<Integer> regionsIds, Pageable pageable);
 
+	/**
+	 * Gets the page of doctors by  regions ids.
+	 *
+	 * @param pageable interface for pagination information received from user service
+	 * @param regionsIds received from user service
+	 * @return the resulting user entity page
+	 */
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM ( "
 					+ "     SELECT D.PROMOTION_LEVEL, D.RATING, D.USER_ID FROM DOCTORS D "
@@ -91,6 +136,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	Page<UserEntity> findDoctorsProfilesByRegionsIds(
 			Iterable<Integer> regionsIds, Pageable pageable);
 
+	/**
+	 * Gets the page of doctors by directions ids.
+	 *
+	 * @param pageable interface for pagination information received from user service
+	 * @param directionsIds received from user service
+	 * @return the resulting user entity page
+	 */
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM ( "
 					+ "     SELECT DD.DOCTOR_ID, COUNT(DD.DIRECTION_ID) DIR_MATCHED"
@@ -107,6 +159,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	Page<UserEntity> findDoctorsProfilesByDirectionsIds(
 			Iterable<Integer> directionsIds, Pageable pageable);
 
+	/**
+	 * Gets the page of doctors by single name.
+	 *
+	 * @param name user name received from user service
+	 * @param pageable interface for pagination information received from user service
+	 * @return the resulting user entity page
+	 */
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM USERS U"
 					+ "   JOIN DOCTORS D ON U.USER_ID = D.USER_ID"
@@ -115,9 +174,15 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	Page<UserEntity> findDoctorsByName(@Param("name") String name, Pageable pageable);
 
 	/**
+	 * Gets the page of doctors by firstName and lastName.	 *
 	 * Sorts the experts according to the coincidence. First, the experts with the same firstname and  lastname are
 	 * displayed. Through   the CASE...WHEN...THEN statement, the TURN parameter is defined. Then results of the SELECT
-	 * statement are sorted according to the parameter TURN
+	 * statement are sorted according to the parameter TURN.
+	 *
+	 * @param firstName received from user service
+	 * @param lastName received from user service
+	 * @param pageable interface for pagination information received from user service
+	 * @return  the resulting user entity page
 	 */
 	@Query(nativeQuery = true,
 			value = "SELECT *, "
@@ -142,5 +207,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	Page<UserEntity> findDoctorsByName(
 			@Param("firstName") String firstName, @Param("lastName") String lastName, Pageable pageable);
 
+	/**
+	 * Checks whether the user exists by email.
+	 *
+	 * @param email received from user service
+	 * @return true or false
+	 */
 	Boolean existsByEmail(String email);
 }
