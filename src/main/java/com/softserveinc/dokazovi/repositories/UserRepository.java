@@ -12,7 +12,7 @@ import java.util.Optional;
 
 /**
  * The User Repository is responsible for encapsulation a set of
- * User objects stored in the database and operations that can be performed on them. *
+ * User objects stored in the database and operations that can be performed on them.
  */
 
 @Repository

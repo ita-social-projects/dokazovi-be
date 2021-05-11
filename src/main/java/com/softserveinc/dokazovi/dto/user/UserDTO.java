@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Set;
 
 /**
- * The User DTO is responsible for passing user data from server to the client.
+ * The User DTO is responsible for passing user data from the server to the client.
  */
 
 @Data

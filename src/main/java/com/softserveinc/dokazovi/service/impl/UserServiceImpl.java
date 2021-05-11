@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The UserServiceImpl is responsible for doing any logic
- * required with the user data received by the User Controller.
+ * The UserServiceImpl is responsible for doing any required logic
+ * with the user data received by the User Controller.
  * It provides logic to operate on the data sent to and from the User repository.
  */
 
