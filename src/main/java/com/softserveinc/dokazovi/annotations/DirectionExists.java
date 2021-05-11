@@ -1,9 +1,7 @@
 package com.softserveinc.dokazovi.annotations;
 
 import com.softserveinc.dokazovi.validator.DirectionExistsValidator;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
+ 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.ElementType;
