@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+/**
+ * The OriginDTO is responsible for passing origin data from server to the client.
+ */
 @Data
 @Builder
 @NoArgsConstructor
