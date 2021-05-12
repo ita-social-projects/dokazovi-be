@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * The DirectionDTO is responsible for passing
- * direction ata from server to the client.
+ * direction data from server to the client.
  */
 
 @Data
