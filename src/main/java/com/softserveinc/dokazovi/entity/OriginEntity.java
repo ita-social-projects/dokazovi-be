@@ -16,6 +16,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.Set;
 
+/**
+ * The Origin Entity is responsible for correlating with Origins table in the database.
+ */
 @Data
 @Builder
 @AllArgsConstructor

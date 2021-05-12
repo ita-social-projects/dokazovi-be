@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * The OriginDTOForSavingPost is responsible for passing origin data for saving post
+ * from server to the client.
+ */
 @Data
 @Builder
 @NoArgsConstructor
