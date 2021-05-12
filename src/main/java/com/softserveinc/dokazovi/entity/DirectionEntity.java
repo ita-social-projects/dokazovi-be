@@ -17,6 +17,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.Set;
 
+/**
+ * The Direction Entity is responsible for correlating with
+ * Directions table in the database.
+ */
+
 @Data
 @Builder
 @AllArgsConstructor

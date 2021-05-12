@@ -16,6 +16,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Set;
 
+/**
+ * The Region Entity is responsible for correlating with
+ * Regions table in the database.
+ */
+
 @Data
 @Builder
 @AllArgsConstructor
