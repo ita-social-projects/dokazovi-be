@@ -105,7 +105,8 @@ public class AuthController {
 	}
 
 	/**
-	 * Completes registration by confirming account
+	 *  Completes registration by confirming account,
+	 *  <p>if token is null - bad request, else sends successful response</p>
 	 *
 	 * @param token authentication token of user
 	 * @return sets 'enabled' = true for current user and prints success message
