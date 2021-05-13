@@ -12,6 +12,12 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The RegionServiceImpl is responsible for doing any required logic
+ *  with the user data received by the Region Controller.
+ * It provides logic to operate on the data sent to and from the Region repository.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class RegionServiceImpl implements RegionService {
@@ -19,6 +25,11 @@ public class RegionServiceImpl implements RegionService {
 	private final RegionRepository regionRepository;
 	private final RegionMapper regionMapper;
 
+	/**
+	 * Gets all regions.
+	 *
+	 * @return all found regions
+	 */
 	@Override
 	public List<RegionDTO> findAllRegions() {
 		return regionRepository.findAll().stream()
@@ -26,6 +37,10 @@ public class RegionServiceImpl implements RegionService {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Updates the region status depending on the availability of doctors in it.
+	 * Runs every four hours
+	 */
 	@Override
 	@Transactional
 	@Scheduled(cron = "0 0 */4 * * *")

@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * The DirectionDTOForSavingPost is responsible for passing
+ * direction saving post data from the server to the client.
+ */
+
 @Data
 @Builder
 @NoArgsConstructor
