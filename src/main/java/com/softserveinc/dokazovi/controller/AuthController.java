@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.payload.AuthResponse;
 import com.softserveinc.dokazovi.dto.payload.LoginRequest;
 import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
@@ -112,7 +113,12 @@ public class AuthController {
 	@GetMapping(AUTH_VERIFICATION)
 	public ResponseEntity<ApiResponseMessage> registrationComplete(
 			@RequestParam(value = "token") String token) {
-		userService.setEnableTrue(userService.getVerificationToken(token).getUser());
-		return ResponseEntity.ok().body(new ApiResponseMessage(true, "Email confirmed! redirect to login page!"));
+		VerificationToken verificationToken = userService.getVerificationToken(token);
+		if (verificationToken == null) {
+			return ResponseEntity.badRequest().body(new ApiResponseMessage(false, "Invalid token received."));
+		} else {
+			userService.setEnableTrue(verificationToken.getUser());
+			return ResponseEntity.ok().body(new ApiResponseMessage(true, "Email confirmed! redirect to login page!"));
+		}
 	}
 }
