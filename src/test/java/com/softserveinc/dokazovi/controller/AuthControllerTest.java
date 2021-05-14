@@ -34,8 +34,10 @@ import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_SIGNUP;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_VERIFICATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -152,6 +154,19 @@ class AuthControllerTest {
         verify(userService, times(1))
                 .getVerificationToken(anyString());
         assertEquals(token, verificationToken.getToken());
+    }
+
+    @Test
+    void registrationIncompleteIfTokenIsNull() throws Exception {
+        String uri = AUTH + AUTH_VERIFICATION + "?token=" + null;
+        VerificationToken verificationToken = VerificationToken.builder()
+                .token(null)
+                .build();
+        when(userService.getVerificationToken(isNull())).thenReturn(verificationToken);
+        mockMvc.perform(get(uri)).andExpect(status().isBadRequest());
+        verify(userService, times(1))
+                .getVerificationToken(anyString());
+        assertNull(verificationToken.getToken());
     }
 
     public static String asJsonString(final Object obj) {
