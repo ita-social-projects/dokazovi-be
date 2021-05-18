@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
@@ -20,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,7 @@ import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -229,6 +233,29 @@ public class PostServiceImpl implements PostService {
 		}
 		directionRepository.updateDirectionsHasPostsStatus();
 		return true;
+	}
+
+	@Override
+	@Transactional
+	public Page<PostMainPageDTO> findLatestByPostTypesAndOrigins(Pageable pageable) {
+		PostMainPageDTO expertOptions = PostMainPageDTO.builder()
+				.fieldName("expertOpinion")
+				.postDTOS(postRepository.findLatestByPostTypeExpertOpinion(PageRequest.of(pageable.getPageNumber(), 4))
+						.map(postMapper::toPostDTO).toSet()).build();
+		PostMainPageDTO media = PostMainPageDTO.builder()
+				.fieldName("media")
+				.postDTOS(postRepository.findLatestByPostTypeMedia(PageRequest.of(pageable.getPageNumber(), 4))
+						.map(postMapper::toPostDTO).toSet()).build();
+		PostMainPageDTO translation = PostMainPageDTO.builder()
+				.fieldName("translation")
+				.postDTOS(postRepository.findLatestByPostTypeTranslation(PageRequest.of(pageable.getPageNumber(), 4))
+						.map(postMapper::toPostDTO).toSet()).build();
+		PostMainPageDTO video = PostMainPageDTO.builder()
+				.fieldName("video")
+				.postDTOS(postRepository.findLatestByOriginVideo(PageRequest.of(pageable.getPageNumber(), 4))
+						.map(postMapper::toPostDTO).toSet()).build();
+
+		return new PageImpl<>(List.of(expertOptions, media, translation, video));
 	}
 
 	private PostEntity getPostEntityFromPostDTO(PostSaveFromUserDTO postDTO) {

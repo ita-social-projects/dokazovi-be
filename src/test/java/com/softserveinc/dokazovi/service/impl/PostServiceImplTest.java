@@ -561,7 +561,6 @@ class PostServiceImplTest {
 		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
 		directionDTO.setId(1);
 
-
 		Set<@DirectionExists DirectionDTOForSavingPost> directions = new HashSet<>();
 		directions.add(directionDTO);
 
@@ -628,7 +627,6 @@ class PostServiceImplTest {
 
 		PostTypeIdOnlyDTO postTypeDTO = new PostTypeIdOnlyDTO();
 		postTypeDTO.setId(1);
-
 
 		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
 		directionDTO.setId(1);
@@ -848,5 +846,31 @@ class PostServiceImplTest {
 
 		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
 		assertThrows(EntityNotFoundException.class, () -> postService.updatePostById(userPrincipal, dto));
+	}
+
+	@Test
+	void findLatestPostsByPostTypesAndOrigin_isOk() {
+		Pageable pageable = PageRequest.of(0, 4);
+		when(postRepository.findLatestByPostTypeMedia(any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		when(postRepository.findLatestByOriginVideo(pageable)).thenReturn(postEntityPage);
+		when(postRepository.findLatestByPostTypeTranslation(pageable)).thenReturn(postEntityPage);
+		when(postRepository.findLatestByPostTypeExpertOpinion(pageable)).thenReturn(postEntityPage);
+		postService.findLatestByPostTypesAndOrigins(pageable);
+		verify(postMapper, times(8)).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findLatestPostsByPostTypesAndOrigin_NotFound() {
+		Pageable pageable = PageRequest.of(0, 4);
+		when(postRepository.findLatestByPostTypeMedia(any(Pageable.class)))
+				.thenReturn(Page.empty());
+		when(postRepository.findLatestByOriginVideo(pageable)).thenReturn(Page.empty());
+		when(postRepository.findLatestByPostTypeTranslation(pageable)).thenReturn(Page.empty());
+		when(postRepository.findLatestByPostTypeExpertOpinion(pageable)).thenReturn(Page.empty());
+
+		postService.findLatestByPostTypesAndOrigins(pageable);
+		verify(postMapper, times(0)).toPostDTO(any(PostEntity.class));
+		Assertions.assertThat(postService.findLatestByPostTypesAndOrigins(pageable).isEmpty());
 	}
 }
