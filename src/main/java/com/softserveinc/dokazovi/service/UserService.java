@@ -30,8 +30,6 @@ public interface UserService {
 
 	Boolean existsByEmail(String email);
 
-	UserEntity saveUser(UserEntity user);
-
 	UserEntity registerNewUser(SignUpRequest signUpRequest);
 
 }
