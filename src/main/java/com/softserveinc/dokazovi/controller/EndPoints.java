@@ -12,7 +12,8 @@ public final class EndPoints {
 	public static final String VERSION = "/version";
 	public static final String POST = "/post";
 	public static final String POST_TYPE = "/type";
-	public static final String POST_LATEST = "/latest";
+	public static final String POST_LATEST = "/latest-all";
+	public static final String POST_LATEST_BY_POST_TYPES_AND_ORIGINS = "/latest";
 	public static final String POST_IMPORTANT = "/important";
 	public static final String POST_GET_POST_BY_ID = "/{postId}";
 	public static final String POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS = "/by-authorid-and-directions";
