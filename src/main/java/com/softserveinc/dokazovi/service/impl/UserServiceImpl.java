@@ -226,6 +226,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
+	 * Saves received user.
+	 *
+	 * @param user the user for saving
+	 * @return the resulting user entity
+	 */
+	@Override
+	public UserEntity saveUser(UserEntity user) {
+		return userRepository.save(user);
+	}
+
+	/**
 	 * Registers a new user.
 	 *
 	 * @param signUpRequest register request received from Auth controller

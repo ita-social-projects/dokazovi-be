@@ -391,6 +391,18 @@ class UserServiceImplTest {
 	}
 
 	@Test
+	void saveUser() {
+		UserEntity userEntity = UserEntity.builder()
+				.id(1)
+				.build();
+		when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
+		userEntity = userService.saveUser(userEntity);
+		assertEquals(1, userEntity.getId());
+		verify(userRepository, times(1))
+				.save(any(UserEntity.class));
+	}
+
+	@Test
 	void findUserByEmail() {
 		String email = "some@some.com";
 		UserEntity user = UserEntity.builder()
