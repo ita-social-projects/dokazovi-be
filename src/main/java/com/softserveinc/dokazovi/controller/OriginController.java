@@ -13,9 +13,8 @@ import java.util.List;
 import static com.softserveinc.dokazovi.controller.EndPoints.ORIGIN;
 
 /**
- * Implements logic for getting all origins.
+ * The Origin controller responsible for handling requests for getting all origins.
  */
-
 @RestController
 @RequestMapping(ORIGIN)
 @RequiredArgsConstructor
@@ -23,11 +22,10 @@ public class OriginController {
 	private final OriginService originService;
 
 	/**
-	 * This method will get all origins from db.
+	 * This method will get all origins from database.
 	 *
-	 * @return this returns list of all origins.
+	 * @return list of all origins and 'OK' HttpStatus
 	 */
-
 	@GetMapping
 	@ApiOperation(value = "Get all origins")
 	public ResponseEntity<List<OriginDTO>> getAllOrigins() {

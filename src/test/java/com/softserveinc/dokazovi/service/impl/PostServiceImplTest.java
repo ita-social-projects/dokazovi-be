@@ -110,7 +110,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void saveFromUser_WhenIdIsPresent_isNull_Doctor() {
+	void saveFromUser_WhenIdIsPresent_isNull_DoctorRole() {
 
 		Set<RolePermission> rolePermissions = new HashSet<>();
 		rolePermissions.add(RolePermission.SAVE_OWN_PUBLICATION);
@@ -160,7 +160,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void saveFromUser_WhenIdIsPresent_isNull_Admin() {
+	void saveFromUser_WhenIdIsPresent_isNull_AdminRole() {
 		Set<RolePermission> rolePermissions = new HashSet<>();
 		rolePermissions.add(RolePermission.SAVE_PUBLICATION);
 		RoleEntity roleEntity = RoleEntity.builder()
@@ -456,7 +456,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenExists_isOk_Admin() {
+	void archivePostById_WhenExists_isOk_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_POST);
 
@@ -501,7 +501,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenExists_isOk_Doctor() {
+	void archivePostById_WhenExists_isOk_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_OWN_POST);
 
@@ -546,7 +546,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void updatePostById_WhenExists_isOk_Admin() {
+	void updatePostById_WhenExists_isOk_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.UPDATE_POST);
 
@@ -560,7 +560,6 @@ class PostServiceImplTest {
 
 		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
 		directionDTO.setId(1);
-
 
 		Set<@DirectionExists DirectionDTOForSavingPost> directions = new HashSet<>();
 		directions.add(directionDTO);
@@ -617,7 +616,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void updatePostById_WhenExists_isOk_Doctor() {
+	void updatePostById_WhenExists_isOk_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.UPDATE_OWN_POST);
 
@@ -628,7 +627,6 @@ class PostServiceImplTest {
 
 		PostTypeIdOnlyDTO postTypeDTO = new PostTypeIdOnlyDTO();
 		postTypeDTO.setId(1);
-
 
 		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
 		directionDTO.setId(1);
@@ -689,7 +687,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException_Admin() {
+	void archivePostById_WhenNotExists_NotFound_ThrowException_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_POST);
 
@@ -721,7 +719,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException_Doctor() {
+	void archivePostById_WhenNotExists_NotFound_ThrowException_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_POST);
 
@@ -753,7 +751,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void updatePostById_WhenNotExists_NotFound_ThrowException_Admin() {
+	void updatePostById_WhenNotExists_NotFound_ThrowException_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.UPDATE_POST);
 
@@ -802,7 +800,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void updatePostById_WhenNotExists_NotFound_ThrowException_Doctor() {
+	void updatePostById_WhenNotExists_NotFound_ThrowException_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.UPDATE_POST);
 
@@ -848,5 +846,31 @@ class PostServiceImplTest {
 
 		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
 		assertThrows(EntityNotFoundException.class, () -> postService.updatePostById(userPrincipal, dto));
+	}
+
+	@Test
+	void findLatestPostsByPostTypesAndOrigin_isOk() {
+		Pageable pageable = PageRequest.of(0, 4);
+		when(postRepository.findLatestByPostTypeMedia(any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		when(postRepository.findLatestByOriginVideo(pageable)).thenReturn(postEntityPage);
+		when(postRepository.findLatestByPostTypeTranslation(pageable)).thenReturn(postEntityPage);
+		when(postRepository.findLatestByPostTypeExpertOpinion(pageable)).thenReturn(postEntityPage);
+		postService.findLatestByPostTypesAndOrigins(pageable);
+		verify(postMapper, times(8)).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findLatestPostsByPostTypesAndOrigin_NotFound() {
+		Pageable pageable = PageRequest.of(0, 4);
+		when(postRepository.findLatestByPostTypeMedia(any(Pageable.class)))
+				.thenReturn(Page.empty());
+		when(postRepository.findLatestByOriginVideo(pageable)).thenReturn(Page.empty());
+		when(postRepository.findLatestByPostTypeTranslation(pageable)).thenReturn(Page.empty());
+		when(postRepository.findLatestByPostTypeExpertOpinion(pageable)).thenReturn(Page.empty());
+
+		postService.findLatestByPostTypesAndOrigins(pageable);
+		verify(postMapper, times(0)).toPostDTO(any(PostEntity.class));
+		Assertions.assertThat(postService.findLatestByPostTypesAndOrigins(pageable).isEmpty());
 	}
 }

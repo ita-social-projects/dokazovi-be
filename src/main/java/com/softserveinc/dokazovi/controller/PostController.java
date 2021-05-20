@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
@@ -48,6 +49,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 
 /**
@@ -311,6 +313,23 @@ public class PostController {
 			@RequestParam(required = false) @NotNull Set<Integer> directions) {
 		Page<PostDTO> posts = postService
 				.findPostsByAuthorIdAndDirections(pageable, authorId, directions);
+		return ResponseEntity
+				.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+				.body(posts);
+	}
+
+	/**
+	 * Gets latest posts by post types and origin with names of fields
+	 *
+	 * @param pageable interface for pagination information
+	 * @return found posts filtered by Post Types and origins with names of main page fields and HttpStatus 'OK'
+	 */
+	@GetMapping(POST_LATEST_BY_POST_TYPES_AND_ORIGINS)
+	@ApiPageable
+	@ApiOperation(value = "Find latest published posts by post types and origins")
+	public ResponseEntity<Page<PostMainPageDTO>> findLatestByPostTypesAndOrigins(
+			@PageableDefault(size = 16) Pageable pageable) {
+		Page<PostMainPageDTO> posts = postService.findLatestByPostTypesAndOrigins(pageable);
 		return ResponseEntity
 				.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(posts);
