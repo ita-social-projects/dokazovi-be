@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
@@ -42,6 +43,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -66,7 +68,6 @@ class PostControllerTest {
 	private PostService postService;
 	@Mock
 	private PostTypeService postTypeService;
-
 	@Mock
 	private Validator validator;
 
@@ -428,4 +429,15 @@ class PostControllerTest {
 
 		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable);
 	}
+
+	@Test
+	void findLatestByPostTypesAndByOrigins() throws Exception {
+		PostMainPageDTO postMainPageDTO = PostMainPageDTO.builder().fieldName("Video").build();
+		Page<PostMainPageDTO> page = new PageImpl<>(List.of(postMainPageDTO));
+		when(postService.findLatestByPostTypesAndOrigins(any(Pageable.class))).thenReturn(page);
+		mockMvc.perform(get(POST + POST_LATEST_BY_POST_TYPES_AND_ORIGINS)).andExpect(status().isOk());
+
+		verify(postService).findLatestByPostTypesAndOrigins(any(Pageable.class));
+	}
+
 }

@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
@@ -20,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,7 @@ import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -173,19 +177,28 @@ public class PostServiceImpl implements PostService {
 		Integer userId = userPrincipal.getId();
 		Integer authorId = mappedEntity.getAuthor().getId();
 
-		if (userId.equals(authorId) && checkAuthority(userPrincipal, "DELETE_OWN_POST")) {
+		if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) {
 			mappedEntity.setStatus(PostStatus.ARCHIVED);
 			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-			return saveEntity(mappedEntity);
+			postRepository.save(mappedEntity);
 		}
 
-		if (!userId.equals(authorId) && checkAuthority(userPrincipal, "DELETE_POST")) {
+		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_POST"))) {
 			mappedEntity.setStatus(PostStatus.ARCHIVED);
 			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-			return saveEntity(mappedEntity);
+			postRepository.save(mappedEntity);
 		}
 
-		throw new ForbiddenPermissionsException();
+		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_OWN_POST")))
+				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_POST"))) {
+			throw new ForbiddenPermissionsException();
+		}
+		directionRepository.updateDirectionsHasPostsStatus();
+		return true;
 	}
 
 	@Override
@@ -199,34 +212,50 @@ public class PostServiceImpl implements PostService {
 		Integer userId = userPrincipal.getId();
 		Integer authorId = mappedEntity.getAuthor().getId();
 
-		if (userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_OWN_POST")) {
+		if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_OWN_POST"))) {
 			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-			return saveEntity(mappedEntity);
+			postRepository.save(mappedEntity);
 		}
 
-		if (!userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_POST")) {
+		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
-			return saveEntity(mappedEntity);
-		}
-
-		throw new ForbiddenPermissionsException();
-	}
-
-	private boolean saveEntity(PostEntity mappedEntity) {
-		try {
 			postRepository.save(mappedEntity);
-			directionRepository.updateDirectionsHasPostsStatus();
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return false;
 		}
+
+		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_OWN_POST")))
+				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
+			throw new ForbiddenPermissionsException();
+		}
+		directionRepository.updateDirectionsHasPostsStatus();
 		return true;
 	}
 
-	private boolean checkAuthority(UserPrincipal userPrincipal, String authority) {
-		return userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-				grantedAuthority.getAuthority().equals(authority));
+	@Override
+	@Transactional
+	public Page<PostMainPageDTO> findLatestByPostTypesAndOrigins(Pageable pageable) {
+		PostMainPageDTO expertOptions = PostMainPageDTO.builder()
+				.fieldName("expertOpinion")
+				.postDTOS(postRepository.findLatestByPostTypeExpertOpinion(PageRequest.of(pageable.getPageNumber(), 4))
+						.map(postMapper::toPostDTO).toSet()).build();
+		PostMainPageDTO media = PostMainPageDTO.builder()
+				.fieldName("media")
+				.postDTOS(postRepository.findLatestByPostTypeMedia(PageRequest.of(pageable.getPageNumber(), 4))
+						.map(postMapper::toPostDTO).toSet()).build();
+		PostMainPageDTO translation = PostMainPageDTO.builder()
+				.fieldName("translation")
+				.postDTOS(postRepository.findLatestByPostTypeTranslation(PageRequest.of(pageable.getPageNumber(), 4))
+						.map(postMapper::toPostDTO).toSet()).build();
+		PostMainPageDTO video = PostMainPageDTO.builder()
+				.fieldName("video")
+				.postDTOS(postRepository.findLatestByOriginVideo(PageRequest.of(pageable.getPageNumber(), 4))
+						.map(postMapper::toPostDTO).toSet()).build();
+
+		return new PageImpl<>(List.of(expertOptions, media, translation, video));
 	}
 
 	private PostEntity getPostEntityFromPostDTO(PostSaveFromUserDTO postDTO) {
