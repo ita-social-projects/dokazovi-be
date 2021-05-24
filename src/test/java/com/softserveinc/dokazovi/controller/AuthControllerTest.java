@@ -2,10 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.payload.LoginRequest;
-import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
-import com.softserveinc.dokazovi.entity.ProviderEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
@@ -27,22 +24,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Optional;
-
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_SIGNUP;
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_VERIFICATION;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)

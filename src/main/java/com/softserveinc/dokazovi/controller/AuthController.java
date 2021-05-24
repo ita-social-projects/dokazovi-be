@@ -1,11 +1,8 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.payload.AuthResponse;
 import com.softserveinc.dokazovi.dto.payload.LoginRequest;
-import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
@@ -17,23 +14,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.net.URI;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_SIGNUP;
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_VERIFICATION;
 
 /**
  * The Auth controller responsible for handling requests for authentication.
