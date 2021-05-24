@@ -106,69 +106,6 @@ class AuthControllerTest {
                 .findByEmail(anyString());
     }
 
-    @Test
-    void registerUser() throws Exception {
-        String email = "user@mail.com";
-        String password = "user";
-        UserEntity user = UserEntity.builder()
-                .email(email)
-                .firstName("user")
-                .password(password)
-                .build();
-        SignUpRequest request = new SignUpRequest();
-        request.setEmail(user.getEmail());
-        request.setName(user.getFirstName());
-        request.setPassword(user.getPassword());
-        Optional<ProviderEntity> providerEntity = Optional.ofNullable(ProviderEntity.builder().build());
-        when(providerService.existsByLocalEmail(anyString())).thenReturn(false);
-        when(userService.registerNewUser(any(SignUpRequest.class))).thenReturn(user);
-        when(providerService.createLocalProviderEntityForUser(any(UserEntity.class), anyString()))
-                .thenReturn(providerEntity);
-        doNothing().when(mailSenderUtil).sendMessage(any(UserEntity.class));
-        String uri = AUTH + AUTH_SIGNUP;
-        mockMvc.perform(MockMvcRequestBuilders.post(uri)
-                .content(asJsonString(request))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-        assertEquals(email, user.getEmail());
-        verify(providerService, times(1))
-                .existsByLocalEmail(anyString());
-        verify(userService, times(1))
-                .registerNewUser(any(SignUpRequest.class));
-        verify(mailSenderUtil, times(1))
-                .sendMessage(any(UserEntity.class));
-        verify(providerService, times(1))
-                .createLocalProviderEntityForUser(any(UserEntity.class), anyString());
-    }
-
-    @Test
-    void registrationComplete() throws Exception {
-        String token = "950c9760-805e-449c-a966-2d0d5ebd86f4";
-        String uri = AUTH + AUTH_VERIFICATION + "?token=" + token;
-        VerificationToken verificationToken = VerificationToken.builder()
-                .token(token)
-                .build();
-        when(userService.getVerificationToken(anyString())).thenReturn(verificationToken);
-        mockMvc.perform(get(uri)).andExpect(status().isOk());
-        verify(userService, times(1))
-                .getVerificationToken(anyString());
-        assertEquals(token, verificationToken.getToken());
-    }
-
-    @Test
-    void registrationIncompleteIfTokenIsNull() throws Exception {
-        String uri = AUTH + AUTH_VERIFICATION + "?token=" + null;
-        VerificationToken verificationToken = VerificationToken.builder()
-                .token(null)
-                .build();
-        when(userService.getVerificationToken(isNull())).thenReturn(verificationToken);
-        mockMvc.perform(get(uri)).andExpect(status().isBadRequest());
-        verify(userService, times(1))
-                .getVerificationToken(anyString());
-        assertNull(verificationToken.getToken());
-    }
-
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

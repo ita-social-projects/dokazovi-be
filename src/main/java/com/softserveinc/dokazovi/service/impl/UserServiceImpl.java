@@ -224,21 +224,4 @@ public class UserServiceImpl implements UserService {
 	public Boolean existsByEmail(String email) {
 		return userRepository.existsByEmail(email);
 	}
-
-	/**
-	 * Registers a new user.
-	 *
-	 * @param signUpRequest register request received from Auth controller
-	 * @return saved user entity
-	 */
-	@Override
-	public UserEntity registerNewUser(SignUpRequest signUpRequest) {
-		UserEntity user = new UserEntity();
-		StringToNameParser.setUserNameFromRequest(signUpRequest, user);
-		user.setEmail(signUpRequest.getEmail());
-		user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-		user.setStatus(UserStatus.NEW);
-		user.setEnabled(false);
-		return userRepository.save(user);
-	}
 }

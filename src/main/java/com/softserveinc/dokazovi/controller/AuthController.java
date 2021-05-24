@@ -77,49 +77,4 @@ public class AuthController {
 			return ResponseEntity.ok(authResponse);
 		}
 	}
-
-	/**
-	 * Registers new  user.
-	 *
-	 * <p>Checks if user already has an account, if has - throws BadRequestException,
-	 * else sends message on email to confirm account</p>
-	 * @param signUpRequest data class that stores user name, email and password
-	 * @return registers new user and prints success message
-	 * @throws IOException        throws when there is a problem with sending message to user's email
-	 * @throws MessagingException throws when there is a problem with sending message to user's email
-	 */
-	@PostMapping(AUTH_SIGNUP)
-	public ResponseEntity<ApiResponseMessage> registerUser(@Valid @RequestBody SignUpRequest signUpRequest)
-			throws IOException, MessagingException {
-		if (providerService.existsByLocalEmail(signUpRequest.getEmail())) {
-			throw new BadRequestException("Email address already in use.");
-		}
-		UserEntity user = userService.registerNewUser(signUpRequest);
-		providerService.createLocalProviderEntityForUser(user, signUpRequest.getEmail());
-		URI location = ServletUriComponentsBuilder
-				.fromCurrentContextPath().path("/api/user/me")
-				.buildAndExpand(user.getId()).toUri();
-		mailSenderUtil.sendMessage(user);
-		return ResponseEntity.created(location)
-				.body(new ApiResponseMessage(true, "User registered successfully! Please confirm your email!"));
-	}
-
-	/**
-	 *  Completes registration by confirming account,
-	 *  <p>if token is null - bad request, else sends successful response</p>
-	 *
-	 * @param token authentication token of user
-	 * @return sets 'enabled' = true for current user and prints success message
-	 */
-	@GetMapping(AUTH_VERIFICATION)
-	public ResponseEntity<ApiResponseMessage> registrationComplete(
-			@RequestParam(value = "token") String token) {
-		VerificationToken verificationToken = userService.getVerificationToken(token);
-		if (verificationToken == null) {
-			return ResponseEntity.badRequest().body(new ApiResponseMessage(false, "Invalid token received."));
-		} else {
-			userService.setEnableTrue(verificationToken.getUser());
-			return ResponseEntity.ok().body(new ApiResponseMessage(true, "Email confirmed! redirect to login page!"));
-		}
-	}
 }
