@@ -1,7 +1,9 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.dto.payload.SignUpRequest;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
@@ -406,5 +408,27 @@ class UserServiceImplTest {
 		when(userRepository.findAll(any(Pageable.class))).thenReturn(users);
 		userService.findAll(pageable);
 		verify(userRepository, times(1)).findAll(pageable);
+	}
+
+	@Test
+	void registerNewUser() {
+		when(passwordEncoder.encode(any(String.class))).thenReturn("password");
+		SignUpRequest signUpRequest = new SignUpRequest();
+		signUpRequest.setName("test user");
+		signUpRequest.setEmail("user@mail.com");
+		signUpRequest.setPassword("password");
+		UserEntity userEntity = UserEntity.builder()
+				.id(1)
+				.enabled(false)
+				.firstName("test")
+				.lastName("user")
+				.email("user@mail.com")
+				.status(UserStatus.NEW)
+				.build();
+		when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
+		userEntity = userService.registerNewUser(signUpRequest);
+		assertEquals(1, userEntity.getId());
+		verify(userRepository, times(1))
+				.save(any(UserEntity.class));
 	}
 }
