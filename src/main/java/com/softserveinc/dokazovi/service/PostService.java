@@ -21,8 +21,6 @@ public interface PostService {
 	Page<PostDTO> findAllByDirection(
 			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);
 
-	Page<PostDTO> findAllByExpert(Integer expertId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
-
 	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
 	Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(
@@ -36,4 +34,7 @@ public interface PostService {
 	Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveDTO);
 
 	Page<PostMainPageDTO> findLatestByPostTypesAndOrigins(Pageable pageable);
+
+	Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId, Set<Integer> directionId,
+			Pageable pageable);
 }

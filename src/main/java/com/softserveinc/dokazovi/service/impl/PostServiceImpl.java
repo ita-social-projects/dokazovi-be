@@ -147,17 +147,6 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostDTO> findAllByExpert(
-			Integer expertId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable) {
-		if (typeId == null) {
-			return postRepository.findAllByAuthorIdAndStatus(expertId, postStatus, pageable)
-					.map(postMapper::toPostDTO);
-		}
-		return postRepository.findAllByAuthorIdAndTypeIdInAndStatus(expertId, typeId, postStatus, pageable)
-				.map(postMapper::toPostDTO);
-	}
-
-	@Override
 	public Page<PostDTO> findPostsByAuthorIdAndDirections(
 			Pageable pageable, Integer authorId, Set<Integer> directions) {
 
@@ -256,6 +245,26 @@ public class PostServiceImpl implements PostService {
 						.map(postMapper::toPostDTO).toSet()).build();
 
 		return new PageImpl<>(List.of(expertOptions, media, translation, video));
+	}
+
+	@Override
+	public Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId,
+			Set<Integer> directionId, Pageable pageable) {
+		if (typeId == null && directionId == null) {
+			return postRepository.findAllByAuthorIdAndStatus(expertId, PostStatus.PUBLISHED, pageable)
+					.map(postMapper::toPostDTO);
+		}
+		if (typeId == null) {
+			return postRepository.findPostsByAuthorIdAndDirections(pageable, expertId, directionId)
+					.map(postMapper::toPostDTO);
+		}
+		if (directionId == null) {
+			return postRepository
+					.findAllByAuthorIdAndTypeIdInAndStatus(expertId, typeId, PostStatus.PUBLISHED, pageable)
+					.map(postMapper::toPostDTO);
+		}
+		return postRepository.findAllByExpertAndByDirectionsAndByPostType(expertId, typeId, directionId, pageable)
+				.map(postMapper::toPostDTO);
 	}
 
 	private PostEntity getPostEntityFromPostDTO(PostSaveFromUserDTO postDTO) {
