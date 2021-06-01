@@ -30,6 +30,8 @@ public class UserDTO {
 
 	private String bio;
 
+	private String socialNetwork;
+
 	private Set<DirectionDTO> directions;
 
 	private UserInstitutionDTO mainInstitution;
