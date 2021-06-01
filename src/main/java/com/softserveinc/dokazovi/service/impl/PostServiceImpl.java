@@ -26,7 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -201,27 +201,27 @@ public class PostServiceImpl implements PostService {
 		Integer userId = userPrincipal.getId();
 		Integer authorId = mappedEntity.getAuthor().getId();
 
-		if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-				grantedAuthority.getAuthority().equals("UPDATE_OWN_POST"))) {
+		if (userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_OWN_POST")) {
 			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
-			postRepository.save(mappedEntity);
-		}
-
-		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
+			saveEntity(mappedEntity);
+		} else if (!userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_POST")) {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
-			postRepository.save(mappedEntity);
-		}
-
-		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-				grantedAuthority.getAuthority().equals("UPDATE_OWN_POST")))
-				&& userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-				grantedAuthority.getAuthority().equals("UPDATE_POST"))) {
+			saveEntity(mappedEntity);
+		} else {
 			throw new ForbiddenPermissionsException();
 		}
-		directionRepository.updateDirectionsHasPostsStatus();
 		return true;
+	}
+
+	private void saveEntity(PostEntity mappedEntity) {
+		postRepository.save(mappedEntity);
+		directionRepository.updateDirectionsHasPostsStatus();
+	}
+
+	private boolean checkAuthority(UserPrincipal userPrincipal, String authority) {
+		return userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals(authority));
 	}
 
 	@Override
