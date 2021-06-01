@@ -210,4 +210,15 @@ public class UserServiceImpl implements UserService {
 				.build();
 		tokenRepository.save(myToken);
 	}
+
+	/**
+	 * Checks whether the user exists by email.
+	 *
+	 * @param email received from Mail Sender
+	 * @return  true or false
+	 */
+	@Override
+	public Boolean existsByEmail(String email) {
+		return userRepository.existsByEmail(email);
+	}
 }

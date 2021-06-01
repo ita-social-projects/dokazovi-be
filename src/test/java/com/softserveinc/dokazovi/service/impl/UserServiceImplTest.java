@@ -378,6 +378,17 @@ class UserServiceImplTest {
 	}
 
 	@Test
+	void existByEmail() {
+		String email = "user@mail.com";
+		Boolean existing = true;
+		when(userRepository.existsByEmail(anyString())).thenReturn(existing);
+		existing = userService.existsByEmail(email);
+		assertEquals(true, existing);
+		verify(userRepository, times(1))
+				.existsByEmail(anyString());
+	}
+
+	@Test
 	void findUserByEmail() {
 		String email = "some@some.com";
 		UserEntity user = UserEntity.builder()
