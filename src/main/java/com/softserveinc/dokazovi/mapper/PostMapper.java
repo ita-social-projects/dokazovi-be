@@ -13,6 +13,7 @@ import org.mapstruct.ReportingPolicy;
 public interface PostMapper {
 
 	@Mapping(target = "author.mainInstitution", source = "author.doctor.mainInstitution")
+	@Mapping(target = "author.bio", source = "author.doctor.bio")
 	PostDTO toPostDTO(PostEntity postEntity);
 
 	PostEntity toPostEntity(PostSaveFromUserDTO postSaveFromUserDTO);

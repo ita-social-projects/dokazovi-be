@@ -11,5 +11,6 @@ public class PostUserDTO {
 	private String firstName;
 	private String lastName;
 	private String avatar;
+	private String bio;
 	private PostUserInstitutionDTO mainInstitution;
 }

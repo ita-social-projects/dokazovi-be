@@ -156,14 +156,16 @@ public class PostController {
 	@ApiPageable
 	@ApiOperation(value = "Find latest posts by some expert")
 	public ResponseEntity<Page<PostDTO>> findLatestByExpert(
-			@PageableDefault(size = 9, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault Pageable pageable,
 			@ApiParam(value = "Expert's id")
 			@RequestParam Integer expert,
 			@ApiParam(value = "Post type id")
-			@RequestParam(required = false) Set<Integer> type) {
+			@RequestParam(required = false) Set<Integer> type,
+			@ApiParam(value = "Direction id")
+			@RequestParam(required = false) Set<Integer> direction) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(postService.findAllByExpert(expert, type, PostStatus.PUBLISHED, pageable));
+				.body(postService.findAllByExpertAndTypeAndDirections(expert, type, direction, pageable));
 	}
 
 	/**

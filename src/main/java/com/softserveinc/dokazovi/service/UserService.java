@@ -27,6 +27,4 @@ public interface UserService {
 
 	VerificationToken getVerificationToken(String verificationToken);
 
-	Boolean existsByEmail(String email);
-
 }
