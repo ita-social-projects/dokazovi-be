@@ -342,7 +342,7 @@ class PostServiceImplTest {
 		when(postRepository.findAllByAuthorIdAndStatus(
 				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
-		postService.findAllByExpert(expertId, null, PostStatus.PUBLISHED, pageable);
+		postService.findAllByExpertAndTypeAndDirections(expertId, null, null, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -353,7 +353,30 @@ class PostServiceImplTest {
 		when(postRepository.findAllByAuthorIdAndTypeIdInAndStatus(any(Integer.class),
 				anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
-		postService.findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
+		postService.findAllByExpertAndTypeAndDirections(expertId, typeId, null, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByExpertAndDirections() {
+		Integer expertId = 5;
+		Set<Integer> directionId = Set.of(2, 3);
+		when(postRepository.findPostsByAuthorIdAndDirections(any(Pageable.class), any(Integer.class),
+				anySet()))
+				.thenReturn(postEntityPage);
+		postService.findAllByExpertAndTypeAndDirections(expertId, null, directionId, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByExpertAndTypeAndDirection() {
+		Integer expertId = 5;
+		Set<Integer> directionId = Set.of(2, 3);
+		Set<Integer> typeId = Set.of(1,2);
+		when(postRepository.findAllByExpertAndByDirectionsAndByPostType(any(Integer.class),
+				anySet(), anySet(), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllByExpertAndTypeAndDirections(expertId, typeId, directionId, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 

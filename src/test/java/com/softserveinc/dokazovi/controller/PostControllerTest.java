@@ -204,11 +204,12 @@ class PostControllerTest {
 	void findLatestByExpert() throws Exception {
 		Integer expertId = 2;
 		Set<Integer> typeId = Set.of(1, 2);
-		Pageable pageable = PageRequest.of(0, 9, Sort.by("createdAt", "id").descending());
+		Set<Integer> directionId = Set.of(1,2,3);
+		Pageable pageable = PageRequest.of(0, 10);
 		mockMvc.perform(
-				get(POST + POST_LATEST_BY_EXPERT + "?expert=2&page=0&size=9&type=1,2"))
+				get(POST + POST_LATEST_BY_EXPERT + "?expert=2&type=1,2&direction=1,2,3"))
 				.andExpect(status().isOk());
-		verify(postService).findAllByExpert(expertId, typeId, PostStatus.PUBLISHED, pageable);
+		verify(postService).findAllByExpertAndTypeAndDirections(expertId, typeId, directionId, pageable);
 	}
 
 	@Test

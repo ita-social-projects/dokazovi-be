@@ -44,6 +44,18 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ " WHERE POSTS.STATUS IN ('PUBLISHED')")
 	Page<PostEntity> findAll(Pageable pageable);
 
+	@Query(nativeQuery = true,
+			value = " SELECT P.* FROM POSTS P "
+					+ " WHERE (P.AUTHOR_ID IN (:authorId)) "
+					+ " AND(array_length(ARRAY[(:typesIds)],1)>0 "
+					+ "    AND P.TYPE_ID IN (:typesIds)) "
+					+ "  AND (array_length(ARRAY [(:directionsIds)], 1) > 0 "
+					+ "    AND P.POST_ID IN (SELECT POST_ID "
+					+ "                       FROM POSTS_DIRECTIONS "
+					+ "                       WHERE DIRECTION_ID IN (:directionsIds)))"
+					+ " AND P.STATUS IN ('PUBLISHED') ")
+	Page<PostEntity> findAllByExpertAndByDirectionsAndByPostType(Integer authorId, Set<Integer> typesIds,
+			Set<Integer> directionsIds, Pageable pageable);
 
 	@Query(nativeQuery = true,
 			value = "SELECT P1.* "
@@ -68,7 +80,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ " JOIN USERS U ON P.AUTHOR_ID = U.USER_ID  "
 					+ "  WHERE P.POST_ID  IN (SELECT DISTINCT P.POST_ID FROM POSTS_DIRECTIONS PD"
 					+ "  WHERE PD.DIRECTION_ID IN (:directionsIds))"
-					+ "  AND   P.AUTHOR_ID IN (:authorId)")
+					+ "  AND   P.AUTHOR_ID IN (:authorId)"
+					+ "  AND P.STATUS IN ('PUBLISHED')")
 	Page<PostEntity> findPostsByAuthorIdAndDirections(Pageable pageable, Integer authorId, Set<Integer> directionsIds);
 
 	@Query(nativeQuery = true,
