@@ -1,4 +1,4 @@
-package com.softserveinc.dokazovi;
+package com.softserveinc.dokazovi.analytics;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -16,25 +16,24 @@ import com.google.api.services.analytics.model.Webproperties;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 /**
- * A simple example of how to access the Google Analytics API using a service
- * account.
+ * A simple example of how to access the Google Analytics API using a service account.
  */
 public class HelloAnalytics {
 
 	private static final String APPLICATION_NAME = "Hello Analytics";
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-	private static final String KEY_FILE_LOCATION = "C:\\Users\\Masha\\IdeaProjects\\dokazovi-be\\src\\main\\java\\com\\softserveinc\\dokazovi\\client_secrets.json";
+	private static final String KEY_FILE_LOCATION = "";
+
 	public static void main(String[] args) {
 		try {
 			Analytics analytics = initializeAnalytic();
 
 			String profile = getFirstProfileId(analytics);
-			System.out.println("First Profile Id: "+ profile);
+			System.out.println("First Profile Id: " + profile);
 			printResults(getResults(analytics, profile));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -100,11 +99,17 @@ public class HelloAnalytics {
 		// Query the Core Reporting API for the number of sessions
 		// in the past seven days.
 
-		return analytics
+		GaData today = analytics
 				.data()
 				.ga()
-				.get("ga:" + profileId, "7daysAgo", "today", "ga:bounces")
+				.get("ga:" + profileId, "2021-03-22", "today", "ga:pageviews")
+				.setDimensions("ga:pagePath")
+				.setFilters("ga:pagePath==/experts/14")
 				.execute();
+
+		List<List<String>> rows = today.getRows();
+
+		return today;
 	}
 
 	private static void printResults(GaData results) {
@@ -116,7 +121,8 @@ public class HelloAnalytics {
 
 			//System.out.println(results.getDataTable());
 			Map<String, String> rows = results.getTotalsForAllResults();
-			/*for (List<String> list : rows){
+			System.out.println(rows);
+			/*for (String> list : rows){
 				for (String str : list){
 					System.out.println(str);
 				}
