@@ -130,9 +130,9 @@ public class PostController {
 		try {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(postService.setPostsAsImportant(posts))
-					.message(String.format("Posts updated successfully"))
+					.message("Posts updated successfully")
 					.build();
-		} catch (EntityNotFoundException | ForbiddenPermissionsException e) {
+		} catch (Exception e) {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(false)
 					.message(e.getMessage())

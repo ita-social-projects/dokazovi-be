@@ -5,10 +5,12 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
+import org.hibernate.exception.SQLGrammarException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -441,6 +443,19 @@ class PostControllerTest {
 				.andExpect(status().isOk());
 
 		verify(postService).setPostsAsImportant(postIds);
+	}
+
+	@Test
+	void setPostsAsImportant_Exception() throws Exception {
+		String uri = POST + POST_SET_IMPORTANT + "?posts=";
+
+		Mockito.when(postService.setPostsAsImportant(any()))
+				.thenThrow(new BadRequestException("could not execute statement; SQL [n/a]; nested exception is org.hibernate.exception.SQLGrammarException: could not execute statement"));
+
+		mockMvc.perform(get(uri))
+				.andExpect(status().isOk()).andExpect(result ->
+				Assertions.assertEquals("{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested exception is org.hibernate.exception.SQLGrammarException: could not execute statement\"}",
+						result.getResponse().getContentAsString()));
 	}
 
 	@Test
