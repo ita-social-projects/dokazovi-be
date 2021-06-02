@@ -44,6 +44,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -429,6 +430,17 @@ class PostControllerTest {
 				);
 
 		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable);
+	}
+
+	@Test
+	void setPostsAsImportant() throws Exception {
+		Set<Integer> postIds = Set.of(1,2,3,4);
+		Mockito.when(postService.setPostsAsImportant(postIds))
+				.thenReturn(true);
+		mockMvc.perform(get(POST + POST_SET_IMPORTANT + "?posts=1,2,3,4"))
+				.andExpect(status().isOk());
+
+		verify(postService).setPostsAsImportant(postIds);
 	}
 
 	@Test
