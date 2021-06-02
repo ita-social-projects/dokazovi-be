@@ -10,7 +10,6 @@ import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
-import org.hibernate.exception.SQLGrammarException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -207,7 +206,7 @@ class PostControllerTest {
 	void findLatestByExpert() throws Exception {
 		Integer expertId = 2;
 		Set<Integer> typeId = Set.of(1, 2);
-		Set<Integer> directionId = Set.of(1,2,3);
+		Set<Integer> directionId = Set.of(1, 2, 3);
 		Pageable pageable = PageRequest.of(0, 10);
 		mockMvc.perform(
 				get(POST + POST_LATEST_BY_EXPERT + "?expert=2&type=1,2&direction=1,2,3"))
@@ -436,7 +435,7 @@ class PostControllerTest {
 
 	@Test
 	void setPostsAsImportant() throws Exception {
-		Set<Integer> postIds = Set.of(1,2,3,4);
+		Set<Integer> postIds = Set.of(1, 2, 3, 4);
 		Mockito.when(postService.setPostsAsImportant(postIds))
 				.thenReturn(true);
 		mockMvc.perform(get(POST + POST_SET_IMPORTANT + "?posts=1,2,3,4"))
@@ -450,11 +449,13 @@ class PostControllerTest {
 		String uri = POST + POST_SET_IMPORTANT + "?posts=";
 
 		Mockito.when(postService.setPostsAsImportant(any()))
-				.thenThrow(new BadRequestException("could not execute statement; SQL [n/a]; nested exception is org.hibernate.exception.SQLGrammarException: could not execute statement"));
+				.thenThrow(new BadRequestException(
+						"could not execute statement; SQL [n/a]; nested exception is org.hibernate.exception.SQLGrammarException: could not execute statement"));
 
 		mockMvc.perform(get(uri))
 				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested exception is org.hibernate.exception.SQLGrammarException: could not execute statement\"}",
+				Assertions.assertEquals(
+						"{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested exception is org.hibernate.exception.SQLGrammarException: could not execute statement\"}",
 						result.getResponse().getContentAsString()));
 	}
 
