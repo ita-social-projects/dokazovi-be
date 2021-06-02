@@ -13,31 +13,29 @@ import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.api.services.analytics.model.Webproperties;
 
+import org.springframework.stereotype.Component;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A simple example of how to access the Google Analytics API using a service account.
  */
-public class HelloAnalytics {
+@Component
+public class GoogleAnalytics {
 
 	private static final String APPLICATION_NAME = "Hello Analytics";
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-	private static final String KEY_FILE_LOCATION = "";
+	private static final String KEY_FILE_LOCATION = "C:\\Users\\Masha\\IdeaProjects\\dokazovi-be\\src\\main\\java\\com\\softserveinc\\dokazovi\\analytics\\client_secrets.json";
 
-	public static void main(String[] args) {
-		try {
-			Analytics analytics = initializeAnalytic();
+	public Integer getPostViewCount(String url) throws GeneralSecurityException, IOException {
 
-			String profile = getFirstProfileId(analytics);
-			System.out.println("First Profile Id: " + profile);
-			printResults(getResults(analytics, profile));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Analytics analytics = initializeAnalytic();
+
+		String profile = getFirstProfileId(analytics);
+
+		return Integer.parseInt(getResults(analytics, profile, url).getRows().get(0).get(1));
 	}
 
 	/**
@@ -47,7 +45,7 @@ public class HelloAnalytics {
 	 * @throws IOException
 	 * @throws GeneralSecurityException
 	 */
-	private static Analytics initializeAnalytic() throws GeneralSecurityException, IOException {
+	private Analytics initializeAnalytic() throws GeneralSecurityException, IOException {
 
 		HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 		GoogleCredential credential = GoogleCredential
@@ -59,7 +57,7 @@ public class HelloAnalytics {
 				.setApplicationName(APPLICATION_NAME).build();
 	}
 
-	private static String getFirstProfileId(Analytics analytics) throws IOException {
+	private String getFirstProfileId(Analytics analytics) throws IOException {
 		// Get the first view (profile) ID for the authorized user.
 		String profileId = null;
 
@@ -95,41 +93,16 @@ public class HelloAnalytics {
 		return profileId;
 	}
 
-	private static GaData getResults(Analytics analytics, String profileId) throws IOException {
+	private GaData getResults(Analytics analytics, String profileId, String url) throws IOException {
 		// Query the Core Reporting API for the number of sessions
 		// in the past seven days.
 
-		GaData today = analytics
+		return analytics
 				.data()
 				.ga()
 				.get("ga:" + profileId, "2021-03-22", "today", "ga:pageviews")
 				.setDimensions("ga:pagePath")
-				.setFilters("ga:pagePath==/experts/14")
+				.setFilters("ga:pagePath==" + url)
 				.execute();
-
-		List<List<String>> rows = today.getRows();
-
-		return today;
-	}
-
-	private static void printResults(GaData results) {
-		// Parse the response from the Core Reporting API for
-		// the profile name and number of sessions.
-		if (results != null && !results.getRows().isEmpty()) {
-			System.out.println("View (Profile) Name: "
-					+ results.getProfileInfo().getProfileName());
-
-			//System.out.println(results.getDataTable());
-			Map<String, String> rows = results.getTotalsForAllResults();
-			System.out.println(rows);
-			/*for (String> list : rows){
-				for (String str : list){
-					System.out.println(str);
-				}
-			}*/
-			System.out.println("Total Sessions: " + rows);
-		} else {
-			System.out.println("No results found");
-		}
 	}
 }

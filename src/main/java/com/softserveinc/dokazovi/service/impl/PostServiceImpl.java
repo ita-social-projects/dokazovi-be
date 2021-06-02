@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
@@ -20,6 +21,8 @@ import com.softserveinc.dokazovi.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +30,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -45,6 +51,8 @@ public class PostServiceImpl implements PostService {
 	private final PostTypeRepository postTypeRepository;
 	private final DirectionRepository directionRepository;
 	private final OriginRepository originRepository;
+
+	private final GoogleAnalytics googleAnalytics;
 
 	@Override
 	public PostDTO findPostById(Integer postId) {
@@ -279,5 +287,10 @@ public class PostServiceImpl implements PostService {
 			mappedEntity = postMapper.updatePostEntityFromDTO(postDTO, byId);
 		}
 		return mappedEntity;
+	}
+
+	@Override
+	public Integer getPostViewCount(String url) throws GeneralSecurityException, IOException {
+		return googleAnalytics.getPostViewCount(url);
 	}
 }

@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Set;
 
@@ -51,6 +53,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
 
 /**
  * The Post controller responsible for handling requests for posts.
@@ -335,5 +338,12 @@ public class PostController {
 		return ResponseEntity
 				.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(posts);
+	}
+
+	@ApiPageable
+	@ApiOperation(value = "Get Post View Count")
+	@GetMapping(POST_VIEW_COUNT)
+	public Integer getPostViewCount(@RequestParam String url) throws GeneralSecurityException, IOException {
+		return postService.getPostViewCount(url);
 	}
 }
