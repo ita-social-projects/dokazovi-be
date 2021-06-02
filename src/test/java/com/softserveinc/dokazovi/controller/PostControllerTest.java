@@ -450,12 +450,16 @@ class PostControllerTest {
 
 		Mockito.when(postService.setPostsAsImportant(any()))
 				.thenThrow(new BadRequestException(
-						"could not execute statement; SQL [n/a]; nested exception is org.hibernate.exception.SQLGrammarException: could not execute statement"));
+						"could not execute statement; SQL [n/a]; nested "
+								+ "exception is org.hibernate.exception.SQLGrammarException: "
+								+ "could not execute statement"));
 
 		mockMvc.perform(get(uri))
 				.andExpect(status().isOk()).andExpect(result ->
 				Assertions.assertEquals(
-						"{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested exception is org.hibernate.exception.SQLGrammarException: could not execute statement\"}",
+						"{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested "
+								+ "exception is org.hibernate.exception.SQLGrammarException: "
+								+ "could not execute statement\"}",
 						result.getResponse().getContentAsString()));
 	}
 
