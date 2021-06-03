@@ -6,6 +6,7 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -35,6 +36,13 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	Page<PostEntity> findAllByAuthorIdAndTypeIdInAndStatus(
 			Integer authorId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
+
+	@Query(nativeQuery = true,
+			value = " UPDATE POSTS "
+					+ " SET IMPORTANT = TRUE "
+					+ " WHERE POST_ID IN (:postIds) ")
+	@Modifying
+	void setPostsAsImportant(Set<Integer> postIds);
 
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM POSTS "

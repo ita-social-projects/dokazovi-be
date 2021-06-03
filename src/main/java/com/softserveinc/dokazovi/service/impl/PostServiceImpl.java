@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -265,6 +266,16 @@ public class PostServiceImpl implements PostService {
 		}
 		return postRepository.findAllByExpertAndByDirectionsAndByPostType(expertId, typeId, directionId, pageable)
 				.map(postMapper::toPostDTO);
+	}
+
+	@Override
+	@Transactional
+	public Boolean setPostsAsImportant(Set<Integer> postIds) {
+		if (postIds == null) {
+			return false;
+		}
+		postRepository.setPostsAsImportant(postIds);
+		return true;
 	}
 
 	private PostEntity getPostEntityFromPostDTO(PostSaveFromUserDTO postDTO) {

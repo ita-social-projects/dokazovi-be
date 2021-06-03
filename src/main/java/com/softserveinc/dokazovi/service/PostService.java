@@ -37,4 +37,6 @@ public interface PostService {
 
 	Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId, Set<Integer> directionId,
 			Pageable pageable);
+
+	Boolean setPostsAsImportant(Set<Integer> postids);
 }
