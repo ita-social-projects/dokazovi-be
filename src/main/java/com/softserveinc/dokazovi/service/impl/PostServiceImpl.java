@@ -268,6 +268,16 @@ public class PostServiceImpl implements PostService {
 				.map(postMapper::toPostDTO);
 	}
 
+	@Override
+	@Transactional
+	public Boolean setPostsAsImportant(Set<Integer> postIds) {
+		if (postIds == null) {
+			return false;
+		}
+		postRepository.setPostsAsImportant(postIds);
+		return true;
+	}
+
 	private PostEntity getPostEntityFromPostDTO(PostSaveFromUserDTO postDTO) {
 		Integer postId = postDTO.getId();
 		PostEntity mappedEntity;
