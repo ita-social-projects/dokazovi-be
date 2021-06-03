@@ -8,6 +8,8 @@ import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Set;
 
 public interface PostService {
@@ -37,4 +39,6 @@ public interface PostService {
 
 	Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId, Set<Integer> directionId,
 			Pageable pageable);
+
+	Integer getPostViewCount(String url) throws GeneralSecurityException, IOException;
 }
