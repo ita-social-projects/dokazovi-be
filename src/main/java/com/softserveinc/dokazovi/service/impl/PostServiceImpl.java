@@ -64,7 +64,7 @@ public class PostServiceImpl implements PostService {
 		if (userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities().stream()
 				.anyMatch(grantedAuthority -> grantedAuthority
 						.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
-			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userEntity);
 			return postMapper.toPostDTO(postRepository.save(mappedEntity));
 		}
@@ -203,7 +203,7 @@ public class PostServiceImpl implements PostService {
 		Integer authorId = mappedEntity.getAuthor().getId();
 
 		if (userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_OWN_POST")) {
-			mappedEntity.setStatus(PostStatus.MODERATION_FIRST_SIGN);
+			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			saveEntity(mappedEntity);
 		} else if (!userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_POST")) {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
