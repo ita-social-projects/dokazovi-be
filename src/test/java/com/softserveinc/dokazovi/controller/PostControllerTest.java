@@ -45,6 +45,10 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -204,7 +208,7 @@ class PostControllerTest {
 	void findLatestByExpert() throws Exception {
 		Integer expertId = 2;
 		Set<Integer> typeId = Set.of(1, 2);
-		Set<Integer> directionId = Set.of(1,2,3);
+		Set<Integer> directionId = Set.of(1, 2, 3);
 		Pageable pageable = PageRequest.of(0, 10);
 		mockMvc.perform(
 				get(POST + POST_LATEST_BY_EXPERT + "?expert=2&type=1,2&direction=1,2,3"))
@@ -439,6 +443,15 @@ class PostControllerTest {
 		mockMvc.perform(get(POST + POST_LATEST_BY_POST_TYPES_AND_ORIGINS)).andExpect(status().isOk());
 
 		verify(postService).findLatestByPostTypesAndOrigins(any(Pageable.class));
+	}
+
+	@Test
+	void getPostViewCount() throws Exception {
+		String uri = POST + POST_VIEW_COUNT + "/?url=%2Fexperts";
+
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		verify(postService).getPostViewCount(any(String.class));
 	}
 
 }

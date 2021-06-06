@@ -38,8 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Set;
 
@@ -307,7 +305,7 @@ public class PostController {
 	 *
 	 * @param pageable   interface for pagination information
 	 * @param authorId   the author id
-	 * @param directions  directions ids
+	 * @param directions directions ids
 	 * @return found posts filtered by author id and directions and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS)
@@ -343,7 +341,7 @@ public class PostController {
 	@ApiPageable
 	@ApiOperation(value = "Get Post View Count")
 	@GetMapping(POST_VIEW_COUNT)
-	public Integer getPostViewCount(@RequestParam String url) throws GeneralSecurityException, IOException {
+	public Integer getPostViewCount(@RequestParam String url) {
 		return postService.getPostViewCount(url);
 	}
 }

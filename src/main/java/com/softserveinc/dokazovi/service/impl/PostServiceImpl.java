@@ -21,8 +21,6 @@ import com.softserveinc.dokazovi.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -31,8 +29,6 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -290,7 +286,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Integer getPostViewCount(String url) throws GeneralSecurityException, IOException {
+	public  Integer getPostViewCount(String url) {
 		return googleAnalytics.getPostViewCount(url);
 	}
 }

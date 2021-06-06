@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
 import com.softserveinc.dokazovi.annotations.DirectionExists;
 import com.softserveinc.dokazovi.annotations.OriginExists;
 import com.softserveinc.dokazovi.annotations.TagExists;
@@ -39,6 +40,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -70,6 +73,8 @@ class PostServiceImplTest {
 	private PostMapper postMapper;
 	@Mock
 	private Pageable pageable;
+	@Mock
+	private GoogleAnalytics googleAnalytics;
 
 	@InjectMocks
 	private PostServiceImpl postService;
@@ -895,5 +900,13 @@ class PostServiceImplTest {
 		postService.findLatestByPostTypesAndOrigins(pageable);
 		verify(postMapper, times(0)).toPostDTO(any(PostEntity.class));
 		Assertions.assertThat(postService.findLatestByPostTypesAndOrigins(pageable).isEmpty());
+	}
+
+	@Test
+	void getPostViewCount() {
+		when(postService.getPostViewCount("some")).thenReturn(1);
+		when(googleAnalytics.getPostViewCount("some")).thenReturn(1);
+		assertEquals(1,
+				postService.getPostViewCount("some"));
 	}
 }
