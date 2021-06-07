@@ -36,29 +36,23 @@ public class GoogleAnalytics {
 
 	public Integer getPostViewCount(String url) {
 
-		Analytics analytics = initializeAnalytic();
-
-		String profile = null;
 		try {
-			profile = getFirstProfileId(analytics);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			Analytics analytics = initializeAnalytic();
 
-		String str = "";
-		try {
+			String profile = getFirstProfileId(analytics);
+
 			List<List<String>> rows = getResults(analytics, profile, url).getRows();
-			if (rows == null) {
-				return 0;
-			} else {
-				str = rows.get(0).get(1);
-			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
+			return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
+
+		} catch (IOException ie) {
+			logger.error("IOException occurred");
+		} catch (GeneralSecurityException ge) {
+			logger.error("GeneralSecurityException occurred. HttpTransport is failed");
 		}
 
-		return str == null ? 0 : Integer.parseInt(str);
+		return null;
+
 	}
 
 	/**
@@ -66,24 +60,13 @@ public class GoogleAnalytics {
 	 *
 	 * @return An authorized Analytics service object.
 	 */
-	private Analytics initializeAnalytic() {
+	private Analytics initializeAnalytic() throws GeneralSecurityException, IOException {
 
-		HttpTransport httpTransport = null;
-		try {
-			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		GoogleCredential credential = null;
-		try {
-			credential = GoogleCredential
-					.fromStream(new FileInputStream(KEY_FILE_LOCATION))
-					.createScoped(AnalyticsScopes.all());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+
+		GoogleCredential credential = GoogleCredential
+				.fromStream(new FileInputStream(KEY_FILE_LOCATION))
+				.createScoped(AnalyticsScopes.all());
 
 		/**
 		 *  Construct the Analytics service object.
@@ -101,12 +84,7 @@ public class GoogleAnalytics {
 		/**
 		 * Query for the list of all accounts associated with the service account.
 		 */
-		Accounts accounts = null;
-		try {
-			accounts = analytics.management().accounts().list().execute();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Accounts accounts = analytics.management().accounts().list().execute();
 
 		if (accounts.getItems().isEmpty()) {
 			logger.error("No accounts found ");
