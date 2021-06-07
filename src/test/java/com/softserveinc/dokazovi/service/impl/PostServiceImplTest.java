@@ -375,7 +375,7 @@ class PostServiceImplTest {
 	void findAllByExpertAndTypeAndDirection() {
 		Integer expertId = 5;
 		Set<Integer> directionId = Set.of(2, 3);
-		Set<Integer> typeId = Set.of(1,2);
+		Set<Integer> typeId = Set.of(1, 2);
 		when(postRepository.findAllByExpertAndByDirectionsAndByPostType(any(Integer.class),
 				anySet(), anySet(), any(Pageable.class)))
 				.thenReturn(postEntityPage);
@@ -898,6 +898,12 @@ class PostServiceImplTest {
 		postService.findLatestByPostTypesAndOrigins(pageable);
 		verify(postMapper, times(0)).toPostDTO(any(PostEntity.class));
 		Assertions.assertThat(postService.findLatestByPostTypesAndOrigins(pageable).isEmpty());
+	}
+
+	@Test
+	void setPostsAsImportant() {
+		Set<Integer> postIds = Set.of(2, 4, 9);
+		Assertions.assertThat(postService.setPostsAsImportant(postIds));
 	}
 
 	@Test

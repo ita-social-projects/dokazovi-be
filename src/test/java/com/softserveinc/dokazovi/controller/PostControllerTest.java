@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
@@ -44,6 +45,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
 
@@ -431,6 +433,36 @@ class PostControllerTest {
 				);
 
 		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable);
+	}
+
+	@Test
+	void setPostsAsImportant() throws Exception {
+		Set<Integer> postIds = Set.of(1, 2, 3, 4);
+		Mockito.when(postService.setPostsAsImportant(postIds))
+				.thenReturn(true);
+		mockMvc.perform(get(POST + POST_SET_IMPORTANT + "?posts=1,2,3,4"))
+				.andExpect(status().isOk());
+
+		verify(postService).setPostsAsImportant(postIds);
+	}
+
+	@Test
+	void setPostsAsImportant_Exception() throws Exception {
+		String uri = POST + POST_SET_IMPORTANT + "?posts=";
+
+		Mockito.when(postService.setPostsAsImportant(any()))
+				.thenThrow(new BadRequestException(
+						"could not execute statement; SQL [n/a]; nested "
+								+ "exception is org.hibernate.exception.SQLGrammarException: "
+								+ "could not execute statement"));
+
+		mockMvc.perform(get(uri))
+				.andExpect(status().isOk()).andExpect(result ->
+				Assertions.assertEquals(
+						"{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested "
+								+ "exception is org.hibernate.exception.SQLGrammarException: "
+								+ "could not execute statement\"}",
+						result.getResponse().getContentAsString()));
 	}
 
 	@Test
