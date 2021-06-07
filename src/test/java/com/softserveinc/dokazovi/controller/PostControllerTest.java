@@ -46,9 +46,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
-import static com.softserveinc.dokazovi.controller.EndPoints.USER;
-import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
