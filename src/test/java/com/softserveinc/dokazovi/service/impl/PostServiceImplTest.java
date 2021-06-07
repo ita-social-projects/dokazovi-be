@@ -909,8 +909,7 @@ class PostServiceImplTest {
 	@Test
 	void getPostViewCount() {
 		when(postService.getPostViewCount("some")).thenReturn(1);
-		when(googleAnalytics.getPostViewCount("some")).thenReturn(1);
-		assertEquals(1,
-				postService.getPostViewCount("some"));
+
+		assertEquals(1, postService.getPostViewCount("some"));
 	}
 }

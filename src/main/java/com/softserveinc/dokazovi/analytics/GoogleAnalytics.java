@@ -52,7 +52,6 @@ public class GoogleAnalytics {
 		}
 
 		return null;
-
 	}
 
 	/**
