@@ -6,6 +6,7 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -35,6 +36,13 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	Page<PostEntity> findAllByAuthorIdAndTypeIdInAndStatus(
 			Integer authorId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
+
+	@Query(nativeQuery = true,
+			value = " UPDATE POSTS "
+					+ " SET IMPORTANT = TRUE "
+					+ " WHERE POST_ID IN (:postIds) ")
+	@Modifying
+	void setPostsAsImportant(Set<Integer> postIds);
 
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM POSTS "
@@ -76,11 +84,13 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			Set<Integer> directionsIds, Pageable pageable);
 
 	@Query(nativeQuery = true,
-			value = "SELECT * FROM POSTS P"
-					+ " JOIN USERS U ON P.AUTHOR_ID = U.USER_ID  "
-					+ "  WHERE P.POST_ID  IN (SELECT DISTINCT P.POST_ID FROM POSTS_DIRECTIONS PD"
-					+ "  WHERE PD.DIRECTION_ID IN (:directionsIds))"
-					+ "  AND   P.AUTHOR_ID IN (:authorId)"
+			value = " SELECT P.* "
+					+ " FROM POSTS P "
+					+ " WHERE (P.AUTHOR_ID IN (:authorId)) "
+					+ "  AND (array_length(ARRAY [(:directionsIds)], 1) > 0 "
+					+ "    AND P.POST_ID IN (SELECT POST_ID "
+					+ "                      FROM POSTS_DIRECTIONS "
+					+ "                      WHERE DIRECTION_ID IN (:directionsIds))) "
 					+ "  AND P.STATUS IN ('PUBLISHED')")
 	Page<PostEntity> findPostsByAuthorIdAndDirections(Pageable pageable, Integer authorId, Set<Integer> directionsIds);
 

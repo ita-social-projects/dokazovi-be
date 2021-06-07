@@ -39,4 +39,6 @@ public interface PostService {
 			Pageable pageable);
 
 	Integer getPostViewCount(String url);
+
+	Boolean setPostsAsImportant(Set<Integer> postids);
 }

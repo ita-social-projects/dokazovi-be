@@ -50,6 +50,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
 
@@ -118,6 +119,27 @@ public class PostController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findImportantPosts(pageable));
+	}
+
+	@GetMapping(POST_SET_IMPORTANT)
+	@ApiPageable
+	@ApiOperation(value = "Set posts as important")
+	public ResponseEntity<ApiResponseMessage> setPostAsImportant(
+			@ApiParam(value = "Multiple comma-separated posts IDs, e.g. ?origins=1,2,3,4...", type = "string")
+			@RequestParam(required = true) Set<Integer> posts) {
+		ApiResponseMessage apiResponseMessage;
+		try {
+			apiResponseMessage = ApiResponseMessage.builder()
+					.success(postService.setPostsAsImportant(posts))
+					.message("Posts updated successfully")
+					.build();
+		} catch (Exception e) {
+			apiResponseMessage = ApiResponseMessage.builder()
+					.success(false)
+					.message(e.getMessage())
+					.build();
+		}
+		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
 	/**
