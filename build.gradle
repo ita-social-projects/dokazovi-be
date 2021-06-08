@@ -44,11 +44,14 @@ dependencies {
 	compile group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.4.0'
 	compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
+	compile 'com.google.http-client:google-http-client-gson:1.19.0'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation group: 'com.google.apis', name: 'google-api-services-analytics', version: 'v3-rev161-1.25.0'
+
 	implementation 'org.flywaydb:flyway-core'
 	implementation "org.mapstruct:mapstruct:${MAPPER_VERSION}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
@@ -59,6 +62,8 @@ dependencies {
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	runtimeOnly 'org.postgresql:postgresql'
 
+	testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.9'
+	testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.9'
 	testImplementation "com.h2database:h2"
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
