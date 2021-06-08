@@ -39,4 +39,6 @@ public interface PostService {
 			Pageable pageable);
 
 	Boolean setPostsAsImportant(Set<Integer> postids);
+
+	Boolean setPostsAsUnimportant(Set<Integer> postids);
 }
