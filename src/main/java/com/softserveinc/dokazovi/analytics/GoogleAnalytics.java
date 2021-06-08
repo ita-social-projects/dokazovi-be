@@ -47,6 +47,7 @@ public class GoogleAnalytics {
 
 		} catch (IOException ie) {
 			logger.error("IOException occurred");
+
 		} catch (GeneralSecurityException ge) {
 			logger.error("GeneralSecurityException occurred. HttpTransport is failed");
 		}

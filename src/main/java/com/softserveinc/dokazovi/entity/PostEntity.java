@@ -89,7 +89,7 @@ public class PostEntity {
 	@ToString.Exclude
 	private Set<TagEntity> tags;
 
-	@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "posts_origins",
 			joinColumns = {@JoinColumn(name = "post_id")},

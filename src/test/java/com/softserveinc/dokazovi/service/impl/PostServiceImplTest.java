@@ -71,8 +71,6 @@ class PostServiceImplTest {
 	private PostMapper postMapper;
 	@Mock
 	private Pageable pageable;
-	@Mock
-	private GoogleAnalytics googleAnalytics;
 
 	@InjectMocks
 	private PostServiceImpl postService;
@@ -80,7 +78,8 @@ class PostServiceImplTest {
 	private Page<PostEntity> postEntityPage;
 
 	private UserEntity userEntity;
-
+	@Mock
+	private GoogleAnalytics googleAnalytics;
 
 	@BeforeEach
 	void init() {
@@ -375,7 +374,7 @@ class PostServiceImplTest {
 	void findAllByExpertAndTypeAndDirection() {
 		Integer expertId = 5;
 		Set<Integer> directionId = Set.of(2, 3);
-		Set<Integer> typeId = Set.of(1, 2);
+		Set<Integer> typeId = Set.of(1,2);
 		when(postRepository.findAllByExpertAndByDirectionsAndByPostType(any(Integer.class),
 				anySet(), anySet(), any(Pageable.class)))
 				.thenReturn(postEntityPage);
@@ -908,8 +907,9 @@ class PostServiceImplTest {
 
 	@Test
 	void getPostViewCount() {
-		when(postService.getPostViewCount("some")).thenReturn(1);
+		when(googleAnalytics.getPostViewCount("some")).thenReturn(1);
 
 		assertEquals(1, postService.getPostViewCount("some"));
 	}
+
 }
