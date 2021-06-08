@@ -278,6 +278,16 @@ public class PostServiceImpl implements PostService {
 		return true;
 	}
 
+	@Override
+	@Transactional
+	public Boolean setPostsAsUnimportant(Set<Integer> postIds) {
+		if (postIds == null) {
+			return false;
+		}
+		postRepository.setPostsAsUnimportant(postIds);
+		return true;
+	}
+
 	private PostEntity getPostEntityFromPostDTO(PostSaveFromUserDTO postDTO) {
 		Integer postId = postDTO.getId();
 		PostEntity mappedEntity;

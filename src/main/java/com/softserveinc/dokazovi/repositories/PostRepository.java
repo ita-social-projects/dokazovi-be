@@ -45,6 +45,13 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	void setPostsAsImportant(Set<Integer> postIds);
 
 	@Query(nativeQuery = true,
+			value = " UPDATE POSTS "
+					+ " SET IMPORTANT = FALSE "
+					+ " WHERE POST_ID IN (:postIds) ")
+	@Modifying
+	void setPostsAsUnimportant(Set<Integer> postIds);
+
+	@Query(nativeQuery = true,
 			value = "SELECT * FROM POSTS "
 					+ " WHERE POSTS.STATUS IN ('PUBLISHED')"
 					+ " ORDER BY POST_ID",
