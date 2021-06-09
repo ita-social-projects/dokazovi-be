@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,20 +36,18 @@ public class GoogleAnalytics {
 	private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
 	public Integer getPostViewCount(String url) {
-
+		List<List<String>> rows = null;
 		try {
 			Analytics analytics = initializeAnalytic();
 
 			String profile = getFirstProfileId(analytics);
 
-			List<List<String>> rows = getResults(analytics, profile, url).getRows();
-
-			return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
+			rows = getResults(analytics, profile, url).getRows();
 
 		} catch (IOException ie) {
 			logger.error("IOException occurred");
 		}
-		return null;
+		return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
 	}
 
 	/**
