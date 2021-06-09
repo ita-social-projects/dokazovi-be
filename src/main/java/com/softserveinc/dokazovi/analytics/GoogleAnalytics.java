@@ -107,14 +107,8 @@ public class GoogleAnalytics {
 				Profiles profiles = analytics.management().profiles()
 						.list(firstAccountId, firstWebpropertyId).execute();
 
-				if (profiles.getItems().isEmpty()) {
-					logger.error("No views (profiles) found");
-				} else {
-					/**
-					 * Return the first (view) profile associated with the property.
-					 */
-					profileId = profiles.getItems().get(0).getId();
-				}
+				profileId = profiles.getItems().get(0).getId();
+
 			}
 		}
 		return profileId;
