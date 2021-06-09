@@ -47,11 +47,7 @@ public class GoogleAnalytics {
 
 		} catch (IOException ie) {
 			logger.error("IOException occurred");
-
-		} catch (GeneralSecurityException ge) {
-			logger.error("GeneralSecurityException occurred. HttpTransport is failed");
 		}
-
 		return null;
 	}
 
@@ -60,9 +56,14 @@ public class GoogleAnalytics {
 	 *
 	 * @return An authorized Analytics service object.
 	 */
-	private Analytics initializeAnalytic() throws GeneralSecurityException, IOException {
+	private Analytics initializeAnalytic() throws IOException {
 
-		HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+		HttpTransport httpTransport = null;
+		try {
+			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+		} catch (GeneralSecurityException e) {
+			logger.error("GeneralSecurityException occurred. HttpTransport is failed");
+		}
 
 		GoogleCredential credential = GoogleCredential
 				.fromStream(new FileInputStream(KEY_FILE_LOCATION))
@@ -107,8 +108,14 @@ public class GoogleAnalytics {
 				Profiles profiles = analytics.management().profiles()
 						.list(firstAccountId, firstWebpropertyId).execute();
 
-				profileId = profiles.getItems().get(0).getId();
-
+				if (profiles.getItems().isEmpty()) {
+					logger.error("No views (profiles) found");
+				} else {
+					/**
+					 * Return the first (view) profile associated with the property.
+					 */
+					profileId = profiles.getItems().get(0).getId();
+				}
 			}
 		}
 		return profileId;
