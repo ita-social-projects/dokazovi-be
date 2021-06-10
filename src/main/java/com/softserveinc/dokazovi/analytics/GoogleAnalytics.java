@@ -16,11 +16,13 @@ import com.google.api.services.analytics.model.Webproperties;
 import com.softserveinc.dokazovi.security.RestAuthenticationEntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+
 import java.util.List;
 
 /**
@@ -31,7 +33,8 @@ public class GoogleAnalytics {
 
 	private static final String APPLICATION_NAME = "Google Analytics";
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-	private static final String KEY_FILE_LOCATION = "src/main/resources/client_secrets.json";
+	@Value("${google.creds}")
+	private String KEY_FILE_LOCATION;
 	private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
 	public Integer getPostViewCount(String url) {
@@ -44,7 +47,7 @@ public class GoogleAnalytics {
 			rows = getResults(analytics, profile, url).getRows();
 
 		} catch (IOException ie) {
-			logger.error("IOException occurred", ie);
+			logger.error("IOException occurred");
 		}
 		return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
 	}
@@ -61,11 +64,12 @@ public class GoogleAnalytics {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 		} catch (GeneralSecurityException e) {
 			logger.error("GeneralSecurityException occurred. HttpTransport is failed", e);
+
 		}
 
 		GoogleCredential credential = GoogleCredential
-				.fromStream(new FileInputStream(KEY_FILE_LOCATION))
-				.createScoped(AnalyticsScopes.all());
+				.fromStream(new ByteArrayInputStream(KEY_FILE_LOCATION.getBytes()), httpTransport, JSON_FACTORY)
+				.createScoped((AnalyticsScopes.all()));
 
 		/**
 		 *  Construct the Analytics service object.
