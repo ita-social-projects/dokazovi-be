@@ -47,7 +47,7 @@ public class GoogleAnalytics {
 			rows = getResults(analytics, profile, url).getRows();
 
 		} catch (IOException ie) {
-			logger.error("IOException occurred");
+			logger.error("IOException occurred", ie);
 		}
 		return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
 	}
