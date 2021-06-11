@@ -902,4 +902,10 @@ class PostServiceImplTest {
 		Set<Integer> postIds = Set.of(2, 4, 9);
 		Assertions.assertThat(postService.setPostsAsImportant(postIds));
 	}
+
+	@Test
+	void setPostsAsUnimportant() {
+		Set<Integer> postIds = Set.of(1, 4, 9);
+		Assertions.assertThat(postService.setPostsAsUnimportant(postIds));
+	}
 }
