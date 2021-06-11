@@ -46,7 +46,7 @@ public class GoogleAnalytics {
 			rows = getResults(analytics, profile, url).getRows();
 
 		} catch (IOException ie) {
-			logger.error("IOException occurred");
+			logger.error("IOException occurred", ie);
 
 		}
 
@@ -64,7 +64,7 @@ public class GoogleAnalytics {
 		try {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 		} catch (GeneralSecurityException e) {
-			logger.error("GeneralSecurityException occurred. HttpTransport is failed");
+			logger.error("GeneralSecurityException occurred. HttpTransport is failed", e);
 		}
 
 		GoogleCredential credential = GoogleCredential
