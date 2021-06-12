@@ -1622,150 +1622,150 @@ INSERT INTO public.posts (author_id, type_id, title, content, status, important,
                           preview)
 VALUES (2, 1, 'Fermentum iaculis',
         'Fermentum iaculis eu non diam phasellus vestibulum lorem sed. Et pharetra pharetra massa massa ultricies. Malesuada proin libero nunc consequat interdum varius sit. Mauris cursus mattis molestie a. Est ullamcorper eget nulla facilisi etiam dignissim diam. Risus ultricies tristique nulla aliquet enim tortor at. Diam quis enim lobortis scelerisque fermentum. Tempor commodo ullamcorper a lacus vestibulum. Erat nam at lectus urna. Dui id ornare arcu odio ut sem nulla pharetra.',
-        'PUBLISHED', true, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        'PUBLISHED', true, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (5, 1, 'Integer eget aliquet',
         'Integer eget aliquet nibh praesent tristique magna sit amet purus. Dolor purus non enim praesent elementum facilisis leo. Porttitor eget dolor morbi non. Urna cursus eget nunc scelerisque viverra. Imperdiet massa tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada. Fermentum et sollicitudin ac orci phasellus.',
-        'MODERATION_SECOND_SIGN', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        'MODERATION_SECOND_SIGN', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (4, 4, 'Ultrices sagittis orci',
         'Ultrices sagittis orci a scelerisque purus semper eget. Arcu non odio euismod lacinia at. Arcu bibendum at varius vel pharetra vel turpis nunc eget. Tempus quam pellentesque nec nam aliquam sem. Sed egestas egestas fringilla phasellus faucibus scelerisque eleifend.',
-        'ARCHIVED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        'ARCHIVED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (6, 2, 'Massa eget egestas',
         'Massa eget egestas purus viverra accumsan. Porta non pulvinar neque laoreet suspendisse interdum consectetur. Vitae suscipit tellus mauris a diam. Proin nibh nisl condimentum id venenatis a condimentum vitae.',
-        'PUBLISHED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        'PUBLISHED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (1, 1, 'Est ullamcorper eget',
         'Mauris cursus mattis molestie a. Est ullamcorper eget nulla facilisi etiam dignissim diam. Risus ultricies tristique nulla aliquet enim tortor at. Diam quis enim lobortis scelerisque fermentum. Tempor commodo ullamcorper a lacus vestibulum. Erat nam at lectus urna.',
-        'MODERATION_FIRST_SIGN', true, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        'MODERATION_FIRST_SIGN', true, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (4, 3, 'Sit amet consectetur',
         'Varius vel pharetra vel turpis nunc eget. Nisl tincidunt eget nullam non nisi est sit amet facilisis. Integer eget aliquet nibh praesent tristique magna sit amet purus. Dolor purus non enim praesent elementum facilisis leo.',
-        'ARCHIVED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        'ARCHIVED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (1, 2, 'Proin nibh nisl condimentum',
         'Ullamcorper malesuada proin libero nunc consequat. Sit amet consectetur adipiscing elit pellentesque habitant morbi tristique. Leo in vitae turpis massa sed. Ultrices eros in cursus turpis.',
-        'PUBLISHED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        'PUBLISHED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (7, 2, 'Tempus quam pellentesque',
         'Ultrices sagittis orci a scelerisque purus semper eget. Arcu non odio euismod lacinia at. Arcu bibendum at varius vel pharetra vel turpis nunc eget. Tempus quam pellentesque nec nam aliquam sem. Sed egestas egestas fringilla phasellus faucibus scelerisque eleifend. Nullam vehicula ipsum a arcu cursus vitae congue mauris rhoncus.',
-        'DRAFT', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        'DRAFT', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (7, 2, 'Tempus quam pellentesque', 'Proin nibh nisl condimentum id venenatis a condimentum vitae.', 'DRAFT',
-        false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (1, 2, 'Ultrices eros in cursus', 'Dolor sit amet consectetur adipiscing elit ut aliquam purus.',
-        'PUBLISHED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', null);
+        'PUBLISHED', false, '2021-02-16 03:56:37.332925', '2021-02-16 03:56:37.332925', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (2, 1, 'Fermentum iaculis',
         'Aenean non lobortis arcu. Sed ac enim in metus tincidunt vestibulum ut feugiat purus. Fusce eu velit auctor, facilisis urna sit amet, venenatis magna. Mauris lacinia ultricies pharetra. Phasellus vulputate sodales nulla, quis maximus risus pulvinar viverra. Cras et erat id tellus congue rhoncus nec nec ipsum. Mauris ultrices, neque quis lobortis hendrerit, turpis ipsum porttitor tortor, eget dignissim ante sapien sed sapien. Maecenas quis purus rutrum, tempor neque ut, imperdiet enim. Aenean bibendum dui ac ligula ultricies, vitae pulvinar massa tincidunt.',
-        'PUBLISHED', false, '2019-11-25 13:42:34.609474', '2019-11-26 13:42:34.609474', null);
+        'PUBLISHED', false, '2019-11-25 13:42:34.609474', '2019-11-26 13:42:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (1, 1, 'Fermentum iaculis',
         'Duis lacus nisl, dictum at auctor et, dignissim ac diam. Morbi laoreet sit amet ante quis vehicula. Proin sodales sem ac lacus sodales, id pellentesque nibh tempus. Phasellus porttitor, leo ac pulvinar malesuada, est mauris dignissim nibh, ac interdum enim lorem quis justo. Nam porttitor vitae odio ut posuere. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam ultricies lacus in dapibus egestas. Quisque at neque condimentum, auctor ante consectetur, ullamcorper ex. Cras dolor diam, imperdiet sit amet dui eu, ultricies dapibus velit. Duis odio dolor, sagittis a libero sit amet, tincidunt gravida quam. Nunc congue ultrices tortor vitae hendrerit. Proin aliquam posuere leo, nec feugiat diam. Nunc efficitur porttitor auctor. Morbi bibendum, risus in dapibus mattis, nunc massa malesuada massa, scelerisque pharetra purus lorem sit amet velit.',
-        'PUBLISHED', false, '2019-10-25 12:42:34.609474', '2019-11-26 13:44:34.609474', null);
+        'PUBLISHED', false, '2019-10-25 12:42:34.609474', '2019-11-26 13:44:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (3, 1, 'Fermentum iaculis',
         'Vestibulum lacinia efficitur felis eget dapibus. Curabitur ut ante ante. Etiam tincidunt enim nunc, non tempus tortor mollis vitae. Sed bibendum risus quis faucibus pharetra. Praesent at lacus nibh. Donec mollis pharetra dolor quis commodo. Nunc eget dui luctus, volutpat velit vel, egestas enim. Morbi semper congue ante, ut tincidunt urna efficitur at. Nunc vulputate est sed mi hendrerit porttitor. Nulla ut nibh vitae augue malesuada commodo vitae vitae magna. Fusce sollicitudin faucibus nisl, ac sollicitudin orci tincidunt ut. Donec aliquet faucibus elit, quis consectetur tortor pulvinar et. Nunc facilisis ante ante, vitae viverra ligula semper non.',
-        'PUBLISHED', true, '2019-11-20 14:42:34.609474', '2019-12-26 13:45:34.609474', null);
+        'PUBLISHED', true, '2019-11-20 14:42:34.609474', '2019-12-26 13:45:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (4, 1, 'Fermentum iaculis',
         'Ut posuere accumsan diam, non vestibulum mauris aliquet non. Cras sed nisl id orci imperdiet pellentesque. Duis facilisis porttitor varius. Mauris quis leo facilisis, scelerisque massa non, ornare turpis. Donec ultricies eget massa vitae pellentesque. Nunc rhoncus faucibus hendrerit. Pellentesque et maximus leo, ac posuere nunc. Cras vitae tincidunt nibh. Ut non erat vel felis congue iaculis.',
-        'PUBLISHED', true, '2020-01-20 14:42:34.609474', '2020-02-26 13:45:34.609474', null);
+        'PUBLISHED', true, '2020-01-20 14:42:34.609474', '2020-02-26 13:45:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (5, 1, 'Fermentum iaculis',
         'Suspendisse vel ex venenatis, euismod augue at, auctor velit. Sed fringilla, arcu in pulvinar condimentum, urna nulla iaculis felis, in ornare orci turpis non nibh. Pellentesque turpis ante, hendrerit sed tempor elementum, tristique quis justo. Ut non dignissim orci. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut vel augue nec magna cursus bibendum at eu eros. Phasellus dui ligula, accumsan sit amet tincidunt nec, ornare vel metus. Proin justo mauris, ullamcorper ut euismod malesuada, iaculis a lectus. Aliquam maximus laoreet justo vel viverra. Curabitur at lacus nisl. Nunc tincidunt faucibus dolor eu mollis. Mauris id sem id lorem luctus pretium nec sit amet turpis. Maecenas eu leo sit amet metus commodo aliquet sit amet vitae lectus. Cras finibus luctus urna a ullamcorper.',
-        'PUBLISHED', true, '2020-02-20 14:42:34.609474', '2020-03-26 13:45:34.609474', null);
+        'PUBLISHED', true, '2020-02-20 14:42:34.609474', '2020-03-26 13:45:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Ninth therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-14 11:59:53.000000', '2020-12-14 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-14 11:59:53.000000', '2020-12-14 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (6, 1, 'Fermentum iaculis',
         'Quisque sollicitudin orci sollicitudin sapien finibus tempus. Nulla sapien urna, viverra quis enim posuere, consectetur laoreet elit. Nulla a pretium diam. Nulla facilisi. Sed ipsum ante, dictum non justo sit amet, commodo ultricies dolor. Etiam sed nunc vel justo tincidunt varius. Etiam in pretium lectus. Donec porttitor lobortis sem, eget consequat metus accumsan ac. Ut ex dolor, efficitur sit amet sodales in, vulputate quis tortor. Nunc sit amet nisl tortor. Sed finibus feugiat quam, eget tincidunt turpis vestibulum id. Mauris maximus ex leo, a egestas mauris sollicitudin in. Aenean ut arcu pellentesque eros efficitur posuere. Nam lobortis accumsan suscipit. Sed velit est, aliquam nec odio in, sodales facilisis ex.',
-        'PUBLISHED', true, '2020-03-20 14:42:34.609474', '2020-04-26 13:45:34.609474', null);
+        'PUBLISHED', true, '2020-03-20 14:42:34.609474', '2020-04-26 13:45:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (7, 1, 'Fermentum iaculis',
         'Cras at est ex. Aliquam erat volutpat. Donec ultricies dolor nec justo euismod pretium. Donec elementum vestibulum feugiat. Fusce ullamcorper sapien sit amet venenatis convallis. Sed sagittis interdum sapien ac interdum. Praesent porttitor condimentum lacus, ac aliquam dui pulvinar accumsan.',
-        'PUBLISHED', true, '2020-04-20 14:42:34.609474', '2020-05-26 13:45:34.609474', null);
+        'PUBLISHED', true, '2020-04-20 14:42:34.609474', '2020-05-26 13:45:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (8, 1, 'Fermentum iaculis',
         'Praesent nec maximus sem. Ut imperdiet, libero sit amet porta vulputate, dolor erat pretium neque, in efficitur eros enim in enim. In non pretium urna. Suspendisse quis ante ut erat pulvinar accumsan. Integer molestie ex eget libero tincidunt, sit amet ullamcorper mauris fermentum. Donec porta posuere ornare. Etiam congue quis lacus id volutpat. Integer scelerisque a dolor non tristique. Sed nisl sapien, tincidunt sit amet posuere ut, bibendum at velit. Proin eget risus in risus accumsan accumsan pharetra rutrum leo. Vivamus porta lectus leo, vel tincidunt libero rhoncus vitae. Sed et dolor nec tellus ornare bibendum at vel mi. Donec pellentesque placerat fringilla.',
-        'PUBLISHED', true, '2020-05-20 14:42:34.609474', '2020-06-26 13:45:34.609474', null);
+        'PUBLISHED', true, '2020-05-20 14:42:34.609474', '2020-06-26 13:45:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Fermentum iaculis',
         'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Proin orci lectus, sodales sed varius non, fringilla non metus. Nam tincidunt libero eu tincidunt lacinia. Sed scelerisque metus at purus pellentesque, eu elementum mauris tempor. Mauris metus mauris, convallis in porttitor sit amet, fermentum vel ipsum. Sed hendrerit volutpat eros, quis commodo ligula aliquet vitae. Nullam gravida quam et ligula facilisis, a volutpat sapien viverra. Integer non porta enim, in blandit leo. Etiam tempor elit lacus, ut venenatis massa rhoncus at. Etiam eu massa rutrum, aliquet arcu at, lobortis ligula. In sit amet nisi nec ex congue lobortis vitae at risus. Praesent elementum accumsan magna, eget auctor ex scelerisque non. Fusce posuere, metus varius malesuada varius, sem velit varius mauris, eget scelerisque mi turpis sit amet dui. Cras pellentesque pulvinar tincidunt. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        'PUBLISHED', true, '2020-07-20 14:42:34.609474', '2020-08-26 13:45:34.609474', null);
+        'PUBLISHED', true, '2020-07-20 14:42:34.609474', '2020-08-26 13:45:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'First therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-06 11:59:53.000000', '2020-12-06 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-06 11:59:53.000000', '2020-12-06 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Second therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-07 11:59:53.000000', '2020-12-07 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-07 11:59:53.000000', '2020-12-07 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Third therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-08 11:59:53.000000', '2020-12-08 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-08 11:59:53.000000', '2020-12-08 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Fourth therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-09 11:59:53.000000', '2020-12-09 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-09 11:59:53.000000', '2020-12-09 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Fifth therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-10 11:59:53.000000', '2020-12-10 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-10 11:59:53.000000', '2020-12-10 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Sixth therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-11 11:59:53.000000', '2020-12-11 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-11 11:59:53.000000', '2020-12-11 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Seventh therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-12 11:59:53.000000', '2020-12-12 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-12 11:59:53.000000', '2020-12-12 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Eighth therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-13 11:59:53.000000', '2020-12-13 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-13 11:59:53.000000', '2020-12-13 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Tenth therapy post',
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        'PUBLISHED', true, '2020-12-15 11:59:53.000000', '2020-12-15 11:59:53.000000', null);
+        'PUBLISHED', true, '2020-12-15 11:59:53.000000', '2020-12-15 11:59:53.000000', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (10, 1, 'Fermentum iaculis',
         'Duis finibus risus et hendrerit fringilla. Donec varius nisi massa, eu facilisis velit iaculis id. Sed porta lectus eget lectus auctor, at iaculis risus consequat. Morbi lacinia pretium est, pulvinar porttitor lorem facilisis ut. Etiam in nisi justo. Vivamus luctus efficitur mauris, ut placerat lorem imperdiet a. Phasellus condimentum ante quis leo tempor semper. Nam sit amet faucibus orci, et egestas tortor. Maecenas ornare a lorem nec mattis. Etiam ac dapibus quam. Proin consequat laoreet rutrum. Cras et congue ligula.',
-        'PUBLISHED', true, '2020-06-20 14:42:34.609474', '2020-07-26 13:45:34.609474', null);
+        'PUBLISHED', true, '2020-06-20 14:42:34.609474', '2020-07-26 13:45:34.609474', 'Fermentum iaculis');
 INSERT INTO public.posts (author_id, type_id, title, content, status, important, created_at, modified_at,
                           preview)
 VALUES (1, 1, 'Fermentum iaculis',
