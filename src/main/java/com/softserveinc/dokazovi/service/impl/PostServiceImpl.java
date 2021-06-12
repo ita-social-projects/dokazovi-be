@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
@@ -46,6 +47,7 @@ public class PostServiceImpl implements PostService {
 	private final PostTypeRepository postTypeRepository;
 	private final DirectionRepository directionRepository;
 	private final OriginRepository originRepository;
+	private final GoogleAnalytics googleAnalytics;
 
 	@Override
 	public PostDTO findPostById(Integer postId) {
@@ -300,5 +302,10 @@ public class PostServiceImpl implements PostService {
 			mappedEntity = postMapper.updatePostEntityFromDTO(postDTO, byId);
 		}
 		return mappedEntity;
+	}
+
+	@Override
+	public  Integer getPostViewCount(String url) {
+		return googleAnalytics.getPostViewCount(url);
 	}
 }

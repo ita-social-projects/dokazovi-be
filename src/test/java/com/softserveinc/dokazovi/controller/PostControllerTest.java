@@ -48,6 +48,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_UNIMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -502,6 +503,15 @@ class PostControllerTest {
 								+ "exception is org.hibernate.exception.SQLGrammarException: "
 								+ "could not execute statement\"}",
 						result.getResponse().getContentAsString()));
+	}
+
+	@Test
+	void getPostViewCount() throws Exception {
+		String uri = POST + POST_VIEW_COUNT + "/?url=%2Fexperts";
+
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		verify(postService).getPostViewCount(any(String.class));
 	}
 
 }
