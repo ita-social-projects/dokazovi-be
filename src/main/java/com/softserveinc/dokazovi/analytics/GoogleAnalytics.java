@@ -60,18 +60,25 @@ public class GoogleAnalytics {
 	 *
 	 * @return An authorized Analytics service object.
 	 */
-	private Analytics initializeAnalytic() throws IOException {
+	private Analytics initializeAnalytic()  {
 
 		HttpTransport httpTransport = null;
 		try {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 		} catch (GeneralSecurityException e) {
 			logger.error("GeneralSecurityException occurred. HttpTransport is failed", e);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
-		GoogleCredential credential = GoogleCredential
-				.fromStream(new FileInputStream(KEY_FILE_LOCATION))
-				.createScoped(AnalyticsScopes.all());
+		GoogleCredential credential = null;
+		try {
+			credential = GoogleCredential
+					.fromStream(new FileInputStream(KEY_FILE_LOCATION))
+					.createScoped(AnalyticsScopes.all());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		/**
 		 *  Construct the Analytics service object.
