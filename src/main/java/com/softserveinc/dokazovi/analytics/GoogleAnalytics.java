@@ -32,25 +32,27 @@ public class GoogleAnalytics {
 
 	private static final String APPLICATION_NAME = "Google Analytics";
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-	private static final String KEY_FILE_LOCATION = "src/main/resources/client_secrets.json";
+	private static final String KEY_FILE_LOCATION = "src/main/resources/client_secrets_.json";
 	private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
 	public Integer getPostViewCount(String url) {
 
-		List<List<String>> rows = null;
+
 		try {
 			Analytics analytics = initializeAnalytic();
 
 			String profile = getFirstProfileId(analytics);
 
-			rows = getResults(analytics, profile, url).getRows();
+			List<List<String>> rows = getResults(analytics, profile, url).getRows();
+
+			return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
 
 		} catch (IOException ie) {
 			logger.error("IOException occurred", ie);
 
 		}
 
-		return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
+		return 5;
 	}
 
 	/**
