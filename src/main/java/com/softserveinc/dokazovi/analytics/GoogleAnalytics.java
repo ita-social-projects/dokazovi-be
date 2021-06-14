@@ -13,6 +13,7 @@ import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.api.services.analytics.model.Webproperties;
 
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.RestAuthenticationEntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class GoogleAnalytics {
 
 		} catch (IOException ie) {
 			logger.error("IOException occurred", ie);
-
+			throw new EntityNotFoundException();
 		}
 
 		return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
