@@ -13,7 +13,6 @@ import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.api.services.analytics.model.Webproperties;
 
-import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.RestAuthenticationEntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,7 @@ public class GoogleAnalytics {
 
 	private static final String APPLICATION_NAME = "Google Analytics";
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-	private static final String KEY_FILE_LOCATION = "src/main/resources/client_secrets_.json";
+	private static final String KEY_FILE_LOCATION = "src/main/resources/client_secrets.json";
 	private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
 	public Integer getPostViewCount(String url) {
@@ -59,27 +58,18 @@ public class GoogleAnalytics {
 	 *
 	 * @return An authorized Analytics service object.
 	 */
-	private Analytics initializeAnalytic()  {
+	private Analytics initializeAnalytic() throws IOException {
 
 		HttpTransport httpTransport = null;
 		try {
-			try {
-				httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 		} catch (GeneralSecurityException e) {
 			logger.error("GeneralSecurityException occurred. HttpTransport is failed", e);
 		}
 
-		GoogleCredential credential = null;
-		try {
-			credential = GoogleCredential
-					.fromStream(new FileInputStream(KEY_FILE_LOCATION))
-					.createScoped(AnalyticsScopes.all());
-		} catch (IOException e) {
-			throw new EntityNotFoundException();
-		}
+		GoogleCredential credential = GoogleCredential
+				.fromStream(new FileInputStream(KEY_FILE_LOCATION))
+				.createScoped(AnalyticsScopes.all());
 
 		/**
 		 *  Construct the Analytics service object.
