@@ -13,6 +13,7 @@ import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.api.services.analytics.model.Webproperties;
 
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.RestAuthenticationEntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,6 @@ public class GoogleAnalytics {
 			List<List<String>> rows = getResults(analytics, profile, url).getRows();
 
 			return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
-
 		} catch (IOException ie) {
 			logger.error("IOException occurred", ie);
 
@@ -60,15 +60,17 @@ public class GoogleAnalytics {
 	 *
 	 * @return An authorized Analytics service object.
 	 */
-	private Analytics initializeAnalytic()  {
+	private Analytics initializeAnalytic() {
 
 		HttpTransport httpTransport = null;
 		try {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 		} catch (GeneralSecurityException e) {
 			logger.error("GeneralSecurityException occurred. HttpTransport is failed", e);
+			throw new EntityNotFoundException("http wrong");
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new EntityNotFoundException("http wrong");
 		}
 
 		GoogleCredential credential = null;
@@ -78,6 +80,7 @@ public class GoogleAnalytics {
 					.createScoped(AnalyticsScopes.all());
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new EntityNotFoundException("creds wrong");
 		}
 
 		/**
