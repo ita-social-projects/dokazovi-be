@@ -80,7 +80,7 @@ public class GoogleAnalytics {
 					.createScoped(AnalyticsScopes.all());
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new EntityNotFoundException("creds wrong");
+			
 		}
 
 		/**
