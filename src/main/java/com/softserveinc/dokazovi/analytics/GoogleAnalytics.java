@@ -38,21 +38,20 @@ public class GoogleAnalytics {
 
 	public Integer getPostViewCount(String url) {
 
-
+		List<List<String>> rows = null;
 		try {
 			Analytics analytics = initializeAnalytic();
 
 			String profile = getFirstProfileId(analytics);
 
-			List<List<String>> rows = getResults(analytics, profile, url).getRows();
+			rows = getResults(analytics, profile, url).getRows();
 
-			return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
 		} catch (IOException ie) {
 			logger.error("IOException occurred", ie);
 
 		}
 
-		return 5;
+		return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
 	}
 
 	/**
@@ -60,17 +59,17 @@ public class GoogleAnalytics {
 	 *
 	 * @return An authorized Analytics service object.
 	 */
-	private Analytics initializeAnalytic() {
+	private Analytics initializeAnalytic()  {
 
 		HttpTransport httpTransport = null;
 		try {
-			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+			try {
+				httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		} catch (GeneralSecurityException e) {
 			logger.error("GeneralSecurityException occurred. HttpTransport is failed", e);
-			throw new EntityNotFoundException("http wrong");
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new EntityNotFoundException("http wrong");
 		}
 
 		GoogleCredential credential = null;
@@ -79,8 +78,7 @@ public class GoogleAnalytics {
 					.fromStream(new FileInputStream(KEY_FILE_LOCATION))
 					.createScoped(AnalyticsScopes.all());
 		} catch (IOException e) {
-			e.printStackTrace();
-			
+			throw new EntityNotFoundException();
 		}
 
 		/**
