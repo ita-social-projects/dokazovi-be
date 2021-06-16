@@ -16,10 +16,19 @@ import com.google.api.services.analytics.model.Webproperties;
 import com.softserveinc.dokazovi.security.RestAuthenticationEntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 
 import java.util.List;
@@ -30,9 +39,10 @@ import java.util.List;
 @Component
 public class GoogleAnalytics {
 
+
 	private static final String APPLICATION_NAME = "Google Analytics";
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-	private static final String KEY_FILE_LOCATION = "src/main/resources/client_secrets.json";
+	private static final String KEY_FILE_LOCATION = "client_secrets.json";
 	private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
 	public Integer getPostViewCount(String url) {
@@ -68,7 +78,8 @@ public class GoogleAnalytics {
 		}
 
 		GoogleCredential credential = GoogleCredential
-				.fromStream(new FileInputStream(KEY_FILE_LOCATION))
+				.fromStream(new ByteArrayInputStream(Files.readAllBytes(new ClassPathResource(
+						KEY_FILE_LOCATION).getFile().toPath())))
 				.createScoped(AnalyticsScopes.all());
 
 		/**
