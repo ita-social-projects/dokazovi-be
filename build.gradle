@@ -72,6 +72,7 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+	environment "GOOGLE_CREDENTIALS"
 }
 
 jacoco {
