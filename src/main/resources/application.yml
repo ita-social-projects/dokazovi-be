@@ -1,3 +1,4 @@
+analytics.creds=${GOOGLE_CREDENTIALS}
 spring:
   security:
     oauth2:
@@ -28,3 +29,4 @@ app:
     authorizedRedirectUris:
       - http://localhost:3000/oauth2/redirect
       - http://localhost:3001/oauth2/redirect
+
