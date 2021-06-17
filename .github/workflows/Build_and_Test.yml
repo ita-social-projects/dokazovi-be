@@ -32,8 +32,8 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Build and test
-        env:
+        env_variables:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          analytics.creds: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: ./gradlew build sonarqube --info
