@@ -1,4 +1,4 @@
-analytics.creds=${GOOGLE_CREDENTIALS}
+analytics.creds: ${GOOGLE_CREDENTIALS}
 spring:
   security:
     oauth2:
@@ -6,7 +6,7 @@ spring:
         registration:
           google:
             clientId: ${GOOGLE_CLIENT_ID}
-            clientSecret: ${GOOGLE_CLIENT_SECRET}
+            clientSecret: ${GOOGLE_CLIENT_SECRET}            
             scope:
               - email
               - profile
