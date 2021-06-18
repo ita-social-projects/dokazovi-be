@@ -41,5 +41,6 @@ jobs:
         with:
           email: ${{ secrets.HEROKU_EMAIL }}
           api_key: ${{ secrets.HEROKU_API_KEY }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
           docker_compose_file: '.docker/docker-compose.heroku.yml'
           heroku_apps: '[{"imagename":"dokazovi","appname":"dokazovi-be","apptype":"web"}]'
