@@ -1,4 +1,3 @@
-analytics.creds: ${GOOGLE_CREDENTIALS}
 spring:
   security:
     oauth2:
