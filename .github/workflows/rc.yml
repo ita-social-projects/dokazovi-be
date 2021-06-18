@@ -30,6 +30,8 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run build with Gradle(check styles, run tests)
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: ./gradlew build -Pversion=${{ steps.tag_version.outputs.new_tag }}
 
       - name: Build the tagged Docker image
