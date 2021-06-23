@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -270,23 +271,18 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	@Transactional
-	public Boolean setPostsAsImportant(Set<Integer> postIds) {
-		if (postIds == null) {
+	public Boolean setPostsAsImportantWithOrder(Set<Integer> importantPostIds) {
+		if (importantPostIds == null) {
 			return false;
 		}
-		postRepository.setPostsAsImportant(postIds);
+		postRepository.removeImportantPostsAndOrder(importantPostIds);
+		List<Integer> importantPostIdsList = new ArrayList<>(importantPostIds);
+		for (int i = 0; i < importantPostIdsList.size(); i++) {
+			postRepository.setImportantPostOrder((i + 1), importantPostIdsList.get(i));
+		}
 		return true;
 	}
 
-	@Override
-	@Transactional
-	public Boolean setPostsAsUnimportant(Set<Integer> postIds) {
-		if (postIds == null) {
-			return false;
-		}
-		postRepository.setPostsAsUnimportant(postIds);
-		return true;
-	}
 
 	private PostEntity getPostEntityFromPostDTO(PostSaveFromUserDTO postDTO) {
 		Integer postId = postDTO.getId();

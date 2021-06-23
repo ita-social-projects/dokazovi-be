@@ -51,7 +51,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_UNIMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 
 /**
@@ -123,35 +122,15 @@ public class PostController {
 
 	@GetMapping(POST_SET_IMPORTANT)
 	@ApiPageable
-	@ApiOperation(value = "Set posts as important")
+	@ApiOperation(value = "Set posts as important with order and remove previous order")
 	public ResponseEntity<ApiResponseMessage> setPostAsImportant(
-			@ApiParam(value = "Multiple comma-separated posts IDs, e.g. ?origins=1,2,3,4...", type = "string")
+			@ApiParam(value = "Multiple comma-separated posts IDs (new order), e.g. ?origins=1,2,3,4...",
+					type = "string")
 			@RequestParam(required = true) Set<Integer> posts) {
 		ApiResponseMessage apiResponseMessage;
 		try {
 			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.setPostsAsImportant(posts))
-					.message("Posts updated successfully")
-					.build();
-		} catch (Exception e) {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(false)
-					.message(e.getMessage())
-					.build();
-		}
-		return ResponseEntity.ok().body(apiResponseMessage);
-	}
-
-	@GetMapping(POST_SET_UNIMPORTANT)
-	@ApiPageable
-	@ApiOperation(value = "Set posts as unimportant")
-	public ResponseEntity<ApiResponseMessage> setPostAsUnimportant(
-			@ApiParam(value = "Multiple comma-separated posts IDs, e.g. ?origins=1,2,3,4...", type = "string")
-			@RequestParam(required = true) Set<Integer> posts) {
-		ApiResponseMessage apiResponseMessage;
-		try {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.setPostsAsUnimportant(posts))
+					.success(postService.setPostsAsImportantWithOrder(posts))
 					.message("Posts updated successfully")
 					.build();
 		} catch (Exception e) {
