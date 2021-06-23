@@ -475,36 +475,6 @@ class PostControllerTest {
 	}
 
 	@Test
-	void setPostsAsUnimportant() throws Exception {
-		Set<Integer> postIds = Set.of(1, 2, 3, 4);
-		Mockito.when(postService.setPostsAsUnimportant(postIds))
-				.thenReturn(true);
-		mockMvc.perform(get(POST + POST_SET_UNIMPORTANT + "?posts=1,2,3,4"))
-				.andExpect(status().isOk());
-
-		verify(postService).setPostsAsUnimportant(postIds);
-	}
-
-	@Test
-	void setPostsAsUnimportant_Exception() throws Exception {
-		String uri = POST + POST_SET_UNIMPORTANT + "?posts=";
-
-		Mockito.when(postService.setPostsAsUnimportant(any()))
-				.thenThrow(new BadRequestException(
-						"could not execute statement; SQL [n/a]; nested "
-								+ "exception is org.hibernate.exception.SQLGrammarException: "
-								+ "could not execute statement"));
-
-		mockMvc.perform(get(uri))
-				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals(
-						"{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested "
-								+ "exception is org.hibernate.exception.SQLGrammarException: "
-								+ "could not execute statement\"}",
-						result.getResponse().getContentAsString()));
-	}
-
-	@Test
 	void getPostViewCount() throws Exception {
 		String uri = POST + POST_VIEW_COUNT + "/?url=%2Fexperts";
 
