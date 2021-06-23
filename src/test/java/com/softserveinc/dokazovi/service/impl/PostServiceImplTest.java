@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
 import com.softserveinc.dokazovi.annotations.DirectionExists;
 import com.softserveinc.dokazovi.annotations.OriginExists;
 import com.softserveinc.dokazovi.annotations.TagExists;
@@ -78,6 +79,8 @@ class PostServiceImplTest {
 
 	private UserEntity userEntity;
 
+	@Mock
+	private GoogleAnalytics googleAnalytics;
 
 	@BeforeEach
 	void init() {
@@ -901,5 +904,12 @@ class PostServiceImplTest {
 	void setPostsAsImportant() {
 		Set<Integer> postIds = Set.of(2, 4, 9);
 		Assertions.assertThat(postService.setPostsAsImportantWithOrder(postIds));
+	}
+
+	@Test
+	void getPostViewCount() {
+		when(googleAnalytics.getPostViewCount("some")).thenReturn(1);
+
+		assertEquals(1, postService.getPostViewCount("some"));
 	}
 }

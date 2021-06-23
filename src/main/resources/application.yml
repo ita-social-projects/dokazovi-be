@@ -5,7 +5,7 @@ spring:
         registration:
           google:
             clientId: ${GOOGLE_CLIENT_ID}
-            clientSecret: ${GOOGLE_CLIENT_SECRET}
+            clientSecret: ${GOOGLE_CLIENT_SECRET}            
             scope:
               - email
               - profile
@@ -28,3 +28,4 @@ app:
     authorizedRedirectUris:
       - http://localhost:3000/oauth2/redirect
       - http://localhost:3001/oauth2/redirect
+

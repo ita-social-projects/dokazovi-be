@@ -47,6 +47,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -472,4 +473,44 @@ class PostControllerTest {
 
 		verify(postService).findLatestByPostTypesAndOrigins(any(Pageable.class));
 	}
+
+	@Test
+	void setPostsAsUnimportant() throws Exception {
+		Set<Integer> postIds = Set.of(1, 2, 3, 4);
+		Mockito.when(postService.setPostsAsUnimportant(postIds))
+				.thenReturn(true);
+		mockMvc.perform(get(POST + POST_SET_UNIMPORTANT + "?posts=1,2,3,4"))
+				.andExpect(status().isOk());
+
+		verify(postService).setPostsAsUnimportant(postIds);
+	}
+
+	@Test
+	void setPostsAsUnimportant_Exception() throws Exception {
+		String uri = POST + POST_SET_UNIMPORTANT + "?posts=";
+
+		Mockito.when(postService.setPostsAsUnimportant(any()))
+				.thenThrow(new BadRequestException(
+						"could not execute statement; SQL [n/a]; nested "
+								+ "exception is org.hibernate.exception.SQLGrammarException: "
+								+ "could not execute statement"));
+
+		mockMvc.perform(get(uri))
+				.andExpect(status().isOk()).andExpect(result ->
+				Assertions.assertEquals(
+						"{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested "
+								+ "exception is org.hibernate.exception.SQLGrammarException: "
+								+ "could not execute statement\"}",
+						result.getResponse().getContentAsString()));
+	}
+
+	@Test
+	void getPostViewCount() throws Exception {
+		String uri = POST + POST_VIEW_COUNT + "/?url=%2Fexperts";
+
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		verify(postService).getPostViewCount(any(String.class));
+	}
+
 }

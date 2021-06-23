@@ -1,0 +1,4 @@
+UPDATE DOCTORS SET BIO='Lorem ipsum dolor sit amet, consectetur adipiscing' WHERE DOCTOR_ID>=1 AND DOCTOR_ID<=9;
+UPDATE DOCTORS SET BIO='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna a.' WHERE DOCTOR_ID>=10 AND DOCTOR_ID<=18;
+UPDATE DOCTORS SET BIO='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam q.' WHERE DOCTOR_ID>=19 AND DOCTOR_ID<=27;
+UPDATE DOCTORS SET BIO='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis.' WHERE DOCTOR_ID>=28 AND DOCTOR_ID<=36;
