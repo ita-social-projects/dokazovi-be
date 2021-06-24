@@ -38,18 +38,21 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			Integer authorId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 
 	@Query(nativeQuery = true,
-			value = " UPDATE POSTS "
-					+ " SET IMPORTANT = TRUE "
-					+ " WHERE POST_ID IN (:postIds) ")
+	value = " UPDATE POSTS "
+			+ " SET IMPORTANT = FALSE, "
+			+ "    IMPORTANCE_ORDER = NULL "
+			+ " WHERE POST_ID > 0;")
 	@Modifying
-	void setPostsAsImportant(Set<Integer> postIds);
+	void removeImportantPostsAndOrder(Set<Integer> importantPostIds);
 
 	@Query(nativeQuery = true,
-			value = " UPDATE POSTS "
-					+ " SET IMPORTANT = FALSE "
-					+ " WHERE POST_ID IN (:postIds) ")
+	value = " UPDATE POSTS "
+			+ " SET IMPORTANCE_ORDER = (:postNumber), "
+			+ "    IMPORTANT = TRUE "
+			+ " WHERE POST_ID = (:postId) ")
 	@Modifying
-	void setPostsAsUnimportant(Set<Integer> postIds);
+	void setImportantPostOrder(Integer postNumber, Integer postId);
+
 
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM POSTS "
