@@ -107,4 +107,7 @@ public class PostEntity {
 
 	@CreationTimestamp
 	private Timestamp publishedAt;
+
+	@ColumnDefault("null")
+	private Integer importanceOrder;
 }
