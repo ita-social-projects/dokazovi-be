@@ -35,4 +35,5 @@ public class PostDTO {
 	private Timestamp modifiedAt;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private Timestamp publishedAt;
+	private Integer importanceOrder;
 }
