@@ -9,7 +9,8 @@ public enum RolePermission implements GrantedAuthority {
 	DELETE_OWN_POST,
 	UPDATE_POST,
 	UPDATE_OWN_POST,
-	SAVE_PUBLICATION;
+	SAVE_PUBLICATION,
+	SET_IMPORTANCE;
 
 	@Override
 	public String getAuthority() {
