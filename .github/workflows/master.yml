@@ -3,12 +3,12 @@ name: Bump version, build and push to heroku
 on:
   push:
     branches:
-      - release
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: release
+    environment: master
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: master
           pre_release_branches: release
-          append_to_pre_release_tag: 'RC'
+          append_to_pre_release_tag: 'Stable'
 
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -36,7 +36,7 @@ jobs:
         run: ./gradlew build -Pversion=${{ steps.tag_version.outputs.new_tag }}
 
       - name: Build the tagged Docker image
-        run: docker build -f .docker/dokazovi.Dockerfile -t dokazovi-dev .
+        run: docker build -f .docker/dokazovi.Dockerfile -t dokazovi .
 
       - name: Build, Push and Deploy to Heroku
         id: heroku
@@ -45,4 +45,4 @@ jobs:
           email: ${{ secrets.HEROKU_EMAIL }}
           api_key: ${{ secrets.HEROKU_API_KEY }}
           docker_compose_file: '.docker/docker-compose.heroku.yml'
-          heroku_apps: '[{"imagename":"dokazovi-dev","appname":"dokazovi-be","apptype":"web"}]'
+          heroku_apps: '[{"imagename":"dokazovi","appname":"dokazovi-backend","apptype":"web"}]'
