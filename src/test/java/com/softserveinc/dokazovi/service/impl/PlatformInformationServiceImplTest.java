@@ -40,6 +40,9 @@ class PlatformInformationServiceImplTest {
 
 	private UserEntity adminUserEntity;
 	private UserEntity anyUserWithoutAppropriatePermissionsEntity;
+	private PlatformInformationEntity infoEntityWithId;
+	private PlatformInformationEntity infoEntityWithoutId;
+	private PlatformInformationDTO infoDTOWithoutId;
 
 	@BeforeEach
 	void init() {
@@ -69,107 +72,77 @@ class PlatformInformationServiceImplTest {
 				.password("12345")
 				.role(roleWithoutPermissionsEntity)
 				.build();
+
+		Integer id = 1;
+		String title = "Some Title";
+		String text = "Some Text";
+		infoEntityWithId = PlatformInformationEntity
+				.builder()
+				.id(id)
+				.title(title)
+				.text(text)
+				.build();
+		infoEntityWithoutId = PlatformInformationEntity
+				.builder()
+				.title(title)
+				.text(text)
+				.build();
+		infoDTOWithoutId = PlatformInformationDTO
+				.builder()
+				.title(title)
+				.text(text)
+				.build();
 	}
 
 	@Test
 	void findPlatformInfoById() {
 		Integer id = 1;
-		PlatformInformationEntity infoEntity = PlatformInformationEntity
-				.builder()
-				.id(id)
-				.build();
-		when(platformInformationRepository.findById(any(Integer.class))).thenReturn(Optional.of(infoEntity));
+
+		when(platformInformationRepository.findById(any(Integer.class))).thenReturn(Optional.of(infoEntityWithId));
+
 		infoService.getInfoById(id);
-		verify(mapper).toPlatformInformationDTO(infoEntity);
+
+		verify(mapper).toPlatformInformationDTO(infoEntityWithId);
 	}
 
 	@Test
 	void saveInfo_AdminRole_OK() {
-		String title = "Some Title";
-		String text = "Some Text";
-		PlatformInformationEntity infoEntity = PlatformInformationEntity
-				.builder()
-				.title(title)
-				.text(text)
-				.build();
-
-		when(mapper.toPlatformInformationEntity(any(PlatformInformationDTO.class))).thenReturn(infoEntity);
-
-		PlatformInformationDTO infoDTO = PlatformInformationDTO
-				.builder()
-				.title(title)
-				.text(text)
-				.build();
+		when(mapper.toPlatformInformationEntity(any(PlatformInformationDTO.class))).thenReturn(infoEntityWithoutId);
 
 		UserPrincipal userPrincipal = UserPrincipal.create(adminUserEntity);
-		infoService.saveInfo(userPrincipal, infoDTO);
+
+		infoService.saveInfo(userPrincipal, infoDTOWithoutId);
+
 		verify(mapper, times(1)).toPlatformInformationDTO(any());
 	}
 
 	@Test
 	void saveInfo_UserHasNoPermissions_TrowsForbiddenPermissionsException() {
-		String title = "Some Title";
-		String text = "Some Text";
-		PlatformInformationEntity infoEntity = PlatformInformationEntity
-				.builder()
-				.title(title)
-				.text(text)
-				.build();
-
-		when(mapper.toPlatformInformationEntity(any(PlatformInformationDTO.class))).thenReturn(infoEntity);
-
-		PlatformInformationDTO infoDTO = PlatformInformationDTO
-				.builder()
-				.title(title)
-				.text(text)
-				.build();
+		when(mapper.toPlatformInformationEntity(any(PlatformInformationDTO.class))).thenReturn(infoEntityWithoutId);
 
 		UserPrincipal userPrincipal = UserPrincipal.create(anyUserWithoutAppropriatePermissionsEntity);
-		assertThrows(ForbiddenPermissionsException.class, () -> infoService.saveInfo(userPrincipal, infoDTO));
+
+		assertThrows(ForbiddenPermissionsException.class, () -> infoService.saveInfo(userPrincipal, infoDTOWithoutId));
 	}
 
 	@Test
 	void updateInfo_AdminRole_OK() {
-		String title = "Some Title";
-		String text = "Some Text";
-		PlatformInformationEntity infoEntity = PlatformInformationEntity
-				.builder()
-				.title(title)
-				.text(text)
-				.build();
-
-		when(mapper.toPlatformInformationEntity(any(PlatformInformationDTO.class))).thenReturn(infoEntity);
-
-		PlatformInformationDTO infoDTO = PlatformInformationDTO
-				.builder()
-				.title(title)
-				.text(text)
-				.build();
+		when(mapper.toPlatformInformationEntity(any(PlatformInformationDTO.class))).thenReturn(infoEntityWithoutId);
 
 		UserPrincipal userPrincipal = UserPrincipal.create(adminUserEntity);
-		infoService.updateInfo(userPrincipal, infoDTO);
+
+		infoService.updateInfo(userPrincipal, infoDTOWithoutId);
+
 		verify(mapper, times(1)).toPlatformInformationDTO(any());
 	}
 
 	@Test
 	void updateInfo_UserHasNoPermissions_TrowsForbiddenPermissionsException() {
-		String title = "Some Title";
-		String text = "Some Text";
-		PlatformInformationEntity infoEntity = PlatformInformationEntity
-				.builder()
-				.title(title)
-				.text(text)
-				.build();
-
-		when(mapper.toPlatformInformationEntity(any(PlatformInformationDTO.class))).thenReturn(infoEntity);
-
-		PlatformInformationDTO infoDTO = PlatformInformationDTO
-				.builder()
-				.title(title)
-				.text(text)
-				.build();
+		when(mapper.toPlatformInformationEntity(any(PlatformInformationDTO.class))).thenReturn(infoEntityWithoutId);
 
 		UserPrincipal userPrincipal = UserPrincipal.create(anyUserWithoutAppropriatePermissionsEntity);
-		assertThrows(ForbiddenPermissionsException.class, () -> infoService.updateInfo(userPrincipal, infoDTO));
+
+		assertThrows(ForbiddenPermissionsException.class,
+				() -> infoService.updateInfo(userPrincipal, infoDTOWithoutId));
 	}
 }
