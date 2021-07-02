@@ -24,13 +24,23 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class PlatformInformationControllerTest {
+class PlatformInformationControllerTest {
 
 	private MockMvc mockMvc;
+
+	// Jackson mapper for Object -> JSON conversion
+	private final ObjectMapper mapper = new ObjectMapper();
+
+	private final String contentJSON = "{\n"
+			+ "  \"id\": 1,\n"
+			+ "  \"title\": \"some title\",\n"
+			+ "  \"title\": \"some text\"\n"
+			+ "}";
 
 	@InjectMocks
 	private PlatformInformationController infoController;
@@ -41,7 +51,7 @@ public class PlatformInformationControllerTest {
 
 	@BeforeEach
 	public void init() {
-		this.mockMvc = MockMvcBuilders
+		mockMvc = MockMvcBuilders
 				.standaloneSetup(infoController)
 				.setValidator(validator)
 				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
@@ -58,9 +68,10 @@ public class PlatformInformationControllerTest {
 				.build();
 
 		when(infoService.getInfoById(any(Integer.class))).thenReturn(infoDTO);
+
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		verify(infoService).getInfoById(eq(existingInfoId));
+		verify(infoService).getInfoById(existingInfoId);
 	}
 
 	@Test
@@ -69,25 +80,33 @@ public class PlatformInformationControllerTest {
 		String uri = PLATFORM_INFORMATION + "/" + notExistingInfoId;
 
 		when(infoService.getInfoById(any(Integer.class))).thenReturn(null);
+
 		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 
-		verify(infoService).getInfoById(eq(notExistingInfoId));
+		verify(infoService).getInfoById(notExistingInfoId);
 	}
 
 	@Test
 	void saveInfo() throws Exception {
-		String contentJSON = "{\n"
-				+ "  \"id\": 1,\n"
-				+ "  \"title\": \"some title\",\n"
-				+ "  \"title\": \"some text\"\n"
-				+ "}";
-
-		ObjectMapper mapper = new ObjectMapper();
 		PlatformInformationDTO infoDTO = mapper.readValue(contentJSON, PlatformInformationDTO.class);
+
 		mockMvc.perform(post(PLATFORM_INFORMATION)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(contentJSON))
 				.andExpect(status().isCreated());
+
 		verify(infoService).saveInfo(any(), eq(infoDTO));
+	}
+
+	@Test
+	void updatePlatformInfoById_WhenExists_isOk() throws Exception {
+		PlatformInformationDTO infoDTO = mapper.readValue(contentJSON, PlatformInformationDTO.class);
+
+		mockMvc.perform(put(PLATFORM_INFORMATION)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(contentJSON))
+				.andExpect(status().isOk());
+
+		verify(infoService).updateInfo(any(), eq(infoDTO));
 	}
 }

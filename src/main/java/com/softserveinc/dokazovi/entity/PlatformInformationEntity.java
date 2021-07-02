@@ -39,7 +39,7 @@ public class PlatformInformationEntity {
 	private String title;
 
 	/**
-	 * The field "text" corresponds to the appropriate column in the DB's platform_information table and is intended for
+	 * The field "text" corresponds to the "content" column in the DB's platform_information table and is intended for
 	 * holding a piece of information (the main content of a chapter) you are submitting or requesting for.
 	 */
 	@Column(name = "content",columnDefinition = "TEXT")
