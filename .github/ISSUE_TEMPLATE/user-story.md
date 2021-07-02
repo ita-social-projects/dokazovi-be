@@ -2,7 +2,7 @@
 name: User story
 about: Describe story goal
 title: ''
-labels: User story
+labels: ''
 assignees: ''
 
 ---
