@@ -39,6 +39,8 @@ public final class EndPoints {
 	public static final String AUTH_SIGNUP = "/signup";
 	public static final String POST_TYPES = "/post-types";
 	public static final String POST_TYPES_ALL_TYPES_BY_USER = "/{userId}";
+	public static final String PLATFORM_INFORMATION = "/platform-information";
+	public static final String PLATFORM_INFORMATION_BY_ID = "/{infoId}";
 
 	/**
 	 * Method that adds slash after each endpoint while calling
