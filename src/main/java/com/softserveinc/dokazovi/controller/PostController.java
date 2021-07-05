@@ -122,10 +122,12 @@ public class PostController {
 	}
 
 	@GetMapping(POST_SET_IMPORTANT)
+	@PreAuthorize("hasAuthority('SET_IMPORTANCE')")
 	@ApiPageable
-	@ApiOperation(value = "Set posts as important with order and remove previous order")
+	@ApiOperation(value = "Set posts as important with order and remove previous order",
+			authorizations = {@Authorization(value = "Authorization")})
 	public ResponseEntity<ApiResponseMessage> setPostAsImportant(
-			@ApiParam(value = "Multiple comma-separated posts IDs (new order), e.g. ?origins=1,2,3,4...",
+			@ApiParam(value = "Multiple comma-separated posts IDs (new order), e.g. ?posts=1,2,3,4...",
 					type = "string")
 			@RequestParam(required = true) Set<Integer> posts) {
 		ApiResponseMessage apiResponseMessage;
