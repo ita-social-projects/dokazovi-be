@@ -31,6 +31,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
@@ -39,6 +41,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_BY_IMPORTANT_IMAGE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -481,6 +484,13 @@ class PostControllerTest {
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
 		verify(postService).getPostViewCount(any(String.class));
+	}
+
+	@Test
+	void findAllByImportantImageUrl_isNotFound() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders
+				.get(POST_GET_BY_IMPORTANT_IMAGE))
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 }
