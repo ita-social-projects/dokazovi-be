@@ -112,6 +112,5 @@ public class PostEntity {
 	private Integer importanceOrder;
 
 	@Column(name = "important_image_url")
-	@ColumnDefault("null")
 	private String importantImageUrl;
 }
