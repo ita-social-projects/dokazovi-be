@@ -43,5 +43,5 @@ public interface PostService {
 
 	Integer getPostViewCount(String url);
 
-	Page<PostDTO> getAllByImportantImageUrlDesc(Pageable pageable);
+	Page<PostDTO> getAllByImportantImageUrl(Pageable pageable);
 }
