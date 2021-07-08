@@ -36,4 +36,5 @@ public class PostDTO {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private Timestamp publishedAt;
 	private Integer importanceOrder;
+	private String importantImageUrl;
 }

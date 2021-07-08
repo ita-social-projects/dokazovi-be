@@ -113,5 +113,5 @@ public class PostEntity {
 
 	@Column(name = "important_image_url")
 	@ColumnDefault("null")
-	private Integer importantImageUrl;
+	private String importantImageUrl;
 }
