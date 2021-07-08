@@ -306,7 +306,6 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	@Transactional
 	public Page<PostDTO> getAllByImportantImageUrl(Pageable pageable) {
 		return postRepository.findAllByImportantImageUrlDesc(pageable).map(postMapper::toPostDTO);
 	}
