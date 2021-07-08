@@ -41,6 +41,7 @@ public final class EndPoints {
 	public static final String POST_TYPES_ALL_TYPES_BY_USER = "/{userId}";
 	public static final String PLATFORM_INFORMATION = "/platform-information";
 	public static final String PLATFORM_INFORMATION_BY_ID = "/{infoId}";
+	public static final String POST_GET_IMPORTANT_IMAGE_NULL = "/get-important-image-null";
 
 	/**
 	 * Method that adds slash after each endpoint while calling
