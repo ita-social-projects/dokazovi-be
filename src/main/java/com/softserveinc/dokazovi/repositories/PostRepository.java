@@ -148,8 +148,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	@Query(nativeQuery = true,
 			value = "SELECT P1.* "
-					+ "	FROM posts P1 "
-					+ "	WHERE P1.IMPORTANT_IMAGE_URL <> '' "
-					+ "	ORDER BY CREATED_AT DESC ")
+					+ " FROM posts P1 "
+					+ " WHERE P1.IMPORTANT_IMAGE_URL <> '' "
+					+ " ORDER BY CREATED_AT DESC ")
 	Page<PostEntity> findAllByImportantImageUrlDesc (Pageable pageable);
 }
