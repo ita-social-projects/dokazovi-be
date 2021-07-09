@@ -32,6 +32,8 @@ public class PostSaveFromUserDTO {
 
 	private String previewImageUrl;
 
+	private String importantImageUrl;
+
 	@NotBlank(message = "Preview field cannot be empty")
 	private String preview;
 
