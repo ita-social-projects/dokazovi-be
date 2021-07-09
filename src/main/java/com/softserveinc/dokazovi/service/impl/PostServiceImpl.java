@@ -304,4 +304,9 @@ public class PostServiceImpl implements PostService {
 	public  Integer getPostViewCount(String url) {
 		return googleAnalytics.getPostViewCount(url);
 	}
+
+	@Override
+	public Page<PostDTO> getAllByImportantImageUrl(Pageable pageable) {
+		return postRepository.findAllByImportantImageUrlDesc(pageable).map(postMapper::toPostDTO);
+	}
 }
