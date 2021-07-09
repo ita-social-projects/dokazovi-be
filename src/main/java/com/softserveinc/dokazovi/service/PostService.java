@@ -41,4 +41,6 @@ public interface PostService {
 	Boolean setPostsAsImportantWithOrder(Set<Integer> importantPostIds);
 
 	Integer getPostViewCount(String url);
+
+	Page<PostDTO> getAllByImportantImageUrl(Pageable pageable);
 }
