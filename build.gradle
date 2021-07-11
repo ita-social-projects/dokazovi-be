@@ -13,7 +13,10 @@ group = 'com.softserveinc'
 sourceCompatibility = '11'
 
 sourceSets {
-	integrationTest
+	integrationTest {
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+	}
 }
 
 idea {
@@ -23,21 +26,14 @@ idea {
 	}
 }
 
-configurations {
-	integrationTestImplementation.extendsFrom testImplementation
-	integrationTestRuntimeOnly.extendsFrom testRuntime
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 task integrationTest(type: Test) {
 	description("Runs integration tests")
+	group("verification")
 	testClassesDirs = sourceSets.integrationTest.output.classesDirs
 	classpath = sourceSets.integrationTest.runtimeClasspath
+	useJUnitPlatform()
 }
 
-check.dependsOn integrationTest
 
 bootRun {
 	main = "com.softserveinc.dokazovi.DokazoviApplication"
@@ -64,11 +60,11 @@ springBoot {
 }
 
 dependencies {
-	compile group: 'org.springframework.security', name: 'spring-security-oauth2-client'
-	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-	compile group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.4.0'
-	compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
+	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.4.0'
+	implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -81,11 +77,12 @@ dependencies {
 	implementation "org.mapstruct:mapstruct:${MAPPER_VERSION}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
 	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
+	integrationTestAnnotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
 	compileOnly "org.projectlombok:lombok"
 	annotationProcessor "org.projectlombok:lombok"
 
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
-	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.postgresql:postgresql'
 
 	testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.9'
 	testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.9'
@@ -94,9 +91,22 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
+
 	integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: '1.15.3'
 	integrationTestImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.15.3'
+	integrationTestImplementation group: 'org.testcontainers', name: 'database-commons', version: '1.15.3'
+
 }
+
+configurations {
+	integrationTestImplementation.extendsFrom testImplementation
+	integrationTestRuntimeOnly.extendsFrom testRuntime
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+check.dependsOn integrationTest
 
 test {
 	useJUnitPlatform()
