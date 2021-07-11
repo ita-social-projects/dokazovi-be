@@ -71,6 +71,8 @@ class PostServiceImplTest {
 	private PostMapper postMapper;
 	@Mock
 	private Pageable pageable;
+	@Mock
+	private DirectionServiceImpl directionService;
 
 	@InjectMocks
 	private PostServiceImpl postService;
