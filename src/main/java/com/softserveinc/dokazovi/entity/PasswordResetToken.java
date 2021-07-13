@@ -37,4 +37,8 @@ public class PasswordResetToken {
 
 	private LocalDateTime dateExpiration;
 
+	public void setExpiration() {
+		this.dateExpiration = LocalDateTime.now().plusMinutes(EXPIRATION);
+	}
+
 }

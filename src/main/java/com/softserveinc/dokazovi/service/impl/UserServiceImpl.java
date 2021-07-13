@@ -1,12 +1,14 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.PasswordResetToken;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
+import com.softserveinc.dokazovi.repositories.PasswordResetTokenRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.UserService;
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
 	private final VerificationTokenRepository tokenRepository;
+	private final PasswordResetTokenRepository passwordResetTokenRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
@@ -194,6 +197,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public VerificationToken getVerificationToken(String verificationToken) {
 		return tokenRepository.findByToken(verificationToken);
+	}
+
+	@Override
+	public void createPasswordResetTokenForUser(UserEntity user, String token) {
+		PasswordResetToken myToken = PasswordResetToken.builder()
+				.token(token)
+				.userEntity(user)
+				.build();
+		myToken.setExpiration();
+		passwordResetTokenRepository.save(myToken);
 	}
 
 	/**

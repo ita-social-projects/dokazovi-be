@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
+import java.util.UUID;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
@@ -133,6 +134,10 @@ public class UserController {
 			HttpServletRequest request, @RequestParam String email) {
 		String message = "If email is correct please find verification letter on your email account!";
 		UserEntity user = userService.findByEmail(email);
+		if (user != null) {
+			String token = UUID.randomUUID().toString();
+			userService.createPasswordResetTokenForUser(user, token);
+		}
 		return ResponseEntity.ok().body(message);
 	}
 }
