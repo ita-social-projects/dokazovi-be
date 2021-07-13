@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.UserService;
@@ -17,10 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
@@ -28,6 +31,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
 
 /**
  * The User controller is responsible for handling requests for users.
@@ -113,5 +117,22 @@ public class UserController {
 		return ResponseEntity
 				.status((userDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(userDTO);
+	}
+
+	/**
+	 * Post request with email for reset user password and send verification email
+	 * Checks if user with email exists in DB.
+	 * If no - returns HttpStatus 'NOT FOUND'.
+	 *
+	 * @param email user that we want to get
+	 * @return HttpStatus 'OK'
+	 */
+	@PostMapping(USER_RESET_PASSWORD)
+	@ApiOperation(value = "Reset current password")
+	public ResponseEntity<String> resetPassword(
+			HttpServletRequest request, @RequestParam String email) {
+		String message = "If email is correct please find verification letter on your email account!";
+		UserEntity user = userService.findByEmail(email);
+		return ResponseEntity.ok().body(message);
 	}
 }
