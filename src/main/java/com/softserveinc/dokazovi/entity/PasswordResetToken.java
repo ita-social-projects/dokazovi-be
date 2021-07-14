@@ -27,7 +27,7 @@ public class PasswordResetToken {
 	public static final int EXPIRATION = 60;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "token_id")
 	private Long id;
 
