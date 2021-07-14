@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @Table(name = "password_reset_tokens")
 public class PasswordResetToken {
 
-	private static final int EXPIRATION = 60;
+	public static final int EXPIRATION = 60;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,9 +36,4 @@ public class PasswordResetToken {
 	private UserEntity userEntity;
 
 	private LocalDateTime dateExpiration;
-
-	public void setExpiration() {
-		this.dateExpiration = LocalDateTime.now().plusMinutes(EXPIRATION);
-	}
-
 }
