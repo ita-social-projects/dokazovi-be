@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "password_reset_tokens")
-public class PasswordResetToken {
+public class PasswordResetTokenEntity {
 
 	public static final int EXPIRATION = 60;
 

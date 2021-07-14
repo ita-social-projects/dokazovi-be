@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
-import com.softserveinc.dokazovi.entity.PasswordResetToken;
+import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.exception.BadRequestException;
@@ -202,10 +202,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void createPasswordResetTokenForUser(UserEntity user, String token) {
-		PasswordResetToken myToken = PasswordResetToken.builder()
+		PasswordResetTokenEntity myToken = PasswordResetTokenEntity.builder()
 				.token(token)
 				.userEntity(user)
-				.dateExpiration(LocalDateTime.now().plusMinutes(PasswordResetToken.EXPIRATION))
+				.dateExpiration(LocalDateTime.now().plusMinutes(PasswordResetTokenEntity.EXPIRATION))
 				.build();
 		passwordResetTokenRepository.save(myToken);
 	}
