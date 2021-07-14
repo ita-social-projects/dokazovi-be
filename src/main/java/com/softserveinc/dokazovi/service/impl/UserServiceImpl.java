@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -204,8 +205,8 @@ public class UserServiceImpl implements UserService {
 		PasswordResetToken myToken = PasswordResetToken.builder()
 				.token(token)
 				.userEntity(user)
+				.dateExpiration(LocalDateTime.now().plusMinutes(PasswordResetToken.EXPIRATION))
 				.build();
-		myToken.setExpiration();
 		passwordResetTokenRepository.save(myToken);
 	}
 
