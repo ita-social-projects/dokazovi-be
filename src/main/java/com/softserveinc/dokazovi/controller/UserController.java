@@ -15,8 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,7 +45,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD
 public class UserController {
 
 	private final UserService userService;
-	private final JavaMailSender mailSender;
 
 	/**
 	 * Gets preview of random experts,
@@ -141,24 +138,8 @@ public class UserController {
 		if (user != null) {
 			String token = UUID.randomUUID().toString();
 			userService.createPasswordResetTokenForUser(user, token);
-			mailSender.send(constructResetTokenEmail(request.getContextPath(), token, user));
+			userService.sendEmailWithToken(request.getContextPath(), token, user);
 		}
 		return ResponseEntity.ok().body(message);
-	}
-
-	private SimpleMailMessage constructResetTokenEmail(
-			String contextPath, String token, UserEntity user) {
-		String url = contextPath + USER + USER_CHANGE_PASSWORD + "?token=" + token;
-		String message = "Change your password after clicking reference below."
-				+ "If you didn't request to change password, please won't do anything";
-		return constructEmail("Reset password", message + "\r\n" + url, user);
-	}
-
-	private SimpleMailMessage constructEmail(String subject, String body, UserEntity user) {
-		SimpleMailMessage email = new SimpleMailMessage();
-		email.setSubject(subject);
-		email.setText(body);
-		email.setTo(user.getEmail());
-		return email;
 	}
 }

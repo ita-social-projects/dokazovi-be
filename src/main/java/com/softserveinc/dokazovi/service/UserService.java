@@ -6,6 +6,7 @@ import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
 
 import java.util.Set;
 
@@ -28,4 +29,6 @@ public interface UserService {
 	VerificationToken getVerificationToken(String verificationToken);
 
 	void createPasswordResetTokenForUser(UserEntity user, String token);
+
+	void sendEmailWithToken (String contextPath, String token, UserEntity user);
 }

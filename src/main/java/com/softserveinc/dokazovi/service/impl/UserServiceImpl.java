@@ -15,6 +15,8 @@ import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,6 +25,9 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+
+import static com.softserveinc.dokazovi.controller.EndPoints.USER;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 
 /**
  * The UserServiceImpl is responsible for doing any required logic
@@ -38,6 +43,7 @@ public class UserServiceImpl implements UserService {
 	private final UserMapper userMapper;
 	private final VerificationTokenRepository tokenRepository;
 	private final PasswordResetTokenRepository passwordResetTokenRepository;
+	private final JavaMailSender mailSender;
 	private final PasswordEncoder passwordEncoder;
 
 	private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
@@ -223,5 +229,26 @@ public class UserServiceImpl implements UserService {
 				.token(token)
 				.build();
 		tokenRepository.save(myToken);
+	}
+
+	@Override
+	public void sendEmailWithToken (String contextPath, String token, UserEntity user) {
+		mailSender.send(constructResetTokenEmail(contextPath, token, user));
+	}
+
+	private SimpleMailMessage constructResetTokenEmail(
+			String contextPath, String token, UserEntity user) {
+		String url = contextPath + USER + USER_CHANGE_PASSWORD + "?token=" + token;
+		String message = "Change your password after clicking reference below."
+				+ "If you didn't request to change password, please won't do anything";
+		return constructEmail("Reset password", message + "\r\n" + url, user);
+	}
+
+	private SimpleMailMessage constructEmail(String subject, String body, UserEntity user) {
+		SimpleMailMessage email = new SimpleMailMessage();
+		email.setSubject(subject);
+		email.setText(body);
+		email.setTo(user.getEmail());
+		return email;
 	}
 }
