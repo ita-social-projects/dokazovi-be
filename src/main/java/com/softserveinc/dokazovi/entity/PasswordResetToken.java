@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -27,6 +28,7 @@ public class PasswordResetToken {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "token_id")
 	private Long id;
 
 	private String token;
@@ -35,5 +37,6 @@ public class PasswordResetToken {
 	@JoinColumn(nullable = false, name = "user_id")
 	private UserEntity userEntity;
 
+	@Column(name = "date_expiration")
 	private LocalDateTime dateExpiration;
 }
