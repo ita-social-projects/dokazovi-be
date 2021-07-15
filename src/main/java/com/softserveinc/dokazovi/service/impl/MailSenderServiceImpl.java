@@ -1,6 +1,7 @@
-package com.softserveinc.dokazovi.util;
+package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.service.MailSenderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,7 +17,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWOR
 
 @Service
 @RequiredArgsConstructor
-public class MailSenderUtil implements MailSenderService {
+public class MailSenderServiceImpl implements MailSenderService {
 
     private final JavaMailSender mailSender;
 

@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.util;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.service.UserService;
+import com.softserveinc.dokazovi.service.impl.MailSenderServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,13 +25,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MailSenderUtilTest {
+class MailSenderServiceImplTest {
     @Mock
     private JavaMailSender javaMailSender;
     @Mock
     private UserService userService;
     @InjectMocks
-    private MailSenderUtil mailSender;
+    private MailSenderServiceImpl mailSender;
 
     @Test
     void sendMessage() throws IOException, MessagingException {
