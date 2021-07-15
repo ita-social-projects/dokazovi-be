@@ -1,14 +1,12 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
-import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
-import com.softserveinc.dokazovi.repositories.PasswordResetTokenRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.UserService;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -42,7 +39,6 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
 	private final VerificationTokenRepository tokenRepository;
-	private final PasswordResetTokenRepository passwordResetTokenRepository;
 	private final JavaMailSender mailSender;
 	private final PasswordEncoder passwordEncoder;
 
@@ -215,16 +211,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public VerificationToken getVerificationToken(String verificationToken) {
 		return tokenRepository.findByToken(verificationToken);
-	}
-
-	@Override
-	public void createPasswordResetTokenForUser(UserEntity user, String token) {
-		PasswordResetTokenEntity myToken = PasswordResetTokenEntity.builder()
-				.token(token)
-				.userEntity(user)
-				.dateExpiration(LocalDateTime.now().plusMinutes(PasswordResetTokenEntity.EXPIRATION))
-				.build();
-		passwordResetTokenRepository.save(myToken);
 	}
 
 	/**

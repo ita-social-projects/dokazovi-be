@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -45,6 +46,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD
 public class UserController {
 
 	private final UserService userService;
+	private final PasswordResetTokenService passwordResetTokenService;
 
 	/**
 	 * Gets preview of random experts,
@@ -137,7 +139,7 @@ public class UserController {
 		UserEntity user = userService.findUserEntityByEmail(email);
 		if (user != null) {
 			String token = UUID.randomUUID().toString();
-			userService.createPasswordResetTokenForUser(user, token);
+			passwordResetTokenService.createPasswordResetTokenForUser(user, token);
 			userService.sendEmailWithToken(headers.getOrigin(), token, user);
 		}
 		return ResponseEntity.ok().body(message);

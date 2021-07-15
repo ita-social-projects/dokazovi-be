@@ -29,7 +29,5 @@ public interface UserService {
 
 	VerificationToken getVerificationToken(String verificationToken);
 
-	void createPasswordResetTokenForUser(UserEntity user, String token);
-
 	void sendEmailWithToken (String contextPath, String token, UserEntity user);
 }
