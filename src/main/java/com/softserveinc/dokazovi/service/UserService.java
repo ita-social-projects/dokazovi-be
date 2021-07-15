@@ -6,7 +6,6 @@ import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.SimpleMailMessage;
 
 import java.util.Set;
 

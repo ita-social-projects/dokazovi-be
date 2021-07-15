@@ -246,6 +246,7 @@ public class UserServiceImpl implements UserService {
 
 	private SimpleMailMessage constructEmail(String subject, String body, UserEntity user) {
 		SimpleMailMessage email = new SimpleMailMessage();
+		email.setFrom("igor.zaharko.1986@gmail.com");
 		email.setSubject(subject);
 		email.setText(body);
 		email.setTo(user.getEmail());
