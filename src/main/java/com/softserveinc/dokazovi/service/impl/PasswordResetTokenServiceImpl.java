@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
 
-	private PasswordResetTokenRepository passwordResetTokenRepository;
+	private final PasswordResetTokenRepository passwordResetTokenRepository;
 
 	/**
 	 * Gets the password reset token received from passwordResetTokenRepository.
