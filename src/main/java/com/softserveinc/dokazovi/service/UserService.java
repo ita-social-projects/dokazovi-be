@@ -13,6 +13,8 @@ public interface UserService {
 
 	UserEntity findByEmail(String email);
 
+	UserEntity findUserEntityByEmail(String email);
+
 	Page<UserEntity> findAll(Pageable pageable);
 
 	UserDTO findExpertById(Integer userId);

@@ -29,6 +29,14 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 					+ "SELECT  u.user_id FROM providers u WHERE  u.email IN (:email) LIMIT 1)")
 	Optional<UserEntity> findByEmail(@Param("email") String email);
 
+	/**
+	 * Gets the user by its email.
+	 *
+	 * @param email user email from service
+	 * @return optional user entity page
+	 */
+	@Query(nativeQuery = true,
+			value = "SELECT * FROM users WHERE email = :email")
 	Optional<UserEntity> findUserEntityByEmail(@Param("email") String email);
 
 	/**

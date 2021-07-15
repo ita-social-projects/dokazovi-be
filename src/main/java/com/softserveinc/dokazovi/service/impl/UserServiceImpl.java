@@ -62,6 +62,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
+	 * Gets user by email.
+	 *
+	 * @param email email of user that we want to get
+	 * @return found user by email from user repository
+	 */
+	@Override
+	public UserEntity findUserEntityByEmail(String email) {
+		return userRepository.findUserEntityByEmail(email).orElse(null);
+	}
+
+	/**
 	 * Gets all users.
 	 *
 	 * @param pageable received from User controller

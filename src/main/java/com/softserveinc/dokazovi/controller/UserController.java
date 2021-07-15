@@ -133,8 +133,9 @@ public class UserController {
 	public ResponseEntity<String> resetPassword(
 			HttpServletRequest request, @RequestParam String email) {
 		String message = "If email is correct please find verification letter on your email account!";
-		UserEntity user = userService.findByEmail(email);
+		UserEntity user = userService.findUserEntityByEmail(email);
 		if (user != null) {
+			System.out.println(user.getEmail());
 			String token = UUID.randomUUID().toString();
 			userService.createPasswordResetTokenForUser(user, token);
 			userService.sendEmailWithToken(request.getContextPath(), token, user);
