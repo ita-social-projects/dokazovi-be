@@ -2,7 +2,6 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
-import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -38,6 +37,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_US
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWORD;
 
 /**
  * The User controller is responsible for handling requests for users.
@@ -167,5 +167,12 @@ public class UserController {
 		}
 	}
 
+	@PostMapping(USER_UPDATE_PASSWORD)
+	@ApiOperation(value = "")
+	public ResponseEntity<String> updatePassword(
+			@RequestParam String email,
+			@RequestParam String password) {
+		return null;
+	}
 
 }
