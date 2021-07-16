@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -32,6 +33,7 @@ import java.util.UUID;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
@@ -144,5 +146,15 @@ public class UserController {
 			mailSenderService.sendEmailWithToken(headers.getOrigin(), token, user);
 		}
 		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping(USER_CHECK_TOKEN)
+	@ApiOperation(value = "Validate token by availability in the DB and by expiration date")
+	public ResponseEntity<PasswordResetTokenEntity> checkToken (
+		@RequestParam String token) {
+
+
+
+		return null;
 	}
 }
