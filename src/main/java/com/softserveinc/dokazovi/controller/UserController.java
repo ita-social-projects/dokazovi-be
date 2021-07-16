@@ -147,6 +147,14 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
+	/**
+	 * Get request with token for validate one
+	 * Checks if token exists in DB and not expired.
+	 *
+	 * @param token token which we have to validate or not
+	 * @return HttpStatus 'OK' and token value if token is available and not expired
+	 * @return HttpStatus 'NOT_FOUND' if token isn`t available or expired
+	 */
 	@GetMapping(USER_CHECK_TOKEN)
 	@ApiOperation(value = "Validate token by availability in the DB and by expiration date")
 	public ResponseEntity<String> checkToken (
