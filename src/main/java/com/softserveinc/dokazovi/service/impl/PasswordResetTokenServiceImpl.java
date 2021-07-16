@@ -38,12 +38,10 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 	}
 
 	@Override
-	public PasswordResetTokenEntity validatePasswordResetToken(String token) {
+	public boolean validatePasswordResetToken(String token) {
 		PasswordResetTokenEntity passwordResetTokenEntity =
 				passwordResetTokenRepository.findByToken(token).orElse(null);
-		return !isAvailable(passwordResetTokenEntity) ? null
-				: isExpired(passwordResetTokenEntity) ? null
-						: passwordResetTokenEntity;
+		return isAvailable(passwordResetTokenEntity) && (!isExpired(passwordResetTokenEntity));
 	}
 
 	private boolean isAvailable(PasswordResetTokenEntity passwordResetTokenEntity) {

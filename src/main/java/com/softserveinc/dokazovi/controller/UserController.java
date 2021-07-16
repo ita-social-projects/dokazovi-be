@@ -151,13 +151,11 @@ public class UserController {
 	@ApiOperation(value = "Validate token by availability in the DB and by expiration date")
 	public ResponseEntity<String> checkToken (
 		@RequestParam String token) {
-
-		PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenService.validatePasswordResetToken(token);
-		if (passwordResetTokenEntity == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		if (passwordResetTokenService.validatePasswordResetToken(token)) {
+			return ResponseEntity.status(HttpStatus.OK).body(token);
 		}
 		else {
-			return ResponseEntity.status(HttpStatus.OK).body(token);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 
