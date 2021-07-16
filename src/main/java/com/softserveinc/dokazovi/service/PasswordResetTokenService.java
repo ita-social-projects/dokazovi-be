@@ -9,4 +9,6 @@ public interface PasswordResetTokenService {
 
 	PasswordResetTokenEntity getByToken(String token);
 
+	PasswordResetTokenEntity validatePasswordResetToken(String token);
+
 }

@@ -152,8 +152,12 @@ public class UserController {
 	public ResponseEntity<PasswordResetTokenEntity> checkToken (
 		@RequestParam String token) {
 
-
-
-		return null;
+		PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenService.validatePasswordResetToken(token);
+		if (passwordResetTokenEntity == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.OK).body(passwordResetTokenEntity);
+		}
 	}
 }

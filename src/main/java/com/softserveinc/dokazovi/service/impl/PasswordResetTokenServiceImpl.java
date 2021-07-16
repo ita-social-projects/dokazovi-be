@@ -36,4 +36,22 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 	public PasswordResetTokenEntity getByToken(String token) {
 		return passwordResetTokenRepository.findByToken(token).orElse(null);
 	}
+
+	@Override
+	public PasswordResetTokenEntity validatePasswordResetToken(String token) {
+		PasswordResetTokenEntity passwordResetTokenEntity =
+				passwordResetTokenRepository.findByToken(token).orElse(null);
+		return !isAvailable(passwordResetTokenEntity) ? null
+				: isExpired(passwordResetTokenEntity) ? null
+						: passwordResetTokenEntity;
+	}
+
+	private boolean isAvailable(PasswordResetTokenEntity passwordResetTokenEntity) {
+		return passwordResetTokenEntity != null;
+	}
+
+	private boolean isExpired(PasswordResetTokenEntity passwordResetTokenEntity) {
+		return passwordResetTokenEntity.getDateExpiration().isBefore(LocalDateTime.now());
+	}
+
 }
