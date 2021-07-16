@@ -33,15 +33,14 @@ class MailSenderServiceImplTest {
     @Mock
     private JavaMailSender javaMailSender;
     @Mock
-    private UserService userService;
-    @Mock
     private PasswordResetTokenService passwordResetTokenService;
     @InjectMocks
     private MailSenderServiceImpl mailSender;
 
     @Test
     void sendEmailWithToken() throws IOException, MessagingException {
-        when(passwordResetTokenService.createPasswordResetTokenForUser(any(UserEntity.class), anyString())).thenReturn(null);
+        when(passwordResetTokenService.createPasswordResetTokenForUser(any(UserEntity.class), anyString()))
+                .thenReturn(null);
         doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
         String contextPath = "http://localhost:8080";
         String email = "user@mail.com";
@@ -51,7 +50,7 @@ class MailSenderServiceImplTest {
                 .password(password)
                 .build();
         String token = UUID.randomUUID().toString();
-        PasswordResetTokenEntity tokenEntity = passwordResetTokenService.createPasswordResetTokenForUser(user, token);
+        passwordResetTokenService.createPasswordResetTokenForUser(user, token);
         mailSender.sendEmailWithToken(contextPath, token, user);
         verify(passwordResetTokenService, times(1)).createPasswordResetTokenForUser(any(UserEntity.class), anyString());
         verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));

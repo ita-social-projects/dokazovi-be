@@ -130,7 +130,6 @@ public class UserController {
 	/**
 	 * Post request with email for reset user password and send verification email
 	 * Checks if user with email exists in DB.
-	 * If no - returns HttpStatus 'NOT FOUND'.
 	 *
 	 * @param email user that we want to get
 	 * @return HttpStatus 'OK'
@@ -145,7 +144,7 @@ public class UserController {
 			passwordResetTokenService.createPasswordResetTokenForUser(user, token);
 			mailSenderService.sendEmailWithToken(headers.getOrigin(), token, user);
 		}
-		return ResponseEntity.ok().build();
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@GetMapping(USER_CHECK_TOKEN)
