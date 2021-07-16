@@ -137,13 +137,12 @@ public class UserController {
 	@ApiOperation(value = "Reset current password")
 	public ResponseEntity<String> resetPassword(
 			@RequestHeader HttpHeaders headers, @RequestParam String email) {
-		String message = "If email is correct please find verification letter on your email account!";
 		UserEntity user = userService.findUserEntityByEmail(email);
 		if (user != null) {
 			String token = UUID.randomUUID().toString();
 			passwordResetTokenService.createPasswordResetTokenForUser(user, token);
 			mailSenderService.sendEmailWithToken(headers.getOrigin(), token, user);
 		}
-		return ResponseEntity.ok().body(message);
+		return ResponseEntity.ok().build();
 	}
 }
