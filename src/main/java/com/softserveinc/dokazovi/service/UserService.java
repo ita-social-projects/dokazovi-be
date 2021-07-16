@@ -28,6 +28,4 @@ public interface UserService {
 	void createVerificationToken(UserEntity user, String token);
 
 	VerificationToken getVerificationToken(String verificationToken);
-
-	void sendEmailWithToken (String contextPath, String token, UserEntity user);
 }

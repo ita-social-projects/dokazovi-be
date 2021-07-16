@@ -13,8 +13,6 @@ import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -39,7 +37,6 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
 	private final VerificationTokenRepository tokenRepository;
-	private final JavaMailSender mailSender;
 	private final PasswordEncoder passwordEncoder;
 
 	private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
@@ -226,27 +223,5 @@ public class UserServiceImpl implements UserService {
 				.token(token)
 				.build();
 		tokenRepository.save(myToken);
-	}
-
-	@Override
-	public void sendEmailWithToken (String contextPath, String token, UserEntity user) {
-		mailSender.send(constructResetTokenEmail(contextPath, token, user));
-	}
-
-	private SimpleMailMessage constructResetTokenEmail(
-			String contextPath, String token, UserEntity user) {
-		String url = contextPath + USER + USER_CHANGE_PASSWORD + "?token=" + token;
-		String message = "Change your password after clicking reference below."
-				+ "If you didn't request to change password, please won't do anything";
-		return constructEmail("Reset password", message + "\r\n" + url, user);
-	}
-
-	private SimpleMailMessage constructEmail(String subject, String body, UserEntity user) {
-		SimpleMailMessage email = new SimpleMailMessage();
-		email.setFrom("igor.zaharko.1986@gmail.com");
-		email.setSubject(subject);
-		email.setText(body);
-		email.setTo(user.getEmail());
-		return email;
 	}
 }
