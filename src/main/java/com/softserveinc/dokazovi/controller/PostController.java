@@ -43,6 +43,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_BY_IMPORTANT_IMAGE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
@@ -369,4 +370,22 @@ public class PostController {
 	public Integer getPostViewCount(@RequestParam String url) {
 		return postService.getPostViewCount(url);
 	}
+
+	/**
+	 * Gets latest posts which have important image url
+	 *
+	 * @param pageable interface for pagination information
+	 * @return found posts filtered by not empty important image url and HttpStatus 'OK'
+	 */
+
+	@ApiPageable
+	@ApiOperation(value = "Get Posts With Important Image URL")
+	@GetMapping(POST_GET_BY_IMPORTANT_IMAGE)
+	public ResponseEntity<Page<PostDTO>> findAllByImportantImageUrl (
+			@PageableDefault(size = 16) Pageable pageable) {
+		Page<PostDTO> posts = postService.getAllByImportantImageUrl(pageable);
+		return ResponseEntity.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+				.body(posts);
+	}
+
 }

@@ -12,9 +12,7 @@ import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
-import com.softserveinc.dokazovi.repositories.OriginRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
-import com.softserveinc.dokazovi.repositories.PostTypeRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
@@ -26,7 +24,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
@@ -45,10 +42,9 @@ public class PostServiceImpl implements PostService {
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
-	private final PostTypeRepository postTypeRepository;
 	private final DirectionRepository directionRepository;
-	private final OriginRepository originRepository;
 	private final GoogleAnalytics googleAnalytics;
+	private final DirectionServiceImpl directionService;
 
 	@Override
 	public PostDTO findPostById(Integer postId) {
@@ -69,7 +65,9 @@ public class PostServiceImpl implements PostService {
 						.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userEntity);
-			return postMapper.toPostDTO(postRepository.save(mappedEntity));
+			PostDTO dto = postMapper.toPostDTO(postRepository.save(mappedEntity));
+			directionService.updateDirectionsHasPostsStatus();
+			return dto;
 		}
 
 		if (!userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities()
@@ -77,7 +75,9 @@ public class PostServiceImpl implements PostService {
 						grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
-			return postMapper.toPostDTO(postRepository.save(mappedEntity));
+			PostDTO dto = postMapper.toPostDTO(postRepository.save(mappedEntity));
+			directionService.updateDirectionsHasPostsStatus();
+			return dto;
 		}
 
 		if (!userEntity.getId().equals(postDTO.getAuthorId()) || userPrincipal.getAuthorities().stream()
@@ -87,7 +87,6 @@ public class PostServiceImpl implements PostService {
 				grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
 			throw new ForbiddenPermissionsException();
 		}
-		directionRepository.updateDirectionsHasPostsStatus();
 		return postMapper.toPostDTO(mappedEntity);
 	}
 
@@ -301,7 +300,12 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public  Integer getPostViewCount(String url) {
+	public Integer getPostViewCount(String url) {
 		return googleAnalytics.getPostViewCount(url);
+	}
+
+	@Override
+	public Page<PostDTO> getAllByImportantImageUrl(Pageable pageable) {
+		return postRepository.findAllByImportantImageUrlDesc(pageable).map(postMapper::toPostDTO);
 	}
 }

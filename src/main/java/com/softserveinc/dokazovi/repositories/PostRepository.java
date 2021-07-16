@@ -80,11 +80,11 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ " FROM POSTS P1 "
 					+ " WHERE ((array_length(ARRAY [(:typesIds)], 1) > 0 "
 					+ "     AND P1.TYPE_ID IN (:typesIds)) "
-					+ "   OR (array_length(ARRAY [(:directionsIds)], 1) > 0 "
+					+ "   AND (array_length(ARRAY [(:directionsIds)], 1) > 0 "
 					+ "     AND P1.POST_ID IN (SELECT POST_ID "
 					+ "                        FROM POSTS_DIRECTIONS "
 					+ "                        WHERE DIRECTION_ID IN (:directionsIds))) "
-					+ "   OR (array_length(ARRAY [(:originsIds)], 1) > 0 "
+					+ "   AND (array_length(ARRAY [(:originsIds)], 1) > 0 "
 					+ "     AND P1.POST_ID IN (SELECT POST_ID "
 					+ "                        FROM POSTS_ORIGINS "
 					+ "                        WHERE ORIGIN_ID IN (:originsIds)))) "
@@ -145,4 +145,11 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "   AND P1.STATUS IN ('PUBLISHED') "
 					+ " ORDER BY CREATED_AT DESC ")
 	Page<PostEntity> findLatestByOriginVideo(Pageable pageable);
+
+	@Query(nativeQuery = true,
+			value = "SELECT P1.* "
+					+ " FROM posts P1 "
+					+ " WHERE P1.IMPORTANT_IMAGE_URL <> '' "
+					+ " ORDER BY CREATED_AT DESC ")
+	Page<PostEntity> findAllByImportantImageUrlDesc (Pageable pageable);
 }

@@ -31,14 +31,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_BY_IMPORTANT_IMAGE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -481,6 +485,30 @@ class PostControllerTest {
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
 		verify(postService).getPostViewCount(any(String.class));
+	}
+
+	@Test
+	void findAllByImportantImageUrl_isNotFound() throws Exception {
+		Pageable pageable = PageRequest.of(0, 16);
+		Page<PostDTO> page = new PageImpl<>(new ArrayList<>());
+		Mockito.when(postService.getAllByImportantImageUrl(pageable)).thenReturn(page);
+		mockMvc.perform(MockMvcRequestBuilders
+				.get(POST + POST_GET_BY_IMPORTANT_IMAGE))
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
+	}
+
+	@Test
+	void findAllByImportantImageUrl_isOk() throws Exception {
+		Pageable pageable = PageRequest.of(0, 16);
+		PostDTO postDTO = PostDTO.builder()
+				.id(1)
+				.importantImageUrl("http://test.test")
+				.build();
+		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
+		Mockito.when(postService.getAllByImportantImageUrl(pageable)).thenReturn(page);
+		mockMvc.perform(MockMvcRequestBuilders
+				.get(POST + POST_GET_BY_IMPORTANT_IMAGE))
+				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 }
