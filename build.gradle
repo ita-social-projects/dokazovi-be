@@ -60,14 +60,8 @@ springBoot {
 }
 
 configurations {
-    integrationTestImplementation {
-        canBeResolved = true
-        extendsFrom testImplementation
-    }
-    integrationTestRuntimeOnly {
-        canBeResolved = true
-        extendsFrom testRuntime
-    }
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntime
     compileOnly.extendsFrom annotationProcessor
 }
 
