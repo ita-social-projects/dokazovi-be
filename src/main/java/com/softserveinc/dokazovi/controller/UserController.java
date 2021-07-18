@@ -2,6 +2,8 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
+import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -157,10 +159,11 @@ public class UserController {
 	 */
 	@GetMapping(USER_CHECK_TOKEN)
 	@ApiOperation(value = "Validate token by availability in the DB and by expiration date")
-	public ResponseEntity<String> checkToken (
+	public ResponseEntity<UserPasswordDTO> checkToken (
 		@RequestParam String token) {
 		if (passwordResetTokenService.validatePasswordResetToken(token)) {
-			return ResponseEntity.status(HttpStatus.OK).body(token);
+			UserPasswordDTO passwordDTO = UserPasswordDTO.builder().token(token).build();
+			return ResponseEntity.status(HttpStatus.OK).body(passwordDTO);
 		}
 		else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -168,10 +171,10 @@ public class UserController {
 	}
 
 	@PostMapping(USER_UPDATE_PASSWORD)
-	@ApiOperation(value = "")
+	@ApiOperation(value = "Update current password")
 	public ResponseEntity<String> updatePassword(
-			@RequestParam String token,
-			@RequestParam String password) {
+			@RequestParam UserPasswordDTO passwordDTO) {
+		PasswordResetTokenEntity tokenEntity = passwordResetTokenService.getByToken(passwordDTO.getToken());
 		return null;
 	}
 
