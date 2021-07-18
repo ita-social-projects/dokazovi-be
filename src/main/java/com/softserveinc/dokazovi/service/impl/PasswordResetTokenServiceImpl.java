@@ -44,6 +44,13 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 		return isAvailable(passwordResetTokenEntity) && (!isExpired(passwordResetTokenEntity));
 	}
 
+	@Override
+	public void delete(PasswordResetTokenEntity passwordResetTokenEntity) {
+		if (isAvailable(passwordResetTokenEntity)) {
+			passwordResetTokenRepository.delete(passwordResetTokenEntity);
+		}
+	}
+
 	private boolean isAvailable(PasswordResetTokenEntity passwordResetTokenEntity) {
 		return passwordResetTokenEntity != null;
 	}

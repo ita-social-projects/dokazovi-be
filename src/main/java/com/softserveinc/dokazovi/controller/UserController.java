@@ -21,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Set;
 import java.util.UUID;
 
@@ -53,6 +55,7 @@ public class UserController {
 	private final UserService userService;
 	private final PasswordResetTokenService passwordResetTokenService;
 	private final MailSenderService mailSenderService;
+	private final PasswordEncoder passwordEncoder;
 
 	/**
 	 * Gets preview of random experts,
@@ -173,8 +176,17 @@ public class UserController {
 	@PostMapping(USER_UPDATE_PASSWORD)
 	@ApiOperation(value = "Update current password")
 	public ResponseEntity<String> updatePassword(
-			@RequestParam UserPasswordDTO passwordDTO) {
+			@RequestParam @Valid UserPasswordDTO passwordDTO) {
 		PasswordResetTokenEntity tokenEntity = passwordResetTokenService.getByToken(passwordDTO.getToken());
+		UserEntity userEntity = null;
+		if (tokenEntity != null) {
+			userEntity = tokenEntity.getUserEntity();
+		}
+		if (userEntity != null) {
+			userEntity.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
+			userService.save(userEntity);
+
+		}
 		return null;
 	}
 

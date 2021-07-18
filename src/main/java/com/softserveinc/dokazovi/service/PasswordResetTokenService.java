@@ -11,4 +11,6 @@ public interface PasswordResetTokenService {
 
 	boolean validatePasswordResetToken(String token);
 
+	void delete (PasswordResetTokenEntity passwordResetTokenEntity);
+
 }

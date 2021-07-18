@@ -223,7 +223,13 @@ public class UserServiceImpl implements UserService {
 		tokenRepository.save(myToken);
 	}
 
+	@Override
 	public UserEntity getById (Long userId) {
 		return userRepository.findById(userId).orElse(null);
+	}
+
+	@Override
+	public UserEntity save (UserEntity user) {
+		return userRepository.save(user);
 	}
 }
