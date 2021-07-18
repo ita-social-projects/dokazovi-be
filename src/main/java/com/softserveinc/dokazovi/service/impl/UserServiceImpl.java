@@ -21,8 +21,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.USER;
-import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 
 /**
  * The UserServiceImpl is responsible for doing any required logic
@@ -223,5 +221,9 @@ public class UserServiceImpl implements UserService {
 				.token(token)
 				.build();
 		tokenRepository.save(myToken);
+	}
+
+	public UserEntity getById (Long userId) {
+		return userRepository.findById(userId).orElse(null);
 	}
 }

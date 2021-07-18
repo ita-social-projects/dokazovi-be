@@ -170,7 +170,7 @@ public class UserController {
 	@PostMapping(USER_UPDATE_PASSWORD)
 	@ApiOperation(value = "")
 	public ResponseEntity<String> updatePassword(
-			@RequestParam String email,
+			@RequestParam String token,
 			@RequestParam String password) {
 		return null;
 	}

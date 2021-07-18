@@ -18,6 +18,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
+	Optional<UserEntity> findById (Long userId);
+
 	/**
 	 * Gets the user by its email.
 	 *
