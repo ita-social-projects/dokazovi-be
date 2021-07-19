@@ -57,4 +57,12 @@ public class PasswordResetTokenServiceImplTest {
 		Assertions.assertEquals(expected, actual);
 	}
 
+	@Test
+	void deletePasswordResetTokenTest() {
+		when(passwordResetTokenRepository.findByToken(token)).thenReturn(Optional.of(expected));
+		PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenService.getByToken(token);
+		passwordResetTokenService.delete(passwordResetTokenEntity);
+		verify(passwordResetTokenRepository, times(1)).delete(passwordResetTokenEntity);
+	}
+
 }
