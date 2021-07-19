@@ -23,7 +23,7 @@ public class PasswordResetTokenServiceImplTest {
 	private PasswordResetTokenRepository passwordResetTokenRepository;
 
 	@InjectMocks
-	private PasswordResetTokenService passwordResetTokenService;
+	private PasswordResetTokenServiceImpl passwordResetTokenService;
 
 	PasswordResetTokenEntity expected;
 	private final Long id = 1L;
