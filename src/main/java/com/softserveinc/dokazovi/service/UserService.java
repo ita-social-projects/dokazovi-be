@@ -30,7 +30,7 @@ public interface UserService {
 
 	VerificationToken getVerificationToken(String verificationToken);
 
-	UserEntity getById (Long userId);
+	UserEntity getById (Integer userId);
 
 	UserEntity save (UserEntity user);
 

@@ -7,6 +7,7 @@ import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -395,5 +396,14 @@ class UserServiceImplTest {
 		when(userRepository.findAll(any(Pageable.class))).thenReturn(users);
 		userService.findAll(pageable);
 		verify(userRepository, times(1)).findAll(pageable);
+	}
+
+	@Test
+	void getUserByIdTest() {
+		Integer id = 1;
+		UserEntity expected = UserEntity.builder().id(id).build();
+		when(userRepository.findById(id)).thenReturn(Optional.of(expected));
+		UserEntity actual = userService.getById(id);
+		Assertions.assertEquals(expected, actual);
 	}
 }
