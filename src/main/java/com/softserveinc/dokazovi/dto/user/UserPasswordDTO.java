@@ -10,7 +10,6 @@ import lombok.Data;
 public class UserPasswordDTO {
 
 	private String token;
-	private String oldPassword;
 	private String newPassword;
 	private String matchPassword;
 

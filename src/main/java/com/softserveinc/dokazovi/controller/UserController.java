@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
@@ -12,6 +13,8 @@ import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -162,6 +165,10 @@ public class UserController {
 	 */
 	@GetMapping(USER_CHECK_TOKEN)
 	@ApiOperation(value = "Validate token by availability in the DB and by expiration date")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = HttpStatuses.OK),
+			@ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+	})
 	public ResponseEntity<UserPasswordDTO> checkToken (
 		@RequestParam String token) {
 		if (passwordResetTokenService.validatePasswordResetToken(token)) {
@@ -175,6 +182,10 @@ public class UserController {
 
 	@PostMapping(USER_UPDATE_PASSWORD)
 	@ApiOperation(value = "Update current password")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = HttpStatuses.OK),
+			@ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+	})
 	public ResponseEntity<String> updatePassword(
 			@RequestParam @Valid UserPasswordDTO passwordDTO) {
 		PasswordResetTokenEntity tokenEntity = passwordResetTokenService.getByToken(passwordDTO.getToken());
@@ -185,9 +196,9 @@ public class UserController {
 		if (userEntity != null) {
 			userEntity.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
 			userService.save(userEntity);
-
+			passwordResetTokenService.delete(tokenEntity);
+			return ResponseEntity.status(HttpStatus.OK).build();
 		}
-		return null;
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-
 }
