@@ -39,6 +39,7 @@ import java.util.UUID;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
@@ -145,12 +146,11 @@ public class UserController {
 	@PostMapping(USER_RESET_PASSWORD)
 	@ApiOperation(value = "Reset current password")
 	public ResponseEntity<String> resetPassword(
-			@RequestHeader HttpHeaders headers, @RequestParam String email) {
+			@RequestHeader HttpHeaders headers,
+			@RequestParam String email) {
 		UserEntity user = userService.findUserEntityByEmail(email);
 		if (user != null) {
-			String token = UUID.randomUUID().toString();
-			passwordResetTokenService.createPasswordResetTokenForUser(user, token);
-			mailSenderService.sendEmailWithToken(headers.getOrigin(), token, user);
+			userService.sendPasswordResetToken(user, headers.getOrigin());
 		}
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
@@ -172,8 +172,7 @@ public class UserController {
 	public ResponseEntity<UserPasswordDTO> checkToken (
 		@RequestParam String token) {
 		if (passwordResetTokenService.validatePasswordResetToken(token)) {
-			UserPasswordDTO passwordDTO = UserPasswordDTO.builder().token(token).build();
-			return ResponseEntity.status(HttpStatus.OK).body(passwordDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(UserPasswordDTO.builder().token(token).build());
 		}
 		else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -194,11 +193,22 @@ public class UserController {
 			userEntity = tokenEntity.getUserEntity();
 		}
 		if (userEntity != null) {
-			userEntity.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
-			userService.save(userEntity);
-			passwordResetTokenService.delete(tokenEntity);
+			userService.updatePassword(userEntity, passwordDTO.getNewPassword(), tokenEntity);
 			return ResponseEntity.status(HttpStatus.OK).build();
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+
+	@PostMapping(USER_CHANGE_PASSWORD)
+	@ApiOperation(value = "Change current password")
+	public ResponseEntity<String> changePassword(
+			@RequestHeader HttpHeaders headers,
+			@RequestParam String email,
+			@RequestParam String password) {
+		UserEntity user = userService.findUserEntityByEmail(email);
+		if (user != null && user.getPassword().equals(passwordEncoder.encode(password))) {
+			userService.sendPasswordResetToken(user, headers.getOrigin());
+		}
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

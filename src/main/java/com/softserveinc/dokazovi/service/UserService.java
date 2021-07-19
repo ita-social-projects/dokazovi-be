@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
@@ -32,4 +33,8 @@ public interface UserService {
 	UserEntity getById (Long userId);
 
 	UserEntity save (UserEntity user);
+
+	void updatePassword(UserEntity user, String password, PasswordResetTokenEntity token);
+
+	void sendPasswordResetToken(UserEntity user, String origin);
 }

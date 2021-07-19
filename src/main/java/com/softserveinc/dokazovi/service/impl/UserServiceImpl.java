@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.exception.BadRequestException;
@@ -9,6 +10,8 @@ import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
+import com.softserveinc.dokazovi.service.MailSenderService;
+import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -36,10 +40,13 @@ public class UserServiceImpl implements UserService {
 	private final UserMapper userMapper;
 	private final VerificationTokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final PasswordResetTokenService passwordResetTokenService;
+	private final MailSenderService mailSenderService;
 
 	private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
 	private static final String HAS_NO_REGIONS = "hasNoRegions";
 	private static final String HAS_NO_USERNAME = "hasNoUserName";
+
 
 	/**
 	 * Gets user by email.
@@ -231,5 +238,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserEntity save (UserEntity user) {
 		return userRepository.save(user);
+	}
+
+	@Override
+	public void updatePassword(UserEntity user, String password, PasswordResetTokenEntity token) {
+		user.setPassword(passwordEncoder.encode(password));
+		save(user);
+		passwordResetTokenService.delete(token);
+	}
+
+	@Override
+	public void sendPasswordResetToken(UserEntity user, String origin) {
+		String token = UUID.randomUUID().toString();
+		passwordResetTokenService.createPasswordResetTokenForUser(user, token);
+		mailSenderService.sendEmailWithToken(origin, token, user);
 	}
 }
