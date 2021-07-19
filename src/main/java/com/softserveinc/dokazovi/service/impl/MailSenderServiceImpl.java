@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
-import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
 
 @Service

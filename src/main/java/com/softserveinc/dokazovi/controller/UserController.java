@@ -172,9 +172,7 @@ public class UserController {
 		if (passwordResetTokenService.validatePasswordResetToken(token)) {
 			return ResponseEntity.status(HttpStatus.OK).body(UserPasswordDTO.builder().token(token).build());
 		}
-		else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
 	@PostMapping(USER_UPDATE_PASSWORD)
