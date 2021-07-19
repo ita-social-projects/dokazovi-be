@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -45,6 +46,14 @@ public class PasswordResetTokenServiceImplTest {
 		when(passwordResetTokenRepository.save(any(PasswordResetTokenEntity.class))).thenReturn(expected);
 		PasswordResetTokenEntity actual = passwordResetTokenService.createPasswordResetTokenForUser(user, token);
 		verify(passwordResetTokenRepository).save(any(PasswordResetTokenEntity.class));
+		Assertions.assertEquals(expected, actual);
+	}
+
+	@Test
+	void getPasswordResetTokenByTokenTest() {
+		when(passwordResetTokenRepository.findByToken(token)).thenReturn(Optional.of(expected));
+		PasswordResetTokenEntity actual = passwordResetTokenService.getByToken(token);
+		verify(passwordResetTokenRepository).findByToken(token);
 		Assertions.assertEquals(expected, actual);
 	}
 
