@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
 
-	private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,10}$";
+	private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,24}$";
 
 	@Override
 	public void initialize(PasswordMatches constraintAnnotation) {
