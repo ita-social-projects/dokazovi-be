@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
 
-	private final String PASSWORD_PATTERN = "[^=]{8,24}";
+	private static final String PASSWORD_PATTERN = "[^=]{8,24}";
 
 	@Override
 	public void initialize(PasswordMatches constraintAnnotation) {
