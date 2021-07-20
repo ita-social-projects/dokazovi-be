@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
@@ -29,6 +31,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWORD;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -224,5 +227,26 @@ class UserControllerTest {
 	}
 
 	@Test
-	void
+	void updatePasswordTest () throws Exception {
+		String content = "{\n"
+				+ "  \"matchPassword\": \"qwerty12345\",\n"
+				+ "  \"newPassword\": \"qwerty12345\",\n"
+				+ "  \"token\": \"ef590bd8-e993-4153-8206-b963732bfeb9\"\n"
+				+ "}";
+		UserEntity user = UserEntity.builder()
+				.id(1)
+				.email("igor.zaharko@gmail.com")
+				.build();
+		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
+		PasswordResetTokenEntity tokenEntity = PasswordResetTokenEntity.builder()
+				.token("ef590bd8-e993-4153-8206-b963732bfeb9")
+				.dateExpiration(LocalDateTime.now().plusMinutes(60))
+				.userEntity(user)
+				.build();
+		when(passwordResetTokenService.getByToken(token)).thenReturn(tokenEntity);
+		mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk());
+	}
 }
