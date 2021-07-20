@@ -73,5 +73,4 @@ public class PasswordResetTokenServiceImplTest {
 		Boolean actual = passwordResetTokenService.validatePasswordResetToken(token);
 		Assertions.assertEquals(true, actual);
 	}
-
 }
