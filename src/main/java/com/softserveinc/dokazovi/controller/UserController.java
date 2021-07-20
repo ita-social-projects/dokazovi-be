@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -169,12 +171,13 @@ public class UserController {
 			@ApiResponse(code = 200, message = HttpStatuses.OK),
 			@ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
 	})
-	public ResponseEntity<UserPasswordDTO> checkToken (
+	public ResponseEntity<String> checkToken (
 		@RequestParam String token) {
+		CacheControl cacheControl = CacheControl.noCache();
 		if (passwordResetTokenService.validatePasswordResetToken(token)) {
-			return ResponseEntity.status(HttpStatus.OK).build();
+			return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).build();
 		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).cacheControl(cacheControl).build();
 	}
 
 	@PostMapping(USER_UPDATE_PASSWORD)
@@ -201,10 +204,9 @@ public class UserController {
 	@ApiOperation(value = "Change current password")
 	public ResponseEntity<String> changePassword(
 			@RequestHeader HttpHeaders headers,
-			@RequestParam String email,
-			@RequestParam String password) {
-		UserEntity user = userService.findUserEntityByEmail(email);
-		if (user != null && user.getPassword().equals(passwordEncoder.encode(password))) {
+			@Valid @RequestBody UserEmailPasswordDTO userEmailPasswordDTO) {
+		UserEntity user = userService.findUserEntityByEmail(userEmailPasswordDTO.getEmail());
+		if (user != null && user.getPassword().equals(passwordEncoder.encode(userEmailPasswordDTO.getPassword()))) {
 			userService.sendPasswordResetToken(user, headers.getOrigin());
 		}
 		return ResponseEntity.status(HttpStatus.OK).build();

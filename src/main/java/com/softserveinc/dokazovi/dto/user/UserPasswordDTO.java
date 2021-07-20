@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @Builder
 @PasswordMatches
@@ -13,8 +15,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserPasswordDTO {
 
+	@NotBlank
 	private String token;
+	@NotBlank
 	private String newPassword;
+	@NotBlank
 	private String matchPassword;
 
 }
