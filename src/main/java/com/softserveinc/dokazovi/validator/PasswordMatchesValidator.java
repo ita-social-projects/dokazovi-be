@@ -21,6 +21,6 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 		UserPasswordDTO passwordDTO = (UserPasswordDTO) value;
 		return passwordDTO.getNewPassword().equals(passwordDTO.getMatchPassword())
 				&& Pattern.compile(PASSWORD_PATTERN).matcher(passwordDTO.getNewPassword()).matches()
-				&& !passwordDTO.getToken().isEmpty();
+				&& passwordDTO.getToken() != null;
 	}
 }

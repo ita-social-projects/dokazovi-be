@@ -31,4 +31,38 @@ public class PasswordMatchesValidatorTest {
 		Assertions.assertTrue(validator.isValid(passwordDTO, constraintValidatorContext));
 	}
 
+	@Test
+	void isValidTestPasswordsDoNotMatches() {
+		UserPasswordDTO passwordDTO = UserPasswordDTO.builder()
+				.token("ef590bd8-e993-4153-8206-b963732bfeb9")
+				.newPassword("1234qwet")
+				.matchPassword("1234qwer")
+				.build();
+		PasswordMatchesValidator validator = new PasswordMatchesValidator();
+		validator.initialize(passwordMatches);
+		Assertions.assertFalse(validator.isValid(passwordDTO, constraintValidatorContext));
+	}
+
+	@Test
+	void isValidTestTokenIsEmpty() {
+		UserPasswordDTO passwordDTO = UserPasswordDTO.builder()
+				.newPassword("1234qwer")
+				.matchPassword("1234qwer")
+				.build();
+		PasswordMatchesValidator validator = new PasswordMatchesValidator();
+		validator.initialize(passwordMatches);
+		Assertions.assertFalse(validator.isValid(passwordDTO, constraintValidatorContext));
+	}
+
+	@Test
+	void isValidTestPasswordDoNotMatchPattern() {
+		UserPasswordDTO passwordDTO = UserPasswordDTO.builder()
+				.token("ef590bd8-e993-4153-8206-b963732bfeb9")
+				.newPassword("1234q")
+				.matchPassword("1234q")
+				.build();
+		PasswordMatchesValidator validator = new PasswordMatchesValidator();
+		validator.initialize(passwordMatches);
+		Assertions.assertFalse(validator.isValid(passwordDTO, constraintValidatorContext));
+	}
 }
