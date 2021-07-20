@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
@@ -27,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -138,15 +140,15 @@ public class UserController {
 	 * Post request with email for reset user password and send verification email
 	 * Checks if user with email exists in DB.
 	 *
-	 * @param email user that we want to get
+	 * @param email to find user that we want to reset password
 	 * @return HttpStatus 'OK'
 	 */
 	@PostMapping(USER_RESET_PASSWORD)
 	@ApiOperation(value = "Reset current password")
-	public ResponseEntity<String> resetPassword(
-			@RequestHeader HttpHeaders headers,
-			@RequestParam String email) {
-		UserEntity user = userService.findUserEntityByEmail(email);
+	public ResponseEntity<UserEmailDTO> resetPassword(
+			@Valid @RequestBody UserEmailDTO email,
+			@RequestHeader HttpHeaders headers) {
+		UserEntity user = userService.findUserEntityByEmail(email.getEmail());
 		if (user != null) {
 			userService.sendPasswordResetToken(user, headers.getOrigin());
 		}
@@ -170,7 +172,7 @@ public class UserController {
 	public ResponseEntity<UserPasswordDTO> checkToken (
 		@RequestParam String token) {
 		if (passwordResetTokenService.validatePasswordResetToken(token)) {
-			return ResponseEntity.status(HttpStatus.OK).body(UserPasswordDTO.builder().token(token).build());
+			return ResponseEntity.status(HttpStatus.OK).build();
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
@@ -182,7 +184,7 @@ public class UserController {
 			@ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
 	})
 	public ResponseEntity<String> updatePassword(
-			@RequestParam @Valid UserPasswordDTO passwordDTO) {
+			@RequestBody @Valid UserPasswordDTO passwordDTO) {
 		PasswordResetTokenEntity tokenEntity = passwordResetTokenService.getByToken(passwordDTO.getToken());
 		UserEntity userEntity = null;
 		if (tokenEntity != null) {

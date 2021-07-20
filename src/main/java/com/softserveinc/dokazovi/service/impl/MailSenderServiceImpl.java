@@ -13,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
-import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWORD;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     private SimpleMailMessage constructResetTokenEmail(
             String contextPath, String token, UserEntity user) {
-        String url = contextPath + USER + USER_CHECK_TOKEN + "?token=" + token;
+        String url = contextPath + USER + USER_UPDATE_PASSWORD + "?token=" + token;
         String message = "Change your password after clicking reference below."
                 + "If you didn't request to change password, please won't do anything";
         return constructEmail("Reset password", message + "\r\n" + url, user);
