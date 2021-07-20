@@ -70,7 +70,6 @@ public class PasswordResetTokenServiceImplTest {
 	@Test
 	void validatePasswordResetTokenTest_isOk() {
 		when(passwordResetTokenRepository.findByToken(token)).thenReturn(Optional.of(expected));
-		Boolean actual = passwordResetTokenService.validatePasswordResetToken(token);
-		Assertions.assertEquals(true, actual);
+		Assertions.assertEquals(true, passwordResetTokenService.validatePasswordResetToken(token));
 	}
 }
