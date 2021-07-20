@@ -39,7 +39,7 @@ public class PasswordResetTokenServiceImplTest {
 				.id(id)
 				.token(token)
 				.userEntity(user)
-				.dateExpiration(LocalDateTime.now())
+				.dateExpiration(LocalDateTime.now().plusMinutes(60))
 				.build();
 	}
 
@@ -65,6 +65,13 @@ public class PasswordResetTokenServiceImplTest {
 		PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenService.getByToken(token);
 		passwordResetTokenService.delete(passwordResetTokenEntity);
 		verify(passwordResetTokenRepository, times(1)).delete(passwordResetTokenEntity);
+	}
+
+	@Test
+	void validatePasswordResetTokenTest_isOk() {
+		when(passwordResetTokenRepository.findByToken(token)).thenReturn(Optional.of(expected));
+		Boolean actual = passwordResetTokenService.validatePasswordResetToken(token);
+		Assertions.assertEquals(true, actual);
 	}
 
 }
