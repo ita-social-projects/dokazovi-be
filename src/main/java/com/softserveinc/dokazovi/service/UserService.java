@@ -32,7 +32,7 @@ public interface UserService {
 
 	UserEntity getById (Integer userId);
 
-	UserEntity save (UserEntity user);
+	UserEntity update(UserEntity user);
 
 	void updatePassword(UserEntity user, String password, PasswordResetTokenEntity token);
 

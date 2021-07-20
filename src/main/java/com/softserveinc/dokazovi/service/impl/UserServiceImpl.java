@@ -236,14 +236,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserEntity save (UserEntity user) {
+	public UserEntity update(UserEntity user) {
 		return userRepository.save(user);
 	}
 
 	@Override
 	public void updatePassword(UserEntity user, String password, PasswordResetTokenEntity token) {
 		user.setPassword(passwordEncoder.encode(password));
-		save(user);
+		update(user);
 		passwordResetTokenService.delete(token);
 	}
 

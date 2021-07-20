@@ -406,4 +406,15 @@ class UserServiceImplTest {
 		UserEntity actual = userService.getById(id);
 		Assertions.assertEquals(expected, actual);
 	}
+
+	@Test
+	void findUserEntityByEmailTest() {
+		UserEntity expected = UserEntity.builder()
+				.id(1)
+				.email("admin@mail.com")
+				.build();
+		when(userRepository.findUserEntityByEmail(any(String.class))).thenReturn(Optional.ofNullable(expected));
+		UserEntity actual = userService.findUserEntityByEmail("admin@mail.com");
+		Assertions.assertEquals(expected, actual);
+	}
 }
