@@ -465,4 +465,19 @@ class UserServiceImplTest {
 		Assertions.assertEquals(expectedPassword, expected.getPassword());
 		verify(passwordResetTokenService, times(1)).delete(tokenEntity);
 	}
+
+	@Test
+	void sendPasswordResetTokenTest() {
+		UserEntity user = UserEntity.builder()
+				.id(1)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.build();
+		String contextPath = "http://localhost:3000";
+		userService.sendPasswordResetToken(user, contextPath);
+		verify(passwordResetTokenService, times(1))
+				.createPasswordResetTokenForUser(any(UserEntity.class), anyString());
+		verify(mailSenderService, times(1))
+				.sendEmailWithToken(anyString(), anyString(), any(UserEntity.class));
+	}
 }
