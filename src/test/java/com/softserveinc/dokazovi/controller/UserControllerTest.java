@@ -28,6 +28,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
@@ -248,5 +249,24 @@ class UserControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(content))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	void changePasswordTest() throws Exception {
+		String content = "{\n"
+				+ "  \"email\": \"igor.zaharko@gmail.com\",\n"
+				+ "  \"password\": \"qwerty12345\"\n"
+				+ "}";
+		UserEntity userEntity = UserEntity.builder()
+				.email("igor.zaharko@gmail.com")
+				.password("qwerty12345")
+				.build();
+		when(userService.findUserEntityByEmail(any(String.class)))
+				.thenReturn(userEntity);
+		mockMvc.perform(post(USER + USER_CHANGE_PASSWORD)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk());
+		verify(userService).findUserEntityByEmail(any(String.class));
 	}
 }
