@@ -228,7 +228,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void updatePasswordTest () throws Exception {
+	void updatePasswordTestIsOk () throws Exception {
 		String content = "{\n"
 				+ "  \"matchPassword\": \"qwerty12345\",\n"
 				+ "  \"newPassword\": \"qwerty12345\",\n"
@@ -268,5 +268,20 @@ class UserControllerTest {
 				.content(content))
 				.andExpect(status().isOk());
 		verify(userService).findUserEntityByEmail(any(String.class));
+	}
+
+	@Test
+	void updatePasswordTestNotFound () throws Exception {
+		String content = "{\n"
+				+ "  \"matchPassword\": \"qwerty12345\",\n"
+				+ "  \"newPassword\": \"qwerty12345\",\n"
+				+ "  \"token\": \"ef590bd8-e993-4153-8206-b963732bfeb9\"\n"
+				+ "}";
+		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
+		when(passwordResetTokenService.getByToken(token)).thenReturn(null);
+		mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isNotFound());
 	}
 }
