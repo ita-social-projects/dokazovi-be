@@ -450,17 +450,17 @@ class UserServiceImplTest {
 				.email("admin@mail.com")
 				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
 				.build();
+		when(userRepository.findById(anyInt())).thenReturn(Optional.ofNullable(expected));
+		String expectedPassword = "qwerty12345";
+		when(passwordEncoder.encode(any(String.class))).thenReturn(expectedPassword);
+		when(userRepository.save(any(UserEntity.class))).thenReturn(expected);
+		UserEntity userEntity = userService.getById(1);
 		PasswordResetTokenEntity tokenEntity = PasswordResetTokenEntity.builder()
 				.id(1L)
 				.userEntity(expected)
 				.token("ef590bd8-e993-4153-8206-b963732bfeb9")
 				.dateExpiration(LocalDateTime.now().plusMinutes(60))
 				.build();
-		when(userRepository.findById(anyInt())).thenReturn(Optional.ofNullable(expected));
-		String expectedPassword = "qwerty12345";
-		UserEntity userEntity = userService.getById(1);
-		when(passwordEncoder.encode(any(String.class))).thenReturn(expectedPassword);
-		when(userRepository.save(any(UserEntity.class))).thenReturn(expected);
 		userService.updatePassword(userEntity, expectedPassword, tokenEntity);
 		Assertions.assertEquals(expectedPassword, expected.getPassword());
 		verify(passwordResetTokenService, times(1)).delete(tokenEntity);
