@@ -29,6 +29,7 @@ import java.util.Set;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
@@ -283,5 +284,14 @@ class UserControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(content))
 				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void checkTokenTest() throws Exception {
+		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
+		String uri = USER + USER_CHECK_TOKEN + "?token=" + token;
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+		when(passwordResetTokenService.validatePasswordResetToken(token)).thenReturn(true);
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
 	}
 }
