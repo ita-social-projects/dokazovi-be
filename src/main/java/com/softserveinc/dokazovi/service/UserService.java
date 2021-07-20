@@ -37,4 +37,6 @@ public interface UserService {
 	void updatePassword(UserEntity user, String password, PasswordResetTokenEntity token);
 
 	void sendPasswordResetToken(UserEntity user, String origin);
+
+	boolean isPasswordMatches(UserEntity user, String password);
 }

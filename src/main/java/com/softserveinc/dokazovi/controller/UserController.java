@@ -60,8 +60,6 @@ public class UserController {
 
 	private final UserService userService;
 	private final PasswordResetTokenService passwordResetTokenService;
-	private final MailSenderService mailSenderService;
-	private final PasswordEncoder passwordEncoder;
 
 	/**
 	 * Gets preview of random experts,
@@ -206,7 +204,7 @@ public class UserController {
 			@RequestHeader HttpHeaders headers,
 			@Valid @RequestBody UserEmailPasswordDTO userEmailPasswordDTO) {
 		UserEntity user = userService.findUserEntityByEmail(userEmailPasswordDTO.getEmail());
-		if (user != null && user.getPassword().equals(passwordEncoder.encode(userEmailPasswordDTO.getPassword()))) {
+		if (userService.isPasswordMatches(user, userEmailPasswordDTO.getPassword())) {
 			userService.sendPasswordResetToken(user, headers.getOrigin());
 		}
 		return ResponseEntity.status(HttpStatus.OK).build();

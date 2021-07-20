@@ -259,4 +259,9 @@ public class UserServiceImpl implements UserService {
 		passwordResetTokenService.createPasswordResetTokenForUser(user, token);
 		mailSenderService.sendEmailWithToken(origin, token, user);
 	}
+
+	@Override
+	public boolean isPasswordMatches(UserEntity user, String password) {
+		return user != null && passwordEncoder.matches(password, user.getPassword());
+	}
 }
