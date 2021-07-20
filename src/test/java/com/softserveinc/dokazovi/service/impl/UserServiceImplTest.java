@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.service.impl;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
+import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
@@ -479,5 +480,14 @@ class UserServiceImplTest {
 				.createPasswordResetTokenForUser(any(UserEntity.class), anyString());
 		verify(mailSenderService, times(1))
 				.sendEmailWithToken(anyString(), anyString(), any(UserEntity.class));
+	}
+
+	@Test
+	void updateUserEntityIsNull() {
+		Exception exception = assertThrows(BadRequestException.class, () -> {
+			userService.update(null);
+		});
+
+		assertEquals("Something went wrong!!!", exception.getMessage());
 	}
 }
