@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.MailSenderService;
@@ -17,6 +18,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -26,11 +28,13 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -200,4 +204,25 @@ class UserControllerTest {
 		when(userPrincipal.getId()).thenReturn(9);
 		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 	}
+
+	@Test
+	void resetPasswordTest() throws Exception {
+		String emailContent = "{\n"
+				+ "  \"email\": \"igor.zaharko@gmail.com\"\n"
+				+ "}";
+		UserEntity userEntity = UserEntity.builder()
+				.email("igor.zaharko@gmail.com")
+				.build();
+		when(userService.findUserEntityByEmail(any(String.class)))
+				.thenReturn(userEntity);
+		mockMvc.perform(post(USER + USER_RESET_PASSWORD)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(emailContent))
+				.andExpect(status().isOk());
+		verify(userService).findUserEntityByEmail(any(String.class));
+		verify(userService).sendPasswordResetToken(userEntity, null);
+	}
+
+	@Test
+	void
 }
