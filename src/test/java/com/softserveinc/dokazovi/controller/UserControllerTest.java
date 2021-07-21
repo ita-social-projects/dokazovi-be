@@ -1,8 +1,12 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.MailSenderService;
+import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,20 +19,27 @@ import org.mockito.quality.Strictness;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWORD;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +52,10 @@ class UserControllerTest {
 	UserPrincipal userPrincipal;
 	@Mock
 	private UserService userService;
+	@Mock
+	private PasswordResetTokenService passwordResetTokenService;
+	@Mock
+	private MailSenderService mailSenderService;
 	@InjectMocks
 	private UserController userController;
 
@@ -193,5 +208,90 @@ class UserControllerTest {
 		when(userService.findExpertById(any(Integer.class))).thenReturn(userDTO);
 		when(userPrincipal.getId()).thenReturn(9);
 		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void resetPasswordTest() throws Exception {
+		String emailContent = "{\n"
+				+ "  \"email\": \"igor.zaharko@gmail.com\"\n"
+				+ "}";
+		UserEntity userEntity = UserEntity.builder()
+				.email("igor.zaharko@gmail.com")
+				.build();
+		when(userService.findUserEntityByEmail(any(String.class)))
+				.thenReturn(userEntity);
+		mockMvc.perform(post(USER + USER_RESET_PASSWORD)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(emailContent))
+				.andExpect(status().isOk());
+		verify(userService).findUserEntityByEmail(any(String.class));
+		verify(userService).sendPasswordResetToken(userEntity, null);
+	}
+
+	@Test
+	void updatePasswordTestIsOk () throws Exception {
+		String content = "{\n"
+				+ "  \"matchPassword\": \"qwerty12345\",\n"
+				+ "  \"newPassword\": \"qwerty12345\",\n"
+				+ "  \"token\": \"ef590bd8-e993-4153-8206-b963732bfeb9\"\n"
+				+ "}";
+		UserEntity user = UserEntity.builder()
+				.id(1)
+				.email("igor.zaharko@gmail.com")
+				.build();
+		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
+		PasswordResetTokenEntity tokenEntity = PasswordResetTokenEntity.builder()
+				.token("ef590bd8-e993-4153-8206-b963732bfeb9")
+				.dateExpiration(LocalDateTime.now().plusMinutes(60))
+				.userEntity(user)
+				.build();
+		when(passwordResetTokenService.getByToken(token)).thenReturn(tokenEntity);
+		mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	void changePasswordTest() throws Exception {
+		String content = "{\n"
+				+ "  \"email\": \"igor.zaharko@gmail.com\",\n"
+				+ "  \"password\": \"qwerty12345\"\n"
+				+ "}";
+		UserEntity userEntity = UserEntity.builder()
+				.email("igor.zaharko@gmail.com")
+				.password("qwerty12345")
+				.build();
+		when(userService.findUserEntityByEmail(any(String.class)))
+				.thenReturn(userEntity);
+		mockMvc.perform(post(USER + USER_CHANGE_PASSWORD)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk());
+		verify(userService).findUserEntityByEmail(any(String.class));
+	}
+
+	@Test
+	void updatePasswordTestNotFound () throws Exception {
+		String content = "{\n"
+				+ "  \"matchPassword\": \"qwerty12345\",\n"
+				+ "  \"newPassword\": \"qwerty12345\",\n"
+				+ "  \"token\": \"ef590bd8-e993-4153-8206-b963732bfeb9\"\n"
+				+ "}";
+		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
+		when(passwordResetTokenService.getByToken(token)).thenReturn(null);
+		mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void checkTokenTest() throws Exception {
+		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
+		String uri = USER + USER_CHECK_TOKEN + "?token=" + token;
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+		when(passwordResetTokenService.validatePasswordResetToken(token)).thenReturn(true);
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
 	}
 }

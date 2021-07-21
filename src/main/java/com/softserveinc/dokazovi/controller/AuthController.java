@@ -7,7 +7,7 @@ import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
-import com.softserveinc.dokazovi.util.MailSenderUtil;
+import com.softserveinc.dokazovi.service.impl.MailSenderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,7 +34,7 @@ public class AuthController {
 
 	private final AuthenticationManager authenticationManager;
 	private final TokenProvider tokenProvider;
-	private final MailSenderUtil mailSenderUtil;
+	private final MailSenderServiceImpl mailSenderServiceImpl;
 	private final UserService userService;
 	private final ProviderService providerService;
 

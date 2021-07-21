@@ -147,9 +147,16 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findLatestByOriginVideo(Pageable pageable);
 
 	@Query(nativeQuery = true,
-			value = "SELECT P1.* "
-					+ " FROM posts P1 "
-					+ " WHERE P1.IMPORTANT_IMAGE_URL <> '' "
-					+ " ORDER BY CREATED_AT DESC ")
+			value = "(SELECT * "
+					+ " FROM posts "
+					+ " WHERE IMPORTANT_IMAGE_URL <> '' "
+					+ "   AND IMPORTANT_IMAGE_URL IS NOT NULL "
+					+ " ORDER BY CREATED_AT DESC) "
+					+ " UNION ALL "
+					+ "(SELECT * "
+					+ " FROM posts "
+					+ " WHERE IMPORTANT_IMAGE_URL = '' "
+					+ "    OR IMPORTANT_IMAGE_URL IS NULL "
+					+ " ORDER BY CREATED_AT DESC) ")
 	Page<PostEntity> findAllByImportantImageUrlDesc (Pageable pageable);
 }

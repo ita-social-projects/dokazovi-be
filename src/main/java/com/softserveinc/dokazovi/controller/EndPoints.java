@@ -20,6 +20,10 @@ public final class EndPoints {
 	public static final String POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS = "/by-authorid-and-directions";
 	public static final String POST_ALL_POSTS = "/all-posts";
 	public static final String USER = "/user";
+	public static final String USER_RESET_PASSWORD = "/reset-password";
+	public static final String USER_CHANGE_PASSWORD = "/change-password";
+	public static final String USER_UPDATE_PASSWORD = "/update-password";
+	public static final String USER_CHECK_TOKEN = "/check-token";
 	public static final String USER_RANDOM_EXPERTS = "/random-experts";
 	public static final String USER_ALL_EXPERTS = "/all-experts";
 	public static final String USER_GET_USER_BY_ID = "/{userId}";
