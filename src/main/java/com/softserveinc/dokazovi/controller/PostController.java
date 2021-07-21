@@ -50,6 +50,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
@@ -193,6 +194,30 @@ public class PostController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findAllByExpertAndTypeAndDirections(expert, type, direction, pageable));
+	}
+
+	/**
+	 * Finds post by expert id, type and status
+	 *
+	 * @param pageable interface for pagination information
+	 * @param expert   expert id
+	 * @param type     post type id
+	 * @return page with found posts and HttpStatus 'OK'
+	 */
+	@GetMapping(POST_LATEST_BY_EXPERT_AND_STATUS)
+	@ApiPageable
+	@ApiOperation(value = "Find latest posts by some expert and status")
+	public ResponseEntity<Page<PostDTO>> findLatestByExpert(
+			@PageableDefault Pageable pageable,
+			@ApiParam(value = "Expert's id")
+			@RequestParam Integer expert,
+			@ApiParam(value = "Post type id")
+			@RequestParam(required = false) Set<Integer> type,
+			@ApiParam(value = "Status")
+			@RequestParam PostStatus status) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService.findAllByExpertAndTypeAndStatus(expert, type, status, pageable));
 	}
 
 	/**
