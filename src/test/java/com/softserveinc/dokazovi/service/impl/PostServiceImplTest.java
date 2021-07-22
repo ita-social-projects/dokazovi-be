@@ -386,6 +386,29 @@ class PostServiceImplTest {
 	}
 
 	@Test
+	void findAllByExpertAndStatus() {
+		Integer expertId = 3;
+		PostStatus postStatus = PostStatus.DRAFT;
+		when(postRepository.findAllByAuthorIdAndStatus(
+				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllByExpertAndTypeAndStatus(expertId, null, postStatus, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByExpertAndTypeAndStatus() {
+		Integer expertId = 5;
+		Set<Integer> typeId = Set.of(1, 2);
+		PostStatus postStatus = PostStatus.DRAFT;
+		when(postRepository.findAllByAuthorIdAndTypeIdInAndStatus(any(Integer.class),
+				anySet(), any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllByExpertAndTypeAndStatus(expertId, typeId, postStatus, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
 	void findAllPosts() {
 		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
 		Set<Integer> typesIds = null;

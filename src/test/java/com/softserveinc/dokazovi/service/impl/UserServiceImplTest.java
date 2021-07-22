@@ -1,12 +1,17 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
+import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
+import com.softserveinc.dokazovi.service.MailSenderService;
+import com.softserveinc.dokazovi.service.PasswordResetTokenService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
@@ -45,6 +52,10 @@ class UserServiceImplTest {
 	private UserMapper userMapper;
 	@Mock
 	private Pageable pageable;
+	@Mock
+	PasswordResetTokenService passwordResetTokenService;
+	@Mock
+	MailSenderService mailSenderService;
 	@InjectMocks
 	private UserServiceImpl userService;
 
@@ -395,5 +406,88 @@ class UserServiceImplTest {
 		when(userRepository.findAll(any(Pageable.class))).thenReturn(users);
 		userService.findAll(pageable);
 		verify(userRepository, times(1)).findAll(pageable);
+	}
+
+	@Test
+	void getUserByIdTest() {
+		Integer id = 1;
+		UserEntity expected = UserEntity.builder().id(id).build();
+		when(userRepository.findById(id)).thenReturn(Optional.of(expected));
+		UserEntity actual = userService.getById(id);
+		Assertions.assertEquals(expected, actual);
+	}
+
+	@Test
+	void findUserEntityByEmailTest() {
+		UserEntity expected = UserEntity.builder()
+				.id(1)
+				.email("admin@mail.com")
+				.build();
+		when(userRepository.findUserEntityByEmail(any(String.class))).thenReturn(Optional.ofNullable(expected));
+		UserEntity actual = userService.findUserEntityByEmail("admin@mail.com");
+		Assertions.assertEquals(expected, actual);
+	}
+
+	@Test
+	void updateUserEntityTest() {
+		UserEntity expected = UserEntity.builder()
+				.id(1)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.build();
+		when(userRepository.findById(anyInt())).thenReturn(Optional.ofNullable(expected));
+		String expectedEmail = "test@mail.com";
+		UserEntity userEntity = userService.getById(1);
+		userEntity.setEmail(expectedEmail);
+		when(userRepository.save(any(UserEntity.class))).thenReturn(expected);
+		UserEntity actual = userService.update(userEntity);
+		Assertions.assertEquals(expectedEmail, actual.getEmail());
+	}
+
+	@Test
+	void updateUserPasswordTest() {
+		UserEntity expected = UserEntity.builder()
+				.id(1)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.build();
+		when(userRepository.findById(anyInt())).thenReturn(Optional.ofNullable(expected));
+		String expectedPassword = "qwerty12345";
+		when(passwordEncoder.encode(any(String.class))).thenReturn(expectedPassword);
+		when(userRepository.save(any(UserEntity.class))).thenReturn(expected);
+		UserEntity userEntity = userService.getById(1);
+		PasswordResetTokenEntity tokenEntity = PasswordResetTokenEntity.builder()
+				.id(1L)
+				.userEntity(expected)
+				.token("ef590bd8-e993-4153-8206-b963732bfeb9")
+				.dateExpiration(LocalDateTime.now().plusMinutes(60))
+				.build();
+		userService.updatePassword(userEntity, expectedPassword, tokenEntity);
+		Assertions.assertEquals(expectedPassword, expected.getPassword());
+		verify(passwordResetTokenService, times(1)).delete(tokenEntity);
+	}
+
+	@Test
+	void sendPasswordResetTokenTest() {
+		UserEntity user = UserEntity.builder()
+				.id(1)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.build();
+		String contextPath = "http://localhost:3000";
+		userService.sendPasswordResetToken(user, contextPath);
+		verify(passwordResetTokenService, times(1))
+				.createPasswordResetTokenForUser(any(UserEntity.class), anyString());
+		verify(mailSenderService, times(1))
+				.sendEmailWithToken(anyString(), anyString(), any(UserEntity.class));
+	}
+
+	@Test
+	void updateUserEntityIsNull() {
+		Exception exception = assertThrows(BadRequestException.class, () -> {
+			userService.update(null);
+		});
+
+		assertEquals("Something went wrong!!!", exception.getMessage());
 	}
 }

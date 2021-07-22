@@ -6,7 +6,7 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
-import com.softserveinc.dokazovi.util.MailSenderUtil;
+import com.softserveinc.dokazovi.service.impl.MailSenderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +43,7 @@ class AuthControllerTest {
     @Mock
     private AuthenticationManager authenticationManager;
     @Mock
-    private MailSenderUtil mailSenderUtil;
+    private MailSenderServiceImpl mailSenderServiceImpl;
     @Mock
     private ProviderService providerService;
     @Mock
