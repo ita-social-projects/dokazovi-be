@@ -271,6 +271,19 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	public Page<PostDTO> findAllByExpertAndTypeAndStatus(Integer expertId, Set<Integer> typeId,
+			PostStatus postStatus, Pageable pageable) {
+		if (typeId == null) {
+			return postRepository
+					.findAllByAuthorIdAndStatus(expertId, postStatus, pageable)
+					.map(postMapper::toPostDTO);
+		}
+		return postRepository
+				.findAllByAuthorIdAndTypeIdInAndStatus(expertId, typeId, postStatus, pageable)
+				.map(postMapper::toPostDTO);
+	}
+
+	@Override
 	@Transactional
 	public Boolean setPostsAsImportantWithOrder(Set<Integer> importantPostIds) {
 		if (importantPostIds == null) {
