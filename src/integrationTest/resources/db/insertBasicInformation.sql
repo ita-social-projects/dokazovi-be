@@ -81,3 +81,18 @@ INSERT INTO public.role_permission (role_id, permissions)
 VALUES (1, 'SAVE_PLATFORM_INFORMATION');
 INSERT INTO public.role_permission (role_id, permissions)
 VALUES (1, 'UPDATE_PLATFORM_INFORMATION');
+
+INSERT INTO public.users (email, password, status, first_name, last_name, phone, created_at, avatar, enabled,
+                          role_id)
+VALUES ('ivan@mail.com', '$2y$10$ishgf6hBdlEQwE8Ld1ktkOOPsINMgE7CviFi1qxRaiOgvUdg3RCTy', 'ACTIVE', 'Іван', 'Іванов',
+        '+380969696969', '2021-02-16 03:56:37.332925', 'https://i.pravatar.cc/300?img=3', true, 3),
+       ('fedot@mail.com', '$2y$10$.oKUlohR31I8wni/Qi8nwu9cJti4P5ddg6oq6FIK4H7r/jmmK44sG', 'ACTIVE', 'Федот',
+        'Федотенко', '+380956761119', '2021-02-16 03:56:37.394884', 'https://i.pravatar.cc/300?img=55', true, 3),
+       ('admin@mail.com', '$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2', 'ACTIVE', 'Gregory',
+        'House', '+380939393939', '2021-02-16 03:56:37.332925', null, true, 1);
+
+
+INSERT INTO public.providers (provider_name, email, user_id_by_provider, user_id)
+VALUES ('LOCAL', 'ivan@mail.com', '1', 1),
+       ('LOCAL', 'fedot@mail.com', '2', 2),
+       ('LOCAL', 'admin@mail.com', '3', 3);
