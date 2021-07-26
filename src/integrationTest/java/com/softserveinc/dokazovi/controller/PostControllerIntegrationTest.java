@@ -27,6 +27,7 @@ import static com.softserveinc.dokazovi.controller.RequestsBodies.BODY_FOR_POST_
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 @Testcontainers
 @ExtendWith(SpringExtension.class)
@@ -57,9 +58,9 @@ public class PostControllerIntegrationTest {
 	public void getAllLatestPosts() {
 		when()
 				.get(POST + POST_LATEST + "/?page=0")
-				.then()
-				.assertThat().statusCode(HttpStatus.OK.value())
-				.assertThat().contentType("application/json");
+		.then()
+				.statusCode(HttpStatus.OK.value())
+				.contentType("application/json");
 	}
 
 	@Test
@@ -119,8 +120,8 @@ public class PostControllerIntegrationTest {
 				.put(POST)
 		.then()
 				.statusCode(HttpStatus.OK.value())
-				.assertThat()
-				.body("success", equalTo(false));
+				.body("success", is(false))
+				.body("message", is("Entity not found"));
 	}
 
 	@Test
@@ -134,8 +135,37 @@ public class PostControllerIntegrationTest {
 				.put(POST)
 		.then()
 				.statusCode(HttpStatus.OK.value())
-				.assertThat()
+				.body("success", is(true));
+	}
+
+	@Test
+	@Sql(value = {"/db/insertBasicInformation.sql", "/db/postsData.sql"})
+	public void updateNotOwnPostByAdmin() {
+		given()
+				.auth().oauth2(getAccessToken("admin@mail.com","admin"))
+				.contentType("application/json")
+				.body(BODY_FOR_POST_UPDATE)
+		.when()
+				.put(POST)
+		.then()
+				.statusCode(HttpStatus.OK.value())
 				.body("success", equalTo(true));
+	}
+
+	@Test
+	@Sql(value = {"/db/insertBasicInformation.sql", "/db/postsData.sql"})
+	public void updateNotOwnPost() {
+		given()
+				.auth().oauth2(getAccessToken("fedot@mail.com","fedot"))
+				.contentType("application/json")
+				.body(BODY_FOR_POST_UPDATE)
+		.when()
+				.put(POST)
+		.then()
+				.log().all()
+				.statusCode(HttpStatus.OK.value())
+				.body("success", equalTo(false))
+				.body("message", equalTo("Forbidden permission"));
 	}
 
 	String getAccessToken(String testEmail, String testPassword) {
