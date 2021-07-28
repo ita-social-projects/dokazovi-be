@@ -155,8 +155,8 @@ class PostControllerTest {
 
 	@Test
 	void findImportant_GetWithPagination_isOk() throws Exception {
-		Pageable pageable = PageRequest.of(0, 3, Sort.by("createdAt", "id").descending());
-		mockMvc.perform(get(POST + POST_IMPORTANT + "/?page=0&size=3"))
+		Pageable pageable = PageRequest.of(0, 20, Sort.unsorted());
+		mockMvc.perform(get(POST + POST_IMPORTANT + "/?page=0&size=20"))
 				.andExpect(status().isOk());
 		verify(postService).findImportantPosts(eq(pageable));
 	}
