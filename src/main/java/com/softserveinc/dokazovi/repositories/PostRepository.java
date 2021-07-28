@@ -16,7 +16,7 @@ import java.util.Set;
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
-	List<PostEntity> findAllByImportantIsTrueAndStatus(PostStatus status);
+	List<PostEntity> findAllByImportantIsTrueAndStatusOrderByImportanceOrder(PostStatus status);
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
