@@ -149,7 +149,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	@Query(nativeQuery = true,
 			value = "SELECT P1.* FROM POSTS P1 "
-					+ "ORDER BY (P1.IMPORTANT_IMAGE_URL <> '' AND P1.IMPORTANT_IMAGE_URL IS NOT NULL) DESC, "
-					+ "P1.CREATED_AT DESC ")
+					+ " WHERE P1.STATUS = 'PUBLISHED' "
+					+ " AND P1.IMPORTANT = FALSE"
+					+ " ORDER BY (P1.IMPORTANT_IMAGE_URL <> '' AND P1.IMPORTANT_IMAGE_URL IS NOT NULL) DESC, "
+					+ " P1.CREATED_AT DESC ")
 	Page<PostEntity> findAllByImportantImageUrlDesc (Pageable pageable);
 }

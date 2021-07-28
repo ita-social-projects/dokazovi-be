@@ -116,11 +116,9 @@ public class PostController {
 	@ApiPageable
 	@ApiOperation(value = "Find important posts")
 	public ResponseEntity<List<PostDTO>> findImportant() {
-		List<PostDTO> test = postService.findImportantPosts();
-		test.stream().forEach(System.out::println);
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(test);
+				.body(postService.findImportantPosts());
 	}
 
 	@GetMapping(POST_SET_IMPORTANT)
