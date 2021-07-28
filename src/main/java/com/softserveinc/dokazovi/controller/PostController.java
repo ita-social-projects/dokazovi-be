@@ -201,7 +201,7 @@ public class PostController {
 	 *
 	 * @param pageable interface for pagination information
 	 * @param expert   expert id
-	 * @param type     post type id
+	 * @param types    the type's ids by which the search is performed
 	 * @return page with found posts and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_LATEST_BY_EXPERT_AND_STATUS)
@@ -211,13 +211,13 @@ public class PostController {
 			@PageableDefault Pageable pageable,
 			@ApiParam(value = "Expert's id")
 			@RequestParam Integer expert,
-			@ApiParam(value = "Post type id")
-			@RequestParam(required = false) Set<Integer> type,
+			@ApiParam(value = "Multiple comma-separated post types IDs, e.g. ?types=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> types,
 			@ApiParam(value = "Status")
 			@RequestParam PostStatus status) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(postService.findAllByExpertAndTypeAndStatus(expert, type, status, pageable));
+				.body(postService.findAllByExpertAndTypeAndStatus(expert, types, status, pageable));
 	}
 
 	/**
