@@ -10,13 +10,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Set;
 
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
-	List<PostEntity> findAllByImportantIsTrueAndStatusOrderByImportanceOrder(PostStatus status);
+	Page<PostEntity> findAllByImportantIsTrueAndStatusOrderByImportanceOrder(PostStatus status, Pageable pageable);
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
 

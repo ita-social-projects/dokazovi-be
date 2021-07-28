@@ -122,10 +122,10 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDTO> findImportantPosts() {
+	public Page<PostDTO> findImportantPosts(Pageable pageable) {
 		return postRepository
-				.findAllByImportantIsTrueAndStatusOrderByImportanceOrder(PostStatus.PUBLISHED).stream()
-				.map(postMapper::toPostDTO).collect(Collectors.toList());
+				.findAllByImportantIsTrueAndStatusOrderByImportanceOrder(PostStatus.PUBLISHED, pageable)
+				.map(postMapper::toPostDTO);
 	}
 
 	@Override
