@@ -271,7 +271,8 @@ class PostServiceImplTest {
 
 	@Test
 	void findImportantPosts() {
-		when(postRepository.findAllByImportantIsTrueAndStatus(any(PostStatus.class), any(Pageable.class)))
+		when(postRepository.findAllByImportantIsTrueAndStatusOrderByImportanceOrder(any(PostStatus.class),
+				any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findImportantPosts(pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
