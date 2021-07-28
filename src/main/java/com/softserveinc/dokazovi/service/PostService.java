@@ -8,6 +8,7 @@ import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Set;
 
 public interface PostService {
@@ -16,7 +17,7 @@ public interface PostService {
 
 	Page<PostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
-	Page<PostDTO> findImportantPosts(Pageable pageable);
+	List<PostDTO> findImportantPosts();
 
 	Page<PostDTO> findAllByDirection(
 			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);

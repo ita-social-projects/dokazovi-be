@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -121,9 +122,9 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostDTO> findImportantPosts(Pageable pageable) {
-		return postRepository.findAllByImportantIsTrueAndStatus(PostStatus.PUBLISHED, pageable)
-				.map(postMapper::toPostDTO);
+	public List<PostDTO> findImportantPosts() {
+		return postRepository.findAllByImportantIsTrueAndStatus(PostStatus.PUBLISHED).stream()
+				.map(postMapper::toPostDTO).collect(Collectors.toList());
 	}
 
 	@Override

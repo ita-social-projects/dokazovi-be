@@ -110,17 +110,15 @@ public class PostController {
 	/**
 	 * Finds important posts.
 	 *
-	 * @param pageable interface for pagination information
 	 * @return page with all posts with important status and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_IMPORTANT)
 	@ApiPageable
 	@ApiOperation(value = "Find important posts")
-	public ResponseEntity<Page<PostDTO>> findImportant(
-			@PageableDefault(size = 3, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+	public ResponseEntity<List<PostDTO>> findImportant() {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(postService.findImportantPosts(pageable));
+				.body(postService.findImportantPosts());
 	}
 
 	@GetMapping(POST_SET_IMPORTANT)
