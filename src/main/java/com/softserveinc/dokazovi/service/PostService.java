@@ -38,6 +38,9 @@ public interface PostService {
 	Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId, Set<Integer> directionId,
 			Pageable pageable);
 
+	Page<PostDTO> findAllByExpertAndTypeAndStatus(Integer expertId, Set<Integer> typeId,
+			PostStatus postStatus, Pageable pageable);
+
 	Boolean setPostsAsImportantWithOrder(Set<Integer> importantPostIds);
 
 	Integer getPostViewCount(String url);
