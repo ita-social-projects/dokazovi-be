@@ -16,7 +16,7 @@ import java.util.Set;
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
-	List<PostEntity> findAllByImportantIsTrueAndStatus(PostStatus status);
+	List<PostEntity> findAllByImportantIsTrueAndStatusOrderByImportanceOrder(PostStatus status);
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
@@ -148,8 +148,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findLatestByOriginVideo(Pageable pageable);
 
 	@Query(nativeQuery = true,
-			value = "SELECT P1.* FROM POSTS P1 \n"
-					+ "ORDER BY (P1.IMPORTANT_IMAGE_URL <> '' AND P1.IMPORTANT_IMAGE_URL IS NOT NULL) DESC, \n"
+			value = "SELECT P1.* FROM POSTS P1 "
+					+ "ORDER BY (P1.IMPORTANT_IMAGE_URL <> '' AND P1.IMPORTANT_IMAGE_URL IS NOT NULL) DESC, "
 					+ "P1.CREATED_AT DESC ")
 	Page<PostEntity> findAllByImportantImageUrlDesc (Pageable pageable);
 }

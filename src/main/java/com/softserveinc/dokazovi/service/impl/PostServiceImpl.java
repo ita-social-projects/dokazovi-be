@@ -123,7 +123,8 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public List<PostDTO> findImportantPosts() {
-		return postRepository.findAllByImportantIsTrueAndStatus(PostStatus.PUBLISHED).stream()
+		return postRepository
+				.findAllByImportantIsTrueAndStatusOrderByImportanceOrder(PostStatus.PUBLISHED).stream()
 				.map(postMapper::toPostDTO).collect(Collectors.toList());
 	}
 

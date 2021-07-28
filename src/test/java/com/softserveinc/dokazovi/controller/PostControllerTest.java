@@ -158,7 +158,7 @@ class PostControllerTest {
 		Pageable pageable = PageRequest.of(0, 3, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(get(POST + POST_IMPORTANT + "/?page=0&size=3"))
 				.andExpect(status().isOk());
-		verify(postService).findImportantPosts(eq(pageable));
+		verify(postService).findImportantPosts();
 	}
 
 	@Test

@@ -79,6 +79,8 @@ class PostServiceImplTest {
 
 	private Page<PostEntity> postEntityPage;
 
+	private List<PostEntity> postEntityImportantPage;
+
 	private UserEntity userEntity;
 
 	@Mock
@@ -271,9 +273,9 @@ class PostServiceImplTest {
 
 	@Test
 	void findImportantPosts() {
-		when(postRepository.findAllByImportantIsTrueAndStatus(any(PostStatus.class), any(Pageable.class)))
-				.thenReturn(postEntityPage);
-		postService.findImportantPosts(pageable);
+		when(postRepository.findAllByImportantIsTrueAndStatus(any(PostStatus.class)))
+				.thenReturn(postEntityImportantPage);
+		postService.findImportantPosts();
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
