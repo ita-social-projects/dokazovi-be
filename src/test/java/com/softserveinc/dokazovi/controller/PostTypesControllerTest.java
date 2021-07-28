@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
+import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.service.PostTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,12 @@ public class PostTypesControllerTest {
 	@Test
 	void getAllPostTypesByUserId() throws Exception {
 		mockMvc.perform(get(POST_TYPES + "/1")).andExpect(status().isOk());
-		verify(postTypeService).findAllPostTypesByUserId(1);
+		verify(postTypeService).findAllPostTypesByUserIdAndStatus(1, null);
+	}
+
+	@Test
+	void getAllPostTypesByUserId_WhenStatusIsPresent_IsOk() throws Exception {
+		mockMvc.perform(get(POST_TYPES + "/1?status=DRAFT")).andExpect(status().isOk());
+		verify(postTypeService).findAllPostTypesByUserIdAndStatus(1, PostStatus.DRAFT);
 	}
 }

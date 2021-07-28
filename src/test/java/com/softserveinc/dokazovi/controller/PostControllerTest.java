@@ -227,7 +227,7 @@ class PostControllerTest {
 		PostStatus postStatus = PostStatus.DRAFT;
 		Pageable pageable = PageRequest.of(0, 10);
 		mockMvc.perform(
-				get(POST + POST_LATEST_BY_EXPERT_AND_STATUS + "?expert=2&type=1,2&status=DRAFT"))
+				get(POST + POST_LATEST_BY_EXPERT_AND_STATUS + "?expert=2&types=1,2&status=DRAFT"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByExpertAndTypeAndStatus(expertId, typeId, postStatus, pageable);
 	}
