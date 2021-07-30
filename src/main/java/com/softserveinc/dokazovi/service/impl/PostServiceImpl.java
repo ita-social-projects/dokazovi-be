@@ -322,4 +322,11 @@ public class PostServiceImpl implements PostService {
 	public Page<PostDTO> getAllByImportantImageUrl(Pageable pageable) {
 		return postRepository.findAllByImportantImageUrlDesc(pageable).map(postMapper::toPostDTO);
 	}
+
+	@Override
+	public Page<PostDTO> findPublishedNotImportantPostsWithImportantImageFirstAndFilters(
+			Set<Integer> directions, Set<Integer> types, Set<Integer> origins, Pageable pageable) {
+		return postRepository.findPublishedNotImportantPostsWithImportantImageFirstFilterByDirectionsAndTypesAndOrigins(
+				directions, types, origins, pageable).map(postMapper::toPostDTO);
+	}
 }

@@ -395,18 +395,29 @@ public class PostController {
 	}
 
 	/**
-	 * Gets latest posts which have important image url
+	 * Gets all published posts sorted by important image url presence then by createdAt
+	 * filtered by directions, by post types and by origins
 	 *
-	 * @param pageable interface for pagination information
+	 * @param pageable   interface for pagination information
+	 * @param directions direction's ids by which the search is performed
+	 * @param types      the type's ids by which the search is performed
+	 * @param origins    the origin's ids by which the search is performed
 	 * @return found posts filtered by not empty important image url and HttpStatus 'OK'
 	 */
-
 	@ApiPageable
-	@ApiOperation(value = "Get Posts With Important Image URL")
+	@ApiOperation(value = "Get published posts sorted by important image url presence then by createdAt, "
+			+ "filtered by directions, types and origins.")
 	@GetMapping(POST_GET_BY_IMPORTANT_IMAGE)
-	public ResponseEntity<Page<PostDTO>> findAllByImportantImageUrl (
-			@PageableDefault(size = 16) Pageable pageable) {
-		Page<PostDTO> posts = postService.getAllByImportantImageUrl(pageable);
+	public ResponseEntity<Page<PostDTO>> findAllPostsWithImportantImageUrlFirst(
+			@PageableDefault Pageable pageable,
+			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
+			@RequestParam(required = false, defaultValue = "") Set<Integer> directions,
+			@ApiParam(value = "Multiple comma-separated post types IDs, e.g. ?post types=1,2,3,4", type = "string")
+			@RequestParam(required = false, defaultValue = "") Set<Integer> types,
+			@ApiParam(value = "Multiple comma-separated origins IDs, e.g. ?origins=1,2,3,4...", type = "string")
+			@RequestParam(required = false, defaultValue = "") Set<Integer> origins) {
+		Page<PostDTO> posts = postService.findPublishedNotImportantPostsWithImportantImageFirstAndFilters(
+				directions, types, origins, pageable);
 		return ResponseEntity.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(posts);
 	}

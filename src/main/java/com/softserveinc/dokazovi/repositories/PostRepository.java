@@ -153,4 +153,28 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ " ORDER BY (P1.IMPORTANT_IMAGE_URL <> '' AND P1.IMPORTANT_IMAGE_URL IS NOT NULL) DESC, "
 					+ " P1.CREATED_AT DESC ")
 	Page<PostEntity> findAllByImportantImageUrlDesc (Pageable pageable);
+
+	@Query(nativeQuery = true,
+			value = "SELECT P1.* FROM POSTS P1 "
+					+ "WHERE P1.STATUS = 'PUBLISHED' "
+					+ "  AND P1.IMPORTANT = FALSE "
+					+ "  AND CASE WHEN :typesIds IS NOT NULL "
+					+ "           THEN P1.TYPE_ID IN (:typesIds) "
+					+ "           ELSE P1.POST_ID IS NOT NULL "
+					+ "      END "
+					+ "  AND CASE WHEN :directionsIds IS NOT NULL "
+					+ "           THEN P1.POST_ID IN "
+					+ "                  (SELECT POST_ID FROM POSTS_DIRECTIONS WHERE DIRECTION_ID IN (:directionsIds)) "
+					+ "           ELSE P1.POST_ID IS NOT NULL "
+					+ "      END "
+					+ "  AND CASE WHEN :originsIds IS NOT NULL "
+					+ "           THEN P1.POST_ID IN "
+					+ "                  (SELECT POST_ID FROM POSTS_ORIGINS WHERE ORIGIN_ID IN (:originsIds)) "
+					+ "           ELSE P1.POST_ID IS NOT NULL "
+					+ "      END "
+					+ "ORDER BY (P1.IMPORTANT_IMAGE_URL <> '' AND P1.IMPORTANT_IMAGE_URL IS NOT NULL) DESC, "
+					+ "          P1.CREATED_AT DESC "
+	)
+	Page<PostEntity> findPublishedNotImportantPostsWithImportantImageFirstFilterByDirectionsAndTypesAndOrigins(
+			Set<Integer> directionsIds, Set<Integer> typesIds, Set<Integer> originsIds, Pageable pageable);
 }
