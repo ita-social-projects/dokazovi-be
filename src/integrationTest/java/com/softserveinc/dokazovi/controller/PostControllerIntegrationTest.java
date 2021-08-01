@@ -66,14 +66,8 @@ public class PostControllerIntegrationTest {
 		RestAssured.port = port;
 	}
 
-	@BeforeEach
-	void countTime() {
-		globalStart = System.currentTimeMillis();
-	}
-
 	@AfterEach
 	void cleanDatabase() {
-		System.out.println("Exec time = " + (System.currentTimeMillis()-globalStart));
 		flyway.clean();
 		flyway.migrate();
 	}
