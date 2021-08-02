@@ -1,7 +1,9 @@
 package com.softserveinc.dokazovi.controller;
 
 public final class RequestsBodies {
-	private RequestsBodies() {}
+
+	private RequestsBodies() {
+	}
 
 	public final static String BODY_FOR_POST_SAVE = "{\n" +
 			"  \"authorId\": 1,\n" +
