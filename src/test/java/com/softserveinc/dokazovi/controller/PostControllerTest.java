@@ -501,16 +501,6 @@ class PostControllerTest {
 	}
 
 	@Test
-	void findAllByImportantImageUrl_isNotFound() throws Exception {
-		Pageable pageable = PageRequest.of(0, 16);
-		Page<PostDTO> page = new PageImpl<>(new ArrayList<>());
-		Mockito.when(postService.getAllByImportantImageUrl(pageable)).thenReturn(page);
-		mockMvc.perform(MockMvcRequestBuilders
-				.get(POST + POST_GET_BY_IMPORTANT_IMAGE))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
-	}
-
-	@Test
 	void findAllByImportantImageUrl_isOk() throws Exception {
 		Pageable pageable = PageRequest.of(0, 16);
 		PostDTO postDTO = PostDTO.builder()

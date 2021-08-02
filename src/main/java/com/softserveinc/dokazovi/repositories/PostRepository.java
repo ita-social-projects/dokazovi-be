@@ -156,8 +156,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 	@Query(nativeQuery = true,
 			value = "SELECT P1.* FROM POSTS P1 "
-					+ "WHERE P1.STATUS = 'PUBLISHED' "
-					+ "  AND P1.IMPORTANT = FALSE "
+					+ "WHERE P1.STATUS = :#{#postStatus.name()} "
+					+ "  AND P1.IMPORTANT = :important "
 					+ "  AND CASE WHEN :typesIds IS NOT NULL "
 					+ "           THEN P1.TYPE_ID IN (:typesIds) "
 					+ "           ELSE P1.POST_ID IS NOT NULL "
@@ -175,6 +175,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "ORDER BY (P1.IMPORTANT_IMAGE_URL <> '' AND P1.IMPORTANT_IMAGE_URL IS NOT NULL) DESC, "
 					+ "          P1.CREATED_AT DESC "
 	)
-	Page<PostEntity> findPublishedNotImportantPostsWithImportantImageFirstFilterByDirectionsAndTypesAndOrigins(
-			Set<Integer> directionsIds, Set<Integer> typesIds, Set<Integer> originsIds, Pageable pageable);
+	Page<PostEntity> findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
+			Set<Integer> directionsIds, Set<Integer> typesIds, Set<Integer> originsIds, PostStatus postStatus,
+			Boolean important, Pageable pageable);
 }

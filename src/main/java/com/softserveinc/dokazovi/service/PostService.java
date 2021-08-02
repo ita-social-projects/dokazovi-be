@@ -47,6 +47,6 @@ public interface PostService {
 
 	Page<PostDTO> getAllByImportantImageUrl(Pageable pageable);
 
-	Page<PostDTO> findPublishedNotImportantPostsWithImportantImageFirstAndFilters(
+	Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
 }

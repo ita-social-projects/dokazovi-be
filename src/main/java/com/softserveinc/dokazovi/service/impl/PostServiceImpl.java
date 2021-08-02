@@ -324,9 +324,9 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostDTO> findPublishedNotImportantPostsWithImportantImageFirstAndFilters(
+	public Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
 			Set<Integer> directions, Set<Integer> types, Set<Integer> origins, Pageable pageable) {
-		return postRepository.findPublishedNotImportantPostsWithImportantImageFirstFilterByDirectionsAndTypesAndOrigins(
-				directions, types, origins, pageable).map(postMapper::toPostDTO);
+		return postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
+				directions, types, origins, PostStatus.PUBLISHED, false, pageable).map(postMapper::toPostDTO);
 	}
 }
