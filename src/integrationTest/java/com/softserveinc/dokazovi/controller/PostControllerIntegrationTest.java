@@ -52,8 +52,6 @@ import static org.hamcrest.Matchers.not;
 @Sql(value = {"/db/insertBasicInformation.sql"})
 public class PostControllerIntegrationTest {
 
-	static long globalStart;
-
 	@Autowired
 	Flyway flyway;
 
@@ -300,7 +298,6 @@ public class PostControllerIntegrationTest {
 		.when()
 				.get(POST + POST_ALL_POSTS)
 		.then()
-				.log().all()
 				.statusCode(HttpStatus.OK.value())
 		.extract()
 				.jsonPath().getList("content", PostDTO.class);
@@ -335,7 +332,6 @@ public class PostControllerIntegrationTest {
 		.when()
 				.get(POST + POST_LATEST_BY_EXPERT)
 		.then()
-				.log().all()
 				.statusCode(HttpStatus.OK.value())
 		.extract()
 				.jsonPath().getList("content", PostDTO.class);
@@ -363,7 +359,6 @@ public class PostControllerIntegrationTest {
 		List<PostDTO> posts = when()
 				.get(POST + POST_IMPORTANT)
 		.then()
-				.log().all()
 				.statusCode(HttpStatus.OK.value())
 		.extract()
 				.jsonPath().getList("content", PostDTO.class);
