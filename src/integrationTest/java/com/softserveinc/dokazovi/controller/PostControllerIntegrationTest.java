@@ -7,7 +7,6 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import io.restassured.RestAssured;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -324,7 +323,6 @@ public class PostControllerIntegrationTest {
 		.extract()
 				.jsonPath().getList("content", PostDTO.class);
 
-		assertThat(posts, not(empty()));
 		assertThat(posts,
 				everyItem(hasProperty("directions",	hasItem(hasProperty("id", is(3))))));
 	}
@@ -342,7 +340,6 @@ public class PostControllerIntegrationTest {
 		.extract()
 				.jsonPath().getList("content", PostDTO.class);
 
-		assertThat(posts, not(empty()));
 		assertThat(posts, everyItem(hasProperty("author", hasProperty("id", is(1)))));
 	}
 
@@ -371,7 +368,6 @@ public class PostControllerIntegrationTest {
 		.extract()
 				.jsonPath().getList("content", PostDTO.class);
 
-		assertThat(posts, not(empty()));
 		assertThat(posts, contains(hasProperty("id", is(1))));
 	}
 

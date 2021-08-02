@@ -124,7 +124,7 @@ jacoco {
 }
 
 jacocoTestReport {
-    dependsOn test, integrationTest
+    dependsOn test
     reports {
         xml.enabled true
     }
