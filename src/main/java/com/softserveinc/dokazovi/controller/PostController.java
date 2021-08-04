@@ -129,7 +129,7 @@ public class PostController {
 	public ResponseEntity<ApiResponseMessage> setPostAsImportant(
 			@ApiParam(value = "Multiple comma-separated posts IDs (new order), e.g. ?posts=1,2,3,4...",
 					type = "string")
-			@RequestParam(required = true) Set<Integer> posts) {
+			@RequestParam Set<Integer> posts) {
 		ApiResponseMessage apiResponseMessage;
 		try {
 			apiResponseMessage = ApiResponseMessage.builder()
@@ -395,20 +395,30 @@ public class PostController {
 	}
 
 	/**
-	 * Gets latest posts which have important image url
+	 * Gets all published posts sorted by important image url presence then by createdAt
+	 * filtered by directions, by post types and by origins
 	 *
-	 * @param pageable interface for pagination information
-	 * @return found posts filtered by not empty important image url and HttpStatus 'OK'
+	 * @param pageable   interface for pagination information
+	 * @param directions direction's ids by which the search is performed
+	 * @param types      the type's ids by which the search is performed
+	 * @param origins    the origin's ids by which the search is performed
+	 * @return found posts and HttpStatus 'OK'
 	 */
-
 	@ApiPageable
-	@ApiOperation(value = "Get Posts With Important Image URL")
+	@ApiOperation(value = "Get published posts sorted by important image url presence then by createdAt, "
+			+ "filtered by directions, types and origins.")
 	@GetMapping(POST_GET_BY_IMPORTANT_IMAGE)
-	public ResponseEntity<Page<PostDTO>> findAllByImportantImageUrl (
-			@PageableDefault(size = 16) Pageable pageable) {
-		Page<PostDTO> posts = postService.getAllByImportantImageUrl(pageable);
-		return ResponseEntity.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
-				.body(posts);
+	public ResponseEntity<Page<PostDTO>> findPublishedNotImportantPostsSortedByImportantImagePresence(
+			@PageableDefault Pageable pageable,
+			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
+			@RequestParam(defaultValue = "") Set<Integer> directions,
+			@ApiParam(value = "Multiple comma-separated post types IDs, e.g. ?types=1,2,3,4", type = "string")
+			@RequestParam(defaultValue = "") Set<Integer> types,
+			@ApiParam(value = "Multiple comma-separated origins IDs, e.g. ?origins=1,2,3,4...", type = "string")
+			@RequestParam(defaultValue = "") Set<Integer> origins) {
+		Page<PostDTO> posts = postService.findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
+				directions, types, origins, pageable);
+		return ResponseEntity.status(HttpStatus.OK).body(posts);
 	}
 
 }
