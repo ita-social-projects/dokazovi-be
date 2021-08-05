@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -501,24 +501,16 @@ class PostControllerTest {
 	}
 
 	@Test
-	void findAllByImportantImageUrl_isNotFound() throws Exception {
-		Pageable pageable = PageRequest.of(0, 16);
-		Page<PostDTO> page = new PageImpl<>(new ArrayList<>());
-		Mockito.when(postService.getAllByImportantImageUrl(pageable)).thenReturn(page);
-		mockMvc.perform(MockMvcRequestBuilders
-				.get(POST + POST_GET_BY_IMPORTANT_IMAGE))
-				.andExpect(MockMvcResultMatchers.status().isNotFound());
-	}
-
-	@Test
-	void findAllByImportantImageUrl_isOk() throws Exception {
-		Pageable pageable = PageRequest.of(0, 16);
+	void findPublishedNotImportantPostsSortedByImportantImagePresence_isOk() throws Exception {
+		Pageable pageable = PageRequest.of(0, 12);
 		PostDTO postDTO = PostDTO.builder()
 				.id(1)
 				.importantImageUrl("http://test.test")
 				.build();
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
-		Mockito.when(postService.getAllByImportantImageUrl(pageable)).thenReturn(page);
+		Mockito.when(postService.findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
+						new HashSet<>(), new HashSet<>(), new HashSet<>(), pageable))
+				.thenReturn(page);
 		mockMvc.perform(MockMvcRequestBuilders
 				.get(POST + POST_GET_BY_IMPORTANT_IMAGE))
 				.andExpect(MockMvcResultMatchers.status().isOk());
