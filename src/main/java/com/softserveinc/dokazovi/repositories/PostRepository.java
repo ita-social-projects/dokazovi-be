@@ -173,7 +173,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "           ELSE P1.POST_ID IS NOT NULL "
 					+ "      END "
 					+ "ORDER BY (P1.IMPORTANT_IMAGE_URL <> '' AND P1.IMPORTANT_IMAGE_URL IS NOT NULL) DESC, "
-					+ "          P1.CREATED_AT DESC "
+					+ "          P1.CREATED_AT DESC, P1.POST_ID "
 	)
 	Page<PostEntity> findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
 			Set<Integer> directionsIds, Set<Integer> typesIds, Set<Integer> originsIds, PostStatus postStatus,
