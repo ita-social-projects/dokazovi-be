@@ -213,11 +213,11 @@ public class UserController {
 
 	/**
 	 * Gets current user's authorities.
-	 * Checks if userPrincipal exists via findExpertById method.
+	 * Checks if userPrincipal not null.
 	 * If no - returns HttpStatus 'NOT FOUND'.
 	 *
-	 * @param userPrincipal id of user that we want to get
-	 * @return found user and HttpStatus 'OK'
+	 * @param userPrincipal authorities of user that we want to get
+	 * @return found user's authorities and HttpStatus 'OK'
 	 */
 
 	@GetMapping(USER_GET_AUTHORITIES)
