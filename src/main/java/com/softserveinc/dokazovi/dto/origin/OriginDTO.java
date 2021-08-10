@@ -23,6 +23,6 @@ public class OriginDTO {
 	@NotBlank(message = "Origin name cannot be empty")
 	private String name;
 
-	@NotBlank(message = "Origin parameter cannot be empty")
-	private String parameter;
+	@NotBlank(message = "Origin parameters cannot be empty")
+	private String parameters;
 }
