@@ -211,12 +211,25 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
+	/**
+	 * Gets current user's authorities.
+	 * Checks if userPrincipal exists via findExpertById method.
+	 * If no - returns HttpStatus 'NOT FOUND'.
+	 *
+	 * @param userPrincipal id of user that we want to get
+	 * @return found user and HttpStatus 'OK'
+	 */
+
 	@GetMapping(USER_GET_AUTHORITIES)
 	@ApiOperation(value = "Get user's authorities",
 			authorizations = {@Authorization(value = "Authorization")})
 	public ResponseEntity<Collection<? extends GrantedAuthority>> getAuthorities(
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		return ResponseEntity.status(userService.findByEmail(userPrincipal.getEmail()) != null
-				? HttpStatus.OK : HttpStatus.NOT_FOUND).body(userPrincipal.getAuthorities());
+		Collection<? extends GrantedAuthority> authorities = null;
+		if (userPrincipal != null) {
+			authorities = userPrincipal.getAuthorities();
+		}
+		return ResponseEntity.status(authorities != null
+				? HttpStatus.OK : HttpStatus.NOT_FOUND).body(authorities);
 	}
 }
