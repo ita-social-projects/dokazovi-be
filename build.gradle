@@ -1,103 +1,148 @@
 plugins {
-	id 'org.springframework.boot' version '2.3.4.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-	id 'java'
-	id 'war'
-	id 'idea'
-	id 'checkstyle'
-	id 'jacoco'
-	id 'org.sonarqube' version '3.0'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+    id 'war'
+    id 'idea'
+    id 'checkstyle'
+    id 'jacoco'
+    id 'org.sonarqube' version '3.0'
 }
 
 group = 'com.softserveinc'
 sourceCompatibility = '11'
 
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+idea {
+    module {
+        testSourceDirs += project.sourceSets.integrationTest.java.srcDirs
+        testSourceDirs += project.sourceSets.integrationTest.resources.srcDirs
+    }
+}
+
+task integrationTest(type: Test) {
+    description("Runs integration tests")
+    group("verification")
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    useJUnitPlatform()
+}
+
+
 bootRun {
-	main = "com.softserveinc.dokazovi.DokazoviApplication"
+    main = "com.softserveinc.dokazovi.DokazoviApplication"
 }
 
 checkstyleMain {
-	configFile = file("${rootDir}/checkstyle.xml")
+    configFile = file("${rootDir}/checkstyle.xml")
 }
 
 checkstyleTest {
-	configFile = file("${rootDir}/checkstyle.xml")
+    configFile = file("${rootDir}/checkstyle.xml")
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+checkstyleIntegrationTest {
+    configFile = file("${rootDir}/checkstyle.xml")
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 springBoot {
-	buildInfo()
+    buildInfo()
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntime
+    compileOnly.extendsFrom annotationProcessor
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.codehaus.groovy') {
+            details.useVersion '3.0.8'
+        }
+    }
 }
 
 dependencies {
-	compile group: 'org.springframework.security', name: 'spring-security-oauth2-client'
-	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-	compile group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
-	compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    implementation group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
+    implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
 
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-mail:2.3.12.RELEASE'
-	implementation group: 'com.google.apis', name: 'google-api-services-analytics', version: 'v3-rev161-1.25.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-mail:2.3.12.RELEASE'
+    implementation group: 'com.google.apis', name: 'google-api-services-analytics', version: 'v3-rev161-1.25.0'
 	implementation group: 'com.google.api-client', name: 'google-api-client', version: '1.31.5'
 
-	implementation 'org.flywaydb:flyway-core'
-	implementation "org.mapstruct:mapstruct:${MAPPER_VERSION}"
-	annotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
-	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
-	compileOnly "org.projectlombok:lombok"
-	annotationProcessor "org.projectlombok:lombok"
+    implementation 'org.flywaydb:flyway-core'
+    implementation "org.mapstruct:mapstruct:${MAPPER_VERSION}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
+    integrationTestAnnotationProcessor "org.mapstruct:mapstruct-processor:${MAPPER_VERSION}"
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
 
-	implementation 'io.springfox:springfox-boot-starter:3.0.0'
-	runtimeOnly 'org.postgresql:postgresql'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'org.postgresql:postgresql'
 
-	testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.9'
-	testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.9'
-	testImplementation "com.h2database:h2"
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
+    testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.9'
+    testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.9'
+    testImplementation "com.h2database:h2"
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    integrationTestImplementation('io.rest-assured:rest-assured') {
+        exclude group: 'com.sun.xml.bind', module: 'jaxb-osgi'
+    }
+    integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: '1.15.3'
+    integrationTestImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.15.3'
+    integrationTestImplementation group: 'org.testcontainers', name: 'database-commons', version: '1.15.3'
 }
 
+check.dependsOn integrationTest
+
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 jacoco {
-	toolVersion = "0.8.5"
+    toolVersion = "0.8.5"
 }
 
 jacocoTestReport {
-	dependsOn test
-	reports {
-		xml.enabled true
-	}
+    dependsOn test, integrationTest
+    reports {
+        xml.enabled true
+    }
 }
 
 sonarqube {
-	tasks['sonarqube'].dependsOn jacocoTestReport
-	properties {
-		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.projectKey", "ita-social-projects_dokazovi-be"
-		property "sonar.organization", "ita-social-projects"
-		property "sonar.jacoco.reportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
-		property "sonar.coverage.exclusions", "**/*.sql," +
-				"src/main/java/com/softserveinc/dokazovi/entity/**," +
-				"src/main/java/com/softserveinc/dokazovi/dto/**," +
-				"src/main/java/com/softserveinc/dokazovi/exception/**," +
-				"src/main/java/com/softserveinc/dokazovi/security/**," +
-				"src/main/java/com/softserveinc/dokazovi/analytics/**," +
-				"src/main/java/com/softserveinc/dokazovi/config/**"
-	}
+    tasks['sonarqube'].dependsOn jacocoTestReport
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.projectKey", "ita-social-projects_dokazovi-be"
+        property "sonar.organization", "ita-social-projects"
+        property "sonar.jacoco.reportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.coverage.exclusions", "**/*.sql," +
+                "src/main/java/com/softserveinc/dokazovi/entity/**," +
+                "src/main/java/com/softserveinc/dokazovi/dto/**," +
+                "src/main/java/com/softserveinc/dokazovi/exception/**," +
+                "src/main/java/com/softserveinc/dokazovi/security/**," +
+                "src/main/java/com/softserveinc/dokazovi/analytics/**," +
+                "src/main/java/com/softserveinc/dokazovi/config/**"
+    }
 }
