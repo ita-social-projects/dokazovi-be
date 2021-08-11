@@ -37,8 +37,12 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_US
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWORD;
+import static com.softserveinc.dokazovi.entity.enumerations.RolePermission.DELETE_POST;
+import static com.softserveinc.dokazovi.entity.enumerations.RolePermission.SAVE_OWN_PUBLICATION;
+import static com.softserveinc.dokazovi.entity.enumerations.RolePermission.SAVE_TAG;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,7 +56,7 @@ class UserControllerTest {
 	private MockMvc mockMvc;
 
 	@Mock
-	UserPrincipal userPrincipal;
+	private UserPrincipal userPrincipal;
 	@Mock
 	private UserService userService;
 	@Mock
@@ -303,5 +307,15 @@ class UserControllerTest {
 		String uri = USER_GET_AUTHORITIES;
 		when(userPrincipal.getAuthorities()).thenReturn(null);
 		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void getAuthoritiesTestOk() throws Exception {
+		Collection<? extends GrantedAuthority> authorities = Set.of(SAVE_OWN_PUBLICATION,
+				SAVE_TAG,
+				DELETE_POST);
+		String uri = USER + USER_GET_AUTHORITIES;
+		doReturn(authorities).when(userPrincipal).getAuthorities();
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
 	}
 }
