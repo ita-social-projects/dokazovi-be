@@ -20,16 +20,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_AUTHORITIES;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
@@ -293,5 +296,12 @@ class UserControllerTest {
 		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 		when(passwordResetTokenService.validatePasswordResetToken(token)).thenReturn(true);
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
+	}
+
+	@Test
+	void getAuthoritiesTestNotFound() throws Exception {
+		String uri = USER_GET_AUTHORITIES;
+		when(userPrincipal.getAuthorities()).thenReturn(null);
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 	}
 }
