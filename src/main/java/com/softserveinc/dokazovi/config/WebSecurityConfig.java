@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.DIRECTION;
+import static com.softserveinc.dokazovi.controller.EndPoints.FOREIGN_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.ORIGIN;
 import static com.softserveinc.dokazovi.controller.EndPoints.PLATFORM_INFORMATION;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
@@ -117,7 +118,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/auth/**", "/oauth2/**")
 					.permitAll()
 				.antMatchers(openApi(USER), openApi(POST), openApi(TAG), openApi(DIRECTION), openApi(REGION),
-							 openApi(VERSION), openApi(POST_TYPES), openApi(ORIGIN), openApi(PLATFORM_INFORMATION))
+							 openApi(VERSION), openApi(POST_TYPES), openApi(ORIGIN), openApi(PLATFORM_INFORMATION), openApi(FOREIGN_EXPERT))
 					.permitAll()
 				.anyRequest()
 					.authenticated()
