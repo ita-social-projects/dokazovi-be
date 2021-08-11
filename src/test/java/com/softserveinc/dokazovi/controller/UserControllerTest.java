@@ -305,9 +305,10 @@ class UserControllerTest {
 
 	@Test
 	void getAuthoritiesTestNotFound() throws Exception {
-		String uri = USER_GET_AUTHORITIES;
+		String uri = USER + USER_GET_AUTHORITIES;
 		when(userPrincipal.getAuthorities()).thenReturn(null);
-		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+		mockMvc.perform(get(uri)).andReturn();
+		Assertions.assertNull(userPrincipal.getAuthorities());
 	}
 
 	@Test
