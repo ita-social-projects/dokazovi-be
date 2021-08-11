@@ -343,4 +343,14 @@ class UserControllerTest {
 		Assertions.assertNotNull(userPrincipal);
 		Assertions.assertEquals(expected, actual);
 	}
+
+	@Test
+	void getAuthoritiesTestOk() throws Exception {
+		Collection<? extends GrantedAuthority> authorities = Set.of(SAVE_OWN_PUBLICATION,
+				SAVE_TAG,
+				DELETE_POST);
+		String uri = USER + USER_GET_AUTHORITIES;
+		doReturn(authorities).when(userPrincipal).getAuthorities();
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+	}
 }
