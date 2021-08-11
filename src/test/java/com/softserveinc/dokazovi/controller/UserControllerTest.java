@@ -8,6 +8,7 @@ import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -311,11 +312,13 @@ class UserControllerTest {
 
 	@Test
 	void getAuthoritiesTestOk() throws Exception {
-		Collection<? extends GrantedAuthority> authorities = Set.of(SAVE_OWN_PUBLICATION,
+		Collection<? extends GrantedAuthority> expected = Set.of(SAVE_OWN_PUBLICATION,
 				SAVE_TAG,
 				DELETE_POST);
 		String uri = USER + USER_GET_AUTHORITIES;
-		doReturn(authorities).when(userPrincipal).getAuthorities();
+		doReturn(expected).when(userPrincipal).getAuthorities();
+		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
+		Assertions.assertEquals(expected, actual);
 	}
 }
