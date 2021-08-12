@@ -19,6 +19,7 @@ public interface PostMapper {
 	@Mapping(target = "author.firstName", source = "foreignAuthor.fullName")
 	@Mapping(target = "author.bio", source = "foreignAuthor.bio")
 	@Mapping(target = "author.avatar", source = "foreignAuthor.avatar")
+	@Mapping(target = "foreignAuthorId", source = "foreignAuthor.id")
 	PostDTO translationToPostDTO(PostEntity postEntity);
 
 	default PostDTO toPostDTO(PostEntity postEntity) {
