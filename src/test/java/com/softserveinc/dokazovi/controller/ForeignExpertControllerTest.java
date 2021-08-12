@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.FOREIGN_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.FOREIGN_EXPERT_SEARCH;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
