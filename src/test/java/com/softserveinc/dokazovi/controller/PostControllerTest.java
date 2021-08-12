@@ -50,6 +50,8 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_TRANSLATION_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_TRANSLATION_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
@@ -230,6 +232,30 @@ class PostControllerTest {
 				get(POST + POST_LATEST_BY_EXPERT_AND_STATUS + "?expert=2&types=1,2&status=DRAFT"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByExpertAndTypeAndStatus(expertId, typeId, postStatus, pageable);
+	}
+
+	@Test
+	void findLatestTranslationByExpert() throws Exception {
+		Integer expertId = 2;
+		Set<Integer> typeId = Set.of(1, 2);
+		Set<Integer> directionId = Set.of(1, 2, 3);
+		Pageable pageable = PageRequest.of(0, 10);
+		mockMvc.perform(
+						get(POST + POST_LATEST_TRANSLATION_BY_EXPERT + "?expert=2&type=1,2&direction=1,2,3"))
+				.andExpect(status().isOk());
+		verify(postService).findAllTranslationsByExpertAndTypeAndDirections(expertId, typeId, directionId, pageable);
+	}
+
+	@Test
+	void findLatestTranslationByExpertAndStatus() throws Exception {
+		Integer expertId = 2;
+		Set<Integer> typeId = Set.of(1, 2);
+		PostStatus postStatus = PostStatus.DRAFT;
+		Pageable pageable = PageRequest.of(0, 10);
+		mockMvc.perform(
+						get(POST + POST_LATEST_TRANSLATION_BY_EXPERT_AND_STATUS + "?expert=2&types=1,2&status=DRAFT"))
+				.andExpect(status().isOk());
+		verify(postService).findAllTranslationsByExpertAndTypeAndStatus(expertId, typeId, postStatus, pageable);
 	}
 
 	@Test
