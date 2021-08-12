@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.foreignexpert.ForeignExpertDTO;
+import com.softserveinc.dokazovi.dto.foreignexpert.ForeignExpertSaveDTO;
 import com.softserveinc.dokazovi.dto.foreignexpert.ForeignExpertSearchResultDTO;
 import com.softserveinc.dokazovi.entity.ForeignExpertEntity;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
@@ -26,7 +27,7 @@ public class ForeignExpertServiceImpl implements ForeignExpertService {
 	private final ForeignExpertMapper foreignExpertMapper;
 
 	@Override
-	public ForeignExpertDTO save(ForeignExpertSearchResultDTO saveDTO, UserPrincipal userPrincipal) {
+	public ForeignExpertDTO save(ForeignExpertSaveDTO saveDTO, UserPrincipal userPrincipal) {
 		if (userPrincipal.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("SAVE_FOREIGN_EXPERT"))) {
 			throw new ForbiddenPermissionsException();
 		}
@@ -42,7 +43,7 @@ public class ForeignExpertServiceImpl implements ForeignExpertService {
 				.map(foreignExpertMapper::toForeignExpertSearchResultDTO);
 	}
 
-	private ForeignExpertEntity getEntityFromSaveDTO(ForeignExpertSearchResultDTO saveDTO) {
+	private ForeignExpertEntity getEntityFromSaveDTO(ForeignExpertSaveDTO saveDTO) {
 		Integer id = saveDTO.getId();
 		ForeignExpertEntity entity;
 		if (id == null) {

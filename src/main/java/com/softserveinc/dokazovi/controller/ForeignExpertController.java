@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.foreignexpert.ForeignExpertDTO;
+import com.softserveinc.dokazovi.dto.foreignexpert.ForeignExpertSaveDTO;
 import com.softserveinc.dokazovi.dto.foreignexpert.ForeignExpertSearchResultDTO;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.ForeignExpertService;
@@ -50,7 +51,7 @@ public class ForeignExpertController {
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
 	})
 	public ResponseEntity<ForeignExpertDTO> save(
-			@Valid @RequestBody ForeignExpertSearchResultDTO saveDTO,
+			@Valid @RequestBody ForeignExpertSaveDTO saveDTO,
 			@AuthenticationPrincipal UserPrincipal userPrincipal
 	) {
 		return ResponseEntity

@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.mapper;
 
 import com.softserveinc.dokazovi.dto.foreignexpert.ForeignExpertDTO;
+import com.softserveinc.dokazovi.dto.foreignexpert.ForeignExpertSaveDTO;
 import com.softserveinc.dokazovi.dto.foreignexpert.ForeignExpertSearchResultDTO;
 import com.softserveinc.dokazovi.entity.ForeignExpertEntity;
 import org.mapstruct.Mapper;
@@ -13,8 +14,15 @@ public interface ForeignExpertMapper {
 
 	ForeignExpertEntity toForeignExpertEntity(ForeignExpertSearchResultDTO saveDTO);
 
+	ForeignExpertEntity toForeignExpertEntity(ForeignExpertSaveDTO saveDTO);
+
 	ForeignExpertEntity updateForeignExpertEntityFromDTO(
 			ForeignExpertSearchResultDTO saveDTO,
+			@MappingTarget ForeignExpertEntity entity
+	);
+
+	ForeignExpertEntity updateForeignExpertEntityFromDTO(
+			ForeignExpertSaveDTO saveDTO,
 			@MappingTarget ForeignExpertEntity entity
 	);
 
