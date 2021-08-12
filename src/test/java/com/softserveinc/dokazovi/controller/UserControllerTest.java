@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -24,6 +25,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -67,11 +72,24 @@ class UserControllerTest {
 	@InjectMocks
 	private UserController userController;
 
+	private HandlerMethodArgumentResolver methodArgumentResolver = new HandlerMethodArgumentResolver() {
+		@Override
+		public boolean supportsParameter(MethodParameter parameter) {
+			return parameter.getParameterType().isAssignableFrom(UserPrincipal.class);
+		}
+
+		@Override
+		public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+				NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+			return userPrincipal;
+		}
+	};
+
 	@BeforeEach
 	public void init() {
 		this.mockMvc = MockMvcBuilders
 				.standaloneSetup(userController)
-				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+				.setCustomArgumentResolvers(methodArgumentResolver, new PageableHandlerMethodArgumentResolver())
 				.build();
 	}
 
@@ -213,7 +231,7 @@ class UserControllerTest {
 				.id(existingUserId)
 				.build();
 
-		when(userService.findExpertById(any(Integer.class))).thenReturn(userDTO);
+		when(userService.findExpertById(any(Integer.class))).thenReturn(null);
 		when(userPrincipal.getId()).thenReturn(9);
 		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 	}
@@ -304,10 +322,10 @@ class UserControllerTest {
 	}
 
 	@Test
-	void getAuthoritiesTest() throws Exception {
+	void getAuthoritiesTestNotFound() throws Exception {
 		String uri = USER + USER_GET_AUTHORITIES;
 		when(userPrincipal.getAuthorities()).thenReturn(null);
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
 		Assertions.assertNull(actual);
 	}
@@ -321,7 +339,6 @@ class UserControllerTest {
 		doReturn(expected).when(userPrincipal).getAuthorities();
 		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
-		verify(userPrincipal).getAuthorities();
 		Assertions.assertNotNull(actual);
 		Assertions.assertNotNull(userPrincipal);
 		Assertions.assertEquals(expected, actual);
