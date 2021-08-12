@@ -304,15 +304,14 @@ class UserControllerTest {
 	}
 
 	@Test
-	void getAuthoritiesTestNotFound() throws Exception {
+	void getAuthoritiesTest() throws Exception {
 		String uri = USER + USER_GET_AUTHORITIES;
 		when(userPrincipal.getAuthorities()).thenReturn(null);
-		mockMvc.perform(get(uri)).andReturn();
-		Assertions.assertNull(userPrincipal.getAuthorities());
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
 	}
 
 	@Test
-	void getAuthoritiesTestOk() throws Exception {
+	void getAuthoritiesTestIsOk() throws Exception {
 		Collection<? extends GrantedAuthority> expected = Set.of(SAVE_OWN_PUBLICATION,
 				SAVE_TAG,
 				DELETE_POST);
