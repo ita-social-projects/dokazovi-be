@@ -304,6 +304,15 @@ class UserControllerTest {
 	}
 
 	@Test
+	void getAuthoritiesTest() throws Exception {
+		String uri = USER + USER_GET_AUTHORITIES;
+		when(userPrincipal.getAuthorities()).thenReturn(null);
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
+		Assertions.assertNull(actual);
+	}
+
+	@Test
 	void getAuthoritiesTestIsOk() throws Exception {
 		Collection<? extends GrantedAuthority> expected = Set.of(SAVE_OWN_PUBLICATION,
 				SAVE_TAG,
@@ -312,6 +321,7 @@ class UserControllerTest {
 		doReturn(expected).when(userPrincipal).getAuthorities();
 		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
+		verify(userPrincipal).getAuthorities();
 		Assertions.assertNotNull(actual);
 		Assertions.assertNotNull(userPrincipal);
 		Assertions.assertEquals(expected, actual);
