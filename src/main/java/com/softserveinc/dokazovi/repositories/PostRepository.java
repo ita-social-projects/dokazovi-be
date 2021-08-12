@@ -170,4 +170,35 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
 			Set<Integer> directionsIds, Set<Integer> typesIds, Set<Integer> originsIds, PostStatus postStatus,
 			Boolean important, Pageable pageable);
+
+	Page<PostEntity> findAllByForeignAuthorIdAndStatus(
+			Integer foreignAuthorId, PostStatus postStatus, Pageable pageable);
+
+	Page<PostEntity> findAllByForeignAuthorIdAndTypeIdInAndStatus(
+			Integer foreignAuthorId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
+
+	@Query(nativeQuery = true,
+			value = " SELECT P.* "
+					+ " FROM POSTS P "
+					+ " WHERE (P.FOREIGN_EXPERT_ID IN (:foreignAuthorId)) "
+					+ "  AND (array_length(ARRAY [(:directionsIds)], 1) > 0 "
+					+ "    AND P.POST_ID IN (SELECT POST_ID "
+					+ "                      FROM POSTS_DIRECTIONS "
+					+ "                      WHERE DIRECTION_ID IN (:directionsIds))) "
+					+ "  AND P.STATUS IN ('PUBLISHED')")
+	Page<PostEntity> findPostsByForeignAuthorIdAndDirections(
+			Pageable pageable, Integer foreignAuthorId, Set<Integer> directionsIds);
+
+	@Query(nativeQuery = true,
+			value = " SELECT P.* FROM POSTS P "
+					+ " WHERE (P.FOREIGN_EXPERT_ID IN (:authorId)) "
+					+ " AND(array_length(ARRAY[(:typesIds)],1)>0 "
+					+ "    AND P.TYPE_ID IN (:typesIds)) "
+					+ "  AND (array_length(ARRAY [(:directionsIds)], 1) > 0 "
+					+ "    AND P.POST_ID IN (SELECT POST_ID "
+					+ "                       FROM POSTS_DIRECTIONS "
+					+ "                       WHERE DIRECTION_ID IN (:directionsIds)))"
+					+ " AND P.STATUS IN ('PUBLISHED') ")
+	Page<PostEntity> findAllTranslationsByExpertAndByDirectionsAndByPostType(Integer authorId, Set<Integer> typesIds,
+			Set<Integer> directionsIds, Pageable pageable);
 }

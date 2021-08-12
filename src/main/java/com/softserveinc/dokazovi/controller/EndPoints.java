@@ -34,6 +34,8 @@ public final class EndPoints {
 	public static final String POST_LATEST_BY_DIRECTION = "/latest-by-direction";
 	public static final String POST_LATEST_BY_EXPERT = "/latest-by-expert";
 	public static final String POST_LATEST_BY_EXPERT_AND_STATUS = "/latest-by-expert-and-status";
+	public static final String POST_LATEST_TRANSLATION_BY_EXPERT = "/latest-translation-by-expert";
+	public static final String POST_LATEST_TRANSLATION_BY_EXPERT_AND_STATUS = "/latest-translation-by-expert-and-status";
 	public static final String POST_VIEW_COUNT = "/post-view-count";
 	public static final String DIRECTION = "/direction";
 	public static final String ORIGIN = "/origin";

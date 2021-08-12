@@ -5,7 +5,8 @@ CREATE TABLE FOREIGN_EXPERTS
              PRIMARY KEY,
 
     FULL_NAME VARCHAR,
-    BIO VARCHAR
+    BIO VARCHAR,
+    AVATAR VARCHAR
 );
 
 -- This index is used to speed up simple `LIKE 'someSearchPrefix%' queries.

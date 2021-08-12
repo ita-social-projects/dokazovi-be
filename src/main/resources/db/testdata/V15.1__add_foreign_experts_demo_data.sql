@@ -21,6 +21,7 @@ DECLARE
     VAR_USER_ID INTEGER;
     VAR_FIRST_NAME VARCHAR;
     VAR_LAST_NAME VARCHAR;
+    VAR_AVATAR VARCHAR;
     VAR_BIO VARCHAR;
     VAR_FULL_NAME VARCHAR;
     VAR_FOREIGN_EXPERT_ID INTEGER;
@@ -44,11 +45,11 @@ BEGIN
             INTO VAR_USER_ID;
 
         -- Find it's author
-        SELECT first_name, last_name
+        SELECT first_name, last_name, avatar
             FROM public.users
             WHERE user_id = VAR_USER_ID
             LIMIT 1
-            INTO VAR_FIRST_NAME, VAR_LAST_NAME;
+            INTO VAR_FIRST_NAME, VAR_LAST_NAME, VAR_AVATAR;
 
         -- If we have a corresponding doctor entry...
         IF (SELECT EXISTS(SELECT * FROM public.doctors WHERE user_id = VAR_USER_ID)) THEN
@@ -69,8 +70,8 @@ BEGIN
         -- If we DO NOT have a corresponding foreign_expert entry...
         IF NOT (SELECT EXISTS(SELECT * FROM public.foreign_experts WHERE full_name = VAR_FULL_NAME)) THEN
             -- Create it
-            INSERT INTO public.foreign_experts (full_name, bio)
-            VALUES (VAR_FULL_NAME, VAR_BIO);
+            INSERT INTO public.foreign_experts (full_name, bio, avatar)
+            VALUES (VAR_FULL_NAME, VAR_BIO, VAR_AVATAR);
         END IF;
 
         -- Get the foreign_expert id
@@ -82,8 +83,7 @@ BEGIN
 
         -- Set post's foreign expert id
         UPDATE public.posts
-            SET foreign_expert_id = VAR_FOREIGN_EXPERT_ID,
-                author_id = NULL
+            SET foreign_expert_id = VAR_FOREIGN_EXPERT_ID
             WHERE post_id = VAR_POST_ID;
     END LOOP;
 END $$;

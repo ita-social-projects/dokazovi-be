@@ -18,4 +18,6 @@ public class ForeignExpertSaveDTO {
 	private String fullName;
 
 	private String bio;
+
+	private String avatar;
 }

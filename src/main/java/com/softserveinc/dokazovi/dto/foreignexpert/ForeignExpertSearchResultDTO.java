@@ -13,4 +13,6 @@ public class ForeignExpertSearchResultDTO {
 	private Integer id;
 
 	private String fullName;
+
+	private String avatar;
 }

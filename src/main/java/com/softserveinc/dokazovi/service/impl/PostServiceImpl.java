@@ -324,4 +324,38 @@ public class PostServiceImpl implements PostService {
 		return postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
 				directions, types, origins, PostStatus.PUBLISHED, false, pageable).map(postMapper::toPostDTO);
 	}
+
+	@Override
+	public Page<PostDTO> findAllTranslationsByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId,
+			Set<Integer> directionId, Pageable pageable) {
+		if (typeId == null && directionId == null) {
+			return postRepository.findAllByForeignAuthorIdAndStatus(expertId, PostStatus.PUBLISHED, pageable)
+					.map(postMapper::toPostDTO);
+		}
+		if (typeId == null) {
+			return postRepository.findPostsByForeignAuthorIdAndDirections(pageable, expertId, directionId)
+					.map(postMapper::toPostDTO);
+		}
+		if (directionId == null) {
+			return postRepository
+					.findAllByForeignAuthorIdAndTypeIdInAndStatus(expertId, typeId, PostStatus.PUBLISHED, pageable)
+					.map(postMapper::toPostDTO);
+		}
+		return postRepository.findAllTranslationsByExpertAndByDirectionsAndByPostType(
+				expertId, typeId, directionId, pageable)
+				.map(postMapper::toPostDTO);
+	}
+
+	@Override
+	public Page<PostDTO> findAllTranslationsByExpertAndTypeAndStatus(Integer expertId, Set<Integer> typeId,
+			PostStatus postStatus, Pageable pageable) {
+		if (typeId == null) {
+			return postRepository
+					.findAllByForeignAuthorIdAndStatus(expertId, postStatus, pageable)
+					.map(postMapper::toPostDTO);
+		}
+		return postRepository
+				.findAllByForeignAuthorIdAndTypeIdInAndStatus(expertId, typeId, postStatus, pageable)
+				.map(postMapper::toPostDTO);
+	}
 }

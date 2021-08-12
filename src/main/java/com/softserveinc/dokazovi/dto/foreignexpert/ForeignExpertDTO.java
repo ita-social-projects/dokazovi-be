@@ -13,4 +13,5 @@ public class ForeignExpertDTO {
 	private Integer id;
 	private String fullName;
 	private String bio;
+	private String avatar;
 }

@@ -29,4 +29,7 @@ public class ForeignExpertEntity {
 
 	@Column(name = "bio")
 	private String bio;
+
+	@Column(name = "avatar")
+	private String avatar;
 }
