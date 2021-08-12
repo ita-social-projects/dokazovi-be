@@ -118,7 +118,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/auth/**", "/oauth2/**")
 					.permitAll()
 				.antMatchers(openApi(USER), openApi(POST), openApi(TAG), openApi(DIRECTION), openApi(REGION),
-							 openApi(VERSION), openApi(POST_TYPES), openApi(ORIGIN), openApi(PLATFORM_INFORMATION), openApi(FOREIGN_EXPERT))
+							 openApi(VERSION), openApi(POST_TYPES), openApi(ORIGIN), openApi(PLATFORM_INFORMATION),
+						     openApi(FOREIGN_EXPERT))
 					.permitAll()
 				.anyRequest()
 					.authenticated()
