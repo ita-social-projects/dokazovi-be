@@ -45,8 +45,6 @@ public interface PostService {
 
 	Integer getPostViewCount(String url);
 
-	Page<PostDTO> getAllByImportantImageUrl(Pageable pageable);
-
 	Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
 }
