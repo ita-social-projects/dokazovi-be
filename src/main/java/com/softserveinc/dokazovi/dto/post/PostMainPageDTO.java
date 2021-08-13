@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,5 +14,5 @@ import java.util.Set;
 public class PostMainPageDTO {
 
 	private String fieldName;
-	private Set<PostDTO> postDTOS;
+	private List<PostDTO> postDTOS;
 }
