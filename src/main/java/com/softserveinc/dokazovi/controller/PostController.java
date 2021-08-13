@@ -1,17 +1,22 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.direction.DirectionDTOForSavingPost;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
+import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
+import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -66,6 +71,8 @@ public class PostController {
 
 	private final PostService postService;
 	private final PostTypeService postTypeService;
+	private final UserService userService;
+	private final DirectionService directionService;
 
 	/**
 	 * Saves(creates) new post.
@@ -86,6 +93,11 @@ public class PostController {
 	})
 	public ResponseEntity<PostDTO> save(@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		UserEntity userEntity = userService.getById(postSaveFromUserDTO.getAuthorId());
+		postSaveFromUserDTO.getDirections().stream()
+				.map(DirectionDTOForSavingPost::getId)
+				.forEach(directionId -> userEntity.getDoctor().getDirections().add(directionService.getById(directionId)));
+		userService.update(userEntity);
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(postService.saveFromUser(postSaveFromUserDTO, userPrincipal));

@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
+import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.mapper.DirectionMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.service.DirectionService;
@@ -48,6 +49,17 @@ public class DirectionServiceImpl implements DirectionService {
 		return directionRepository.findAllDirectionsByUserId(userId).stream()
 				.map(directionMapper::toDirectionDTO)
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Gets direction by id
+	 *
+	 * @param id direction id
+	 * @return direction with appropriate id
+	 */
+	@Override
+	public DirectionEntity getById(Integer id) {
+		return directionRepository.findById(id).orElse(null);
 	}
 
 	/**
