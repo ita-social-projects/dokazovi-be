@@ -255,7 +255,7 @@ public class PostServiceImpl implements PostService {
 	public Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId,
 			Set<Integer> directionId, Pageable pageable) {
 		if (typeId == null && directionId == null) {
-			return postRepository.findAllByAuthorIdAndStatus(expertId, PostStatus.PUBLISHED, pageable)
+			return postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(expertId, PostStatus.PUBLISHED, pageable)
 					.map(postMapper::toPostDTO);
 		}
 		if (typeId == null) {
@@ -276,7 +276,7 @@ public class PostServiceImpl implements PostService {
 			PostStatus postStatus, Pageable pageable) {
 		if (typeId == null) {
 			return postRepository
-					.findAllByAuthorIdAndStatus(expertId, postStatus, pageable)
+					.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(expertId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		}
 		return postRepository
