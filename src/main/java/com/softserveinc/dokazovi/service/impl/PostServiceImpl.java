@@ -234,19 +234,19 @@ public class PostServiceImpl implements PostService {
 		PostMainPageDTO expertOptions = PostMainPageDTO.builder()
 				.fieldName("expertOpinion")
 				.postDTOS(postRepository.findLatestByPostTypeExpertOpinion(PageRequest.of(pageable.getPageNumber(), 4))
-						.map(postMapper::toPostDTO).toSet()).build();
+						.map(postMapper::toPostDTO).toList()).build();
 		PostMainPageDTO media = PostMainPageDTO.builder()
 				.fieldName("media")
 				.postDTOS(postRepository.findLatestByPostTypeMedia(PageRequest.of(pageable.getPageNumber(), 4))
-						.map(postMapper::toPostDTO).toSet()).build();
+						.map(postMapper::toPostDTO).toList()).build();
 		PostMainPageDTO translation = PostMainPageDTO.builder()
 				.fieldName("translation")
 				.postDTOS(postRepository.findLatestByPostTypeTranslation(PageRequest.of(pageable.getPageNumber(), 4))
-						.map(postMapper::toPostDTO).toSet()).build();
+						.map(postMapper::toPostDTO).toList()).build();
 		PostMainPageDTO video = PostMainPageDTO.builder()
 				.fieldName("video")
 				.postDTOS(postRepository.findLatestByOriginVideo(PageRequest.of(pageable.getPageNumber(), 4))
-						.map(postMapper::toPostDTO).toSet()).build();
+						.map(postMapper::toPostDTO).toList()).build();
 
 		return new PageImpl<>(List.of(expertOptions, media, translation, video));
 	}
