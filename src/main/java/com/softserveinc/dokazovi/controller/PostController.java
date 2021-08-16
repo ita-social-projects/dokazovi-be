@@ -406,8 +406,10 @@ public class PostController {
 	 */
 	@ApiPageable
 	@ApiOperation(value = "Get published posts sorted by important image url presence then by createdAt, "
-			+ "filtered by directions, types and origins.")
+			+ "filtered by directions, types and origins.",
+			authorizations = {@Authorization(value = "Authorization")})
 	@GetMapping(POST_GET_BY_IMPORTANT_IMAGE)
+	@PreAuthorize("hasAuthority('SET_IMPORTANCE')")
 	public ResponseEntity<Page<PostDTO>> findPublishedNotImportantPostsSortedByImportantImagePresence(
 			@PageableDefault Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
