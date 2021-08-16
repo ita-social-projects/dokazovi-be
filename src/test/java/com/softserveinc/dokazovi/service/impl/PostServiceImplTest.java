@@ -346,7 +346,7 @@ class PostServiceImplTest {
 	@Test
 	void findAllByExpert() {
 		Integer expertId = 3;
-		when(postRepository.findAllByAuthorIdAndStatus(
+		when(postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(
 				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByExpertAndTypeAndDirections(expertId, null, null, pageable);
@@ -391,7 +391,7 @@ class PostServiceImplTest {
 	void findAllByExpertAndStatus() {
 		Integer expertId = 3;
 		PostStatus postStatus = PostStatus.DRAFT;
-		when(postRepository.findAllByAuthorIdAndStatus(
+		when(postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(
 				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByExpertAndTypeAndStatus(expertId, null, postStatus, pageable);
