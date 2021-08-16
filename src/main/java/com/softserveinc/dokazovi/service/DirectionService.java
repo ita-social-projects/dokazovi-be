@@ -11,9 +11,13 @@ public interface DirectionService {
 
 	List<DirectionDTO> findAllDirectionsByUserId(Integer userId);
 
+	List<DirectionDTO> findAllDirectionsOfPostsByUserId(Integer userId);
+
 	DirectionEntity getById(Integer id);
 
 	void updateDirectionsHasDoctorsStatus();
 
 	void updateDirectionsHasPostsStatus();
+
+
 }

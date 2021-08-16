@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.service.impl;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.mapper.DirectionMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -58,5 +60,13 @@ class DirectionServiceImplTest {
 		directionService.updateDirectionsHasPostsStatus();
 		verify(directionRepository, times(1))
 				.updateDirectionsHasPostsStatus();
+	}
+
+	@Test
+	void getByIdTest() {
+		when(directionRepository.findById(3)).thenReturn(Optional.of(new DirectionEntity()));
+		DirectionEntity expected = directionService.getById(3);
+		DirectionEntity actual = new DirectionEntity();
+		Assertions.assertEquals(expected, actual);
 	}
 }

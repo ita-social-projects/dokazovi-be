@@ -52,6 +52,18 @@ public class DirectionServiceImpl implements DirectionService {
 	}
 
 	/**
+	 *
+	 * @param userId id of user
+	 * @return list of directions from all user posts
+	 */
+	@Override
+	public List<DirectionDTO> findAllDirectionsOfPostsByUserId(Integer userId) {
+		return directionRepository.findAllDirectionsOfPostsByUserId(userId).stream()
+				.map(directionMapper::toDirectionDTO)
+				.collect(Collectors.toList());
+	}
+
+	/**
 	 * Gets direction by id
 	 *
 	 * @param id direction id

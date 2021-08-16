@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.entity.DirectionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -53,5 +54,14 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
 					+ " WHERE AUTHOR_ID IN (:userId) ))")
 	@Modifying
 	List<DirectionEntity> findAllDirectionsByUserId(Integer userId);
+
+	/**
+	 * Gets all directions of posts which user has
+	 *
+	 * @param id id of user
+	 * @return list of directions
+	 */
+	@Query(nativeQuery = true, value = "SELECT * FROM directions d WHERE d.direction_id IN (SELECT DISTINCT direction_id FROM public.doctor_post_directions WHERE doctor_id = (:doctorId))")
+	List<DirectionEntity> findAllDirectionsOfPostsByUserId(@Param("doctorId") Integer id);
 }
 
