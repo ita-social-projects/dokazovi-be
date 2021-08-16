@@ -45,7 +45,6 @@ public class UserServiceImpl implements UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final PasswordResetTokenService passwordResetTokenService;
 	private final MailSenderService mailSenderService;
-//	private final DirectionService directionService;
 
 	private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
 	private static final String HAS_NO_REGIONS = "hasNoRegions";
@@ -263,14 +262,6 @@ public class UserServiceImpl implements UserService {
 		passwordResetTokenService.createPasswordResetTokenForUser(user, token);
 		mailSenderService.sendEmailWithToken(origin, token, user);
 	}
-
-//	@Override
-//	public void updateDirectionsByCreatedPost(UserEntity userEntity, PostSaveFromUserDTO postSaveFromUserDTO) {
-//		postSaveFromUserDTO.getDirections().stream()
-//				.map(DirectionDTOForSavingPost::getId)
-//				.forEach(directionId -> userEntity.getDoctor().getDirections().add(directionService.getById(directionId))); // add all directions which was selected while creating post to author of post
-//		update(userEntity);
-//	}
 
 	@Override
 	public boolean isPasswordMatches(UserEntity user, String password) {

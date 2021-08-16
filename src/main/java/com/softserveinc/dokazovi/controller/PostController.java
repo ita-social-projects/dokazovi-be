@@ -71,7 +71,6 @@ public class PostController {
 
 	private final PostService postService;
 	private final PostTypeService postTypeService;
-//	private final UserService userService;
 
 	/**
 	 * Saves(creates) new post.
@@ -92,10 +91,6 @@ public class PostController {
 	})
 	public ResponseEntity<PostDTO> save(@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
-
-//		UserEntity userEntity = userService.getById(postSaveFromUserDTO.getAuthorId()); // get userEntity of author
-//		userService.updateDirectionsByCreatedPost(userEntity, postSaveFromUserDTO);
-
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(postService.saveFromUser(postSaveFromUserDTO, userPrincipal));
