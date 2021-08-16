@@ -61,7 +61,10 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
 	 * @param id id of user
 	 * @return list of directions
 	 */
-	@Query(nativeQuery = true, value = "SELECT * FROM directions d WHERE d.direction_id IN (SELECT DISTINCT direction_id FROM public.doctor_post_directions WHERE doctor_id = (:doctorId))")
+	@Query(nativeQuery = true, value = "SELECT * FROM directions d "
+			+ "WHERE d.direction_id IN "
+			+ "(SELECT DISTINCT direction_id FROM public.doctor_post_directions "
+			+ "WHERE doctor_id = (:doctorId))")
 	List<DirectionEntity> findAllDirectionsOfPostsByUserId(@Param("doctorId") Integer id);
 }
 
