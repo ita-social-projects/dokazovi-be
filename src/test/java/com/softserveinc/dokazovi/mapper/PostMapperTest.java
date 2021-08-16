@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeIdOnlyDTO;
 import com.softserveinc.dokazovi.dto.user.LatestUserPostDTO;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
+import com.softserveinc.dokazovi.entity.ForeignExpertEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.PostTypeEntity;
@@ -17,6 +18,8 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class PostMapperTest {
 
@@ -27,6 +30,7 @@ class PostMapperTest {
 	private PostEntity post;
 	private DoctorEntity doctor;
 	private UserEntity author;
+	private ForeignExpertEntity foreignExpert;
 	private PostTypeEntity type;
 	private InstitutionEntity mainInstitution;
 	private PostSaveFromUserDTO postSaveFromUserDTO;
@@ -42,6 +46,13 @@ class PostMapperTest {
 				.id(1)
 				.firstName("Some firstname")
 				.lastName("Some lastname")
+				.avatar("Some avatar url")
+				.build();
+
+		foreignExpert = ForeignExpertEntity.builder()
+				.id(1)
+				.fullName("Some firstname Some lastname")
+				.bio("Some bio")
 				.avatar("Some avatar url")
 				.build();
 
@@ -132,5 +143,20 @@ class PostMapperTest {
 		assertEquals(postEntity.getContent(), postSaveFromUserDTO.getContent());
 		assertEquals(postEntity.getType().getId(), postSaveFromUserDTO.getType().getId());
 		assertEquals(postEntity.getDirections().hashCode(), postSaveFromUserDTO.getDirections().hashCode());
+	}
+
+	@Test
+	void toPostDTO_SimpleEntity_ReturnsSimpleDTO() {
+		PostEntity postEntity = post;
+		PostDTO dto = postMapper.toPostDTO(postEntity);
+		assertNull(dto.getForeignAuthorId());
+	}
+
+	@Test
+	void toPostDTO_TranslatedEntity_ReturnsTranslatedDTO() {
+		PostEntity postEntity = post;
+		post.setForeignAuthor(foreignExpert);
+		PostDTO dto = postMapper.toPostDTO(postEntity);
+		assertNotNull(dto.getForeignAuthorId());
 	}
 }

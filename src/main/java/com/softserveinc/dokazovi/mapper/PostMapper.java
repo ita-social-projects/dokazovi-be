@@ -14,7 +14,20 @@ public interface PostMapper {
 
 	@Mapping(target = "author.mainInstitution", source = "author.doctor.mainInstitution")
 	@Mapping(target = "author.bio", source = "author.doctor.bio")
-	PostDTO toPostDTO(PostEntity postEntity);
+	PostDTO simpleToPostDTO(PostEntity postEntity);
+
+	@Mapping(target = "author.firstName", source = "foreignAuthor.fullName")
+	@Mapping(target = "author.bio", source = "foreignAuthor.bio")
+	@Mapping(target = "author.avatar", source = "foreignAuthor.avatar")
+	@Mapping(target = "foreignAuthorId", source = "foreignAuthor.id")
+	PostDTO translationToPostDTO(PostEntity postEntity);
+
+	default PostDTO toPostDTO(PostEntity postEntity) {
+		if (postEntity.getForeignAuthor() != null) {
+			return translationToPostDTO(postEntity);
+		}
+		return simpleToPostDTO(postEntity);
+	}
 
 	PostEntity toPostEntity(PostSaveFromUserDTO postSaveFromUserDTO);
 

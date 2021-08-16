@@ -47,4 +47,11 @@ public interface PostService {
 
 	Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
+
+	Page<PostDTO> findAllTranslationsByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId,
+			Set<Integer> directionId,
+			Pageable pageable);
+
+	Page<PostDTO> findAllTranslationsByExpertAndTypeAndStatus(Integer expertId, Set<Integer> typeId,
+			PostStatus postStatus, Pageable pageable);
 }

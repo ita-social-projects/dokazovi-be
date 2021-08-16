@@ -35,6 +35,8 @@ public final class EndPoints {
 	public static final String POST_LATEST_BY_DIRECTION = "/latest-by-direction";
 	public static final String POST_LATEST_BY_EXPERT = "/latest-by-expert";
 	public static final String POST_LATEST_BY_EXPERT_AND_STATUS = "/latest-by-expert-and-status";
+	public static final String POST_LATEST_TRANSLATION_BY_EXPERT = "/latest-translation-by-expert";
+	public static final String POST_LATEST_TRANSLATION_BY_EXPERT_AND_STATUS = "/latest-translation-by-expert-and-status";
 	public static final String POST_VIEW_COUNT = "/post-view-count";
 	public static final String DIRECTION = "/direction";
 	public static final String ORIGIN = "/origin";
@@ -48,6 +50,8 @@ public final class EndPoints {
 	public static final String PLATFORM_INFORMATION = "/platform-information";
 	public static final String PLATFORM_INFORMATION_BY_ID = "/{infoId}";
 	public static final String POST_GET_BY_IMPORTANT_IMAGE = "/get-by-important-image";
+	public static final String FOREIGN_EXPERT = "/foreign-expert";
+	public static final String FOREIGN_EXPERT_SEARCH = "/search";
 
 	/**
 	 * Method that adds slash after each endpoint while calling

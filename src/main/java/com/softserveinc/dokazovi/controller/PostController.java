@@ -52,6 +52,8 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_TRANSLATION_BY_EXPERT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_TRANSLATION_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
@@ -188,7 +190,8 @@ public class PostController {
 			@ApiParam(value = "Post type id")
 			@RequestParam(required = false) Set<Integer> type,
 			@ApiParam(value = "Direction id")
-			@RequestParam(required = false) Set<Integer> direction) {
+			@RequestParam(required = false) Set<Integer> direction
+	) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findAllByExpertAndTypeAndDirections(expert, type, direction, pageable));
@@ -216,6 +219,55 @@ public class PostController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(postService.findAllByExpertAndTypeAndStatus(expert, types, status, pageable));
+	}
+
+	/**
+	 * Finds post by foreign expert id, type and status
+	 *
+	 * @param pageable interface for pagination information
+	 * @param expert   foreign expert id
+	 * @param types    the type's ids by which the search is performed
+	 * @return page with found posts and HttpStatus 'OK'
+	 */
+	@GetMapping(POST_LATEST_TRANSLATION_BY_EXPERT_AND_STATUS)
+	@ApiPageable
+	@ApiOperation(value = "Find latest posts by some foreign expert and status")
+	public ResponseEntity<Page<PostDTO>> findLatestTranslationByExpert(
+			@PageableDefault Pageable pageable,
+			@ApiParam(value = "Foreign expert's id")
+			@RequestParam Integer expert,
+			@ApiParam(value = "Multiple comma-separated post types IDs, e.g. ?types=1,2,3,4", type = "string")
+			@RequestParam(required = false) Set<Integer> types,
+			@ApiParam(value = "Status")
+			@RequestParam PostStatus status) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService.findAllTranslationsByExpertAndTypeAndStatus(expert, types, status, pageable));
+	}
+
+	/**
+	 * findLatestByExpert method returns latest post by foreign expert id.
+	 *
+	 * @param pageable interface for pagination information
+	 * @param expert   foreign expert id
+	 * @param type     post type id
+	 * @return page with found posts and HttpStatus 'OK'
+	 */
+	@GetMapping(POST_LATEST_TRANSLATION_BY_EXPERT)
+	@ApiPageable
+	@ApiOperation(value = "Find latest posts by some foreign expert")
+	public ResponseEntity<Page<PostDTO>> findLatestTranslationByExpert(
+			@PageableDefault Pageable pageable,
+			@ApiParam(value = "Foreign expert's id")
+			@RequestParam Integer expert,
+			@ApiParam(value = "Post type id")
+			@RequestParam(required = false) Set<Integer> type,
+			@ApiParam(value = "Direction id")
+			@RequestParam(required = false) Set<Integer> direction
+	) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService.findAllTranslationsByExpertAndTypeAndDirections(expert, type, direction, pageable));
 	}
 
 	/**

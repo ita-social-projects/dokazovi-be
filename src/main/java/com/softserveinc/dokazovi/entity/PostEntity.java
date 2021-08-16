@@ -113,4 +113,8 @@ public class PostEntity {
 
 	@Column(name = "important_image_url")
 	private String importantImageUrl;
+
+	@ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+	@JoinColumn(name = "foreign_expert_id")
+	private ForeignExpertEntity foreignAuthor;
 }

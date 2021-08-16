@@ -354,17 +354,6 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void findAllByExpertAndType() {
-		Integer expertId = 5;
-		Set<Integer> typeId = Set.of(1, 2);
-		when(postRepository.findAllByAuthorIdAndTypeIdInAndStatus(any(Integer.class),
-				anySet(), any(PostStatus.class), any(Pageable.class)))
-				.thenReturn(postEntityPage);
-		postService.findAllByExpertAndTypeAndDirections(expertId, typeId, null, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
-	}
-
-	@Test
 	void findAllByExpertAndDirections() {
 		Integer expertId = 5;
 		Set<Integer> directionId = Set.of(2, 3);
@@ -388,6 +377,61 @@ class PostServiceImplTest {
 	}
 
 	@Test
+	void findAllByExpertAndType() {
+		Integer expertId = 5;
+		Set<Integer> typeId = Set.of(1, 2);
+		when(postRepository.findAllByAuthorIdAndTypeIdInAndStatus(any(Integer.class),
+				anySet(), any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllByExpertAndTypeAndDirections(expertId, typeId, null, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByForeignExpert() {
+		Integer expertId = 3;
+		when(postRepository.findAllByForeignAuthorIdAndStatus(
+				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllTranslationsByExpertAndTypeAndDirections(expertId, null, null, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByForeignExpertAndType() {
+		Integer expertId = 5;
+		Set<Integer> typeId = Set.of(1, 2);
+		when(postRepository.findAllByForeignAuthorIdAndTypeIdInAndStatus(any(Integer.class),
+				anySet(), any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllTranslationsByExpertAndTypeAndDirections(expertId, typeId, null, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByForeignExpertAndDirections() {
+		Integer expertId = 5;
+		Set<Integer> directionId = Set.of(2, 3);
+		when(postRepository.findPostsByForeignAuthorIdAndDirections(any(Pageable.class), any(Integer.class),
+				anySet()))
+				.thenReturn(postEntityPage);
+		postService.findAllTranslationsByExpertAndTypeAndDirections(expertId, null, directionId, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByForeignExpertAndTypeAndDirection() {
+		Integer expertId = 5;
+		Set<Integer> directionId = Set.of(2, 3);
+		Set<Integer> typeId = Set.of(1, 2);
+		when(postRepository.findAllTranslationsByExpertAndByDirectionsAndByPostType(any(Integer.class),
+				anySet(), anySet(), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllTranslationsByExpertAndTypeAndDirections(expertId, typeId, directionId, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
 	void findAllByExpertAndStatus() {
 		Integer expertId = 3;
 		PostStatus postStatus = PostStatus.DRAFT;
@@ -407,6 +451,29 @@ class PostServiceImplTest {
 				anySet(), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByExpertAndTypeAndStatus(expertId, typeId, postStatus, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByForeignExpertAndStatus() {
+		Integer expertId = 3;
+		PostStatus postStatus = PostStatus.DRAFT;
+		when(postRepository.findAllByForeignAuthorIdAndStatus(
+				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllTranslationsByExpertAndTypeAndStatus(expertId, null, postStatus, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllByForeignExpertAndTypeAndStatus() {
+		Integer expertId = 5;
+		Set<Integer> typeId = Set.of(1, 2);
+		PostStatus postStatus = PostStatus.DRAFT;
+		when(postRepository.findAllByForeignAuthorIdAndTypeIdInAndStatus(any(Integer.class),
+				anySet(), any(PostStatus.class), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findAllTranslationsByExpertAndTypeAndStatus(expertId, typeId, postStatus, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
