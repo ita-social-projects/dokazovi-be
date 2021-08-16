@@ -40,7 +40,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
-import static com.softserveinc.dokazovi.controller.EndPoints.USER_EXPERT_ALL_POST_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_AUTHORITIES;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
