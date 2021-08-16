@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
@@ -9,6 +10,7 @@ import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -37,12 +39,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_EXPERT_ALL_POST_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_AUTHORITIES;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
@@ -60,6 +64,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWOR
 public class UserController {
 
 	private final UserService userService;
+	private final DirectionService directionService;
 	private final PasswordResetTokenService passwordResetTokenService;
 
 	/**
@@ -101,6 +106,14 @@ public class UserController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(userService.findAllExperts(userSearchCriteria, pageable));
+	}
+
+	@GetMapping(USER_EXPERT_ALL_POST_DIRECTIONS)
+	@ApiOperation(value = "Get list of all directions which is used in all posts of user")
+	public ResponseEntity<List<DirectionDTO>> getAllDirectionsOfUserPosts(@PathVariable("expertId") Integer userId) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(directionService.findAllDirectionsOfPostsByUserId(userId));
 	}
 
 	/**

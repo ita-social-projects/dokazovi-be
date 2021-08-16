@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserService;
@@ -32,6 +33,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
@@ -49,6 +51,7 @@ import static com.softserveinc.dokazovi.entity.enumerations.RolePermission.SAVE_
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -65,6 +68,8 @@ class UserControllerTest {
 	private UserPrincipal userPrincipal;
 	@Mock
 	private UserService userService;
+	@Mock
+	private DirectionService directionService;
 	@Mock
 	private PasswordResetTokenService passwordResetTokenService;
 	@Mock
@@ -342,5 +347,13 @@ class UserControllerTest {
 		Assertions.assertNotNull(actual);
 		Assertions.assertNotNull(userPrincipal);
 		Assertions.assertEquals(expected, actual);
+	}
+
+	@Test
+	void getAllDirectionsOfUserPostsTest() throws Exception {
+		when(directionService.findAllDirectionsOfPostsByUserId(1)).thenReturn(Collections.emptyList());
+		mockMvc.perform(get(USER + "/experts/" + "1" + "/post-directions"))
+				.andExpect(status().isOk());
+		verify(directionService, times(1)).findAllDirectionsOfPostsByUserId(1);
 	}
 }
