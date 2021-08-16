@@ -32,7 +32,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			DirectionEntity direction, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus,
 			Pageable pageable);
 
-	Page<PostEntity> findAllByAuthorIdAndStatus(Integer authorId, PostStatus postStatus, Pageable pageable);
+	Page<PostEntity> findAllByAuthorIdAndStatusOrderByPublishedAtDesc(Integer authorId, PostStatus postStatus,
+			Pageable pageable);
 
 	Page<PostEntity> findAllByAuthorIdAndTypeIdInAndStatus(
 			Integer authorId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
@@ -112,7 +113,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "                      WHERE ORIGIN_ID = 1))"
 					+ "  AND P1.STATUS IN ('PUBLISHED')"
 					+ "  AND P1.TYPE_ID NOT IN (2)"
-					+ " ORDER BY CREATED_AT DESC")
+					+ " ORDER BY CREATED_AT DESC, P1.POST_ID DESC")
 	Page<PostEntity> findLatestByPostTypeExpertOpinion(Pageable pageable);
 
 	@Query(nativeQuery = true,
@@ -123,7 +124,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "                       WHERE ORIGIN_ID = 2)) "
 					+ "   AND P1.STATUS IN ('PUBLISHED') "
 					+ "   AND P1.TYPE_ID NOT IN (2) "
-					+ " ORDER BY CREATED_AT DESC ")
+					+ " ORDER BY CREATED_AT DESC, P1.POST_ID DESC ")
 	Page<PostEntity> findLatestByPostTypeMedia(Pageable pageable);
 
 
@@ -135,7 +136,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "                      WHERE ORIGIN_ID = 3)) "
 					+ "  AND P1.STATUS IN ('PUBLISHED') "
 					+ "  AND P1.TYPE_ID NOT IN (2) "
-					+ " ORDER BY CREATED_AT DESC ")
+					+ " ORDER BY CREATED_AT DESC, P1.POST_ID DESC ")
 	Page<PostEntity> findLatestByPostTypeTranslation(Pageable pageable);
 
 	@Query(nativeQuery = true,
@@ -143,7 +144,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "   FROM POSTS P1 "
 					+ "   WHERE P1.TYPE_ID IN (2) "
 					+ "   AND P1.STATUS IN ('PUBLISHED') "
-					+ " ORDER BY CREATED_AT DESC ")
+					+ " ORDER BY CREATED_AT DESC, P1.POST_ID DESC ")
 	Page<PostEntity> findLatestByOriginVideo(Pageable pageable);
 
 	@Query(nativeQuery = true,
