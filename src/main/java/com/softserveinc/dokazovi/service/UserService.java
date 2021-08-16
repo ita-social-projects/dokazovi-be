@@ -39,7 +39,5 @@ public interface UserService {
 
 	void sendPasswordResetToken(UserEntity user, String origin);
 
-//	void updateDirectionsByCreatedPost(UserEntity userEntity, PostSaveFromUserDTO postSaveFromUserDTO);
-
 	boolean isPasswordMatches(UserEntity user, String password);
 }
