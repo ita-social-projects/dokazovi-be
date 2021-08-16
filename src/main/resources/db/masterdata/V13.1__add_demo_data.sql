@@ -1199,4 +1199,6 @@ VALUES (1, 1),
        (3, 7);
 
 UPDATE public.directions SET has_doctors = TRUE;
+
+UPDATE public.directions SET has_posts = TRUE;
 -- Three post were added
