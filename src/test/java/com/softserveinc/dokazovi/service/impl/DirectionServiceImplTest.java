@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.mapper.DirectionMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,5 +70,14 @@ class DirectionServiceImplTest {
 		DirectionEntity expected = directionService.getById(3);
 		DirectionEntity actual = new DirectionEntity();
 		Assertions.assertEquals(expected, actual);
+	}
+
+	@Test
+	void findAllDirectionsOfPostsByUserIdTest() {
+		when(directionRepository.findAllDirectionsOfPostsByUserId(1)).thenReturn(
+				Collections.singletonList(new DirectionEntity()));
+		List<DirectionDTO> list = directionService.findAllDirectionsOfPostsByUserId(1);
+		Assertions.assertEquals(list.size(), 1);
+		verify(directionRepository, times(1)).findAllDirectionsOfPostsByUserId(1);
 	}
 }
