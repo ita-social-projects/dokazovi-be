@@ -27,6 +27,7 @@ public final class EndPoints {
 	public static final String USER_RANDOM_EXPERTS = "/random-experts";
 	public static final String USER_ALL_EXPERTS = "/all-experts";
 	public static final String USER_GET_USER_BY_ID = "/{userId}";
+	public static final String USER_GET_AUTHORITIES = "/get-authorities";
 	public static final String POST_GET_USER_BY_ID = "/{userId}";
 	public static final String USER_GET_CURRENT_USER = "/me";
 	public static final String TAG = "/tag";
@@ -47,6 +48,7 @@ public final class EndPoints {
 	public static final String PLATFORM_INFORMATION = "/platform-information";
 	public static final String PLATFORM_INFORMATION_BY_ID = "/{infoId}";
 	public static final String POST_GET_BY_IMPORTANT_IMAGE = "/get-by-important-image";
+	public static final String USER_EXPERT_ALL_POST_DIRECTIONS = "/experts/{expertId}/post-directions";
 
 	/**
 	 * Method that adds slash after each endpoint while calling

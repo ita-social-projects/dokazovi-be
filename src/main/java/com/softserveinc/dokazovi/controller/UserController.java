@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
@@ -9,6 +10,7 @@ import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +26,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,12 +38,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_EXPERT_ALL_POST_DIRECTIONS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_AUTHORITIES;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
@@ -57,6 +64,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWOR
 public class UserController {
 
 	private final UserService userService;
+	private final DirectionService directionService;
 	private final PasswordResetTokenService passwordResetTokenService;
 
 	/**
@@ -98,6 +106,14 @@ public class UserController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(userService.findAllExperts(userSearchCriteria, pageable));
+	}
+
+	@GetMapping(USER_EXPERT_ALL_POST_DIRECTIONS)
+	@ApiOperation(value = "Get list of all directions which is used in all posts of user")
+	public ResponseEntity<List<DirectionDTO>> getAllDirectionsOfUserPosts(@PathVariable("expertId") Integer userId) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(directionService.findAllDirectionsOfPostsByUserId(userId));
 	}
 
 	/**
@@ -206,5 +222,27 @@ public class UserController {
 			userService.sendPasswordResetToken(user, headers.getOrigin());
 		}
 		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+	/**
+	 * Gets current user's authorities.
+	 * Checks if userPrincipal not null.
+	 * If no - returns HttpStatus 'NOT FOUND'.
+	 *
+	 * @param userPrincipal authorities of user that we want to get
+	 * @return found user's authorities and HttpStatus 'OK'
+	 */
+
+	@GetMapping(USER_GET_AUTHORITIES)
+	@ApiOperation(value = "Get user's authorities",
+			authorizations = {@Authorization(value = "Authorization")})
+	public ResponseEntity<Collection<? extends GrantedAuthority>> getAuthorities(
+			@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		Collection<? extends GrantedAuthority> authorities = null;
+		if (userPrincipal != null) {
+			authorities = userPrincipal.getAuthorities();
+		}
+		return ResponseEntity.status(authorities != null
+				? HttpStatus.OK : HttpStatus.NOT_FOUND).body(authorities);
 	}
 }

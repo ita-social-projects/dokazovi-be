@@ -234,19 +234,19 @@ public class PostServiceImpl implements PostService {
 		PostMainPageDTO expertOptions = PostMainPageDTO.builder()
 				.fieldName("expertOpinion")
 				.postDTOS(postRepository.findLatestByPostTypeExpertOpinion(PageRequest.of(pageable.getPageNumber(), 4))
-						.map(postMapper::toPostDTO).toSet()).build();
+						.map(postMapper::toPostDTO).toList()).build();
 		PostMainPageDTO media = PostMainPageDTO.builder()
 				.fieldName("media")
 				.postDTOS(postRepository.findLatestByPostTypeMedia(PageRequest.of(pageable.getPageNumber(), 4))
-						.map(postMapper::toPostDTO).toSet()).build();
+						.map(postMapper::toPostDTO).toList()).build();
 		PostMainPageDTO translation = PostMainPageDTO.builder()
 				.fieldName("translation")
 				.postDTOS(postRepository.findLatestByPostTypeTranslation(PageRequest.of(pageable.getPageNumber(), 4))
-						.map(postMapper::toPostDTO).toSet()).build();
+						.map(postMapper::toPostDTO).toList()).build();
 		PostMainPageDTO video = PostMainPageDTO.builder()
 				.fieldName("video")
 				.postDTOS(postRepository.findLatestByOriginVideo(PageRequest.of(pageable.getPageNumber(), 4))
-						.map(postMapper::toPostDTO).toSet()).build();
+						.map(postMapper::toPostDTO).toList()).build();
 
 		return new PageImpl<>(List.of(expertOptions, media, translation, video));
 	}
@@ -255,7 +255,8 @@ public class PostServiceImpl implements PostService {
 	public Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId,
 			Set<Integer> directionId, Pageable pageable) {
 		if (typeId == null && directionId == null) {
-			return postRepository.findAllByAuthorIdAndStatus(expertId, PostStatus.PUBLISHED, pageable)
+			return postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(expertId, PostStatus.PUBLISHED,
+					pageable)
 					.map(postMapper::toPostDTO);
 		}
 		if (typeId == null) {
@@ -276,7 +277,7 @@ public class PostServiceImpl implements PostService {
 			PostStatus postStatus, Pageable pageable) {
 		if (typeId == null) {
 			return postRepository
-					.findAllByAuthorIdAndStatus(expertId, postStatus, pageable)
+					.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(expertId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		}
 		return postRepository
@@ -319,7 +320,9 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostDTO> getAllByImportantImageUrl(Pageable pageable) {
-		return postRepository.findAllByImportantImageUrlDesc(pageable).map(postMapper::toPostDTO);
+	public Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
+			Set<Integer> directions, Set<Integer> types, Set<Integer> origins, Pageable pageable) {
+		return postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
+				directions, types, origins, PostStatus.PUBLISHED, false, pageable).map(postMapper::toPostDTO);
 	}
 }

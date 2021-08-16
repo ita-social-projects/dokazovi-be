@@ -50,6 +50,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -345,7 +346,7 @@ class PostServiceImplTest {
 	@Test
 	void findAllByExpert() {
 		Integer expertId = 3;
-		when(postRepository.findAllByAuthorIdAndStatus(
+		when(postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(
 				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByExpertAndTypeAndDirections(expertId, null, null, pageable);
@@ -390,7 +391,7 @@ class PostServiceImplTest {
 	void findAllByExpertAndStatus() {
 		Integer expertId = 3;
 		PostStatus postStatus = PostStatus.DRAFT;
-		when(postRepository.findAllByAuthorIdAndStatus(
+		when(postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(
 				any(Integer.class), any(PostStatus.class), any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		postService.findAllByExpertAndTypeAndStatus(expertId, null, postStatus, pageable);
@@ -937,5 +938,27 @@ class PostServiceImplTest {
 		when(googleAnalytics.getPostViewCount("some")).thenReturn(1);
 
 		assertEquals(1, postService.getPostViewCount("some"));
+	}
+
+	@Test
+	void findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence_isOk() {
+		Pageable pageable = PageRequest.of(0, 12);
+		when(postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
+				anySet(), anySet(), anySet(), any(PostStatus.class), anyBoolean(), any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		postService.findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
+				new HashSet<>(), new HashSet<>(), new HashSet<>(), pageable);
+		verify(postMapper, times(2)).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence_NotFound() {
+		Pageable pageable = PageRequest.of(0, 12);
+		when(postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
+				anySet(), anySet(), anySet(), any(PostStatus.class), anyBoolean(), any(Pageable.class)))
+				.thenReturn(Page.empty());
+		postService.findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
+				Set.of(1), new HashSet<>(), new HashSet<>(), pageable);
+		verify(postMapper, times(0)).toPostDTO(any(PostEntity.class));
 	}
 }

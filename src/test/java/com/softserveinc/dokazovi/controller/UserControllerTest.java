@@ -5,9 +5,11 @@ import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,26 +18,40 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_AUTHORITIES;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWORD;
+import static com.softserveinc.dokazovi.entity.enumerations.RolePermission.DELETE_POST;
+import static com.softserveinc.dokazovi.entity.enumerations.RolePermission.SAVE_OWN_PUBLICATION;
+import static com.softserveinc.dokazovi.entity.enumerations.RolePermission.SAVE_TAG;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -49,9 +65,11 @@ class UserControllerTest {
 	private MockMvc mockMvc;
 
 	@Mock
-	UserPrincipal userPrincipal;
+	private UserPrincipal userPrincipal;
 	@Mock
 	private UserService userService;
+	@Mock
+	private DirectionService directionService;
 	@Mock
 	private PasswordResetTokenService passwordResetTokenService;
 	@Mock
@@ -59,11 +77,24 @@ class UserControllerTest {
 	@InjectMocks
 	private UserController userController;
 
+	private HandlerMethodArgumentResolver methodArgumentResolver = new HandlerMethodArgumentResolver() {
+		@Override
+		public boolean supportsParameter(MethodParameter parameter) {
+			return parameter.getParameterType().isAssignableFrom(UserPrincipal.class);
+		}
+
+		@Override
+		public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+				NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+			return userPrincipal;
+		}
+	};
+
 	@BeforeEach
 	public void init() {
 		this.mockMvc = MockMvcBuilders
 				.standaloneSetup(userController)
-				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+				.setCustomArgumentResolvers(methodArgumentResolver, new PageableHandlerMethodArgumentResolver())
 				.build();
 	}
 
@@ -205,7 +236,7 @@ class UserControllerTest {
 				.id(existingUserId)
 				.build();
 
-		when(userService.findExpertById(any(Integer.class))).thenReturn(userDTO);
+		when(userService.findExpertById(any(Integer.class))).thenReturn(null);
 		when(userPrincipal.getId()).thenReturn(9);
 		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 	}
@@ -293,5 +324,36 @@ class UserControllerTest {
 		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 		when(passwordResetTokenService.validatePasswordResetToken(token)).thenReturn(true);
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
+	}
+
+	@Test
+	void getAuthoritiesTestNotFound() throws Exception {
+		String uri = USER + USER_GET_AUTHORITIES;
+		when(userPrincipal.getAuthorities()).thenReturn(null);
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
+		Assertions.assertNull(actual);
+	}
+
+	@Test
+	void getAuthoritiesTestIsOk() throws Exception {
+		Collection<? extends GrantedAuthority> expected = Set.of(SAVE_OWN_PUBLICATION,
+				SAVE_TAG,
+				DELETE_POST);
+		String uri = USER + USER_GET_AUTHORITIES;
+		doReturn(expected).when(userPrincipal).getAuthorities();
+		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+		Assertions.assertNotNull(actual);
+		Assertions.assertNotNull(userPrincipal);
+		Assertions.assertEquals(expected, actual);
+	}
+
+	@Test
+	void getAllDirectionsOfUserPostsTest() throws Exception {
+		when(directionService.findAllDirectionsOfPostsByUserId(1)).thenReturn(Collections.emptyList());
+		mockMvc.perform(get(USER + "/experts/" + "1" + "/post-directions"))
+				.andExpect(status().isOk());
+		verify(directionService, times(1)).findAllDirectionsOfPostsByUserId(1);
 	}
 }
