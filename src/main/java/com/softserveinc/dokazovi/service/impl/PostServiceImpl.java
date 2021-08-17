@@ -347,7 +347,7 @@ public class PostServiceImpl implements PostService {
 				directions, types, origins, PostStatus.PUBLISHED, false, pageable).map(postMapper::toPostDTO);
 	}
 
-	private Set<DirectionEntity> getDirectionsFromPostsEntities(Optional<PostEntity> oldEntity, PostEntity newEntity) {
+	public Set<DirectionEntity> getDirectionsFromPostsEntities(Optional<PostEntity> oldEntity, PostEntity newEntity) {
 		Set<DirectionEntity> directionsToUpdate = new TreeSet<>(Comparator.comparing(DirectionEntity::getId));
 		if (oldEntity.isPresent() && oldEntity.get().getDirections() != null) {
 			directionsToUpdate.addAll(
@@ -355,7 +355,7 @@ public class PostServiceImpl implements PostService {
 							.get()
 							.getDirections());
 		}
-		if (newEntity.getDirections() != null) {
+		if (newEntity != null && newEntity.getDirections() != null) {
 			directionsToUpdate.addAll(newEntity.getDirections());
 		}
 		return directionsToUpdate;

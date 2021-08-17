@@ -38,10 +38,10 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
 	@Query(nativeQuery = true,
 			value = "UPDATE DIRECTIONS d "
 					+ " SET HAS_POSTS = (SELECT EXISTS "
-					+ "		(SELECT 1 FROM DOCTOR_POST_DIRECTIONS "
-					+ "			WHERE DIRECTION_ID = d.DIRECTION_ID "
+					+ "	    (SELECT 1 FROM DOCTOR_POST_DIRECTIONS "
+					+ "	        WHERE DIRECTION_ID = d.DIRECTION_ID "
 					+ "           AND VISIBLE = TRUE "
-					+ "			LIMIT 1)) "
+					+ "	        LIMIT 1)) "
 					+ " WHERE DIRECTION_ID IN (:directions) ")
 	@Modifying
 	void updateDirectionsHasPostsStatus(Set<Integer> directions);
@@ -55,7 +55,7 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM public.directions WHERE direction_id"
 					+ "  IN (SELECT DISTINCT direction_id FROM public.doctor_post_directions dpd"
-					+ "			WHERE dpd.user_id = :userId)")
+					+ "          WHERE dpd.user_id = :userId)")
 	@Modifying
 	List<DirectionEntity> findAllDirectionsByUserId(Integer userId);
 
