@@ -111,9 +111,13 @@ public class UserController {
 	@GetMapping(USER_EXPERT_ALL_POST_DIRECTIONS)
 	@ApiOperation(value = "Get list of all directions which is used in all posts of user")
 	public ResponseEntity<List<DirectionDTO>> getAllDirectionsOfUserPosts(@PathVariable("expertId") Integer userId) {
-		return ResponseEntity
+		var body = directionService.findAllDirectionsOfPostsByUserId(userId);
+
+		var response = ResponseEntity
 				.status(HttpStatus.OK)
-				.body(directionService.findAllDirectionsOfPostsByUserId(userId));
+				.body(body);
+
+		return response;
 	}
 
 	/**

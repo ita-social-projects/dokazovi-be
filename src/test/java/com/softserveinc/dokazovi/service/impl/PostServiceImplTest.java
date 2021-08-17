@@ -961,4 +961,74 @@ class PostServiceImplTest {
 				Set.of(1), new HashSet<>(), new HashSet<>(), pageable);
 		verify(postMapper, times(0)).toPostDTO(any(PostEntity.class));
 	}
+
+	@Test
+	void getDirectionsFromPostsEntities_bothNull_returnsEmpty() {
+		Optional<PostEntity> oldEntity = Optional.empty();
+		PostEntity newEntity = null;
+		Set<DirectionEntity> result = postService.getDirectionsFromPostsEntities(oldEntity, newEntity);
+		assertEquals(0, result.size());
+	}
+
+	@Test
+	void getDirectionsFromPostsEntities_oldNotNullNewNull_returnsEmpty() {
+		Set<DirectionEntity> oldDirections = new HashSet<>();
+		oldDirections.add(DirectionEntity.builder()
+				.id(2)
+				.name("b")
+				.build());
+		Optional<PostEntity> oldEntity = Optional.of(PostEntity.builder()
+				.id(1)
+				.directions(oldDirections)
+				.build());
+
+		PostEntity newEntity = null;
+
+		Set<DirectionEntity> result = postService.getDirectionsFromPostsEntities(oldEntity, newEntity);
+		assertEquals(1, result.size());
+	}
+
+	@Test
+	void getDirectionsFromPostsEntities_oldNullNewNotNull_returnsEmpty() {
+		Optional<PostEntity> oldEntity = Optional.empty();
+
+		Set<DirectionEntity> newDirections = new HashSet<>();
+		newDirections.add(DirectionEntity.builder()
+				.id(1)
+				.name("a")
+				.build());
+		PostEntity newEntity = PostEntity.builder()
+				.id(1)
+				.directions(newDirections)
+				.build();
+
+		Set<DirectionEntity> result = postService.getDirectionsFromPostsEntities(oldEntity, newEntity);
+		assertEquals(1, result.size());
+	}
+
+	@Test
+	void getDirectionsFromPostsEntities_bothNotNull_returnsEmpty() {
+		Set<DirectionEntity> oldDirections = new HashSet<>();
+		oldDirections.add(DirectionEntity.builder()
+				.id(2)
+				.name("b")
+				.build());
+		Optional<PostEntity> oldEntity = Optional.of(PostEntity.builder()
+				.id(1)
+				.directions(oldDirections)
+				.build());
+
+		Set<DirectionEntity> newDirections = new HashSet<>();
+		newDirections.add(DirectionEntity.builder()
+				.id(1)
+				.name("a")
+				.build());
+		PostEntity newEntity = PostEntity.builder()
+				.id(1)
+				.directions(newDirections)
+				.build();
+
+		Set<DirectionEntity> result = postService.getDirectionsFromPostsEntities(oldEntity, newEntity);
+		assertEquals(2, result.size());
+	}
 }
