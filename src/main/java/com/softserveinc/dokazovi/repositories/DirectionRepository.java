@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * The Direction Repository is responsible for encapsulation a set of Direction objects stored in the database and
@@ -35,11 +36,15 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
 	 * "false"
 	 */
 	@Query(nativeQuery = true,
-			value = "UPDATE DIRECTIONS"
-					+ " SET HAS_POSTS = TRUE"
-					+ " WHERE DIRECTION_ID IN (SELECT DISTINCT DIRECTION_ID FROM POSTS_DIRECTIONS)")
+			value = "UPDATE DIRECTIONS d "
+					+ " SET HAS_POSTS = (SELECT EXISTS "
+					+ "		(SELECT 1 FROM DOCTOR_POST_DIRECTIONS "
+					+ "			WHERE DIRECTION_ID = d.DIRECTION_ID "
+					+ "           AND VISIBLE = TRUE "
+					+ "			LIMIT 1)) "
+					+ " WHERE DIRECTION_ID IN (:directions) ")
 	@Modifying
-	void updateDirectionsHasPostsStatus();
+	void updateDirectionsHasPostsStatus(Set<Integer> directions);
 
 	/**
 	 * Gets all directions by user id.
@@ -48,10 +53,9 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
 	 * @return returns the directions entity list
 	 */
 	@Query(nativeQuery = true,
-			value = "SELECT * FROM DIRECTIONS"
-					+ " WHERE DIRECTION_ID IN (SELECT DISTINCT DIRECTION_ID FROM POSTS_DIRECTIONS "
-					+ " WHERE POST_ID IN (SELECT DISTINCT POST_ID FROM POSTS "
-					+ " WHERE AUTHOR_ID IN (:userId) ))")
+			value = "SELECT * FROM public.directions WHERE direction_id"
+					+ "  IN (SELECT DISTINCT direction_id FROM public.doctor_post_directions dpd"
+					+ "			WHERE dpd.user_id = :userId)")
 	@Modifying
 	List<DirectionEntity> findAllDirectionsByUserId(Integer userId);
 

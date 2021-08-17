@@ -29,9 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Service
 @RequiredArgsConstructor
@@ -53,9 +56,18 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public PostDTO saveFromUser(PostSaveFromUserDTO postDTO, UserPrincipal userPrincipal) {
+		Optional<PostEntity> oldEntity = (postDTO.getId() != null)
+				? postRepository.findById(postDTO.getId())
+				: Optional.empty();
+
 		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
 
-		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
+		Set<DirectionEntity> directionsToUpdate = getDirectionsFromPostsEntities(
+				oldEntity,
+				mappedEntity
+		);
+
+		UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();
 		mappedEntity.setImportant(false);
 
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
@@ -66,7 +78,7 @@ public class PostServiceImpl implements PostService {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userEntity);
 			PostDTO dto = postMapper.toPostDTO(postRepository.save(mappedEntity));
-			directionService.updateDirectionsHasPostsStatus();
+			directionService.updateDirectionsHasPostsStatusByEntities(directionsToUpdate);
 			return dto;
 		}
 
@@ -76,7 +88,7 @@ public class PostServiceImpl implements PostService {
 			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
 			PostDTO dto = postMapper.toPostDTO(postRepository.save(mappedEntity));
-			directionService.updateDirectionsHasPostsStatus();
+			directionService.updateDirectionsHasPostsStatusByEntities(directionsToUpdate);
 			return dto;
 		}
 
@@ -163,12 +175,19 @@ public class PostServiceImpl implements PostService {
 	public Boolean archivePostById(UserPrincipal userPrincipal, Integer postId)
 			throws EntityNotFoundException {
 
+		Optional<PostEntity> oldEntity = postRepository.findById(postId);
+
 		PostEntity mappedEntity = postRepository
 				.findById(postId)
 				.orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
 
 		Integer userId = userPrincipal.getId();
 		Integer authorId = mappedEntity.getAuthor().getId();
+
+		final Set<DirectionEntity> directionsToUpdate = getDirectionsFromPostsEntities(
+				oldEntity,
+				mappedEntity
+		);
 
 		if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
 				grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) {
@@ -190,7 +209,7 @@ public class PostServiceImpl implements PostService {
 				grantedAuthority.getAuthority().equals("DELETE_POST"))) {
 			throw new ForbiddenPermissionsException();
 		}
-		directionRepository.updateDirectionsHasPostsStatus();
+		directionService.updateDirectionsHasPostsStatusByEntities(directionsToUpdate);
 		return true;
 	}
 
@@ -220,7 +239,9 @@ public class PostServiceImpl implements PostService {
 
 	private void saveEntity(PostEntity mappedEntity) {
 		postRepository.save(mappedEntity);
-		directionRepository.updateDirectionsHasPostsStatus();
+		directionService.updateDirectionsHasPostsStatusByEntities(
+				getDirectionsFromPostsEntities(Optional.empty(), mappedEntity)
+		);
 	}
 
 	private boolean checkAuthority(UserPrincipal userPrincipal, String authority) {
@@ -324,5 +345,17 @@ public class PostServiceImpl implements PostService {
 			Set<Integer> directions, Set<Integer> types, Set<Integer> origins, Pageable pageable) {
 		return postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
 				directions, types, origins, PostStatus.PUBLISHED, false, pageable).map(postMapper::toPostDTO);
+	}
+
+	private Set<DirectionEntity> getDirectionsFromPostsEntities(Optional<PostEntity> oldEntity, PostEntity newEntity) {
+		Set<DirectionEntity> directionsToUpdate = new TreeSet<>(Comparator.comparing(DirectionEntity::getId));
+		if (oldEntity.isPresent()) {
+			directionsToUpdate.addAll(
+					oldEntity
+							.get()
+							.getDirections());
+		}
+		directionsToUpdate.addAll(newEntity.getDirections());
+		return directionsToUpdate;
 	}
 }

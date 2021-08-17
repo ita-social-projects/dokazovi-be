@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 
 import java.util.List;
+import java.util.Set;
 
 public interface DirectionService {
 
@@ -17,7 +18,8 @@ public interface DirectionService {
 
 	void updateDirectionsHasDoctorsStatus();
 
-	void updateDirectionsHasPostsStatus();
+	void updateDirectionsHasPostsStatus(Set<Integer> directions);
 
+	void updateDirectionsHasPostsStatusByEntities(Set<DirectionEntity> directions);
 
 }

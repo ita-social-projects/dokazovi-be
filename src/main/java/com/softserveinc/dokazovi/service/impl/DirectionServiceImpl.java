@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -91,8 +92,19 @@ public class DirectionServiceImpl implements DirectionService {
 	 */
 	@Override
 	@Transactional
-	public void updateDirectionsHasPostsStatus() {
-		directionRepository.updateDirectionsHasPostsStatus();
+	public void updateDirectionsHasPostsStatus(Set<Integer> directions) {
+		directionRepository.updateDirectionsHasPostsStatus(directions);
+	}
+
+	@Override
+	@Transactional
+	public void updateDirectionsHasPostsStatusByEntities(Set<DirectionEntity> directions) {
+		directionRepository.updateDirectionsHasPostsStatus(
+				directions
+					.stream()
+					.map(DirectionEntity::getId)
+					.collect(Collectors.toSet())
+		);
 	}
 
 }
