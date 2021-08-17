@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
 				mappedEntity
 		);
 
-		UserEntity userEntity = userRepository.findById(userPrincipal.getId()).get();
+		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
 		mappedEntity.setImportant(false);
 
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
@@ -349,13 +349,15 @@ public class PostServiceImpl implements PostService {
 
 	private Set<DirectionEntity> getDirectionsFromPostsEntities(Optional<PostEntity> oldEntity, PostEntity newEntity) {
 		Set<DirectionEntity> directionsToUpdate = new TreeSet<>(Comparator.comparing(DirectionEntity::getId));
-		if (oldEntity.isPresent()) {
+		if (oldEntity.isPresent() && oldEntity.get().getDirections() != null) {
 			directionsToUpdate.addAll(
 					oldEntity
 							.get()
 							.getDirections());
 		}
-		directionsToUpdate.addAll(newEntity.getDirections());
+		if (newEntity.getDirections() != null) {
+			directionsToUpdate.addAll(newEntity.getDirections());
+		}
 		return directionsToUpdate;
 	}
 }
