@@ -12,7 +12,11 @@ public interface DirectionService {
 
 	List<DirectionDTO> findAllDirectionsByUserId(Integer userId);
 
+	List<DirectionDTO> findAllDirectionsByDoctorId(Integer userId);
+
 	List<DirectionDTO> findAllDirectionsOfPostsByUserId(Integer userId);
+
+	List<DirectionDTO> findAllDirectionsOfPostsByDoctorId(Integer userId);
 
 	DirectionEntity getById(Integer id);
 

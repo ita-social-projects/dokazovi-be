@@ -47,28 +47,50 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
 	void updateDirectionsHasPostsStatus(Set<Integer> directions);
 
 	/**
+	 * Gets all directions by doctor id.
+	 *
+	 * @param userId user id from service
+	 * @return returns the directions entity list
+	 */
+	@Query(nativeQuery = true,
+			value = "SELECT d.* FROM public.directions d "
+					+ "  LEFT JOIN public.doctors_directions dd ON d.direction_id = dd.direction_id "
+					+ "  WHERE dd.doctor_id = (SELECT doctor_id FROM public.doctors d WHERE user_id = :userId)")
+	List<DirectionEntity> findAllDirectionsByUserId(Integer userId);
+
+	/**
+	 * Gets all directions by doctor id.
+	 *
+	 * @param doctorId user id from service
+	 * @return returns the directions entity list
+	 */
+	@Query(nativeQuery = true,
+			value = "SELECT d.* FROM public.directions d "
+					+ "  LEFT JOIN public.doctors_directions dd ON d.direction_id = dd.direction_id "
+					+ "  WHERE dd.doctor_id = :doctorId")
+	List<DirectionEntity> findAllDirectionsByDoctorId(Integer doctorId);
+
+	/**
 	 * Gets all directions by user id.
 	 *
 	 * @param userId user id from service
 	 * @return returns the directions entity list
 	 */
 	@Query(nativeQuery = true,
-			value = "SELECT * FROM public.directions WHERE direction_id"
-					+ "  IN (SELECT DISTINCT direction_id FROM public.doctor_post_directions dpd"
-					+ "          WHERE dpd.user_id = :userId)")
-	@Modifying
-	List<DirectionEntity> findAllDirectionsByUserId(Integer userId);
+			value = "SELECT d.* FROM public.directions d "
+					+ "  LEFT JOIN public.doctor_post_directions dpd ON dpd.direction_id = d.direction_id "
+					+ "  WHERE dpd.user_id = :userId AND dpd.visible = TRUE")
+	List<DirectionEntity> findAllDirectionsOfPostsByUserId(Integer userId);
 
 	/**
-	 * Gets all directions of posts which user has
+	 * Gets all directions of posts which the doctor has
 	 *
 	 * @param id id of user
 	 * @return list of directions
 	 */
-	@Query(nativeQuery = true, value = "SELECT * FROM directions d "
-			+ "WHERE d.direction_id IN "
-			+ "(SELECT DISTINCT direction_id FROM public.doctor_post_directions "
-			+ "WHERE doctor_id = (:doctorId))")
-	List<DirectionEntity> findAllDirectionsOfPostsByUserId(@Param("doctorId") Integer id);
+	@Query(nativeQuery = true, value = "SELECT d.* FROM public.directions d "
+			+ "  LEFT JOIN public.doctor_post_directions dpd ON dpd.direction_id = d.direction_id "
+			+ "  WHERE dpd.doctor_id = :doctorId AND dpd.visible = TRUE")
+	List<DirectionEntity> findAllDirectionsOfPostsByDoctorId(@Param("doctorId") Integer id);
 }
 

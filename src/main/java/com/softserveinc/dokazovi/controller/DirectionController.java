@@ -50,6 +50,6 @@ public class DirectionController {
 	public ResponseEntity<List<DirectionDTO>> getAllDirectionsByUserId(@PathVariable("userId") Integer userId) {
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(directionService.findAllDirectionsByUserId(userId));
+				.body(directionService.findAllDirectionsByDoctorId(userId));
 	}
 }
