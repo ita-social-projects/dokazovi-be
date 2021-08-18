@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +53,19 @@ public class DirectionServiceImpl implements DirectionService {
 	}
 
 	/**
+	 * Gets all directions by doctor id.
+	 *
+	 * @param doctorId received from Directions controller
+	 * @return found directions by user id from directions repository
+	 */
+	@Override
+	public List<DirectionDTO> findAllDirectionsByDoctorId(Integer doctorId) {
+		return directionRepository.findAllDirectionsByDoctorId(doctorId).stream()
+				.map(directionMapper::toDirectionDTO)
+				.collect(Collectors.toList());
+	}
+
+	/**
 	 *
 	 * @param userId id of user
 	 * @return list of directions from all user posts
@@ -59,6 +73,18 @@ public class DirectionServiceImpl implements DirectionService {
 	@Override
 	public List<DirectionDTO> findAllDirectionsOfPostsByUserId(Integer userId) {
 		return directionRepository.findAllDirectionsOfPostsByUserId(userId).stream()
+				.map(directionMapper::toDirectionDTO)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 *
+	 * @param doctorId id of user
+	 * @return list of directions from all user posts
+	 */
+	@Override
+	public List<DirectionDTO> findAllDirectionsOfPostsByDoctorId(Integer doctorId) {
+		return directionRepository.findAllDirectionsOfPostsByDoctorId(doctorId).stream()
 				.map(directionMapper::toDirectionDTO)
 				.collect(Collectors.toList());
 	}
@@ -91,8 +117,19 @@ public class DirectionServiceImpl implements DirectionService {
 	 */
 	@Override
 	@Transactional
-	public void updateDirectionsHasPostsStatus() {
-		directionRepository.updateDirectionsHasPostsStatus();
+	public void updateDirectionsHasPostsStatus(Set<Integer> directions) {
+		directionRepository.updateDirectionsHasPostsStatus(directions);
+	}
+
+	@Override
+	@Transactional
+	public void updateDirectionsHasPostsStatusByEntities(Set<DirectionEntity> directions) {
+		directionRepository.updateDirectionsHasPostsStatus(
+				directions
+					.stream()
+					.map(DirectionEntity::getId)
+					.collect(Collectors.toSet())
+		);
 	}
 
 }
