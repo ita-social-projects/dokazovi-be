@@ -12,8 +12,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -58,10 +61,22 @@ class DirectionServiceImplTest {
 	}
 
 	@Test
-	void updateDirectionsHasPostsStatusTest() {
-		directionService.updateDirectionsHasPostsStatus();
+	void updateDirectionsHasPostsByEntitiesStatusTest() {
+		List<DirectionEntity> entities = directionRepository.findAll();
+		directionService.updateDirectionsHasPostsStatusByEntities(new HashSet(entities));
 		verify(directionRepository, times(1))
-				.updateDirectionsHasPostsStatus();
+				.updateDirectionsHasPostsStatus(any());
+	}
+
+	@Test
+	void updateDirectionsHasPostsStatusTest() {
+		Set<Integer> entities = directionRepository.findAll()
+				.stream()
+				.map(DirectionEntity::getId)
+				.collect(Collectors.toSet());
+		directionService.updateDirectionsHasPostsStatus(entities);
+		verify(directionRepository, times(1))
+				.updateDirectionsHasPostsStatus(any());
 	}
 
 	@Test
