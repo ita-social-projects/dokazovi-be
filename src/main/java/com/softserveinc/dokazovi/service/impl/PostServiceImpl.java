@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -220,6 +221,15 @@ public class PostServiceImpl implements PostService {
 
 		PostEntity mappedEntity = getPostEntityFromPostDTO(postDTO);
 		mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+
+		mappedEntity.getDirections().clear();
+		mappedEntity.getDirections().addAll(
+				postDTO
+						.getDirections()
+						.stream()
+						.map((id) -> directionRepository.findById(id.getId()).get())
+						.collect(Collectors.toSet())
+		);
 
 		Integer userId = userPrincipal.getId();
 		Integer authorId = mappedEntity.getAuthor().getId();
