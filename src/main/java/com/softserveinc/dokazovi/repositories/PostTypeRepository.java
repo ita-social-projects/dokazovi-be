@@ -16,7 +16,8 @@ public interface PostTypeRepository extends JpaRepository<PostTypeEntity, Intege
 					+ " FROM POST_TYPES"
 					+ " WHERE (TYPE_ID IN (SELECT DISTINCT P.TYPE_ID "
 					+ "                   FROM POSTS P "
-					+ "                   WHERE P.AUTHOR_ID IN (:userId))) ")
+					+ "                   WHERE P.AUTHOR_ID = :userId"
+					+ "                     AND P.STATUS = 'PUBLISHED')) ")
 	List<PostTypeEntity> findAllPostTypesByUserId(Integer userId);
 
 	@Query(nativeQuery = true,
