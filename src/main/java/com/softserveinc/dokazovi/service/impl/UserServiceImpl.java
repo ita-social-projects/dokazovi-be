@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -109,18 +108,19 @@ public class UserServiceImpl implements UserService {
 			return userRepository.findDoctorsProfiles(pageable).map(userMapper::toUserDTO);
 		}
 
-		List<String> userName = userSearchCriteria.getUserNameList();
+		final String name = userSearchCriteria.getUserName();
 
-		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS)) && userName.size() == 1) {
-			final String name = userName.get(0);
+		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS))) {
+			//final String name = userName.get(0);
 			return userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
 		}
 
-		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS)) && userName.size() == 2) {
-			final String firstName = userName.get(0);
-			final String lastName = userName.get(1);
-			return userRepository.findDoctorsByName(firstName, lastName, pageable).map(userMapper::toUserDTO);
-		}
+		// Why do we even need this?
+		//if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS)) && userName.size() == 2) {
+		//	final String firstName = userName.get(0);
+		//	final String lastName = userName.get(1);
+		//	return userRepository.findDoctorsByName(firstName, lastName, pageable).map(userMapper::toUserDTO);
+		//}
 
 		if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_USERNAME))) {
 			return userRepository.findDoctorsProfilesByRegionsIds(

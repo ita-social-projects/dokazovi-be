@@ -318,7 +318,7 @@ class UserServiceImplTest {
 		Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
 
 		when(userRepository
-				.findDoctorsByName(anyString(), anyString(), any(Pageable.class)))
+				.findDoctorsByName(anyString(), any(Pageable.class)))
 				.thenReturn(userEntityPage);
 		userService.findAllExperts(userSearchCriteria, pageable);
 		verify(userMapper, times(userEntityPage.getNumberOfElements())).toUserDTO(any(UserEntity.class));
@@ -334,7 +334,7 @@ class UserServiceImplTest {
 		userSearchCriteria.setRegions(set);
 
 		when(userRepository
-				.findDoctorsByName("И", "И", pageable))
+				.findDoctorsByName("И И", pageable))
 				.thenThrow(new EntityNotFoundException("User does not exist"));
 
 		assertThrows(EntityNotFoundException.class, () -> userService
