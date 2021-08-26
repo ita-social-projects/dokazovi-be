@@ -201,9 +201,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	 * @return  the resulting user entity page
 	 * @deprecated Please try to not use this method, as it is much heavier than needed, introduces various bugs and is
 	 *             ultimately slow to debug.
-	 * @since 26.08.2021
 	 */
-	@Deprecated
+	@Deprecated(since = "26.08.2021")
 	@Query(nativeQuery = true,
 			value = "SELECT *, "
 					+ "  CASE "
