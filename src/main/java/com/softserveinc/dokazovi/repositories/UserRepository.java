@@ -179,10 +179,14 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	 * @return the resulting user entity page
 	 */
 	@Query(nativeQuery = true,
-			value = " SELECT U.* FROM USERS U"
-					+ "   JOIN DOCTORS D ON U.USER_ID = D.USER_ID"
-					+ "     WHERE UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:name), '%') OR "
-					+ "          UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:name), '%')")
+			value = " SELECT U.* FROM USERS U "
+					+ "     WHERE UPPER(U.FIRST_NAME || ' ' || U.LAST_NAME) LIKE (UPPER(:name) || '%') "
+					+ "        OR UPPER(U.LAST_NAME || ' ' || U.FIRST_NAME) LIKE (UPPER(:name) || '%') "
+					+ "        OR ((coalesce(U.FIRST_NAME, '') <> '') IS TRUE) "
+					+ "           AND (UPPER(U.FIRST_NAME)) LIKE (UPPER(:name) || '%') "
+					+ "        OR ((coalesce(U.LAST_NAME, '') <> '') IS TRUE) "
+					+ "           AND (UPPER(U.LAST_NAME)) LIKE (UPPER(:name) || '%') "
+					+ "   ORDER BY U.FIRST_NAME, U.LAST_NAME ")
 	Page<UserEntity> findDoctorsByName(@Param("name") String name, Pageable pageable);
 
 	/**
@@ -195,7 +199,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	 * @param lastName received from user service
 	 * @param pageable interface for pagination information received from user service
 	 * @return  the resulting user entity page
+	 * @deprecated Please try to not use this method, as it is much heavier than needed, introduces various bugs and is
+	 *             ultimately slow to debug.
 	 */
+	@Deprecated(since = "26.08.2021")
 	@Query(nativeQuery = true,
 			value = "SELECT *, "
 					+ "  CASE "
