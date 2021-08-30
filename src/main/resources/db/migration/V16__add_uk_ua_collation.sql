@@ -1,0 +1,1 @@
+CREATE COLLATION "uk-ua-dokazovi-x-icu" ( provider = 'icu', locale = 'uk-ua' );
