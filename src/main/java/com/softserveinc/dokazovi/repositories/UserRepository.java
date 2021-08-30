@@ -180,8 +180,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	 */
 	@Query(nativeQuery = true,
 			value = " SELECT U.* FROM USERS U "
-					+ "     WHERE UPPER(U.FIRST_NAME || ' ' || U.LAST_NAME) LIKE (UPPER(:name) || '%') "
-					+ "        OR UPPER(U.LAST_NAME || ' ' || U.FIRST_NAME) LIKE (UPPER(:name) || '%') "
+					+ "     WHERE UPPER((U.FIRST_NAME || ' ' || U.LAST_NAME) COLLATE \"uk-ua-dokazovi-x-icu\")"
+					+ "         LIKE UPPER((:name || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "        OR UPPER((U.LAST_NAME || ' ' || U.FIRST_NAME) COLLATE \"uk-ua-dokazovi-x-icu\")"
+					+ "         LIKE UPPER((:name || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
 					+ "   ORDER BY U.FIRST_NAME, U.LAST_NAME ")
 	Page<UserEntity> findDoctorsByName(@Param("name") String name, Pageable pageable);
 
