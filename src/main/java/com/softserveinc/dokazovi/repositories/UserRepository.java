@@ -182,10 +182,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 			value = " SELECT U.* FROM USERS U "
 					+ "     WHERE UPPER(U.FIRST_NAME || ' ' || U.LAST_NAME) LIKE (UPPER(:name) || '%') "
 					+ "        OR UPPER(U.LAST_NAME || ' ' || U.FIRST_NAME) LIKE (UPPER(:name) || '%') "
-					+ "        OR ((coalesce(U.FIRST_NAME, '') <> '') IS TRUE) "
-					+ "           AND (UPPER(U.FIRST_NAME)) LIKE (UPPER(:name) || '%') "
-					+ "        OR ((coalesce(U.LAST_NAME, '') <> '') IS TRUE) "
-					+ "           AND (UPPER(U.LAST_NAME)) LIKE (UPPER(:name) || '%') "
 					+ "   ORDER BY U.FIRST_NAME, U.LAST_NAME ")
 	Page<UserEntity> findDoctorsByName(@Param("name") String name, Pageable pageable);
 
