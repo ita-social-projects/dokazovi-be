@@ -1,1 +1,1 @@
-CREATE COLLATION "uk-ua-dokazovi-x-icu" ( provider = 'icu', locale = 'uk-ua' );
+CREATE COLLATION IF NOT EXISTS "uk-ua-dokazovi-x-icu" ( provider = 'icu', locale = 'uk-ua' );
