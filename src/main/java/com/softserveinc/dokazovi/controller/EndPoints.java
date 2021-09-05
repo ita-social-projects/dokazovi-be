@@ -14,6 +14,7 @@ public final class EndPoints {
 	public static final String POST_TYPE = "/type";
 	public static final String POST_LATEST = "/latest-all";
 	public static final String POST_LATEST_BY_POST_TYPES_AND_ORIGINS = "/latest";
+	public static final String POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE = "/latestMobile";
 	public static final String POST_IMPORTANT = "/important";
 	public static final String POST_SET_IMPORTANT = "/set-important";
 	public static final String POST_GET_POST_BY_ID = "/{postId}";
