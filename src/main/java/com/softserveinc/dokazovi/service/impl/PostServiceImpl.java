@@ -273,6 +273,28 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	public Page<PostMainPageDTO> findLatestByPostTypesAndOriginsForMobile(Pageable pageable) {
+		PostMainPageDTO expertOptions = PostMainPageDTO.builder()
+				.fieldName("expertOpinion")
+				.postDTOS(postRepository.findLatestByPostTypeExpertOpinion(Pageable.unpaged())
+						.map(postMapper::toPostDTO).toList()).build();
+		PostMainPageDTO media = PostMainPageDTO.builder()
+				.fieldName("media")
+				.postDTOS(postRepository.findLatestByPostTypeMedia(Pageable.unpaged())
+						.map(postMapper::toPostDTO).toList()).build();
+		PostMainPageDTO translation = PostMainPageDTO.builder()
+				.fieldName("translation")
+				.postDTOS(postRepository.findLatestByPostTypeTranslation(Pageable.unpaged())
+						.map(postMapper::toPostDTO).toList()).build();
+		PostMainPageDTO video = PostMainPageDTO.builder()
+				.fieldName("video")
+				.postDTOS(postRepository.findLatestByOriginVideo(Pageable.unpaged())
+						.map(postMapper::toPostDTO).toList()).build();
+
+		return new PageImpl<>(List.of(expertOptions, media, translation, video));
+	}
+
+	@Override
 	public Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId,
 			Set<Integer> directionId, Pageable pageable) {
 		if (typeId == null && directionId == null) {
