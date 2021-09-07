@@ -915,7 +915,7 @@ class PostServiceImplTest {
 
 	@Test
 	void findLatestPostsByPostTypesAndOriginForMobile_isOk() {
-		Pageable pageable = PageRequest.of(0, 4);
+		Pageable pageable = Pageable.unpaged();
 		when(postRepository.findLatestByPostTypeMedia(any(Pageable.class)))
 				.thenReturn(postEntityPage);
 		when(postRepository.findLatestByOriginVideo(pageable)).thenReturn(postEntityPage);
@@ -941,7 +941,7 @@ class PostServiceImplTest {
 
 	@Test
 	void findLatestPostsByPostTypesAndOriginForMobile_NotFound() {
-		Pageable pageable = PageRequest.of(0, 4);
+		Pageable pageable = Pageable.unpaged();
 		when(postRepository.findLatestByPostTypeMedia(any(Pageable.class)))
 				.thenReturn(Page.empty());
 		when(postRepository.findLatestByOriginVideo(pageable)).thenReturn(Page.empty());
