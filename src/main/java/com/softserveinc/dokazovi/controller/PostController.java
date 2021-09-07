@@ -52,6 +52,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
@@ -380,6 +381,23 @@ public class PostController {
 	@ApiPageable
 	@ApiOperation(value = "Find latest published posts by post types and origins")
 	public ResponseEntity<Page<PostMainPageDTO>> findLatestByPostTypesAndOrigins(
+			@PageableDefault(size = 16) Pageable pageable) {
+		Page<PostMainPageDTO> posts = postService.findLatestByPostTypesAndOrigins(pageable);
+		return ResponseEntity
+				.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+				.body(posts);
+	}
+
+	/**
+	 * Gets latest posts by post types and origin with names of fields for mobile version
+	 *
+	 * @param pageable interface for pagination information
+	 * @return found posts filtered by Post Types and origins with names of main page fields and HttpStatus 'OK'
+	 */
+	@GetMapping(POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE)
+	@ApiPageable
+	@ApiOperation(value = "Find latest published posts by post types and origins")
+	public ResponseEntity<Page<PostMainPageDTO>> findLatestByPostTypesAndOriginsForMobile(
 			@PageableDefault(size = 16) Pageable pageable) {
 		Page<PostMainPageDTO> posts = postService.findLatestByPostTypesAndOrigins(pageable);
 		return ResponseEntity
