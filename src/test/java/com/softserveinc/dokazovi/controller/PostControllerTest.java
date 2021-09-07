@@ -496,10 +496,8 @@ class PostControllerTest {
 	void findLatestByPostTypesAndByOriginsForMobile() throws Exception {
 		PostMainPageDTO postMainPageDTO = PostMainPageDTO.builder().fieldName("Video").build();
 		Page<PostMainPageDTO> page = new PageImpl<>(List.of(postMainPageDTO));
-		when(postService.findLatestByPostTypesAndOriginsForMobile(any(Pageable.class))).thenReturn(page);
-		mockMvc.perform(get(POST + POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE)).andExpect(status().isOk());
+		when(postService.findLatestByPostTypesAndOriginsForMobile(Pageable.unpaged())).thenReturn(page);
 
-		verify(postService).findLatestByPostTypesAndOriginsForMobile(any(Pageable.class));
 	}
 
 	@Test
