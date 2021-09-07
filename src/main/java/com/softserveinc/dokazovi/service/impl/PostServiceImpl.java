@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
+import com.softserveinc.dokazovi.config.RedisConfig;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
@@ -41,6 +42,8 @@ import java.util.TreeSet;
 public class PostServiceImpl implements PostService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
+
+	private final RedisConfig redisConfig;
 
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
@@ -338,7 +341,11 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Integer getPostViewCount(String url) {
-		return viewCountService.fetchViewCount(url);
+		if (redisConfig.isRedisEnabled()) {
+			return viewCountService.fetchViewCount(url);
+		} else {
+			return googleAnalytics.getPostViewCount(url);
+		}
 	}
 
 	@Override
