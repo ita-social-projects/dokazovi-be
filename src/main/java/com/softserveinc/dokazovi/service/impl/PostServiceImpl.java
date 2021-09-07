@@ -48,6 +48,7 @@ public class PostServiceImpl implements PostService {
 	private final DirectionRepository directionRepository;
 	private final GoogleAnalytics googleAnalytics;
 	private final DirectionServiceImpl directionService;
+	private final ViewCountServiceImpl viewCountService;
 
 	@Override
 	public PostDTO findPostById(Integer postId) {
@@ -337,7 +338,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Integer getPostViewCount(String url) {
-		return googleAnalytics.getPostViewCount(url);
+		return viewCountService.fetchViewCount(url);
 	}
 
 	@Override
