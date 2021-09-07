@@ -27,13 +27,19 @@ idea {
 }
 
 test {
-    systemProperty 'spring.profiles.active', 'dev'
+    systemProperty('spring.autoconfigure.exclude',
+            'org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration')
+    systemProperty('spring.data.redis.repositories.enabled', 'false')
+    systemProperty('spring.cache.type', 'NONE')
 }
 
 task integrationTest(type: Test) {
     description("Runs integration tests")
     group("verification")
-    systemProperty 'spring.profiles.active', 'dev'
+    systemProperty('spring.autoconfigure.exclude',
+            'org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration')
+    systemProperty('spring.data.redis.repositories.enabled', 'false')
+    systemProperty('spring.cache.type', 'NONE')
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     useJUnitPlatform()
