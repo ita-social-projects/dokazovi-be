@@ -17,6 +17,7 @@ import com.softserveinc.dokazovi.security.RestAuthenticationEntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -37,6 +38,7 @@ public class GoogleAnalytics {
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
+	@Cacheable({"viewCount"})
 	public Integer getPostViewCount(String url) {
 
 		List<List<String>> rows = null;

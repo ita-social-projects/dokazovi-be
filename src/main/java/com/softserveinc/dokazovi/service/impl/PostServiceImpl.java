@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
-import com.softserveinc.dokazovi.config.RedisConfig;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
@@ -12,7 +11,6 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
-import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -43,15 +41,11 @@ public class PostServiceImpl implements PostService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
 
-	private final RedisConfig redisConfig;
-
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
-	private final DirectionRepository directionRepository;
-	private final GoogleAnalytics googleAnalytics;
 	private final DirectionServiceImpl directionService;
-	private final ViewCountServiceImpl viewCountService;
+	private final GoogleAnalytics googleAnalytics;
 
 	@Override
 	public PostDTO findPostById(Integer postId) {
@@ -341,11 +335,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Integer getPostViewCount(String url) {
-		if (redisConfig.isRedisEnabled()) {
-			return viewCountService.fetchViewCount(url);
-		} else {
-			return googleAnalytics.getPostViewCount(url);
-		}
+		return googleAnalytics.getPostViewCount(url);
 	}
 
 	@Override
