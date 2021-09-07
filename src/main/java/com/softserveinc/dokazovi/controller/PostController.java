@@ -399,7 +399,7 @@ public class PostController {
 	@ApiOperation(value = "Find latest published posts by post types and origins")
 	public ResponseEntity<Page<PostMainPageDTO>> findLatestByPostTypesAndOriginsForMobile(
 			@PageableDefault(size = 16) Pageable pageable) {
-		Page<PostMainPageDTO> posts = postService.findLatestByPostTypesAndOrigins(pageable);
+		Page<PostMainPageDTO> posts = postService.findLatestByPostTypesAndOriginsForMobile(pageable);
 		return ResponseEntity
 				.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(posts);
