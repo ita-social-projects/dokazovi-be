@@ -914,6 +914,18 @@ class PostServiceImplTest {
 	}
 
 	@Test
+	void findLatestPostsByPostTypesAndOriginForMobile_isOk() {
+		Pageable pageable = PageRequest.of(0, 4);
+		when(postRepository.findLatestByPostTypeMedia(any(Pageable.class)))
+				.thenReturn(postEntityPage);
+		when(postRepository.findLatestByOriginVideo(pageable)).thenReturn(postEntityPage);
+		when(postRepository.findLatestByPostTypeTranslation(pageable)).thenReturn(postEntityPage);
+		when(postRepository.findLatestByPostTypeExpertOpinion(pageable)).thenReturn(postEntityPage);
+		postService.findLatestByPostTypesAndOriginsForMobile(pageable);
+		verify(postMapper, times(8)).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
 	void findLatestPostsByPostTypesAndOrigin_NotFound() {
 		Pageable pageable = PageRequest.of(0, 4);
 		when(postRepository.findLatestByPostTypeMedia(any(Pageable.class)))
@@ -925,6 +937,20 @@ class PostServiceImplTest {
 		postService.findLatestByPostTypesAndOrigins(pageable);
 		verify(postMapper, times(0)).toPostDTO(any(PostEntity.class));
 		Assertions.assertThat(postService.findLatestByPostTypesAndOrigins(pageable).isEmpty());
+	}
+
+	@Test
+	void findLatestPostsByPostTypesAndOriginForMobile_NotFound() {
+		Pageable pageable = PageRequest.of(0, 4);
+		when(postRepository.findLatestByPostTypeMedia(any(Pageable.class)))
+				.thenReturn(Page.empty());
+		when(postRepository.findLatestByOriginVideo(pageable)).thenReturn(Page.empty());
+		when(postRepository.findLatestByPostTypeTranslation(pageable)).thenReturn(Page.empty());
+		when(postRepository.findLatestByPostTypeExpertOpinion(pageable)).thenReturn(Page.empty());
+
+		postService.findLatestByPostTypesAndOriginsForMobile(pageable);
+		verify(postMapper, times(0)).toPostDTO(any(PostEntity.class));
+		Assertions.assertThat(postService.findLatestByPostTypesAndOriginsForMobile(pageable).isEmpty());
 	}
 
 	@Test
