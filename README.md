@@ -90,6 +90,11 @@ On macOS, you can install it from Homebrew.
 On Ubuntu refer to instructions above; on other GNU/Linux distributions
 refer to the docs available for them.
 
+After starting Redis, set `REDIS_HOST`, `REDIS_PORT` environment variables to
+their corresponding values if they do not match defaults,
+and set `SPRING_PROFILE=prod`. Please note that this is not
+supported on the `dev` Spring profile.
+
 ## Deployed Apps and Additional Links
 
 [RC Java](https://dokazovi-be.herokuapp.com/api/swagger-ui/) - the latest version from the release branch is automatically deployed to Heroku
