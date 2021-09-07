@@ -49,16 +49,6 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisTemplate<?, ?> redisTemplate() {
-		if (redisEnabled) {
-			RedisTemplate<byte[], byte[]> template = new RedisTemplate<byte[], byte[]>();
-			template.setConnectionFactory(Companion.redisConnectionFactory);
-			return template;
-		}
-		return null;
-	}
-
-	@Bean
 	public CacheManager cacheManager() {
 		String[] cacheNames = { "viewCount" };
 		if (redisEnabled) {
