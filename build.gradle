@@ -26,9 +26,14 @@ idea {
     }
 }
 
+test {
+    systemProperty 'spring.profiles.active', 'dev'
+}
+
 task integrationTest(type: Test) {
     description("Runs integration tests")
     group("verification")
+    systemProperty 'spring.profiles.active', 'dev'
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     useJUnitPlatform()
