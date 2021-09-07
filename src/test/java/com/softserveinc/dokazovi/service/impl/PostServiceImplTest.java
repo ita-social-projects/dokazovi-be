@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -950,7 +951,7 @@ class PostServiceImplTest {
 
 		postService.findLatestByPostTypesAndOriginsForMobile(pageable);
 		verify(postMapper, times(0)).toPostDTO(any(PostEntity.class));
-		Assertions.assertThat(postService.findLatestByPostTypesAndOriginsForMobile(pageable).isEmpty());
+		assertThat(postService.findLatestByPostTypesAndOriginsForMobile(pageable).isEmpty());
 	}
 
 	@Test
