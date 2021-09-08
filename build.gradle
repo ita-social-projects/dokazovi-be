@@ -26,9 +26,20 @@ idea {
     }
 }
 
+test {
+    systemProperty('spring.profiles.active', '')
+    systemProperty('spring.autoconfigure.exclude',
+            'org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration')
+    systemProperty('spring.data.redis.repositories.enabled', 'false')
+}
+
 task integrationTest(type: Test) {
     description("Runs integration tests")
     group("verification")
+    systemProperty('spring.profiles.active', '')
+    systemProperty('spring.autoconfigure.exclude',
+            'org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration')
+    systemProperty('spring.data.redis.repositories.enabled', 'false')
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     useJUnitPlatform()
@@ -80,12 +91,15 @@ dependencies {
     implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.3.12.RELEASE'
     implementation group: 'com.google.apis', name: 'google-api-services-analytics', version: 'v3-rev161-1.25.0'
 	implementation group: 'com.google.api-client', name: 'google-api-client', version: '1.31.5'
+
+    implementation 'redis.clients:jedis:3.6.3'
 
     implementation 'org.flywaydb:flyway-core'
     implementation "org.mapstruct:mapstruct:${MAPPER_VERSION}"

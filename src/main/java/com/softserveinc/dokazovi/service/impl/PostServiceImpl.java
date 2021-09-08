@@ -11,7 +11,6 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
-import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -45,9 +44,8 @@ public class PostServiceImpl implements PostService {
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
-	private final DirectionRepository directionRepository;
-	private final GoogleAnalytics googleAnalytics;
 	private final DirectionServiceImpl directionService;
+	private final GoogleAnalytics googleAnalytics;
 
 	@Override
 	public PostDTO findPostById(Integer postId) {
