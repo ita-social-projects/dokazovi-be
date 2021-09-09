@@ -16,6 +16,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites - Required software
 * Java 11
 * PostgreSQL (9.5.9 or higher)
+* Redis (optional; tested with 6.2.5) - see below
 
 ### Installing
 
@@ -62,6 +63,37 @@ Check code style for tests:
 ```
 ./gradlew checkstyleTest
 ```
+
+## Installing Redis
+
+The easiest way to install latest Redis on Windows 10+ is using WSL2 -
+to do that, install Ubuntu 20.04 from Microsoft Store and run next commands:
+
+```bash
+$ sudo add-apt-repository ppa:redislabs/redis
+$ sudo apt update
+$ sudo apt install redis
+```
+
+Now you can use Redis by running commands below:
+
+```bash
+# launch redis in the current shell, on port 6379
+$ redis-server
+
+# connect to a running redis instance 
+$ redis-cli
+```
+
+On macOS, you can install it from Homebrew.
+
+On Ubuntu refer to instructions above; on other GNU/Linux distributions
+refer to the docs available for them.
+
+After starting Redis, set `REDIS_HOST`, `REDIS_PORT` environment variables to
+their corresponding values if they do not match defaults,
+and set `SPRING_PROFILE=prod`. Please note that this is not
+supported on the `dev` Spring profile.
 
 ## Deployed Apps and Additional Links
 
