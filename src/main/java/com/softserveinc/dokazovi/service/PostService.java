@@ -35,6 +35,8 @@ public interface PostService {
 
 	Page<PostMainPageDTO> findLatestByPostTypesAndOrigins(Pageable pageable);
 
+	Page<PostMainPageDTO> findLatestByPostTypesAndOriginsForMobile(Pageable pageable);
+
 	Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId, Set<Integer> directionId,
 			Pageable pageable);
 
