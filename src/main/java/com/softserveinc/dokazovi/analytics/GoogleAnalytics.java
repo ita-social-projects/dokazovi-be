@@ -54,7 +54,7 @@ public class GoogleAnalytics {
 			String profile = null;
 
 			if (!analyticsProfileId.equals("none")) {
-				profile = getProfileIdByConfig(analytics);
+				profile = getProfileIdByConfig();
 			} else {
 				profile = getFirstProfileId(analytics);
 			}
@@ -98,7 +98,7 @@ public class GoogleAnalytics {
 	}
 
 	// This is a "stub" method, mostly used to cache our profileId in a readable way.
-	private String getProfileIdByConfig(Analytics analytics) throws IOException {
+	private String getProfileIdByConfig() {
 		if (profileId != null) {
 			return profileId;
 		}
