@@ -34,6 +34,12 @@ public class GoogleAnalytics {
 
 	@Value("${analytics.creds}")
 	private String googleCredsFromJSON;
+
+	@Value("${analytics.profile:none}")
+	private String analyticsProfileId;
+
+	private String profileId = null;
+
 	private static final String APPLICATION_NAME = "Google Analytics";
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
@@ -45,7 +51,13 @@ public class GoogleAnalytics {
 		try {
 			Analytics analytics = initializeAnalytic();
 
-			String profile = getFirstProfileId(analytics);
+			String profile = null;
+
+			if (!analyticsProfileId.equals("none")) {
+				profile = getProfileIdByConfig();
+			} else {
+				profile = getFirstProfileId(analytics);
+			}
 
 			rows = getResults(analytics, profile, url).getRows();
 
@@ -62,6 +74,9 @@ public class GoogleAnalytics {
 	 * @return An authorized Analytics service object.
 	 */
 	private Analytics initializeAnalytic() throws IOException {
+		if (!analyticsProfileId.equals("none")) {
+			logger.info("We have our Google Analytics profile ID passed directly. Will use that.");
+		}
 
 		HttpTransport httpTransport = null;
 		try {
@@ -82,11 +97,21 @@ public class GoogleAnalytics {
 				.setApplicationName(APPLICATION_NAME).build();
 	}
 
+	// This is a "stub" method, mostly used to cache our profileId in a readable way.
+	private String getProfileIdByConfig() {
+		if (profileId != null) {
+			return profileId;
+		}
+
+		profileId = analyticsProfileId;
+
+		return profileId;
+	}
+
 	private String getFirstProfileId(Analytics analytics) throws IOException {
-		/**
-		 * Get the first view (profile) ID for the authorized user.
-		 */
-		String profileId = null;
+		if (profileId != null) {
+			return profileId;
+		}
 
 		/**
 		 * Query for the list of all accounts associated with the service account.
