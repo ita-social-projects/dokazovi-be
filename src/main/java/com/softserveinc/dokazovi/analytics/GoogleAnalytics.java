@@ -74,10 +74,6 @@ public class GoogleAnalytics {
 	 * @return An authorized Analytics service object.
 	 */
 	private Analytics initializeAnalytic() throws IOException {
-		if (!analyticsProfileId.equals("none")) {
-			logger.info("We have our Google Analytics profile ID passed directly. Will use that.");
-		}
-
 		HttpTransport httpTransport = null;
 		try {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -97,11 +93,12 @@ public class GoogleAnalytics {
 				.setApplicationName(APPLICATION_NAME).build();
 	}
 
-	// This is a "stub" method, mostly used to cache our profileId in a readable way.
 	private String getProfileIdByConfig() {
 		if (profileId != null) {
 			return profileId;
 		}
+
+		logger.info("We have our Google Analytics profile ID passed directly. Will use that.");
 
 		profileId = analyticsProfileId;
 
