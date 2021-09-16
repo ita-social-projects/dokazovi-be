@@ -29,6 +29,9 @@ public class RedisConfig {
 	@Value("${redis.enabled:false}")
 	private boolean redisEnabled;
 
+	@Value("${redis.password:none}")
+	private String redisPassword;
+
 	public boolean isRedisEnabled() {
 		return redisEnabled;
 	}
@@ -42,6 +45,9 @@ public class RedisConfig {
 	public JedisConnectionFactory redisConnectionFactory() {
 		if (Companion.redisConnectionFactory == null) {
 			RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
+			if (!redisPassword.equals("none")) {
+				config.setPassword(redisPassword);
+			}
 			Companion.redisConnectionFactory = new JedisConnectionFactory(config);
 		}
 		return Companion.redisConnectionFactory;
