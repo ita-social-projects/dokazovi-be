@@ -179,45 +179,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	 * @return the resulting user entity page
 	 */
 	@Query(nativeQuery = true,
-			value = " SELECT U.* FROM USERS U"
-					+ "   JOIN DOCTORS D ON U.USER_ID = D.USER_ID"
-					+ "     WHERE UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:name), '%') OR "
-					+ "          UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:name), '%')")
+			value = " SELECT U.* FROM USERS U "
+					+ "     WHERE UPPER((U.FIRST_NAME || ' ' || U.LAST_NAME) COLLATE \"uk-ua-dokazovi-x-icu\")"
+					+ "         LIKE UPPER((:name || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "        OR UPPER((U.LAST_NAME || ' ' || U.FIRST_NAME) COLLATE \"uk-ua-dokazovi-x-icu\")"
+					+ "         LIKE UPPER((:name || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "   ORDER BY U.FIRST_NAME, U.LAST_NAME ")
 	Page<UserEntity> findDoctorsByName(@Param("name") String name, Pageable pageable);
-
-	/**
-	 * Gets the page of doctors by firstName and lastName.	 *
-	 * Sorts the experts according to the coincidence. First, the experts with the same firstname and  lastname are
-	 * displayed. Through   the CASE...WHEN...THEN statement, the TURN parameter is defined. Then results of the SELECT
-	 * statement are sorted according to the parameter TURN.
-	 *
-	 * @param firstName received from user service
-	 * @param lastName received from user service
-	 * @param pageable interface for pagination information received from user service
-	 * @return  the resulting user entity page
-	 */
-	@Query(nativeQuery = true,
-			value = "SELECT *, "
-					+ "  CASE "
-					+ "         WHEN ((UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:firstName), '%') "
-					+ "               AND UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:lastName), '%'))) "
-					+ "           OR ((UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:lastName), '%')"
-					+ "               AND UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:firstName), '%')))  THEN 1"
-					+ "         WHEN (UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:lastName), '%')) "
-					+ "           OR (UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:firstName), '%'))"
-					+ "           OR (UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:firstName), '%')) "
-					+ "           OR (UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:lastName), '%'))       THEN 2"
-					+ "                                                               ELSE 3 "
-					+ "     END as TURN "
-					+ "   FROM USERS U "
-					+ "     JOIN DOCTORS D ON U.USER_ID = D.USER_ID "
-					+ "       WHERE (UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:lastName), '%')) "
-					+ "         OR (UPPER(U.LAST_NAME) LIKE CONCAT(UPPER(:firstName), '%'))"
-					+ "         OR (UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:lastName), '%'))"
-					+ "         OR (UPPER(U.FIRST_NAME) LIKE CONCAT(UPPER(:firstName), '%'))"
-					+ "       ORDER BY TURN")
-	Page<UserEntity> findDoctorsByName(
-			@Param("firstName") String firstName, @Param("lastName") String lastName, Pageable pageable);
 
 	/**
 	 * Checks whether the user exists by email.

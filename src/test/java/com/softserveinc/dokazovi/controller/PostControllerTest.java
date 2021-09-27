@@ -50,6 +50,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
@@ -489,6 +490,16 @@ class PostControllerTest {
 		mockMvc.perform(get(POST + POST_LATEST_BY_POST_TYPES_AND_ORIGINS)).andExpect(status().isOk());
 
 		verify(postService).findLatestByPostTypesAndOrigins(any(Pageable.class));
+	}
+
+	@Test
+	void findLatestByPostTypesAndByOriginsForMobile() throws Exception {
+		PostMainPageDTO postMainPageDTO = PostMainPageDTO.builder().fieldName("Video").build();
+		Page<PostMainPageDTO> page = new PageImpl<>(List.of(postMainPageDTO));
+		when(postService.findLatestByPostTypesAndOriginsForMobile(any(Pageable.class))).thenReturn(page);
+
+		mockMvc.perform(get(POST + POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE)).andExpect(status().isOk());
+		verify(postService).findLatestByPostTypesAndOriginsForMobile(any(Pageable.class));
 	}
 
 	@Test

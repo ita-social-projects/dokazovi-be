@@ -11,7 +11,6 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
-import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -45,9 +44,8 @@ public class PostServiceImpl implements PostService {
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
-	private final DirectionRepository directionRepository;
-	private final GoogleAnalytics googleAnalytics;
 	private final DirectionServiceImpl directionService;
+	private final GoogleAnalytics googleAnalytics;
 
 	@Override
 	public PostDTO findPostById(Integer postId) {
@@ -267,6 +265,28 @@ public class PostServiceImpl implements PostService {
 		PostMainPageDTO video = PostMainPageDTO.builder()
 				.fieldName("video")
 				.postDTOS(postRepository.findLatestByOriginVideo(PageRequest.of(pageable.getPageNumber(), 4))
+						.map(postMapper::toPostDTO).toList()).build();
+
+		return new PageImpl<>(List.of(expertOptions, media, translation, video));
+	}
+
+	@Override
+	public Page<PostMainPageDTO> findLatestByPostTypesAndOriginsForMobile(Pageable pageable) {
+		PostMainPageDTO expertOptions = PostMainPageDTO.builder()
+				.fieldName("expertOpinion")
+				.postDTOS(postRepository.findLatestByPostTypeExpertOpinion(PageRequest.of(pageable.getPageNumber(), 10))
+						.map(postMapper::toPostDTO).toList()).build();
+		PostMainPageDTO media = PostMainPageDTO.builder()
+				.fieldName("media")
+				.postDTOS(postRepository.findLatestByPostTypeMedia(PageRequest.of(pageable.getPageNumber(), 10))
+						.map(postMapper::toPostDTO).toList()).build();
+		PostMainPageDTO translation = PostMainPageDTO.builder()
+				.fieldName("translation")
+				.postDTOS(postRepository.findLatestByPostTypeTranslation(PageRequest.of(pageable.getPageNumber(), 10))
+						.map(postMapper::toPostDTO).toList()).build();
+		PostMainPageDTO video = PostMainPageDTO.builder()
+				.fieldName("video")
+				.postDTOS(postRepository.findLatestByOriginVideo(PageRequest.of(pageable.getPageNumber(), 10))
 						.map(postMapper::toPostDTO).toList()).build();
 
 		return new PageImpl<>(List.of(expertOptions, media, translation, video));

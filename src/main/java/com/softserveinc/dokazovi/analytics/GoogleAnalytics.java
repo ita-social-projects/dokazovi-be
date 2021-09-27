@@ -17,6 +17,7 @@ import com.softserveinc.dokazovi.security.RestAuthenticationEntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -33,17 +34,30 @@ public class GoogleAnalytics {
 
 	@Value("${analytics.creds}")
 	private String googleCredsFromJSON;
+
+	@Value("${analytics.profile:none}")
+	private String analyticsProfileId;
+
+	private String profileId = null;
+
 	private static final String APPLICATION_NAME = "Google Analytics";
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
+	@Cacheable({"viewCount"})
 	public Integer getPostViewCount(String url) {
 
 		List<List<String>> rows = null;
 		try {
 			Analytics analytics = initializeAnalytic();
 
-			String profile = getFirstProfileId(analytics);
+			String profile = null;
+
+			if (!analyticsProfileId.equals("none")) {
+				profile = getProfileIdByConfig();
+			} else {
+				profile = getFirstProfileId(analytics);
+			}
 
 			rows = getResults(analytics, profile, url).getRows();
 
@@ -60,7 +74,6 @@ public class GoogleAnalytics {
 	 * @return An authorized Analytics service object.
 	 */
 	private Analytics initializeAnalytic() throws IOException {
-
 		HttpTransport httpTransport = null;
 		try {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -80,11 +93,22 @@ public class GoogleAnalytics {
 				.setApplicationName(APPLICATION_NAME).build();
 	}
 
+	private String getProfileIdByConfig() {
+		if (profileId != null) {
+			return profileId;
+		}
+
+		logger.info("We have our Google Analytics profile ID passed directly. Will use that.");
+
+		profileId = analyticsProfileId;
+
+		return profileId;
+	}
+
 	private String getFirstProfileId(Analytics analytics) throws IOException {
-		/**
-		 * Get the first view (profile) ID for the authorized user.
-		 */
-		String profileId = null;
+		if (profileId != null) {
+			return profileId;
+		}
 
 		/**
 		 * Query for the list of all accounts associated with the service account.
