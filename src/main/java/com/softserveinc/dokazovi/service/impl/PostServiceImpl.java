@@ -274,19 +274,19 @@ public class PostServiceImpl implements PostService {
 	public Page<PostMainPageDTO> findLatestByPostTypesAndOriginsForMobile(Pageable pageable) {
 		PostMainPageDTO expertOptions = PostMainPageDTO.builder()
 				.fieldName("expertOpinion")
-				.postDTOS(postRepository.findLatestByPostTypeExpertOpinion(Pageable.unpaged())
+				.postDTOS(postRepository.findLatestByPostTypeExpertOpinion(PageRequest.of(pageable.getPageNumber(), 10))
 						.map(postMapper::toPostDTO).toList()).build();
 		PostMainPageDTO media = PostMainPageDTO.builder()
 				.fieldName("media")
-				.postDTOS(postRepository.findLatestByPostTypeMedia(Pageable.unpaged())
+				.postDTOS(postRepository.findLatestByPostTypeMedia(PageRequest.of(pageable.getPageNumber(), 10))
 						.map(postMapper::toPostDTO).toList()).build();
 		PostMainPageDTO translation = PostMainPageDTO.builder()
 				.fieldName("translation")
-				.postDTOS(postRepository.findLatestByPostTypeTranslation(Pageable.unpaged())
+				.postDTOS(postRepository.findLatestByPostTypeTranslation(PageRequest.of(pageable.getPageNumber(), 10))
 						.map(postMapper::toPostDTO).toList()).build();
 		PostMainPageDTO video = PostMainPageDTO.builder()
 				.fieldName("video")
-				.postDTOS(postRepository.findLatestByOriginVideo(Pageable.unpaged())
+				.postDTOS(postRepository.findLatestByOriginVideo(PageRequest.of(pageable.getPageNumber(), 10))
 						.map(postMapper::toPostDTO).toList()).build();
 
 		return new PageImpl<>(List.of(expertOptions, media, translation, video));
