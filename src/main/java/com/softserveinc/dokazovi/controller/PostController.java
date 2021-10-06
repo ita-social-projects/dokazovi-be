@@ -445,18 +445,20 @@ public class PostController {
 	}
 
 	@ApiPageable
-	@ApiOperation(value = "Set fake views to post by post id", authorizations = {@Authorization(value = "Authorization")})
+	@ApiOperation(value = "Set fake views to post by post id",
+			authorizations = {@Authorization(value = "Authorization")})
 	@PostMapping(POST_SET_FAKE_VIEW)
-//	@PreAuthorize("hasAuthority('UPDATE_POST')")
+	@PreAuthorize("hasAuthority('UPDATE_POST')")
 	public void setFakeViewsForPost(@ApiParam("Post's id") @PathVariable("postId") Integer postId,
 			@ApiParam("Number of fake views") @RequestParam(name = "views", defaultValue = "0") Integer views) {
 		postService.setFakeViewsForPost(postId, views);
 	}
 
 	@ApiPageable
-	@ApiOperation(value = "Reset fake views for post by post id", authorizations = {@Authorization(value = "Authorization")})
+	@ApiOperation(value = "Reset fake views for post by post id",
+			authorizations = {@Authorization(value = "Authorization")})
 	@PostMapping(POST_RESET_FAKE_VIEW)
-//	@PreAuthorize("hasAuthority('UPDATE_POST')")
+	@PreAuthorize("hasAuthority('UPDATE_POST')")
 	public void resetFakeViewsForPost(@ApiParam("Post's id") @PathVariable("postId") Integer postId) {
 		postService.resetFakeViews(postId);
 	}

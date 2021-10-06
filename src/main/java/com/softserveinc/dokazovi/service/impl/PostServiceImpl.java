@@ -380,7 +380,8 @@ public class PostServiceImpl implements PostService {
 
 		if (postFakeViewEntity == null) {
 			PostEntity postEntity = postRepository.findById(postId)
-					.orElseThrow(() -> new javax.persistence.EntityNotFoundException("Post with this id doesn't exist"));
+					.orElseThrow(() ->
+							new javax.persistence.EntityNotFoundException("Post with this id doesn't exist"));
 			postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).views(view).build();
 		} else {
 			postFakeViewEntity.setViews(view);

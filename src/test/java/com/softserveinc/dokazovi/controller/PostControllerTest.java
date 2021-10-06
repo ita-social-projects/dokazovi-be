@@ -42,6 +42,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_FAKE_VIEW_COUNT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_BY_IMPORTANT_IMAGE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
@@ -51,11 +52,13 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_FAKE_VIEW;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -509,6 +512,37 @@ class PostControllerTest {
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
 		verify(postService).getPostViewCount(any(String.class));
+	}
+
+	@Test
+	void setFakeViewsForPost() throws Exception {
+		String uri = POST + "/set-fake-view/110";
+
+		mockMvc.perform(post(uri).param("views","150"))
+				.andExpect(status().isOk());
+
+		verify(postService, times(1)).setFakeViewsForPost(110, 150);
+	}
+
+	@Test
+	void resetFakeViewsForPost() throws Exception {
+		String uri = POST + "/reset-fake-view/110";
+
+		mockMvc.perform(post(uri))
+				.andExpect(status().isOk());
+
+		verify(postService, times(1)).resetFakeViews(110);
+	}
+
+	@Test
+	void getFakeViewsForPost() throws Exception {
+		String uri = POST + POST_FAKE_VIEW_COUNT;
+
+		mockMvc.perform(get(uri).param("url", "/posts/110"))
+				.andExpect(status().isOk());
+
+		verify(postService, times(1)).getFakeViewsByPostUrl("/posts/110");
+		verify(postService, times(1)).getPostViewCount("/posts/110");
 	}
 
 	@Test
