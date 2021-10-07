@@ -370,6 +370,7 @@ public class PostServiceImpl implements PostService {
 		PostFakeViewEntity postFakeViewEntity =
 				postFakeViewRepository.getPostFakeViewEntityByPostId(Integer.parseInt(scanner.findInLine("\\d+")))
 				.orElse(new PostFakeViewEntity());
+		scanner.close();
 		return postFakeViewEntity.getViews();
 	}
 
