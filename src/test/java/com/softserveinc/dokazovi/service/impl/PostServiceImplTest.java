@@ -982,7 +982,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void setFakeViewsForPost() {
+	void setFakeViewsForPost_withExistPostFakeViewEntity() {
 		PostEntity postEntity = PostEntity.builder().id(10).build();
 		PostFakeViewEntity postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).build();
 		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
@@ -991,6 +991,18 @@ class PostServiceImplTest {
 		postService.setFakeViewsForPost(10, 110);
 
 		assertEquals(110, postFakeViewEntity.getViews());
+	}
+
+	@Test
+	void setFakeViewsForPost_withNotExistPostFakeViewEntity() {
+		PostEntity postEntity = PostEntity.builder().id(10).build();
+		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
+				.thenReturn(Optional.empty());
+		when(postRepository.findById(10)).thenReturn(Optional.of(postEntity));
+
+		postService.setFakeViewsForPost(10, 110);
+
+		verify(postFakeViewRepository, times(1)).save(any(PostFakeViewEntity.class));
 	}
 
 	@Test
