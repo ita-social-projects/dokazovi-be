@@ -52,7 +52,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_FAKE_VIEW;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
