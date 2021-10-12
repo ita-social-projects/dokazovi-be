@@ -17,6 +17,8 @@ public final class EndPoints {
 	public static final String POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE = "/latestMobile";
 	public static final String POST_IMPORTANT = "/important";
 	public static final String POST_SET_IMPORTANT = "/set-important";
+	public static final String POST_SET_FAKE_VIEW = "/set-fake-view/{postId}";
+	public static final String POST_RESET_FAKE_VIEW = "/reset-fake-view/{postId}";
 	public static final String POST_GET_POST_BY_ID = "/{postId}";
 	public static final String POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS = "/by-authorid-and-directions";
 	public static final String POST_ALL_POSTS = "/all-posts";
@@ -37,6 +39,7 @@ public final class EndPoints {
 	public static final String POST_LATEST_BY_EXPERT = "/latest-by-expert";
 	public static final String POST_LATEST_BY_EXPERT_AND_STATUS = "/latest-by-expert-and-status";
 	public static final String POST_VIEW_COUNT = "/post-view-count";
+	public static final String POST_FAKE_VIEW_COUNT = "/post-fake-view-count";
 	public static final String DIRECTION = "/direction";
 	public static final String ORIGIN = "/origin";
 	public static final String REGION = "/region";
