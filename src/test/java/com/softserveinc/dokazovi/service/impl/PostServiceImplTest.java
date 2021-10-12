@@ -7,9 +7,11 @@ import com.softserveinc.dokazovi.annotations.TagExists;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTOForSavingPost;
 import com.softserveinc.dokazovi.dto.origin.OriginDTOForSavingPost;
+import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeIdOnlyDTO;
+import com.softserveinc.dokazovi.dto.post.PostUserDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
@@ -1101,5 +1103,19 @@ class PostServiceImplTest {
 
 		Set<DirectionEntity> result = postService.getDirectionsFromPostsEntities(oldEntity, newEntity);
 		assertEquals(2, result.size());
+	}
+
+	@Test
+	void findAllByAuthorUsername() {
+		String username = "Anton Williams";
+		Pageable pageable = PageRequest.of(0,12);
+		UserEntity userEntity = UserEntity.builder().id(10).firstName("Anton").lastName("Williams").build();
+		PostEntity postEntity = PostEntity.builder().id(10).author(userEntity).build();
+		when(postRepository.findAllByAuthorUsername(username, pageable)).thenReturn(new PageImpl<>(List.of(postEntity)));
+
+		Page<PostDTO> page = postService.findAllByAuthorUsername(username, pageable);
+
+		verify(postRepository, times(1)).findAllByAuthorUsername(username, pageable);
+		assertEquals(1, page.getTotalElements());
 	}
 }

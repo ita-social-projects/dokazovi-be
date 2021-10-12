@@ -3,11 +3,13 @@ package com.softserveinc.dokazovi.repositories;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -171,4 +173,15 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
 			Set<Integer> directionsIds, Set<Integer> typesIds, Set<Integer> originsIds, PostStatus postStatus,
 			Boolean important, Pageable pageable);
+
+	@Query(nativeQuery = true,
+			value = "SELECT * FROM posts "
+			+ "WHERE author_id IN "
+			+ "(SELECT user_id FROM users u "
+					+ "WHERE UPPER((u.first_name || ' ' || u.last_name) COLLATE \"uk-ua-dokazovi-x-icu\")"
+						+ "LIKE UPPER((:username || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "OR UPPER((u.last_name || ' ' || u.first_name) COLLATE \"uk-ua-dokazovi-x-icu\")"
+						+ "LIKE UPPER((:username || '%') COLLATE \"uk-ua-dokazovi-x-icu\"))"
+			)
+	Page<PostEntity> findAllByAuthorUsername(@Param("username") String username, Pageable pageable);
 }

@@ -46,6 +46,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_FAKE_VIEW_COUNT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_BY_IMPORTANT_IMAGE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_USERNAME;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -375,6 +376,23 @@ public class PostController {
 	}
 
 	/**
+	 * Get posts by author's username
+	 *
+	 * @param pageable interface for pagination information
+	 * @param username first name and last name of author
+	 * @return found posts filtered by author username
+	 */
+	@GetMapping(POST_GET_POST_BY_AUTHOR_USERNAME)
+	@ApiOperation("Get posts by author's username.")
+	public ResponseEntity<Page<PostDTO>> getPostByAuthorUsername(@PageableDefault Pageable pageable,
+			@RequestParam String username) {
+		Page<PostDTO> posts = postService.findAllByAuthorUsername(username, pageable);
+		return ResponseEntity
+				.status(posts.getTotalElements() != 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+				.body(posts);
+	}
+
+	/**
 	 * Gets latest posts by post types and origin with names of fields
 	 *
 	 * @param pageable interface for pagination information
@@ -444,8 +462,14 @@ public class PostController {
 		return ResponseEntity.status(HttpStatus.OK).body(posts);
 	}
 
+	/**
+	 * Set a number for fake views
+	 *
+	 * @param postId id of post for which set fake views
+	 * @param views number of fake views
+	 */
 	@ApiPageable
-	@ApiOperation(value = "Set fake views to post by post id",
+	@ApiOperation(value = "Set fake views for post by post id",
 			authorizations = {@Authorization(value = "Authorization")})
 	@PostMapping(POST_SET_FAKE_VIEW)
 	@PreAuthorize("hasAuthority('UPDATE_POST')")
@@ -454,6 +478,12 @@ public class PostController {
 		postService.setFakeViewsForPost(postId, views);
 	}
 
+
+	/**
+	 * Reset number of fake view to 0
+	 *
+	 * @param postId id of post for which reset fake views to 0
+	 */
 	@ApiPageable
 	@ApiOperation(value = "Reset fake views for post by post id",
 			authorizations = {@Authorization(value = "Authorization")})
@@ -463,8 +493,14 @@ public class PostController {
 		postService.resetFakeViews(postId);
 	}
 
+	/**
+	 * Get sum of fake views and real views for post by post's url
+	 *
+	 * @param url post's url
+	 * @return number of fake views
+	 */
 	@ApiPageable
-	@ApiOperation(value = "Get fake views plus real views for post by post id")
+	@ApiOperation(value = "Get sum of fake views and real views for post by post's url")
 	@GetMapping(POST_FAKE_VIEW_COUNT)
 	public Integer getFakeViewsForPost(@ApiParam("Post's url") @RequestParam String url) {
 		return postService.getFakeViewsByPostUrl(url) + postService.getPostViewCount(url);

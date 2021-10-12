@@ -165,6 +165,11 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	public Page<PostDTO> findAllByAuthorUsername(String username, Pageable pageable) {
+		return postRepository.findAllByAuthorUsername(username, pageable).map(postMapper::toPostDTO);
+	}
+
+	@Override
 	public Page<PostDTO> findPostsByAuthorIdAndDirections(
 			Pageable pageable, Integer authorId, Set<Integer> directions) {
 

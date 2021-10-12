@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostUserDTO;
+import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
@@ -45,6 +47,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_FAKE_VIEW_COUNT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_BY_IMPORTANT_IMAGE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_USERNAME;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
@@ -558,6 +561,22 @@ class PostControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders
 				.get(POST + POST_GET_BY_IMPORTANT_IMAGE))
 				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	void getPostByAuthorUsername() throws Exception {
+		String username = "Anton Williams";
+		Pageable pageable = PageRequest.of(0,12);
+		PostUserDTO postUserDTO = PostUserDTO.builder().id(10).firstName("Anton").lastName("Williams").build();
+		PostDTO postDTO = PostDTO.builder().id(10).author(postUserDTO).build();
+
+		when(postService.findAllByAuthorUsername(username, pageable)).thenReturn(new PageImpl<>(List.of(postDTO)));
+
+		mockMvc.perform(get(POST + POST_GET_POST_BY_AUTHOR_USERNAME)
+			.param("username", username)
+			.param("size", "12"))
+				.andExpect(status().isOk());
+		verify(postService, times(1)).findAllByAuthorUsername(username, pageable);
 	}
 
 }

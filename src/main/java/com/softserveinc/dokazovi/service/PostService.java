@@ -21,6 +21,8 @@ public interface PostService {
 	Page<PostDTO> findAllByDirection(
 			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);
 
+	Page<PostDTO> findAllByAuthorUsername(String username, Pageable pageable);
+
 	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
 	Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(
