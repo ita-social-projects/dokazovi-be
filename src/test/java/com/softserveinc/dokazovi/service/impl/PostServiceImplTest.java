@@ -11,7 +11,6 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeIdOnlyDTO;
-import com.softserveinc.dokazovi.dto.post.PostUserDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
@@ -1111,7 +1110,8 @@ class PostServiceImplTest {
 		Pageable pageable = PageRequest.of(0,12);
 		UserEntity userEntity = UserEntity.builder().id(10).firstName("Anton").lastName("Williams").build();
 		PostEntity postEntity = PostEntity.builder().id(10).author(userEntity).build();
-		when(postRepository.findAllByAuthorUsername(username, pageable)).thenReturn(new PageImpl<>(List.of(postEntity)));
+		when(postRepository.findAllByAuthorUsername(username, pageable))
+				.thenReturn(new PageImpl<>(List.of(postEntity)));
 
 		Page<PostDTO> page = postService.findAllByAuthorUsername(username, pageable);
 
