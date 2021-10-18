@@ -526,16 +526,6 @@ class PostControllerTest {
 	}
 
 	@Test
-	void resetFakeViewsForPost() throws Exception {
-		String uri = POST + "/reset-fake-view/110";
-
-		mockMvc.perform(post(uri))
-				.andExpect(status().isOk());
-
-		verify(postService, times(1)).resetFakeViews(110);
-	}
-
-	@Test
 	void getFakeViewsForPost() throws Exception {
 		String uri = POST + POST_FAKE_VIEW_COUNT;
 

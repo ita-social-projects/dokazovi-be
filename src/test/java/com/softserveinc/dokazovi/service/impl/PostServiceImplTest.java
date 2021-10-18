@@ -1007,12 +1007,6 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void resetFakeViews() {
-		postService.resetFakeViews(10);
-		verify(postFakeViewRepository, times(1)).resetFakeViews(10);
-	}
-
-	@Test
 	void findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence_isOk() {
 		Pageable pageable = PageRequest.of(0, 12);
 		when(postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(

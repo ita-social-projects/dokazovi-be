@@ -396,11 +396,6 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public void resetFakeViews(Integer postId) {
-		postFakeViewRepository.resetFakeViews(postId);
-	}
-
-	@Override
 	public Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
 			Set<Integer> directions, Set<Integer> types, Set<Integer> origins, Pageable pageable) {
 		return postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(

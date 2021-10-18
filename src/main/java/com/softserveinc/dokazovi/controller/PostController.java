@@ -55,7 +55,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_RESET_FAKE_VIEW;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_FAKE_VIEW;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
@@ -478,20 +477,6 @@ public class PostController {
 		postService.setFakeViewsForPost(postId, views);
 	}
 
-
-	/**
-	 * Reset number of fake view to 0
-	 *
-	 * @param postId id of post for which reset fake views to 0
-	 */
-	@ApiPageable
-	@ApiOperation(value = "Reset fake views for post by post id",
-			authorizations = {@Authorization(value = "Authorization")})
-	@PostMapping(POST_RESET_FAKE_VIEW)
-	@PreAuthorize("hasAuthority('UPDATE_POST')")
-	public void resetFakeViewsForPost(@ApiParam("Post's id") @PathVariable("postId") Integer postId) {
-		postService.resetFakeViews(postId);
-	}
 
 	/**
 	 * Get sum of fake views and real views for post by post's url
