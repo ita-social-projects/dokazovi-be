@@ -20,7 +20,6 @@ public final class EndPoints {
 	public static final String POST_SET_FAKE_VIEW = "/set-fake-view/{postId}";
 	public static final String POST_GET_POST_BY_ID = "/{postId}";
 	public static final String POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS = "/by-authorid-and-directions";
-	public static final String POST_GET_POST_BY_AUTHOR_USERNAME = "/by-author-username";
 	public static final String POST_ALL_POSTS = "/all-posts";
 	public static final String USER = "/user";
 	public static final String USER_RESET_PASSWORD = "/reset-password";

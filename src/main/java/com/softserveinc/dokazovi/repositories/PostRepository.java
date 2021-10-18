@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -75,24 +74,6 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "                       WHERE DIRECTION_ID IN (:directionsIds)))"
 					+ " AND P.STATUS IN ('PUBLISHED') ")
 	Page<PostEntity> findAllByExpertAndByDirectionsAndByPostType(Integer authorId, Set<Integer> typesIds,
-			Set<Integer> directionsIds, Pageable pageable);
-
-	@Query(nativeQuery = true,
-			value = "SELECT P1.* "
-					+ " FROM POSTS P1 "
-					+ " WHERE ((array_length(ARRAY [(:typesIds)], 1) > 0 "
-					+ "     AND P1.TYPE_ID IN (:typesIds)) "
-					+ "   AND (array_length(ARRAY [(:directionsIds)], 1) > 0 "
-					+ "     AND P1.POST_ID IN (SELECT POST_ID "
-					+ "                        FROM POSTS_DIRECTIONS "
-					+ "                        WHERE DIRECTION_ID IN (:directionsIds))) "
-					+ "   AND (array_length(ARRAY [(:originsIds)], 1) > 0 "
-					+ "     AND P1.POST_ID IN (SELECT POST_ID "
-					+ "                        FROM POSTS_ORIGINS "
-					+ "                        WHERE ORIGIN_ID IN (:originsIds)))) "
-					+ "   AND P1.STATUS IN ('PUBLISHED') "
-	)
-	Page<PostEntity> findAllByDirectionsAndByPostTypesAndByOrigins(Set<Integer> typesIds, Set<Integer> originsIds,
 			Set<Integer> directionsIds, Pageable pageable);
 
 	@Query(nativeQuery = true,
@@ -174,13 +155,33 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			Boolean important, Pageable pageable);
 
 	@Query(nativeQuery = true,
-			value = "SELECT * FROM posts "
-			+ "WHERE author_id IN "
-			+ "(SELECT user_id FROM users u "
-					+ "WHERE UPPER((u.first_name || ' ' || u.last_name) COLLATE \"uk-ua-dokazovi-x-icu\")"
-						+ "LIKE UPPER((:username || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
-					+ "OR UPPER((u.last_name || ' ' || u.first_name) COLLATE \"uk-ua-dokazovi-x-icu\")"
-						+ "LIKE UPPER((:username || '%') COLLATE \"uk-ua-dokazovi-x-icu\"))"
-			)
-	Page<PostEntity> findAllByAuthorUsername(@Param("username") String username, Pageable pageable);
+			value = "SELECT * FROM posts p "
+					+ "WHERE CASE WHEN :typeIds IS NOT NULL "
+						+ "THEN p.type_id IN (:typeIds) "
+						+ "ELSE p.post_id IS NOT NULL "
+						+ "END "
+					+ "AND CASE WHEN :directionIds IS NOT NULL "
+						+ "THEN p.post_id IN "
+							+ "(SELECT pd.post_id FROM post_directions pd WHERE pd.direction_id IN (:directionIds)) "
+						+ "ELSE p.post_id IS NOT NULL "
+						+ "END "
+					+ "AND CASE WHEN :originIds IS NOT NULL "
+						+ "THEN p.post_id IN "
+							+ "(SELECT po.post_id FROM post_origins po WHERE po.origin_id IN (:originIds)) "
+						+ "ELSE p.post_id IS NOT NULL "
+						+ "END "
+					+ "AND CASE WHEN :statuses IS NOT NULL "
+						+ "THEN p.status IN (:statuses) "
+						+ "ELSE p.post_id IS NOT NULL "
+						+ "END "
+					+ "AND p.author_id IN "
+						+ "(SELECT user_id FROM users u "
+						+ "WHERE UPPER((u.first_name || ' ' || u.last_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
+							+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
+						+ "OR UPPER((u.last_name || ' ' || u.first_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
+							+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\")) "
+					+ "AND p.title LIKE (:title || '%')")
+	Page<PostEntity> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(Set<Integer> typeIds,
+			Set<Integer> directionIds, Set<PostStatus> statuses, Set<Integer> originIds, String title, String author,
+			Pageable pageable);
 }

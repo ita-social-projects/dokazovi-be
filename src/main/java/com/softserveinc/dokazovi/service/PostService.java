@@ -21,12 +21,11 @@ public interface PostService {
 	Page<PostDTO> findAllByDirection(
 			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);
 
-	Page<PostDTO> findAllByAuthorUsername(String username, Pageable pageable);
-
 	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
-	Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(
-			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Pageable pageable);
+	Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Set<PostStatus> statuses,
+			String title, String author, Pageable pageable);
 
 	Page<PostDTO> findPostsByAuthorIdAndDirections(
 			Pageable pageable, Integer expertId, Set<Integer> directions);

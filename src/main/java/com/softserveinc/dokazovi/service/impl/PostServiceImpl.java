@@ -31,7 +31,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -105,27 +104,29 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(Set<Integer> directionIds, Set<Integer> typeIds,
-			Set<Integer> originIds, Pageable pageable) {
-		if (directionIds == null && typeIds == null && originIds == null) {
+	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<PostStatus> statuses,
+			String title, String author, Pageable pageable) {
+		if (directionIds == null && typeIds == null && originIds == null && statuses == null &&
+				title.isEmpty() && author.isEmpty()) {
 			return postRepository.findAll(pageable)
 					.map(postMapper::toPostDTO);
 		}
-		Set<Integer> directions = validateIdsValues(directionIds);
-		Set<Integer> types = validateIdsValues(typeIds);
-		Set<Integer> origins = validateIdsValues(originIds);
+
 		try {
-			return postRepository.findAllByDirectionsAndByPostTypesAndByOrigins(types, origins, directions, pageable)
+			return postRepository
+					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statuses,
+							originIds, title, author, pageable)
 					.map(postMapper::toPostDTO);
 		} catch (Exception e) {
-			logger.error(String.format("Fail with posts filter with params directionIds=%s, typeIds=%s, originIds=%s",
-					directionIds, typeIds, originIds));
+			logger.error(
+					String.format("Fail with posts filter with params typeIds=%s, directionIds=%s, statuses=%s, "
+									+ "originIds=%s, title=%s, author=%s",
+							typeIds, directionIds, statuses, originIds, title, author));
 			throw new EntityNotFoundException("Id does not exist");
 		}
-	}
 
-	private Set<Integer> validateIdsValues(Set<Integer> ids) {
-		return ids != null ? ids : new HashSet<>();
+
 	}
 
 	@Override
@@ -162,11 +163,6 @@ public class PostServiceImpl implements PostService {
 		return postRepository.findAllByDirectionsContainsAndTypeIdInAndTagsIdInAndStatus(
 				direction, typeId, tagId, postStatus, pageable)
 				.map(postMapper::toPostDTO);
-	}
-
-	@Override
-	public Page<PostDTO> findAllByAuthorUsername(String username, Pageable pageable) {
-		return postRepository.findAllByAuthorUsername(username, pageable).map(postMapper::toPostDTO);
 	}
 
 	@Override
@@ -374,7 +370,7 @@ public class PostServiceImpl implements PostService {
 		Scanner scanner = new Scanner(url);
 		PostFakeViewEntity postFakeViewEntity =
 				postFakeViewRepository.getPostFakeViewEntityByPostId(Integer.parseInt(scanner.findInLine("\\d+")))
-				.orElse(new PostFakeViewEntity());
+						.orElse(new PostFakeViewEntity());
 		scanner.close();
 		return postFakeViewEntity.getViews();
 	}

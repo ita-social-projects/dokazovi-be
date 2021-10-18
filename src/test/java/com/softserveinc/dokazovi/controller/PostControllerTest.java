@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.dto.post.PostUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
@@ -46,7 +45,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_FAKE_VIEW_COUNT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_BY_IMPORTANT_IMAGE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_USERNAME;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
@@ -386,12 +384,16 @@ class PostControllerTest {
 		Set<Integer> directions = Set.of(1, 2);
 		Set<Integer> types = Set.of(1, 3);
 		Set<Integer> origins = Set.of(2, 3);
+		Set<PostStatus> statuses = null;
+		String author = "";
+		String title = "";
 		Pageable pageable = PageRequest.of(0, 10);
 		PostDTO postDTO = PostDTO.builder()
 				.id(1)
 				.build();
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
-		Mockito.when(postService.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable))
+		Mockito.when(postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
+				origins, statuses, title, author, pageable))
 				.thenReturn(page);
 		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=1,2&types=1,3&origins=2,3"))
 				.andExpect(status().isOk())
@@ -399,7 +401,8 @@ class PostControllerTest {
 						getIdFromResponse(result.getResponse().getContentAsString()))
 				);
 
-		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable);
+		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+				statuses, title, author, pageable);
 	}
 
 	private Integer getIdFromResponse(String json) {
@@ -418,20 +421,27 @@ class PostControllerTest {
 		Set<Integer> directionIds = null;
 		Set<Integer> typeIds = null;
 		Set<Integer> originIds = null;
+		Set<PostStatus> statuses = null;
+		String author = "";
+		String title = "";
 		Pageable pageable = PageRequest.of(0, 10);
 		Page<PostDTO> page = null;
 
 		Mockito.when(
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable))
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionIds, typeIds,
+						originIds, statuses, title, author, pageable))
 				.thenThrow(new EntityNotFoundException(
-						String.format("Fail to filter posts with params directionIds=%s, typeIds=%s, originIds=%s",
-								directionIds, typeIds, originIds)))
+						String.format("Fail to filter posts with params directionIds=%s, typeIds=%s, originIds=%s,"
+										+ "statuses=%s, title=%s, author=%s",
+								directionIds, typeIds, originIds, statuses, title, author)
+				))
 				.thenReturn(page);
 
 		mockMvc.perform(get(POST + POST_ALL_POSTS))
 				.andExpect(status().isNoContent())
 				.andExpect(result -> Assertions.assertEquals(0, result.getResponse().getContentLength()));
-		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable);
+		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionIds, typeIds,
+				originIds, statuses, title, author, pageable);
 	}
 
 	@Test
@@ -439,21 +449,27 @@ class PostControllerTest {
 		Set<Integer> directions = Set.of(-1, 1111);
 		Set<Integer> types = Set.of(123, 2345);
 		Set<Integer> origins = Set.of(1234, 1231);
+		Set<PostStatus> statuses = Set.of(PostStatus.DRAFT);
+		String author = "";
+		String title = "";
 		Pageable pageable = PageRequest.of(0, 10);
 		PostDTO postDTO = PostDTO.builder()
 				.id(0)
 				.build();
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
 
-		Mockito.when(postService.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable))
+		Mockito.when(postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
+				origins, statuses, title, author, pageable))
 				.thenReturn(page);
-		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=-1,1111&types=123,2345&origins=1234,1231"))
+		mockMvc.perform(get(POST + POST_ALL_POSTS +
+					"?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=DRAFT"))
 				.andExpect(status().isOk())
 				.andExpect(result -> Assertions.assertEquals(0,
 						getIdFromResponse(result.getResponse().getContentAsString()))
 				);
 
-		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable);
+		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+				statuses, title, author, pageable);
 	}
 
 	@Test
@@ -550,22 +566,6 @@ class PostControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders
 				.get(POST + POST_GET_BY_IMPORTANT_IMAGE))
 				.andExpect(MockMvcResultMatchers.status().isOk());
-	}
-
-	@Test
-	void getPostByAuthorUsername() throws Exception {
-		String username = "Anton Williams";
-		Pageable pageable = PageRequest.of(0,12);
-		PostUserDTO postUserDTO = PostUserDTO.builder().id(10).firstName("Anton").lastName("Williams").build();
-		PostDTO postDTO = PostDTO.builder().id(10).author(postUserDTO).build();
-
-		when(postService.findAllByAuthorUsername(username, pageable)).thenReturn(new PageImpl<>(List.of(postDTO)));
-
-		mockMvc.perform(get(POST + POST_GET_POST_BY_AUTHOR_USERNAME)
-			.param("username", username)
-			.param("size", "12"))
-				.andExpect(status().isOk());
-		verify(postService, times(1)).findAllByAuthorUsername(username, pageable);
 	}
 
 }

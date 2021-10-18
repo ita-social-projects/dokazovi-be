@@ -46,7 +46,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_FAKE_VIEW_COUNT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_BY_IMPORTANT_IMAGE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_USERNAME;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
@@ -267,17 +266,25 @@ public class PostController {
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
 	public ResponseEntity<Page<PostDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
 			@PageableDefault Pageable pageable,
-			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
+			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
-			@ApiParam(value = "Multiple comma-separated post types IDs, e.g. ?post types=1,2,3,4", type = "string")
+			@ApiParam(value = "Multiple comma-separated post type's IDs, e.g. ?types=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> types,
-			@ApiParam(value = "Multiple comma-separated origins IDs, e.g. ?origins=1,2,3,4...", type = "string")
-			@RequestParam(required = false) Set<Integer> origins) {
+			@ApiParam(value = "Multiple comma-separated origin's IDs, e.g. ?origins=1,2,3,4...", type = "string")
+			@RequestParam(required = false) Set<Integer> origins,
+			@ApiParam(value = "Multiple comma-separated status' names, e.g. ?statuses=PUBLISHED, DRAFT...",
+					type = "string")
+			@RequestParam(required = false) Set<PostStatus> statuses,
+			@ApiParam(value = "Post's title", type = "string")
+			@RequestParam(required = false, defaultValue = "") String title,
+			@ApiParam(value = "Post's author username", type = "string")
+			@RequestParam(required = false, defaultValue = "") String author) {
 		try {
 			return ResponseEntity
 					.status(HttpStatus.OK)
 					.body(postService
-							.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable));
+							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+									statuses, title, author, pageable));
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity
 					.status(HttpStatus.NO_CONTENT)
@@ -371,23 +378,6 @@ public class PostController {
 				.findPostsByAuthorIdAndDirections(pageable, authorId, directions);
 		return ResponseEntity
 				.status((posts.getTotalElements() != 0) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
-				.body(posts);
-	}
-
-	/**
-	 * Get posts by author's username
-	 *
-	 * @param pageable interface for pagination information
-	 * @param username first name and last name of author
-	 * @return found posts filtered by author username
-	 */
-	@GetMapping(POST_GET_POST_BY_AUTHOR_USERNAME)
-	@ApiOperation("Get posts by author's username.")
-	public ResponseEntity<Page<PostDTO>> getPostByAuthorUsername(@PageableDefault Pageable pageable,
-			@RequestParam String username) {
-		Page<PostDTO> posts = postService.findAllByAuthorUsername(username, pageable);
-		return ResponseEntity
-				.status(posts.getTotalElements() != 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND)
 				.body(posts);
 	}
 
