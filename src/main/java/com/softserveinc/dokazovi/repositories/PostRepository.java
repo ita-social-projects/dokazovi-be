@@ -162,12 +162,12 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 						+ "END "
 					+ "AND CASE WHEN :directionIds IS NOT NULL "
 						+ "THEN p.post_id IN "
-							+ "(SELECT pd.post_id FROM post_directions pd WHERE pd.direction_id IN (:directionIds)) "
+						+ "(SELECT pd.post_id FROM posts_directions pd WHERE pd.direction_id IN (:directionIds)) "
 						+ "ELSE p.post_id IS NOT NULL "
 						+ "END "
 					+ "AND CASE WHEN :originIds IS NOT NULL "
 						+ "THEN p.post_id IN "
-							+ "(SELECT po.post_id FROM post_origins po WHERE po.origin_id IN (:originIds)) "
+						+ "(SELECT po.post_id FROM posts_origins po WHERE po.origin_id IN (:originIds)) "
 						+ "ELSE p.post_id IS NOT NULL "
 						+ "END "
 					+ "AND CASE WHEN :statuses IS NOT NULL "
@@ -182,6 +182,6 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 							+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\")) "
 					+ "AND p.title LIKE (:title || '%')")
 	Page<PostEntity> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(Set<Integer> typeIds,
-			Set<Integer> directionIds, Set<PostStatus> statuses, Set<Integer> originIds, String title, String author,
+			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, String author,
 			Pageable pageable);
 }

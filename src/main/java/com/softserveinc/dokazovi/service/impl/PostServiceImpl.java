@@ -30,12 +30,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -113,9 +115,15 @@ public class PostServiceImpl implements PostService {
 					.map(postMapper::toPostDTO);
 		}
 
+		directionIds = validateValues(directionIds);
+		typeIds = validateValues(typeIds);
+		originIds = validateValues(originIds);
+		Set<String> statusNames = statuses == null ? Collections.emptySet() :
+				statuses.stream().map(PostStatus::name).collect(Collectors.toSet());
+
 		try {
 			return postRepository
-					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statuses,
+					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
 							originIds, title, author, pageable)
 					.map(postMapper::toPostDTO);
 		} catch (Exception e) {
@@ -126,7 +134,10 @@ public class PostServiceImpl implements PostService {
 			throw new EntityNotFoundException("Id does not exist");
 		}
 
+	}
 
+	private <T> Set<T> validateValues(Set<T> set) {
+		return set != null ? set : Collections.emptySet();
 	}
 
 	@Override
