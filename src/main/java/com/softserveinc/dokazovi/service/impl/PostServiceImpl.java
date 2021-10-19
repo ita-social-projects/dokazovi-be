@@ -30,12 +30,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -114,8 +116,11 @@ public class PostServiceImpl implements PostService {
 		}
 
 		try {
+			Set<String> statusNames = statuses == null ?
+					Arrays.stream(PostStatus.values()).map(PostStatus::name).collect(Collectors.toSet()) :
+					statuses.stream().map(PostStatus::name).collect(Collectors.toSet());
 			return postRepository
-					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statuses,
+					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
 							originIds, title, author, pageable)
 					.map(postMapper::toPostDTO);
 		} catch (Exception e) {
