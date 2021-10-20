@@ -6,11 +6,13 @@ import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.entity.PostFakeViewEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.PostFakeViewRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -32,6 +34,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -42,6 +45,7 @@ public class PostServiceImpl implements PostService {
 	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
 
 	private final PostRepository postRepository;
+	private final PostFakeViewRepository postFakeViewRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
 	private final DirectionServiceImpl directionService;
@@ -358,6 +362,37 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Integer getPostViewCount(String url) {
 		return googleAnalytics.getPostViewCount(url);
+	}
+
+	@Override
+	public Integer getFakeViewsByPostUrl(String url) {
+		Scanner scanner = new Scanner(url);
+		PostFakeViewEntity postFakeViewEntity =
+				postFakeViewRepository.getPostFakeViewEntityByPostId(Integer.parseInt(scanner.findInLine("\\d+")))
+				.orElse(new PostFakeViewEntity());
+		scanner.close();
+		return postFakeViewEntity.getViews();
+	}
+
+	@Override
+	public void setFakeViewsForPost(Integer postId, Integer view) {
+		PostFakeViewEntity postFakeViewEntity = postFakeViewRepository.getPostFakeViewEntityByPostId(postId)
+				.orElse(null);
+
+		if (postFakeViewEntity == null) {
+			PostEntity postEntity = postRepository.findById(postId)
+					.orElseThrow(() ->
+							new javax.persistence.EntityNotFoundException("Post with this id doesn't exist"));
+			postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).views(view).build();
+		} else {
+			postFakeViewEntity.setViews(view);
+		}
+		postFakeViewRepository.save(postFakeViewEntity);
+	}
+
+	@Override
+	public void resetFakeViews(Integer postId) {
+		postFakeViewRepository.resetFakeViews(postId);
 	}
 
 	@Override

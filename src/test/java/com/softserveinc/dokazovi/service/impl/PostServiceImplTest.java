@@ -14,6 +14,7 @@ import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.entity.PostFakeViewEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
@@ -24,6 +25,7 @@ import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
+import com.softserveinc.dokazovi.repositories.PostFakeViewRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -85,6 +87,9 @@ class PostServiceImplTest {
 
 	@Mock
 	private GoogleAnalytics googleAnalytics;
+
+	@Mock
+	private PostFakeViewRepository postFakeViewRepository;
 
 	@BeforeEach
 	void init() {
@@ -965,6 +970,45 @@ class PostServiceImplTest {
 		when(googleAnalytics.getPostViewCount("some")).thenReturn(1);
 
 		assertEquals(1, postService.getPostViewCount("some"));
+	}
+
+	@Test
+	void getFakeViewsByPostUrl() {
+		PostEntity postEntity = PostEntity.builder().id(10).build();
+		PostFakeViewEntity postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).views(150).build();
+		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10)).thenReturn(Optional.of(postFakeViewEntity));
+
+		assertEquals(150, postService.getFakeViewsByPostUrl("/posts/10"));
+	}
+
+	@Test
+	void setFakeViewsForPost_withExistPostFakeViewEntity() {
+		PostEntity postEntity = PostEntity.builder().id(10).build();
+		PostFakeViewEntity postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).build();
+		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
+				.thenReturn(Optional.of(postFakeViewEntity));
+
+		postService.setFakeViewsForPost(10, 110);
+
+		assertEquals(110, postFakeViewEntity.getViews());
+	}
+
+	@Test
+	void setFakeViewsForPost_withNotExistPostFakeViewEntity() {
+		PostEntity postEntity = PostEntity.builder().id(10).build();
+		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
+				.thenReturn(Optional.empty());
+		when(postRepository.findById(10)).thenReturn(Optional.of(postEntity));
+
+		postService.setFakeViewsForPost(10, 110);
+
+		verify(postFakeViewRepository, times(1)).save(any(PostFakeViewEntity.class));
+	}
+
+	@Test
+	void resetFakeViews() {
+		postService.resetFakeViews(10);
+		verify(postFakeViewRepository, times(1)).resetFakeViews(10);
 	}
 
 	@Test

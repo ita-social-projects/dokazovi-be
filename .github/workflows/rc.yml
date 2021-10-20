@@ -45,4 +45,4 @@ jobs:
           email: ${{ secrets.HEROKU_EMAIL }}
           api_key: ${{ secrets.HEROKU_API_KEY }}
           docker_compose_file: '.docker/docker-compose.heroku.yml'
-          heroku_apps: '[{"imagename":"dokazovi-dev","appname":"dokazovi-be","apptype":"web"}]'
+          heroku_apps: '[{"imagename":"dokazovi-dev","appname":"dokazovi-be-release","apptype":"web"}]'

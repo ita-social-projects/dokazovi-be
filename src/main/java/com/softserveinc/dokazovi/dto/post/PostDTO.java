@@ -28,6 +28,7 @@ public class PostDTO {
 	private Set<DirectionDTO> directions;
 	private Set<TagDTO> tags;
 	private PostTypeDTO type;
+	private String status;
 	private Set<OriginDTO> origins;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private Timestamp createdAt;
