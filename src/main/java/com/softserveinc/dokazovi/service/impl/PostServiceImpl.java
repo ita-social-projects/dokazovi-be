@@ -107,7 +107,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
-			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<PostStatus> statuses,
+			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
 			String title, String author, Pageable pageable) {
 		if (directionIds == null && typeIds == null && originIds == null && statuses == null &&
 				title.isEmpty() && author.isEmpty()) {
@@ -118,8 +118,13 @@ public class PostServiceImpl implements PostService {
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
 		originIds = validateValues(originIds);
+
+		PostStatus[] statusesArray = PostStatus.values();
 		Set<String> statusNames = statuses == null ? Collections.emptySet() :
-				statuses.stream().map(PostStatus::name).collect(Collectors.toSet());
+				statuses.stream()
+						.map(statusOrdinal -> statusesArray[statusOrdinal])
+						.map(PostStatus::name)
+						.collect(Collectors.toSet());
 
 		try {
 			return postRepository

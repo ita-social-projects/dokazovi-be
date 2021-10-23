@@ -272,9 +272,9 @@ public class PostController {
 			@RequestParam(required = false) Set<Integer> types,
 			@ApiParam(value = "Multiple comma-separated origin's IDs, e.g. ?origins=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> origins,
-			@ApiParam(value = "Multiple comma-separated status' names, e.g. ?statuses=PUBLISHED, DRAFT...",
+			@ApiParam(value = "Multiple comma-separated statuses, e.g. ?statuses=0,1,2,3...",
 					type = "string")
-			@RequestParam(required = false) Set<PostStatus> statuses,
+			@RequestParam(required = false) Set<Integer> statuses,
 			@ApiParam(value = "Post's title", type = "string")
 			@RequestParam(required = false, defaultValue = "") String title,
 			@ApiParam(value = "Post's author username", type = "string")

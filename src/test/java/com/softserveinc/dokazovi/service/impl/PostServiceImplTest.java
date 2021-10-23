@@ -422,7 +422,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = null;
 		Set<Integer> originsIds = null;
 		Set<Integer> directionsIds = null;
-		Set<PostStatus> statuses = null;
+		Set<Integer> statuses = null;
 		String author = "";
 		String title = "";
 
@@ -459,7 +459,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(1, 2);
-		Set<PostStatus> statuses = Set.of(PostStatus.PUBLISHED);
+		Set<Integer> statuses = Set.of(3);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -478,7 +478,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(-1, -2, -3);
-		Set<PostStatus> statuses = Set.of(PostStatus.PUBLISHED);
+		Set<Integer> statuses = Set.of(3);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -499,7 +499,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = null;
-		Set<PostStatus> statuses = Set.of(PostStatus.PUBLISHED);
+		Set<Integer> statuses = Set.of(3);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -519,7 +519,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(1, 2);
 		Set<Integer> originsIds = Set.of(2, 3);
 		Set<Integer> directionsIds = new HashSet<>();
-		Set<PostStatus> statuses = Set.of(PostStatus.PUBLISHED);
+		Set<Integer> statuses = Set.of(3);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -538,7 +538,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(-1, -2);
 		Set<Integer> originsIds = Set.of(-1, -2, -3);
 		Set<Integer> directionsIds = new HashSet<>();
-		Set<PostStatus> statuses = Set.of(PostStatus.PUBLISHED);
+		Set<Integer> statuses = Set.of(3);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";

@@ -384,7 +384,7 @@ class PostControllerTest {
 		Set<Integer> directions = Set.of(1, 2);
 		Set<Integer> types = Set.of(1, 3);
 		Set<Integer> origins = Set.of(2, 3);
-		Set<PostStatus> statuses = null;
+		Set<Integer> statuses = null;
 		String author = "";
 		String title = "";
 		Pageable pageable = PageRequest.of(0, 10);
@@ -421,7 +421,7 @@ class PostControllerTest {
 		Set<Integer> directionIds = null;
 		Set<Integer> typeIds = null;
 		Set<Integer> originIds = null;
-		Set<PostStatus> statuses = null;
+		Set<Integer> statuses = null;
 		String author = "";
 		String title = "";
 		Pageable pageable = PageRequest.of(0, 10);
@@ -449,7 +449,7 @@ class PostControllerTest {
 		Set<Integer> directions = Set.of(-1, 1111);
 		Set<Integer> types = Set.of(123, 2345);
 		Set<Integer> origins = Set.of(1234, 1231);
-		Set<PostStatus> statuses = Set.of(PostStatus.DRAFT);
+		Set<Integer> statuses = Set.of(0);
 		String author = "";
 		String title = "";
 		Pageable pageable = PageRequest.of(0, 10);
@@ -462,7 +462,7 @@ class PostControllerTest {
 				origins, statuses, title, author, pageable))
 				.thenReturn(page);
 		mockMvc.perform(get(POST + POST_ALL_POSTS +
-					"?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=DRAFT"))
+					"?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=0"))
 				.andExpect(status().isOk())
 				.andExpect(result -> Assertions.assertEquals(0,
 						getIdFromResponse(result.getResponse().getContentAsString()))
