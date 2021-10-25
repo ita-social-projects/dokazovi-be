@@ -384,12 +384,16 @@ class PostControllerTest {
 		Set<Integer> directions = Set.of(1, 2);
 		Set<Integer> types = Set.of(1, 3);
 		Set<Integer> origins = Set.of(2, 3);
+		Set<Integer> statuses = null;
+		String author = "";
+		String title = "";
 		Pageable pageable = PageRequest.of(0, 10);
 		PostDTO postDTO = PostDTO.builder()
 				.id(1)
 				.build();
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
-		Mockito.when(postService.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable))
+		Mockito.when(postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
+				origins, statuses, title, author, pageable))
 				.thenReturn(page);
 		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=1,2&types=1,3&origins=2,3"))
 				.andExpect(status().isOk())
@@ -397,7 +401,8 @@ class PostControllerTest {
 						getIdFromResponse(result.getResponse().getContentAsString()))
 				);
 
-		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable);
+		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+				statuses, title, author, pageable);
 	}
 
 	private Integer getIdFromResponse(String json) {
@@ -416,20 +421,27 @@ class PostControllerTest {
 		Set<Integer> directionIds = null;
 		Set<Integer> typeIds = null;
 		Set<Integer> originIds = null;
+		Set<Integer> statuses = null;
+		String author = "";
+		String title = "";
 		Pageable pageable = PageRequest.of(0, 10);
 		Page<PostDTO> page = null;
 
 		Mockito.when(
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable))
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionIds, typeIds,
+						originIds, statuses, title, author, pageable))
 				.thenThrow(new EntityNotFoundException(
-						String.format("Fail to filter posts with params directionIds=%s, typeIds=%s, originIds=%s",
-								directionIds, typeIds, originIds)))
+						String.format("Fail to filter posts with params directionIds=%s, typeIds=%s, originIds=%s,"
+										+ "statuses=%s, title=%s, author=%s",
+								directionIds, typeIds, originIds, statuses, title, author)
+				))
 				.thenReturn(page);
 
 		mockMvc.perform(get(POST + POST_ALL_POSTS))
 				.andExpect(status().isNoContent())
 				.andExpect(result -> Assertions.assertEquals(0, result.getResponse().getContentLength()));
-		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directionIds, typeIds, originIds, pageable);
+		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionIds, typeIds,
+				originIds, statuses, title, author, pageable);
 	}
 
 	@Test
@@ -437,21 +449,27 @@ class PostControllerTest {
 		Set<Integer> directions = Set.of(-1, 1111);
 		Set<Integer> types = Set.of(123, 2345);
 		Set<Integer> origins = Set.of(1234, 1231);
+		Set<Integer> statuses = Set.of(0);
+		String author = "";
+		String title = "";
 		Pageable pageable = PageRequest.of(0, 10);
 		PostDTO postDTO = PostDTO.builder()
 				.id(0)
 				.build();
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
 
-		Mockito.when(postService.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable))
+		Mockito.when(postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
+				origins, statuses, title, author, pageable))
 				.thenReturn(page);
-		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=-1,1111&types=123,2345&origins=1234,1231"))
+		mockMvc.perform(get(POST + POST_ALL_POSTS +
+					"?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=0"))
 				.andExpect(status().isOk())
 				.andExpect(result -> Assertions.assertEquals(0,
 						getIdFromResponse(result.getResponse().getContentAsString()))
 				);
 
-		verify(postService).findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable);
+		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+				statuses, title, author, pageable);
 	}
 
 	@Test
@@ -521,16 +539,6 @@ class PostControllerTest {
 				.andExpect(status().isOk());
 
 		verify(postService, times(1)).setFakeViewsForPost(110, 150);
-	}
-
-	@Test
-	void resetFakeViewsForPost() throws Exception {
-		String uri = POST + "/reset-fake-view/110";
-
-		mockMvc.perform(post(uri))
-				.andExpect(status().isOk());
-
-		verify(postService, times(1)).resetFakeViews(110);
 	}
 
 	@Test

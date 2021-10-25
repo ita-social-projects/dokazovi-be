@@ -30,13 +30,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -105,27 +106,43 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(Set<Integer> directionIds, Set<Integer> typeIds,
-			Set<Integer> originIds, Pageable pageable) {
-		if (directionIds == null && typeIds == null && originIds == null) {
+	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
+			String title, String author, Pageable pageable) {
+		if (directionIds == null && typeIds == null && originIds == null && statuses == null &&
+				title.isEmpty() && author.isEmpty()) {
 			return postRepository.findAll(pageable)
 					.map(postMapper::toPostDTO);
 		}
-		Set<Integer> directions = validateIdsValues(directionIds);
-		Set<Integer> types = validateIdsValues(typeIds);
-		Set<Integer> origins = validateIdsValues(originIds);
+
+		directionIds = validateValues(directionIds);
+		typeIds = validateValues(typeIds);
+		originIds = validateValues(originIds);
+
+		PostStatus[] statusesArray = PostStatus.values();
+		Set<String> statusNames = statuses == null ? Collections.emptySet() :
+				statuses.stream()
+						.map(statusOrdinal -> statusesArray[statusOrdinal])
+						.map(PostStatus::name)
+						.collect(Collectors.toSet());
+
 		try {
-			return postRepository.findAllByDirectionsAndByPostTypesAndByOrigins(types, origins, directions, pageable)
+			return postRepository
+					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
+							originIds, title, author, pageable)
 					.map(postMapper::toPostDTO);
 		} catch (Exception e) {
-			logger.error(String.format("Fail with posts filter with params directionIds=%s, typeIds=%s, originIds=%s",
-					directionIds, typeIds, originIds));
+			logger.error(
+					String.format("Fail with posts filter with params typeIds=%s, directionIds=%s, statuses=%s, "
+									+ "originIds=%s, title=%s, author=%s",
+							typeIds, directionIds, statuses, originIds, title, author));
 			throw new EntityNotFoundException("Id does not exist");
 		}
+
 	}
 
-	private Set<Integer> validateIdsValues(Set<Integer> ids) {
-		return ids != null ? ids : new HashSet<>();
+	private <T> Set<T> validateValues(Set<T> set) {
+		return set != null ? set : Collections.emptySet();
 	}
 
 	@Override
@@ -369,7 +386,7 @@ public class PostServiceImpl implements PostService {
 		Scanner scanner = new Scanner(url);
 		PostFakeViewEntity postFakeViewEntity =
 				postFakeViewRepository.getPostFakeViewEntityByPostId(Integer.parseInt(scanner.findInLine("\\d+")))
-				.orElse(new PostFakeViewEntity());
+						.orElse(new PostFakeViewEntity());
 		scanner.close();
 		return postFakeViewEntity.getViews();
 	}
@@ -388,11 +405,6 @@ public class PostServiceImpl implements PostService {
 			postFakeViewEntity.setViews(view);
 		}
 		postFakeViewRepository.save(postFakeViewEntity);
-	}
-
-	@Override
-	public void resetFakeViews(Integer postId) {
-		postFakeViewRepository.resetFakeViews(postId);
 	}
 
 	@Override

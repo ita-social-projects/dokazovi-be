@@ -77,24 +77,6 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			Set<Integer> directionsIds, Pageable pageable);
 
 	@Query(nativeQuery = true,
-			value = "SELECT P1.* "
-					+ " FROM POSTS P1 "
-					+ " WHERE ((array_length(ARRAY [(:typesIds)], 1) > 0 "
-					+ "     AND P1.TYPE_ID IN (:typesIds)) "
-					+ "   AND (array_length(ARRAY [(:directionsIds)], 1) > 0 "
-					+ "     AND P1.POST_ID IN (SELECT POST_ID "
-					+ "                        FROM POSTS_DIRECTIONS "
-					+ "                        WHERE DIRECTION_ID IN (:directionsIds))) "
-					+ "   AND (array_length(ARRAY [(:originsIds)], 1) > 0 "
-					+ "     AND P1.POST_ID IN (SELECT POST_ID "
-					+ "                        FROM POSTS_ORIGINS "
-					+ "                        WHERE ORIGIN_ID IN (:originsIds)))) "
-					+ "   AND P1.STATUS IN ('PUBLISHED') "
-	)
-	Page<PostEntity> findAllByDirectionsAndByPostTypesAndByOrigins(Set<Integer> typesIds, Set<Integer> originsIds,
-			Set<Integer> directionsIds, Pageable pageable);
-
-	@Query(nativeQuery = true,
 			value = " SELECT P.* "
 					+ " FROM POSTS P "
 					+ " WHERE (P.AUTHOR_ID IN (:authorId)) "
@@ -171,4 +153,35 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
 			Set<Integer> directionsIds, Set<Integer> typesIds, Set<Integer> originsIds, PostStatus postStatus,
 			Boolean important, Pageable pageable);
+
+	@Query(nativeQuery = true,
+			value = "SELECT * FROM posts p "
+					+ "WHERE CASE WHEN :typeIds IS NOT NULL "
+						+ "THEN p.type_id IN (:typeIds) "
+						+ "ELSE p.post_id IS NOT NULL "
+						+ "END "
+					+ "AND CASE WHEN :directionIds IS NOT NULL "
+						+ "THEN p.post_id IN "
+						+ "(SELECT pd.post_id FROM posts_directions pd WHERE pd.direction_id IN (:directionIds)) "
+						+ "ELSE p.post_id IS NOT NULL "
+						+ "END "
+					+ "AND CASE WHEN :originIds IS NOT NULL "
+						+ "THEN p.post_id IN "
+						+ "(SELECT po.post_id FROM posts_origins po WHERE po.origin_id IN (:originIds)) "
+						+ "ELSE p.post_id IS NOT NULL "
+						+ "END "
+					+ "AND CASE WHEN :statuses IS NOT NULL "
+						+ "THEN p.status IN (:statuses) "
+						+ "ELSE p.post_id IS NOT NULL "
+						+ "END "
+					+ "AND p.author_id IN "
+						+ "(SELECT user_id FROM users u "
+						+ "WHERE UPPER((u.first_name || ' ' || u.last_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
+							+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
+						+ "OR UPPER((u.last_name || ' ' || u.first_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
+							+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\")) "
+					+ "AND p.title LIKE (:title || '%')")
+	Page<PostEntity> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(Set<Integer> typeIds,
+			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, String author,
+			Pageable pageable);
 }

@@ -422,9 +422,13 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = null;
 		Set<Integer> originsIds = null;
 		Set<Integer> directionsIds = null;
+		Set<Integer> statuses = null;
+		String author = "";
+		String title = "";
 
 		Mockito.when(postRepository.findAll(any(Pageable.class))).thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
+		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+				originsIds, statuses, title, author, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -433,13 +437,19 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(1220, 1999);
 		Set<Integer> originsIds = Set.of(12340, 1999);
 		Set<Integer> directionsIds = Set.of(1234, 1999);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+						originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent(),
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
+				postRepository.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+						typesIds, directionsIds, statusNames, originsIds, title, author, pageable
+				)
 						.getContent());
 	}
 
@@ -449,11 +459,17 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(1, 2);
+		Set<Integer> statuses = Set.of(3);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+						originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
+		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+				originsIds, statuses, title, author, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -462,14 +478,20 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(-1, -2, -3);
+		Set<Integer> statuses = Set.of(3);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+						originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
-		assertEquals(postEntityPage.getContent(),
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
-						.getContent());
+		assertEquals(postEntityPage.getContent().size(),
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+						originsIds, statuses, title, author, pageable)
+						.getContent().size());
 	}
 
 	@Test
@@ -477,12 +499,18 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = null;
+		Set<Integer> statuses = Set.of(3);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+						originsIds, title, author, pageable))
 				.thenThrow(new EntityNotFoundException("Id does not exist"));
 		assertThrows(EntityNotFoundException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
+				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
+						statuses, title, author, pageable));
 	}
 
 	@Test
@@ -491,11 +519,17 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(1, 2);
 		Set<Integer> originsIds = Set.of(2, 3);
 		Set<Integer> directionsIds = new HashSet<>();
+		Set<Integer> statuses = Set.of(3);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+						originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
+		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
+						statuses, title, author, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -504,14 +538,20 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(-1, -2);
 		Set<Integer> originsIds = Set.of(-1, -2, -3);
 		Set<Integer> directionsIds = new HashSet<>();
+		Set<Integer> statuses = Set.of(3);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+						originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
-		assertEquals(postEntityPage.getContent(),
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
-						.getContent());
+		assertEquals(postEntityPage.getContent().size(),
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+						originsIds, statuses, title, author, pageable)
+						.getContent().size());
 	}
 
 	@Test
@@ -1006,12 +1046,6 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void resetFakeViews() {
-		postService.resetFakeViews(10);
-		verify(postFakeViewRepository, times(1)).resetFakeViews(10);
-	}
-
-	@Test
 	void findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence_isOk() {
 		Pageable pageable = PageRequest.of(0, 12);
 		when(postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
@@ -1102,4 +1136,5 @@ class PostServiceImplTest {
 		Set<DirectionEntity> result = postService.getDirectionsFromPostsEntities(oldEntity, newEntity);
 		assertEquals(2, result.size());
 	}
+
 }

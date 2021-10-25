@@ -23,8 +23,9 @@ public interface PostService {
 
 	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
-	Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(
-			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Pageable pageable);
+	Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Set<Integer> statuses,
+			String title, String author, Pageable pageable);
 
 	Page<PostDTO> findPostsByAuthorIdAndDirections(
 			Pageable pageable, Integer expertId, Set<Integer> directions);
@@ -50,8 +51,6 @@ public interface PostService {
 	Integer getFakeViewsByPostUrl(String url);
 
 	void setFakeViewsForPost(Integer postId, Integer view);
-
-	void resetFakeViews(Integer postId);
 
 	Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);

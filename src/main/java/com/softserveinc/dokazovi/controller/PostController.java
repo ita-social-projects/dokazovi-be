@@ -54,7 +54,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_RESET_FAKE_VIEW;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_FAKE_VIEW;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
@@ -267,17 +266,25 @@ public class PostController {
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
 	public ResponseEntity<Page<PostDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
 			@PageableDefault Pageable pageable,
-			@ApiParam(value = "Multiple comma-separated direction IDs, e.g. ?directions=1,2,3,4", type = "string")
+			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
-			@ApiParam(value = "Multiple comma-separated post types IDs, e.g. ?post types=1,2,3,4", type = "string")
+			@ApiParam(value = "Multiple comma-separated post type's IDs, e.g. ?types=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> types,
-			@ApiParam(value = "Multiple comma-separated origins IDs, e.g. ?origins=1,2,3,4...", type = "string")
-			@RequestParam(required = false) Set<Integer> origins) {
+			@ApiParam(value = "Multiple comma-separated origin's IDs, e.g. ?origins=1,2,3,4...", type = "string")
+			@RequestParam(required = false) Set<Integer> origins,
+			@ApiParam(value = "Multiple comma-separated statuses, e.g. ?statuses=0,1,2,3...",
+					type = "string")
+			@RequestParam(required = false) Set<Integer> statuses,
+			@ApiParam(value = "Post's title", type = "string")
+			@RequestParam(required = false, defaultValue = "") String title,
+			@ApiParam(value = "Post's author username", type = "string")
+			@RequestParam(required = false, defaultValue = "") String author) {
 		try {
 			return ResponseEntity
 					.status(HttpStatus.OK)
 					.body(postService
-							.findAllByDirectionsAndByPostTypesAndByOrigins(directions, types, origins, pageable));
+							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+									statuses, title, author, pageable));
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity
 					.status(HttpStatus.NO_CONTENT)
@@ -444,8 +451,14 @@ public class PostController {
 		return ResponseEntity.status(HttpStatus.OK).body(posts);
 	}
 
+	/**
+	 * Set a number for fake views
+	 *
+	 * @param postId id of post for which set fake views
+	 * @param views number of fake views
+	 */
 	@ApiPageable
-	@ApiOperation(value = "Set fake views to post by post id",
+	@ApiOperation(value = "Set fake views for post by post id",
 			authorizations = {@Authorization(value = "Authorization")})
 	@PostMapping(POST_SET_FAKE_VIEW)
 	@PreAuthorize("hasAuthority('UPDATE_POST')")
@@ -454,17 +467,15 @@ public class PostController {
 		postService.setFakeViewsForPost(postId, views);
 	}
 
-	@ApiPageable
-	@ApiOperation(value = "Reset fake views for post by post id",
-			authorizations = {@Authorization(value = "Authorization")})
-	@PostMapping(POST_RESET_FAKE_VIEW)
-	@PreAuthorize("hasAuthority('UPDATE_POST')")
-	public void resetFakeViewsForPost(@ApiParam("Post's id") @PathVariable("postId") Integer postId) {
-		postService.resetFakeViews(postId);
-	}
 
+	/**
+	 * Get sum of fake views and real views for post by post's url
+	 *
+	 * @param url post's url
+	 * @return number of fake views
+	 */
 	@ApiPageable
-	@ApiOperation(value = "Get fake views plus real views for post by post id")
+	@ApiOperation(value = "Get sum of fake views and real views for post by post's url")
 	@GetMapping(POST_FAKE_VIEW_COUNT)
 	public Integer getFakeViewsForPost(@ApiParam("Post's url") @RequestParam String url) {
 		return postService.getFakeViewsByPostUrl(url) + postService.getPostViewCount(url);
