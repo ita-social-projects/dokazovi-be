@@ -164,6 +164,7 @@ class PostServiceImplTest {
 				.previewImageUrl("previewImageUrl")
 				.preview("preview")
 				.content("content")
+				.postStatus(3)
 				.build();
 
 		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
@@ -213,6 +214,7 @@ class PostServiceImplTest {
 				.previewImageUrl("previewImageUrl")
 				.preview("preview")
 				.content("content")
+				.postStatus(3)
 				.build();
 
 		UserPrincipal userPrincipal = UserPrincipal.create(author);
@@ -262,6 +264,7 @@ class PostServiceImplTest {
 				.previewImageUrl("previewImageUrl")
 				.preview("preview")
 				.content("content")
+				.postStatus(3)
 				.build();
 
 		UserPrincipal userPrincipal = UserPrincipal.create(author);
@@ -700,6 +703,7 @@ class PostServiceImplTest {
 				.type(postTypeDTO)
 				.directions(directions)
 				.origins(origins)
+				.postStatus(3)
 				.build();
 
 		Integer id = 1;
@@ -771,6 +775,7 @@ class PostServiceImplTest {
 				.type(postTypeDTO)
 				.directions(directions)
 				.origins(origins)
+				.postStatus(3)
 				.build();
 
 		Integer id = 1;
