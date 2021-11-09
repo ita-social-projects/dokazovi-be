@@ -25,7 +25,8 @@ public final class RequestsBodies {
 			"  \"type\": {\n" +
 			"    \"id\": 1\n" +
 			"  },\n" +
-			"  \"videoUrl\": \"string\"\n" +
+			"  \"videoUrl\": \"string\",\n" +
+			"  \"postStatus\": 3\n" +
 			"}";
 
 	public final static String BODY_FOR_POST_UPDATE = "{\n" +
@@ -49,7 +50,8 @@ public final class RequestsBodies {
 			"  \"type\": {\n" +
 			"    \"id\": 1\n" +
 			"  },\n" +
-			"  \"videoUrl\": \"string\"\n" +
+			"  \"videoUrl\": \"string\",\n" +
+			"  \"postStatus\": 3\n" +
 			"}";
 
 }

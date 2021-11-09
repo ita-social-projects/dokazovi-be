@@ -78,7 +78,6 @@ public class PostServiceImpl implements PostService {
 		if (userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities().stream()
 				.anyMatch(grantedAuthority -> grantedAuthority
 						.getAuthority().equals("SAVE_OWN_PUBLICATION"))) {
-			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userEntity);
 			PostDTO dto = postMapper.toPostDTO(postRepository.save(mappedEntity));
 			directionService.updateDirectionsHasPostsStatusByEntities(directionsToUpdate);
@@ -88,7 +87,6 @@ public class PostServiceImpl implements PostService {
 		if (!userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities()
 				.stream().anyMatch(grantedAuthority ->
 						grantedAuthority.getAuthority().equals("SAVE_PUBLICATION"))) {
-			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
 			PostDTO dto = postMapper.toPostDTO(postRepository.save(mappedEntity));
 			directionService.updateDirectionsHasPostsStatusByEntities(directionsToUpdate);
@@ -244,10 +242,8 @@ public class PostServiceImpl implements PostService {
 		Integer authorId = mappedEntity.getAuthor().getId();
 
 		if (userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_OWN_POST")) {
-			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			saveEntity(mappedEntity);
 		} else if (!userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_POST")) {
-			mappedEntity.setStatus(PostStatus.PUBLISHED);
 			mappedEntity.setAuthor(userRepository.getOne(postDTO.getAuthorId()));
 			saveEntity(mappedEntity);
 		} else {
@@ -373,6 +369,9 @@ public class PostServiceImpl implements PostService {
 					.orElseThrow(EntityNotFoundException::new);
 			mappedEntity = postMapper.updatePostEntityFromDTO(postDTO, byId);
 		}
+
+		mappedEntity.setStatus(PostStatus.values()[postDTO.getPostStatus()]);
+
 		return mappedEntity;
 	}
 
