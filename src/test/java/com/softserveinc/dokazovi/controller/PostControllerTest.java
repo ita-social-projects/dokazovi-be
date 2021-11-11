@@ -242,7 +242,7 @@ class PostControllerTest {
 	}
 
 	@Test
-	void archivePostById_WhenExists_isOk() throws Exception {
+	void deletePostById_WhenExists_isOk() throws Exception {
 		String content = "{\n" +
 				"  \"content\": \"string\",\n" +
 				"  \"directions\": [\n" +
@@ -267,7 +267,7 @@ class PostControllerTest {
 				"  }\n" +
 				"}";
 
-		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(Integer.class)))
+		Mockito.when(postService.removePostById(any(UserPrincipal.class), any(Integer.class),any(Boolean.class)))
 				.thenReturn(true);
 		mockMvc.perform(delete("/post/1").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk()).andExpect(result ->
@@ -310,7 +310,7 @@ class PostControllerTest {
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound() throws Exception {
+	void deletePostById_WhenNotExists_NotFound() throws Exception {
 		String content = "{\n" +
 				"  \"content\": \"string\",\n" +
 				"  \"directions\": [\n" +
@@ -335,7 +335,7 @@ class PostControllerTest {
 				"  }\n" +
 				"}";
 
-		Mockito.when(postService.archivePostById(any(UserPrincipal.class), any(Integer.class)))
+		Mockito.when(postService.removePostById(any(UserPrincipal.class), any(Integer.class),any(Boolean.class)))
 				.thenThrow(new EntityNotFoundException("Post with -1 not found"));
 
 		mockMvc.perform(delete("/post/-1").contentType(MediaType.APPLICATION_JSON).content(content))

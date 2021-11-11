@@ -446,13 +446,13 @@ class PostServiceImplTest {
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
-				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
-						originsIds, title, author, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+								originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent(),
 				postRepository.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
-						typesIds, directionsIds, statusNames, originsIds, title, author, pageable
-				)
+								typesIds, directionsIds, statusNames, originsIds, title, author, pageable
+						)
 						.getContent());
 	}
 
@@ -468,8 +468,8 @@ class PostServiceImplTest {
 		String title = "";
 
 		Mockito.when(postRepository
-				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
-						originsIds, title, author, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+								originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
 		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
 				originsIds, statuses, title, author, pageable);
@@ -488,12 +488,12 @@ class PostServiceImplTest {
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
-				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
-						originsIds, title, author, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+								originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent().size(),
 				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
-						originsIds, statuses, title, author, pageable)
+								originsIds, statuses, title, author, pageable)
 						.getContent().size());
 	}
 
@@ -508,8 +508,8 @@ class PostServiceImplTest {
 		String title = "";
 
 		Mockito.when(postRepository
-				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
-						originsIds, title, author, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+								originsIds, title, author, pageable))
 				.thenThrow(new EntityNotFoundException("Id does not exist"));
 		assertThrows(EntityNotFoundException.class, () -> postService
 				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
@@ -528,11 +528,11 @@ class PostServiceImplTest {
 		String title = "";
 
 		Mockito.when(postRepository
-				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
-						originsIds, title, author, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+								originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
 		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
-						statuses, title, author, pageable);
+				statuses, title, author, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -548,12 +548,12 @@ class PostServiceImplTest {
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
-				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
-						originsIds, title, author, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds, statusNames,
+								originsIds, title, author, pageable))
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent().size(),
 				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
-						originsIds, statuses, title, author, pageable)
+								originsIds, statuses, title, author, pageable)
 						.getContent().size());
 	}
 
@@ -599,7 +599,52 @@ class PostServiceImplTest {
 				.build();
 
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
-		Assertions.assertThat(postService.archivePostById(userPrincipal, id)).isTrue();
+		Assertions.assertThat(postService.removePostById(userPrincipal, id, false)).isTrue();
+	}
+
+	@Test
+	void deletePostById_WhenExists_isOk_AdminRole() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.DELETE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(1);
+		roleEntity.setName("Administrator");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("type");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(27)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		UserEntity adminUserEntity = UserEntity.builder()
+				.id(28)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.author(adminUserEntity)
+				.build();
+
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		Assertions.assertThat(postService.removePostById(userPrincipal, id, true)).isTrue();
 	}
 
 	@Test
@@ -644,7 +689,52 @@ class PostServiceImplTest {
 				.build();
 
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
-		Assertions.assertThat(postService.archivePostById(userPrincipal, id)).isTrue();
+		Assertions.assertThat(postService.removePostById(userPrincipal, id, false)).isTrue();
+	}
+
+	@Test
+	void deletePostById_WhenExists_isOk_DoctorRole() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.DELETE_OWN_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(3);
+		roleEntity.setName("Doctor");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("type");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		UserEntity doctorUserEntity = UserEntity.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.author(doctorUserEntity)
+				.build();
+
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		Assertions.assertThat(postService.removePostById(userPrincipal, id, false)).isTrue();
 	}
 
 	@Test
@@ -819,7 +909,7 @@ class PostServiceImplTest {
 				.build();
 
 		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
-		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(userPrincipal, id));
+		assertThrows(EntityNotFoundException.class, () -> postService.removePostById(userPrincipal, id, false));
 	}
 
 	@Test
@@ -851,7 +941,7 @@ class PostServiceImplTest {
 				.build();
 
 		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
-		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(userPrincipal, id));
+		assertThrows(EntityNotFoundException.class, () -> postService.removePostById(userPrincipal, id, false));
 	}
 
 	@Test

@@ -167,15 +167,15 @@ public class PostServiceImpl implements PostService {
 					.map(postMapper::toPostDTO);
 		} else if (typeId == null) {
 			return postRepository.findAllByDirectionsContainsAndTagsIdInAndStatus(
-					direction, tagId, postStatus, pageable)
+							direction, tagId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		} else if (tagId == null) {
 			return postRepository.findAllByDirectionsContainsAndTypeIdInAndStatus(
-					direction, typeId, postStatus, pageable)
+							direction, typeId, postStatus, pageable)
 					.map(postMapper::toPostDTO);
 		}
 		return postRepository.findAllByDirectionsContainsAndTypeIdInAndTagsIdInAndStatus(
-				direction, typeId, tagId, postStatus, pageable)
+						direction, typeId, tagId, postStatus, pageable)
 				.map(postMapper::toPostDTO);
 	}
 
@@ -189,7 +189,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	@Transactional
-	public Boolean archivePostById(UserPrincipal userPrincipal, Integer postId)
+	public Boolean removePostById(UserPrincipal userPrincipal, Integer postId, boolean delete)
 			throws EntityNotFoundException {
 
 		Optional<PostEntity> oldEntity = postRepository.findById(postId);
@@ -206,18 +206,18 @@ public class PostServiceImpl implements PostService {
 				mappedEntity
 		);
 
-		if (userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-				grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) {
-			mappedEntity.setStatus(PostStatus.ARCHIVED);
-			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-			postRepository.save(mappedEntity);
-		}
+		if ((userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+				grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) ||
+				(!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
+						grantedAuthority.getAuthority().equals("DELETE_POST")))) {
+			if (delete) {
+				postRepository.delete(mappedEntity);
+			} else {
+				mappedEntity.setStatus(PostStatus.ARCHIVED);
+				mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+				postRepository.save(mappedEntity);
+			}
 
-		if (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-				grantedAuthority.getAuthority().equals("DELETE_POST"))) {
-			mappedEntity.setStatus(PostStatus.ARCHIVED);
-			mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-			postRepository.save(mappedEntity);
 		}
 
 		if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
@@ -240,6 +240,10 @@ public class PostServiceImpl implements PostService {
 
 		Integer userId = userPrincipal.getId();
 		Integer authorId = mappedEntity.getAuthor().getId();
+
+		if (mappedEntity.getStatus().equals(PostStatus.ARCHIVED)) {
+			return removePostById(userPrincipal, mappedEntity.getId(), false);
+		}
 
 		if (userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_OWN_POST")) {
 			saveEntity(mappedEntity);
@@ -314,7 +318,7 @@ public class PostServiceImpl implements PostService {
 			Set<Integer> directionId, Pageable pageable) {
 		if (typeId == null && directionId == null) {
 			return postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(expertId, PostStatus.PUBLISHED,
-					pageable)
+							pageable)
 					.map(postMapper::toPostDTO);
 		}
 		if (typeId == null) {
