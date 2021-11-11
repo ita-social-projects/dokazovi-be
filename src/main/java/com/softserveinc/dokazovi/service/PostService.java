@@ -30,7 +30,7 @@ public interface PostService {
 	Page<PostDTO> findPostsByAuthorIdAndDirections(
 			Pageable pageable, Integer expertId, Set<Integer> directions);
 
-	Boolean archivePostById(UserPrincipal userId, Integer postId);
+	Boolean removePostById(UserPrincipal userId, Integer postId, boolean delete);
 
 	Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveDTO);
 
