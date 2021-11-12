@@ -1,33 +1,31 @@
-dev
-## JIRA
+Pull Request Template
+ 
 
-* [Main JIRA ticket](https://jira.softserve.academy/secure/RapidBoard.jspa?rapidView=id)
+### Type of Pull Request *
+- [x] CHANGE (fix or feature that would cause existing functionality to not work as expected)
+- [ ] FEATURE (non-breaking change which adds functionality)
+- [ ] BUGFIX (non-breaking change which fixes an issue)
+- [ ] ENHANCEMENT  (non-breaking change which improves existing functionality)
+- [ ] NONE (if none of the other choices apply. For example, tooling, build system, CI, docs, etc.)
 
-
-## Code reviewers
-
-- [ ] @github_username
-
-### Second Level Review
-
-- [ ] @github_username
-
-## Summary of issue
-
-ToDo
-
-## Summary of change
-
-ToDo
-
-## Testing approach
-
-ToDo
-
-## CHECK LIST
-- [ ]  СI passed
-- [ ]  Сode coverage >=95%
-- [ ]  PR is reviewed manually again (to make sure you have 100% ready code)
-- [ ]  All reviewers agreed to merge the PR
-- [ ]  I've checked new feature as logged in and logged out user if needed
-- [ ]  PR meets all conventions
+### Related links
+ 
+**Issue link**
+[#11 Issue name]( )
+ 
+**Story link**
+[#11 Story]( )
+ 
+### Description *
+Describe the big picture of your changes here.
+If it fixes a bug or resolves a feature request, be sure to link to that issue.
+ 
+###Summary of issue
+Describe the issue
+ 
+###Summary of change
+Describe the solution
+ 
+ 
+ 
+"*" - mandatory field
