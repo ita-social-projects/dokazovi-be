@@ -306,14 +306,14 @@ public class PostController {
 	@PreAuthorize("hasAnyAuthority('DELETE_POST', 'DELETE_OWN_POST')")
 	@ApiOperation(value = "Delete post by Id, as a path variable.",
 			authorizations = {@Authorization(value = "Authorization")})
-	public ResponseEntity<ApiResponseMessage> archivePostById(
+	public ResponseEntity<ApiResponseMessage> deletePostById(
 			@AuthenticationPrincipal UserPrincipal userPrincipal,
 			@PathVariable("postId") Integer postId
 	) {
 		ApiResponseMessage apiResponseMessage;
 		try {
 			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.archivePostById(userPrincipal, postId))
+					.success(postService.removePostById(userPrincipal, postId,true))
 					.message(String.format("post %s deleted successfully", postId))
 					.build();
 		} catch (EntityNotFoundException e) {
