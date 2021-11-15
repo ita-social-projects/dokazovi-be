@@ -27,6 +27,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -106,13 +111,14 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
-			String title, String author, Pageable pageable) {
-		if (directionIds == null && typeIds == null && originIds == null && statuses == null &&
-				title.isEmpty() && author.isEmpty()) {
+			String title, String author, String startDate, String endDate, Pageable pageable) {
+		if (directionIds == null && typeIds == null && originIds == null && statuses == null && startDate.isEmpty() &&
+				endDate.isEmpty() && title.isEmpty() && author.isEmpty()) {
 			return postRepository.findAll(pageable)
 					.map(postMapper::toPostDTO);
 		}
-
+		Timestamp sDate = checkSDate(startDate);
+		Timestamp eDate = checkEDate(endDate);
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
 		originIds = validateValues(originIds);
@@ -127,16 +133,31 @@ public class PostServiceImpl implements PostService {
 		try {
 			return postRepository
 					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
-							originIds, title, author, pageable)
+							originIds, title, author, sDate, eDate, pageable)
 					.map(postMapper::toPostDTO);
 		} catch (Exception e) {
 			logger.error(
 					String.format("Fail with posts filter with params typeIds=%s, directionIds=%s, statuses=%s, "
-									+ "originIds=%s, title=%s, author=%s",
-							typeIds, directionIds, statuses, originIds, title, author));
+									+ "originIds=%s, title=%s, author=%s, startDate=%s, endDate=%s",
+							typeIds, directionIds, statuses, originIds, title, author,sDate,eDate));
 			throw new EntityNotFoundException("Id does not exist");
 		}
 
+	}
+
+	private Timestamp checkSDate(String date) {
+		if (!date.isEmpty()) {
+			return Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+					LocalTime.MIN));
+		} else
+		return Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
+	}
+	private Timestamp checkEDate(String date) {
+		if (!date.isEmpty()) {
+			return Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+					LocalTime.MAX));
+		} else
+		return Timestamp.valueOf(LocalDateTime.now());
 	}
 
 	private <T> Set<T> validateValues(Set<T> set) {
@@ -391,7 +412,7 @@ public class PostServiceImpl implements PostService {
 				postFakeViewRepository.getPostFakeViewEntityByPostId(Integer.parseInt(scanner.findInLine("\\d+")))
 						.orElse(new PostFakeViewEntity());
 		scanner.close();
-		return postFakeViewEntity.getViews();
+		return Optional.ofNullable(postFakeViewEntity.getViews()).orElse(0);
 	}
 
 	@Override

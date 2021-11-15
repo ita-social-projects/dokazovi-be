@@ -103,6 +103,7 @@ public class PostEntity {
 	private Timestamp createdAt;
 
 	@UpdateTimestamp
+	@Column(name = "modified_at")
 	private Timestamp modifiedAt;
 
 	@CreationTimestamp

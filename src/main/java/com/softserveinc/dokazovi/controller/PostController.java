@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +39,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -278,13 +285,18 @@ public class PostController {
 			@ApiParam(value = "Post's title", type = "string")
 			@RequestParam(required = false, defaultValue = "") String title,
 			@ApiParam(value = "Post's author username", type = "string")
-			@RequestParam(required = false, defaultValue = "") String author) {
+			@RequestParam(required = false, defaultValue = "") String author,
+			@ApiParam(value = "yyyy-MM-dd")
+			@RequestParam(value = "start date", required = false, defaultValue = "") String startDate,
+			@ApiParam(value = "yyyy-MM-dd")
+			@RequestParam(value = "end date", required = false, defaultValue = "") String endDate) {
+
 		try {
 			return ResponseEntity
 					.status(HttpStatus.OK)
 					.body(postService
 							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
-									statuses, title, author, pageable));
+									statuses, title, author, startDate, endDate, pageable));
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity
 					.status(HttpStatus.NO_CONTENT)
@@ -313,7 +325,7 @@ public class PostController {
 		ApiResponseMessage apiResponseMessage;
 		try {
 			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.removePostById(userPrincipal, postId,true))
+					.success(postService.removePostById(userPrincipal, postId, true))
 					.message(String.format("post %s deleted successfully", postId))
 					.build();
 		} catch (EntityNotFoundException e) {
@@ -423,8 +435,8 @@ public class PostController {
 	}
 
 	/**
-	 * Gets all published posts sorted by important image url presence then by createdAt
-	 * filtered by directions, by post types and by origins
+	 * Gets all published posts sorted by important image url presence then by createdAt filtered by directions, by post
+	 * types and by origins
 	 *
 	 * @param pageable   interface for pagination information
 	 * @param directions direction's ids by which the search is performed
@@ -455,7 +467,7 @@ public class PostController {
 	 * Set a number for fake views
 	 *
 	 * @param postId id of post for which set fake views
-	 * @param views number of fake views
+	 * @param views  number of fake views
 	 */
 	@ApiPageable
 	@ApiOperation(value = "Set fake views for post by post id",
