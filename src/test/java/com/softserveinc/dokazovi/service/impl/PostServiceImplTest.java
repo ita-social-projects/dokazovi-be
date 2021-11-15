@@ -448,7 +448,8 @@ class PostServiceImplTest {
 		String author = "";
 		String title = "";
 		Timestamp startDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
-		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2021,1,3), LocalTime.MIN));
+		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2021,1,3),
+				LocalTime.MIN));
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
@@ -457,7 +458,8 @@ class PostServiceImplTest {
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent(),
 				postRepository.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
-								typesIds, directionsIds, statusNames, originsIds, title, author,startDate,endDate, pageable
+								typesIds, directionsIds, statusNames, originsIds, title, author,
+								startDate,endDate, pageable
 						)
 						.getContent());
 	}
@@ -528,7 +530,8 @@ class PostServiceImplTest {
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
-								directionsIds, statusNames,originsIds, title, author,timestampStartDate,timestampEndDate, pageable))
+								directionsIds, statusNames,originsIds, title, author,
+								timestampStartDate,timestampEndDate, pageable))
 				.thenThrow(new EntityNotFoundException("Id does not exist"));
 		assertThrows(EntityNotFoundException.class, () -> postService
 				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
