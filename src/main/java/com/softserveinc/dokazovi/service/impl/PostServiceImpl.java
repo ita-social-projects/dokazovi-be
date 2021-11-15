@@ -27,13 +27,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -117,8 +115,9 @@ public class PostServiceImpl implements PostService {
 			return postRepository.findAll(pageable)
 					.map(postMapper::toPostDTO);
 		}
-		Timestamp sDate = checkSDate(startDate);
-		Timestamp eDate = checkEDate(endDate);
+		List<Timestamp> filtrationDates = transformToTimestamp(startDate, endDate);
+		Timestamp startDateTimestamp = filtrationDates.get(0);
+		Timestamp endDateTimestamp = filtrationDates.get(1);
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
 		originIds = validateValues(originIds);
@@ -133,31 +132,33 @@ public class PostServiceImpl implements PostService {
 		try {
 			return postRepository
 					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
-							originIds, title, author, sDate, eDate, pageable)
+							originIds, title, author, startDateTimestamp, endDateTimestamp, pageable)
 					.map(postMapper::toPostDTO);
 		} catch (Exception e) {
 			logger.error(
 					String.format("Fail with posts filter with params typeIds=%s, directionIds=%s, statuses=%s, "
 									+ "originIds=%s, title=%s, author=%s, startDate=%s, endDate=%s",
-							typeIds, directionIds, statuses, originIds, title, author,sDate,eDate));
+							typeIds, directionIds, statuses, originIds, title, author, startDate, endDate));
 			throw new EntityNotFoundException("Id does not exist");
 		}
 
 	}
 
-	private Timestamp checkSDate(String date) {
-		if (!date.isEmpty()) {
-			return Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-					LocalTime.MIN));
-		} else
-		return Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
-	}
-	private Timestamp checkEDate(String date) {
-		if (!date.isEmpty()) {
-			return Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-					LocalTime.MAX));
-		} else
-		return Timestamp.valueOf(LocalDateTime.now());
+	private List<Timestamp> transformToTimestamp(String startDate, String endDate) {
+		List<Timestamp> res = new ArrayList<>(2);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+		if (!startDate.isEmpty()) {
+			res.add(0,Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(startDate,formatter),LocalTime.MIN)));
+		} else {
+			res.add(0,Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN)));
+		}
+
+		if (!endDate.isEmpty()) {
+			res.add(1,Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(endDate,formatter),LocalTime.MAX)));
+		} else {
+			res.add(1, Timestamp.valueOf(LocalDateTime.now()));
+		}
+		return res;
 	}
 
 	private <T> Set<T> validateValues(Set<T> set) {
