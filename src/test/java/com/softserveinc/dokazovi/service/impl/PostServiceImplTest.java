@@ -497,13 +497,14 @@ class PostServiceImplTest {
 		String title = "";
 		String startDate = "";
 		String endDate = "";
-		Timestamp sDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
-		Timestamp eDate = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.now());
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
-								directionsIds, statusNames,originsIds, title, author,sDate,eDate, pageable))
+								directionsIds, statusNames,originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent().size(),
 				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
@@ -522,12 +523,12 @@ class PostServiceImplTest {
 		String title = "";
 		String startDate = "";
 		String endDate = "";
-		Timestamp sDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
-		Timestamp eDate = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.now());
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
-								directionsIds, statusNames,originsIds, title, author,sDate,eDate, pageable))
+								directionsIds, statusNames,originsIds, title, author,timestampStartDate,timestampEndDate, pageable))
 				.thenThrow(new EntityNotFoundException("Id does not exist"));
 		assertThrows(EntityNotFoundException.class, () -> postService
 				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
@@ -546,12 +547,13 @@ class PostServiceImplTest {
 		String title = "";
 		String startDate = "";
 		String endDate = "";
-		Timestamp sDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
-		Timestamp eDate = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.now());
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
-								directionsIds, statusNames,	originsIds, title, author,sDate,eDate, pageable))
+								directionsIds, statusNames,	originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
 				.thenReturn(postEntityPage);
 		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
 				statuses, title, author,startDate,endDate, pageable);
@@ -570,12 +572,13 @@ class PostServiceImplTest {
 		Page<PostEntity> postEntityPage = Page.empty();
 		String startDate = "";
 		String endDate = "";
-		Timestamp sDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
-		Timestamp eDate = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.now());
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
-								directionsIds, statusNames,originsIds, title, author,sDate,eDate, pageable))
+								directionsIds, statusNames,originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent().size(),
 				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
