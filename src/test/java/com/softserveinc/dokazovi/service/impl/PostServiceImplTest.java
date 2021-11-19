@@ -46,6 +46,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -554,6 +555,68 @@ class PostServiceImplTest {
 		String endDate = "";
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX));
+
+		Mockito.when(postRepository
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames,	originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
+				.thenReturn(postEntityPage);
+		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
+				statuses, title, author,startDate,endDate, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllPosts_When_Only_StartDateProvided() {
+		PostEntity postEntity = new PostEntity();
+		PostEntity postEntity1 = new PostEntity();
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(postEntity,postEntity1));
+		Set<Integer> typesIds = Set.of(1, 2);
+		Set<Integer> originsIds = Set.of(2, 3);
+		Set<Integer> directionsIds = new HashSet<>();
+		Set<Integer> statuses = Set.of(3);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
+		String startDate = "01.01.2021";
+		String endDate = "";
+
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(
+				LocalDate.parse(startDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+				LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX));
+
+		Mockito.when(postRepository
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames,	originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
+				.thenReturn(postEntityPage);
+		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
+				statuses, title, author,startDate,endDate, pageable);
+		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
+	}
+
+	@Test
+	void findAllPosts_When_Only_EndDateProvided() {
+		PostEntity postEntity = new PostEntity();
+		PostEntity postEntity1 = new PostEntity();
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(postEntity,postEntity1));
+		Set<Integer> typesIds = Set.of(1, 2);
+		Set<Integer> originsIds = Set.of(2, 3);
+		Set<Integer> directionsIds = new HashSet<>();
+		Set<Integer> statuses = Set.of(3);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
+		String startDate = "";
+		String endDate = "01.06.2021";
+
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(
+				LocalDate.EPOCH,
+				LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(
+				LocalDate.parse(endDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+				LocalTime.MAX));
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
