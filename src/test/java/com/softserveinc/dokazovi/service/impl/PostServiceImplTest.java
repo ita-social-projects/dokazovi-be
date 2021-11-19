@@ -477,7 +477,7 @@ class PostServiceImplTest {
 		String startDat = "";
 		String endDat = "";
 		Timestamp startDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
-		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2021,1,3), LocalTime.MIN));
+		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds,
@@ -500,7 +500,7 @@ class PostServiceImplTest {
 		String startDate = "";
 		String endDate = "";
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
-		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX));
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
@@ -540,7 +540,9 @@ class PostServiceImplTest {
 
 	@Test
 	void findAllByPostTypesAndOrigins() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		PostEntity postEntity = new PostEntity();
+		PostEntity postEntity1 = new PostEntity();
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(postEntity,postEntity1));
 		Set<Integer> typesIds = Set.of(1, 2);
 		Set<Integer> originsIds = Set.of(2, 3);
 		Set<Integer> directionsIds = new HashSet<>();
@@ -551,7 +553,7 @@ class PostServiceImplTest {
 		String startDate = "";
 		String endDate = "";
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
-		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX));
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
@@ -576,7 +578,7 @@ class PostServiceImplTest {
 		String startDate = "";
 		String endDate = "";
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
-		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX));
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,

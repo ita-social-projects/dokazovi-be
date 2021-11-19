@@ -156,7 +156,7 @@ public class PostServiceImpl implements PostService {
 		if (!endDate.isEmpty()) {
 			res.add(1,Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(endDate,formatter),LocalTime.MAX)));
 		} else {
-			res.add(1, Timestamp.valueOf(LocalDateTime.now()));
+			res.add(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX)));
 		}
 		return res;
 	}
