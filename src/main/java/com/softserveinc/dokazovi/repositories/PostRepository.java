@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Repository
@@ -174,6 +175,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 						+ "THEN p.status IN (:statuses) "
 						+ "ELSE p.post_id IS NOT NULL "
 						+ "END "
+					+ "AND p.modified_at between :startDate and :endDate "
 					+ "AND p.author_id IN "
 						+ "(SELECT user_id FROM users u "
 						+ "WHERE UPPER((u.first_name || ' ' || u.last_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
@@ -183,5 +185,5 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "AND p.title LIKE (:title || '%')")
 	Page<PostEntity> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(Set<Integer> typeIds,
 			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, String author,
-			Pageable pageable);
+			Timestamp startDate, Timestamp endDate,Pageable pageable);
 }
