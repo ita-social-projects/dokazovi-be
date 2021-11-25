@@ -471,7 +471,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(1, 2);
-		Set<Integer> statuses = Set.of(3);
+		Set<Integer> statuses = Set.of(5);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -494,7 +494,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(-1, -2, -3);
-		Set<Integer> statuses = Set.of(3);
+		Set<Integer> statuses = Set.of(5);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -547,7 +547,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(1, 2);
 		Set<Integer> originsIds = Set.of(2, 3);
 		Set<Integer> directionsIds = new HashSet<>();
-		Set<Integer> statuses = Set.of(3);
+		Set<Integer> statuses = Set.of(5);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -574,7 +574,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(1, 2);
 		Set<Integer> originsIds = Set.of(2, 3);
 		Set<Integer> directionsIds = new HashSet<>();
-		Set<Integer> statuses = Set.of(3);
+		Set<Integer> statuses = Set.of(5);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -604,7 +604,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(1, 2);
 		Set<Integer> originsIds = Set.of(2, 3);
 		Set<Integer> directionsIds = new HashSet<>();
-		Set<Integer> statuses = Set.of(3);
+		Set<Integer> statuses = Set.of(5);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -633,7 +633,7 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(-1, -2);
 		Set<Integer> originsIds = Set.of(-1, -2, -3);
 		Set<Integer> directionsIds = new HashSet<>();
-		Set<Integer> statuses = Set.of(3);
+		Set<Integer> statuses = Set.of(5);
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
@@ -916,7 +916,7 @@ class PostServiceImplTest {
 				.type(postTypeDTO)
 				.directions(directions)
 				.origins(origins)
-				.postStatus(4)
+				.postStatus(6)
 				.build();
 
 		Integer id = 1;
@@ -1061,7 +1061,7 @@ class PostServiceImplTest {
 				.type(postTypeDTO)
 				.directions(directions)
 				.origins(origins)
-				.postStatus(4)
+				.postStatus(6)
 				.build();
 
 		Integer id = 1;

@@ -48,7 +48,7 @@ public class PostSaveFromUserDTO {
 
 	@NotNull(message = "PostStatus are required")
 	@Min(value = 0)
-	@Max(value = 4)
+	@Max(value = 6)
 	private Integer postStatus;
 
 	@NotNull(message = "At least one topic are required")
