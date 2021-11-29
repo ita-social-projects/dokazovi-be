@@ -1434,7 +1434,7 @@ class PostServiceImplTest {
 		postEntity.setStatus(PostStatus.PLANNED);
 		postRepository.save(postEntity);
 
-		Thread.sleep(60000);
+		postService.updatePlannedStatus();
 
 		postEntity = postRepository.findAll().get(0);
 		assertEquals(PostStatus.PLANNED, postEntity.getStatus());
