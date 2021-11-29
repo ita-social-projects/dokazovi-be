@@ -1428,4 +1428,15 @@ class PostServiceImplTest {
 		assertEquals(2, result.size());
 	}
 
+	@Test
+	void check_update_planned_status() throws InterruptedException {
+		PostEntity postEntity = postRepository.findAll().get(0);
+		postEntity.setStatus(PostStatus.PLANNED);
+		postRepository.save(postEntity);
+
+		Thread.sleep(60000);
+
+		postEntity = postRepository.findAll().get(0);
+		assertEquals(PostStatus.PLANNED, postEntity.getStatus());
+	}
 }
