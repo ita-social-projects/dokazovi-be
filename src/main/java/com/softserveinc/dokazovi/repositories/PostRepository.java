@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.SqlResultSetMapping;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -154,6 +155,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
 			Set<Integer> directionsIds, Set<Integer> typesIds, Set<Integer> originsIds, PostStatus postStatus,
 			Boolean important, Pageable pageable);
+
 
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM posts p "

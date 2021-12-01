@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.origin.OriginDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
+import com.softserveinc.dokazovi.entity.PostFakeViewEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,4 +39,5 @@ public class PostDTO {
 	private Timestamp publishedAt;
 	private Integer importanceOrder;
 	private String importantImageUrl;
+	private Integer views;
 }
