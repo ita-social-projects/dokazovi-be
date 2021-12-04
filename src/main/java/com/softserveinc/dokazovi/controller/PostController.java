@@ -280,9 +280,9 @@ public class PostController {
 			@ApiParam(value = "Post's author username", type = "string")
 			@RequestParam(required = false, defaultValue = "") String author,
 			@ApiParam(value = "dd.MM.yyyy")
-			@RequestParam(value = "start date", required = false, defaultValue = "") String startDate,
+			@RequestParam(name = "start date", required = false, defaultValue = "") String startDate,
 			@ApiParam(value = "dd.MM.yyyy")
-			@RequestParam(value = "end date", required = false, defaultValue = "") String endDate) {
+			@RequestParam(name = "end date", required = false, defaultValue = "") String endDate) {
 
 		try {
 			return ResponseEntity

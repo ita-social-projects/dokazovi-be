@@ -117,4 +117,6 @@ public class PostEntity {
 
 	@Column(name = "important_image_url")
 	private String importantImageUrl;
+	@OneToOne(mappedBy = "post")
+	private PostFakeViewEntity fakeViews;
 }

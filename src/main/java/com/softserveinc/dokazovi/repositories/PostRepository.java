@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.repositories;
 
+import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
@@ -158,7 +159,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 
 	@Query(nativeQuery = true,
-			value = "SELECT * FROM posts p "
+			value = "SELECT p.*, d.* FROM posts p "
+					+ "LEFT OUTER JOIN post_fake_views d "
 					+ "WHERE CASE WHEN :typeIds IS NOT NULL "
 						+ "THEN p.type_id IN (:typeIds) "
 						+ "ELSE p.post_id IS NOT NULL "

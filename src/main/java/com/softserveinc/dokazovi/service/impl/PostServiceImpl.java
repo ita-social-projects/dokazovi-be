@@ -123,7 +123,6 @@ public class PostServiceImpl implements PostService {
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
 		originIds = validateValues(originIds);
-
 		PostStatus[] statusesArray = PostStatus.values();
 		Set<String> statusNames = statuses == null ? Collections.emptySet() :
 				statuses.stream()
