@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostForAdminDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
@@ -24,7 +25,7 @@ public interface PostService {
 
 	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
-	Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+	Page<PostForAdminDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Set<Integer> statuses,
 			String title, String author, String startDate, String endDate, Pageable pageable);
 

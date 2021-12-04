@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostForAdminDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
@@ -108,14 +109,19 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+	public Page<PostForAdminDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
 			String title, String author, String startDate, String endDate, Pageable pageable) {
 		Map<Integer, Integer> postIdsAndViews = googleAnalytics.getAllPostsViewCount();
 		if (directionIds == null && typeIds == null && originIds == null && statuses == null && startDate.isEmpty() &&
 				endDate.isEmpty() && title.isEmpty() && author.isEmpty()) {
 			return postRepository.findAll(pageable)
-					.map(postMapper::toPostDTO);
+					.map(postMapper::toPostForAdminDTO)
+					.map(postDTO -> {
+						Integer id = postDTO.getId();
+						postDTO.setViews(postIdsAndViews.get(id));
+						return postDTO;
+					});
 		}
 		List<Timestamp> filtrationDates = transformToTimestamp(startDate, endDate);
 		Timestamp startDateTimestamp = filtrationDates.get(0);
@@ -134,7 +140,12 @@ public class PostServiceImpl implements PostService {
 			return postRepository
 					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
 							originIds, title, author, startDateTimestamp, endDateTimestamp, pageable)
-					.map(postMapper::toPostDTO);
+					.map(postMapper::toPostForAdminDTO)
+					.map(postDTO -> {
+						Integer id = postDTO.getId();
+						postDTO.setViews(postIdsAndViews.get(id));
+						return postDTO;
+					});
 		} catch (Exception e) {
 			logger.error(
 					String.format("Fail with posts filter with params typeIds=%s, directionIds=%s, statuses=%s, "

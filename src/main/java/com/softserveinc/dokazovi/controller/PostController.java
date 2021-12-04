@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.controller;
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostForAdminDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
@@ -264,7 +265,7 @@ public class PostController {
 	 */
 	@GetMapping(POST_ALL_POSTS)
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
-	public ResponseEntity<Page<PostDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
+	public ResponseEntity<Page<PostForAdminDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
 			@PageableDefault Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,

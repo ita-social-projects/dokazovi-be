@@ -24,11 +24,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.sql.Timestamp;
+import java.util.Optional;
 import java.util.Set;
 
 @Data
@@ -118,5 +117,11 @@ public class PostEntity {
 	@Column(name = "important_image_url")
 	private String importantImageUrl;
 	@OneToOne(mappedBy = "post")
+	@JoinColumn(name = "views")
 	private PostFakeViewEntity fakeViews;
+
+	public PostFakeViewEntity getFakeViews(){
+		PostFakeViewEntity entity = PostFakeViewEntity.builder().views(0).build();
+		return Optional.ofNullable(fakeViews).orElse(entity);
+	}
 }

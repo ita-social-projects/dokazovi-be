@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.mapper;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
+import com.softserveinc.dokazovi.dto.post.PostForAdminDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.user.LatestUserPostDTO;
 import com.softserveinc.dokazovi.entity.PostEntity;
@@ -15,6 +16,10 @@ public interface PostMapper {
 	@Mapping(target = "author.mainInstitution", source = "author.doctor.mainInstitution")
 	@Mapping(target = "author.bio", source = "author.doctor.bio")
 	PostDTO toPostDTO(PostEntity postEntity);
+
+	@Mapping(target = "author.mainInstitution", source = "author.doctor.mainInstitution")
+	@Mapping(target = "author.bio", source = "author.doctor.bio")
+	PostForAdminDTO toPostForAdminDTO(PostEntity postEntity);
 
 	PostEntity toPostEntity(PostSaveFromUserDTO postSaveFromUserDTO);
 

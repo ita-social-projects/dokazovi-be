@@ -16,8 +16,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDTO {
-
+public class PostForAdminDTO {
 	private Integer id;
 	private String title;
 	private String preview;
