@@ -2,18 +2,15 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
-import com.softserveinc.dokazovi.dto.post.PostForAdminDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
-import com.softserveinc.dokazovi.entity.PostFakeViewEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
-import com.softserveinc.dokazovi.repositories.PostFakeViewRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -51,7 +48,6 @@ public class PostServiceImpl implements PostService {
 	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
 
 	private final PostRepository postRepository;
-	private final PostFakeViewRepository postFakeViewRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
 	private final DirectionServiceImpl directionService;
@@ -119,7 +115,9 @@ public class PostServiceImpl implements PostService {
 					.map(postMapper::toPostDTO)
 					.map(postDTO -> {
 						Integer id = postDTO.getId();
-						postDTO.setViews(postIdsAndViews.get(id));
+						Integer views = postIdsAndViews.get(id);
+						postDTO.setFakeViews(postDTO.getFakeViews()+views);
+						postDTO.setViews(views);
 						return postDTO;
 					});
 		}
@@ -143,7 +141,9 @@ public class PostServiceImpl implements PostService {
 					.map(postMapper::toPostDTO)
 					.map(postDTO -> {
 						Integer id = postDTO.getId();
-						postDTO.setViews(postIdsAndViews.get(id));
+						Integer views = postIdsAndViews.get(id);
+						postDTO.setFakeViews(postDTO.getFakeViews()+views);
+						postDTO.setViews(views);
 						return postDTO;
 					});
 		} catch (Exception e) {

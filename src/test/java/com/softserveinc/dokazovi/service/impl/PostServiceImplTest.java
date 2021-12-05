@@ -25,7 +25,6 @@ import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
-import com.softserveinc.dokazovi.repositories.PostFakeViewRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -90,9 +89,6 @@ class PostServiceImplTest {
 
 	@Mock
 	private GoogleAnalytics googleAnalytics;
-
-	@Mock
-	private PostFakeViewRepository postFakeViewRepository;
 
 	@BeforeEach
 	void init() {
@@ -1312,7 +1308,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void setFakeViewsForPost_withExistPostFakeViewEntity() {
+	void setFakeViewsForPost_withExistPostId() {
 		PostEntity postEntity = PostEntity.builder().id(10).build();
 		when(postRepository.findById(10))
 				.thenReturn(Optional.of(postEntity));
@@ -1321,15 +1317,14 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void setFakeViewsForPost_withNotExistPostFakeViewEntity() {
+	void setFakeViewsForPost_withNotExistPostId() {
 		PostEntity postEntity = PostEntity.builder().id(10).build();
-		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
-				.thenReturn(Optional.empty());
+
 		when(postRepository.findById(10)).thenReturn(Optional.of(postEntity));
 
 		postService.setFakeViewsForPost(10, 110);
 
-		verify(postFakeViewRepository, times(1)).save(any(PostFakeViewEntity.class));
+		verify(postRepository, times(1)).save(any(PostEntity.class));
 	}
 
 	@Test
