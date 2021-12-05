@@ -265,7 +265,7 @@ public class PostController {
 	 */
 	@GetMapping(POST_ALL_POSTS)
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
-	public ResponseEntity<Page<PostForAdminDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
+	public ResponseEntity<Page<PostDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
 			@PageableDefault Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
@@ -281,9 +281,9 @@ public class PostController {
 			@ApiParam(value = "Post's author username", type = "string")
 			@RequestParam(required = false, defaultValue = "") String author,
 			@ApiParam(value = "dd.MM.yyyy")
-			@RequestParam(name = "start date", required = false, defaultValue = "") String startDate,
+			@RequestParam(required = false, defaultValue = "") String startDate,
 			@ApiParam(value = "dd.MM.yyyy")
-			@RequestParam(name = "end date", required = false, defaultValue = "") String endDate) {
+			@RequestParam(required = false, defaultValue = "") String endDate) {
 
 		try {
 			return ResponseEntity

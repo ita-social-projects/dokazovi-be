@@ -1305,9 +1305,8 @@ class PostServiceImplTest {
 
 	@Test
 	void getFakeViewsByPostUrl() {
-		PostEntity postEntity = PostEntity.builder().id(10).build();
-		PostFakeViewEntity postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).views(150).build();
-		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10)).thenReturn(Optional.of(postFakeViewEntity));
+		PostEntity postEntity = PostEntity.builder().id(10).fakeViews(150).build();
+		when(postRepository.getFakeViewsByPostId(10)).thenReturn(150);
 
 		assertEquals(150, postService.getFakeViewsByPostUrl("/posts/10"));
 	}
@@ -1315,13 +1314,10 @@ class PostServiceImplTest {
 	@Test
 	void setFakeViewsForPost_withExistPostFakeViewEntity() {
 		PostEntity postEntity = PostEntity.builder().id(10).build();
-		PostFakeViewEntity postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).build();
-		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
-				.thenReturn(Optional.of(postFakeViewEntity));
-
+		when(postRepository.findById(10))
+				.thenReturn(Optional.of(postEntity));
 		postService.setFakeViewsForPost(10, 110);
-
-		assertEquals(110, postFakeViewEntity.getViews());
+		assertEquals(110, postEntity.getFakeViews());
 	}
 
 	@Test

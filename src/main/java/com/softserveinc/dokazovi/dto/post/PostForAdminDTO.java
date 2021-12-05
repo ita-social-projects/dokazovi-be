@@ -37,6 +37,6 @@ public class PostForAdminDTO {
 	private Timestamp publishedAt;
 	private Integer importanceOrder;
 	private String importantImageUrl;
-	private PostFakeViewEntityDTO fakeViews;
+	private Integer fakeViews;
 	private Integer views;
 }

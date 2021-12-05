@@ -109,14 +109,14 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Page<PostForAdminDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
 			String title, String author, String startDate, String endDate, Pageable pageable) {
 		Map<Integer, Integer> postIdsAndViews = googleAnalytics.getAllPostsViewCount();
 		if (directionIds == null && typeIds == null && originIds == null && statuses == null && startDate.isEmpty() &&
 				endDate.isEmpty() && title.isEmpty() && author.isEmpty()) {
 			return postRepository.findAll(pageable)
-					.map(postMapper::toPostForAdminDTO)
+					.map(postMapper::toPostDTO)
 					.map(postDTO -> {
 						Integer id = postDTO.getId();
 						postDTO.setViews(postIdsAndViews.get(id));
@@ -140,7 +140,7 @@ public class PostServiceImpl implements PostService {
 			return postRepository
 					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
 							originIds, title, author, startDateTimestamp, endDateTimestamp, pageable)
-					.map(postMapper::toPostForAdminDTO)
+					.map(postMapper::toPostDTO)
 					.map(postDTO -> {
 						Integer id = postDTO.getId();
 						postDTO.setViews(postIdsAndViews.get(id));
@@ -421,27 +421,18 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Integer getFakeViewsByPostUrl(String url) {
 		Scanner scanner = new Scanner(url);
-		PostFakeViewEntity postFakeViewEntity =
-				postFakeViewRepository.getPostFakeViewEntityByPostId(Integer.parseInt(scanner.findInLine("\\d+")))
-						.orElse(new PostFakeViewEntity());
+		int id = Integer.parseInt(scanner.findInLine("\\d+"));
 		scanner.close();
-		return Optional.ofNullable(postFakeViewEntity.getViews()).orElse(0);
+		return postRepository.getFakeViewsByPostId(id);
 	}
 
 	@Override
 	public void setFakeViewsForPost(Integer postId, Integer view) {
-		PostFakeViewEntity postFakeViewEntity = postFakeViewRepository.getPostFakeViewEntityByPostId(postId)
-				.orElse(null);
-
-		if (postFakeViewEntity == null) {
-			PostEntity postEntity = postRepository.findById(postId)
-					.orElseThrow(() ->
-							new javax.persistence.EntityNotFoundException("Post with this id doesn't exist"));
-			postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).views(view).build();
-		} else {
-			postFakeViewEntity.setViews(view);
-		}
-		postFakeViewRepository.save(postFakeViewEntity);
+		Optional<PostEntity> post;
+		if ((post=postRepository.findById(postId)).isPresent()) {
+			post.get().setFakeViews(view);
+			postRepository.save(post.get());
+		} else throw new javax.persistence.EntityNotFoundException("Post with this id doesn't exist");
 	}
 
 	@Override

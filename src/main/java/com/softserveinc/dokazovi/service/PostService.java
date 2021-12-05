@@ -25,7 +25,7 @@ public interface PostService {
 
 	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
-	Page<PostForAdminDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+	Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Set<Integer> statuses,
 			String title, String author, String startDate, String endDate, Pageable pageable);
 

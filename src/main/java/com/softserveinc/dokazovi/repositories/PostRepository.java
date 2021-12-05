@@ -38,6 +38,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findAllByAuthorIdAndStatusOrderByPublishedAtDesc(Integer authorId, PostStatus postStatus,
 			Pageable pageable);
 
+	@Query(value = "SELECT p.fakeViews FROM post_entity p WHERE p.id = :postId")
+	Integer getFakeViewsByPostId(Integer postId);
+
 	Page<PostEntity> findAllByAuthorIdAndTypeIdInAndStatus(
 			Integer authorId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 
@@ -159,9 +162,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 
 	@Query(nativeQuery = true,
-			value = "SELECT p.*, d.views FROM posts p "
-					+ "LEFT JOIN post_fake_views d "
-					+ "ON p.post_id=d.post_id "
+			value = "SELECT * FROM posts p "
 					+ "WHERE CASE WHEN :typeIds IS NOT NULL "
 						+ "THEN p.type_id IN (:typeIds) "
 						+ "ELSE p.post_id IS NOT NULL "
