@@ -48,7 +48,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -1341,8 +1340,9 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void checkUpdatePlannedStatus(){
-		PostEntity postEntity1 = PostEntity.builder().createdAt(new Timestamp(System.currentTimeMillis() - 10000)).status(PostStatus.PLANNED).build();
+	void checkUpdatePlannedStatus() {
+		PostEntity postEntity1 = PostEntity.builder().createdAt(new Timestamp(System.currentTimeMillis() - 10000))
+				.status(PostStatus.PLANNED).build();
 		List<PostEntity> postEntities = new ArrayList<>();
 		postEntities.add(postEntity1);
 
