@@ -14,7 +14,6 @@ import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
-import com.softserveinc.dokazovi.entity.PostFakeViewEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;

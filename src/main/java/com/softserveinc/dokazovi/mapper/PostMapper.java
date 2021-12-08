@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.mapper;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
-import com.softserveinc.dokazovi.dto.post.PostForAdminDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.user.LatestUserPostDTO;
 import com.softserveinc.dokazovi.entity.PostEntity;

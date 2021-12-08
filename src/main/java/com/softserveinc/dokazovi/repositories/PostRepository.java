@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.repositories;
 
-import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
@@ -11,7 +10,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.SqlResultSetMapping;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -45,18 +43,18 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			Integer authorId, Set<Integer> typeId, PostStatus postStatus, Pageable pageable);
 
 	@Query(nativeQuery = true,
-	value = " UPDATE POSTS "
-			+ " SET IMPORTANT = FALSE, "
-			+ "    IMPORTANCE_ORDER = NULL "
-			+ " WHERE POST_ID > 0;")
+			value = " UPDATE POSTS "
+					+ " SET IMPORTANT = FALSE, "
+					+ "    IMPORTANCE_ORDER = NULL "
+					+ " WHERE POST_ID > 0;")
 	@Modifying
 	void removeImportantPostsAndOrder(Set<Integer> importantPostIds);
 
 	@Query(nativeQuery = true,
-	value = " UPDATE POSTS "
-			+ " SET IMPORTANCE_ORDER = (:postNumber), "
-			+ "    IMPORTANT = TRUE "
-			+ " WHERE POST_ID = (:postId) ")
+			value = " UPDATE POSTS "
+					+ " SET IMPORTANCE_ORDER = (:postNumber), "
+					+ "    IMPORTANT = TRUE "
+					+ " WHERE POST_ID = (:postId) ")
 	@Modifying
 	void setImportantPostOrder(Integer postNumber, Integer postId);
 
@@ -164,32 +162,32 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM posts p "
 					+ "WHERE CASE WHEN :typeIds IS NOT NULL "
-						+ "THEN p.type_id IN (:typeIds) "
-						+ "ELSE p.post_id IS NOT NULL "
-						+ "END "
+					+ "THEN p.type_id IN (:typeIds) "
+					+ "ELSE p.post_id IS NOT NULL "
+					+ "END "
 					+ "AND CASE WHEN :directionIds IS NOT NULL "
-						+ "THEN p.post_id IN "
-						+ "(SELECT pd.post_id FROM posts_directions pd WHERE pd.direction_id IN (:directionIds)) "
-						+ "ELSE p.post_id IS NOT NULL "
-						+ "END "
+					+ "THEN p.post_id IN "
+					+ "(SELECT pd.post_id FROM posts_directions pd WHERE pd.direction_id IN (:directionIds)) "
+					+ "ELSE p.post_id IS NOT NULL "
+					+ "END "
 					+ "AND CASE WHEN :originIds IS NOT NULL "
-						+ "THEN p.post_id IN "
-						+ "(SELECT po.post_id FROM posts_origins po WHERE po.origin_id IN (:originIds)) "
-						+ "ELSE p.post_id IS NOT NULL "
-						+ "END "
+					+ "THEN p.post_id IN "
+					+ "(SELECT po.post_id FROM posts_origins po WHERE po.origin_id IN (:originIds)) "
+					+ "ELSE p.post_id IS NOT NULL "
+					+ "END "
 					+ "AND CASE WHEN :statuses IS NOT NULL "
-						+ "THEN p.status IN (:statuses) "
-						+ "ELSE p.post_id IS NOT NULL "
-						+ "END "
+					+ "THEN p.status IN (:statuses) "
+					+ "ELSE p.post_id IS NOT NULL "
+					+ "END "
 					+ "AND p.modified_at between :startDate and :endDate "
 					+ "AND p.author_id IN "
-						+ "(SELECT user_id FROM users u "
-						+ "WHERE UPPER((u.first_name || ' ' || u.last_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
-							+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
-						+ "OR UPPER((u.last_name || ' ' || u.first_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
-							+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\")) "
+					+ "(SELECT user_id FROM users u "
+					+ "WHERE UPPER((u.first_name || ' ' || u.last_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "OR UPPER((u.last_name || ' ' || u.first_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\")) "
 					+ "AND p.title LIKE (:title || '%')")
 	Page<PostEntity> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(Set<Integer> typeIds,
 			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, String author,
-			Timestamp startDate, Timestamp endDate,Pageable pageable);
+			Timestamp startDate, Timestamp endDate, Pageable pageable);
 }

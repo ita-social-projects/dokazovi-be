@@ -73,9 +73,9 @@ public class GoogleAnalytics {
 		return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
 	}
 
-	public Map<Integer,Integer> getAllPostsViewCount(){
+	public Map<Integer, Integer> getAllPostsViewCount() {
 		List<List<String>> rows;
-		Map<Integer,Integer> map = null;
+		Map<Integer, Integer> map = null;
 		try {
 			Analytics analytics = initializeAnalytic();
 
@@ -93,8 +93,9 @@ public class GoogleAnalytics {
 					.peek(e -> {
 						Pattern pattern1 = Pattern.compile("(/posts/)(\\d+)");
 						Matcher matcher = pattern1.matcher(e.get(0));
-						while (matcher.find())
+						while (matcher.find()) {
 							e.add(0, matcher.group(2));
+						}
 						e.remove(1);
 					})
 					.collect(Collectors.toMap(k -> Integer.parseInt(k.get(0)), v -> Integer.parseInt(v.get(1))));
