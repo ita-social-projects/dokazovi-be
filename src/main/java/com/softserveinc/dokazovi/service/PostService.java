@@ -55,4 +55,6 @@ public interface PostService {
 
 	Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
+
+	void updatePlannedStatus();
 }
