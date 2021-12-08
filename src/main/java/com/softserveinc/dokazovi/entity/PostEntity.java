@@ -25,6 +25,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -117,4 +118,6 @@ public class PostEntity {
 
 	@Column(name = "views")
 	private Integer fakeViews;
+	@Transient
+	private Integer views;
 }
