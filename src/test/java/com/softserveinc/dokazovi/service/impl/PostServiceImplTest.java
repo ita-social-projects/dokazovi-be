@@ -47,6 +47,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -1324,6 +1325,8 @@ class PostServiceImplTest {
 		assertEquals(110, postFakeViewEntity.getViews());
 	}
 
+
+
 	@Test
 	void setFakeViewsForPost_withNotExistPostFakeViewEntity() {
 		PostEntity postEntity = PostEntity.builder().id(10).build();
@@ -1334,6 +1337,22 @@ class PostServiceImplTest {
 		postService.setFakeViewsForPost(10, 110);
 
 		verify(postFakeViewRepository, times(1)).save(any(PostFakeViewEntity.class));
+	}
+
+	@Test
+	void checkUpdatePlannedStatus() {
+		PostEntity postEntity1 = PostEntity.builder().createdAt(new Timestamp(System.currentTimeMillis() - 10000))
+				.status(PostStatus.PLANNED).build();
+		List<PostEntity> postEntities = new ArrayList<>();
+		postEntities.add(postEntity1);
+
+		when(postRepository.findAll()).thenReturn(postEntities);
+		when(postRepository.save(postEntity1)).thenReturn(postEntity1);
+
+		postService.updatePlannedStatus();
+
+		assertEquals(PostStatus.PUBLISHED, postEntity1.getStatus());
+
 	}
 
 	@Test
