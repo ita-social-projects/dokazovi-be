@@ -14,7 +14,6 @@ import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
-import com.softserveinc.dokazovi.entity.PostFakeViewEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
@@ -25,7 +24,6 @@ import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
-import com.softserveinc.dokazovi.repositories.PostFakeViewRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -47,6 +45,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -91,9 +90,6 @@ class PostServiceImplTest {
 
 	@Mock
 	private GoogleAnalytics googleAnalytics;
-
-	@Mock
-	private PostFakeViewRepository postFakeViewRepository;
 
 	@BeforeEach
 	void init() {
@@ -425,7 +421,9 @@ class PostServiceImplTest {
 
 	@Test
 	void findAllPosts() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		PostEntity postEntity = new PostEntity();
+		PostEntity postEntity1 = new PostEntity();
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(postEntity, postEntity1));
 		Set<Integer> typesIds = null;
 		Set<Integer> originsIds = null;
 		Set<Integer> directionsIds = null;
@@ -434,7 +432,7 @@ class PostServiceImplTest {
 		String title = "";
 		String startDate = "";
 		String endDate = "";
-
+		when(googleAnalytics.getAllPostsViewCount()).thenReturn(new HashMap<>());
 		Mockito.when(postRepository.findAll(any(Pageable.class))).thenReturn(postEntityPage);
 		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
 				originsIds, statuses, title, author,startDate,endDate, pageable);
@@ -468,7 +466,9 @@ class PostServiceImplTest {
 
 	@Test
 	void findAllPostsByDirections() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		PostEntity post1 = PostEntity.builder().fakeViews(0).views(0).build();
+		PostEntity post2 = PostEntity.builder().fakeViews(0).views(0).build();
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(post1, post2));
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(1, 2);
@@ -553,68 +553,8 @@ class PostServiceImplTest {
 		String author = "";
 		String title = "";
 		String startDate = "";
-		String endDate = "";
-		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
-		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX));
-
-		Mockito.when(postRepository
-						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
-								directionsIds, statusNames,	originsIds, title, author, timestampStartDate,
-								timestampEndDate, pageable))
-				.thenReturn(postEntityPage);
-		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
-				statuses, title, author,startDate,endDate, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
-	}
-
-	@Test
-	void findAllPosts_When_Only_StartDateProvided() {
-		PostEntity postEntity = new PostEntity();
-		PostEntity postEntity1 = new PostEntity();
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(postEntity,postEntity1));
-		Set<Integer> typesIds = Set.of(1, 2);
-		Set<Integer> originsIds = Set.of(2, 3);
-		Set<Integer> directionsIds = new HashSet<>();
-		Set<Integer> statuses = Set.of(5);
-		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
-		String author = "";
-		String title = "";
-		String startDate = "01.01.2021";
-		String endDate = "";
-
-		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(
-				LocalDate.parse(startDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-				LocalTime.MIN));
-		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX));
-
-		Mockito.when(postRepository
-						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
-								directionsIds, statusNames,	originsIds, title, author, timestampStartDate,
-								timestampEndDate, pageable))
-				.thenReturn(postEntityPage);
-		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
-				statuses, title, author,startDate,endDate, pageable);
-		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
-	}
-
-	@Test
-	void findAllPosts_When_Only_EndDateProvided() {
-		PostEntity postEntity = new PostEntity();
-		PostEntity postEntity1 = new PostEntity();
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(postEntity,postEntity1));
-		Set<Integer> typesIds = Set.of(1, 2);
-		Set<Integer> originsIds = Set.of(2, 3);
-		Set<Integer> directionsIds = new HashSet<>();
-		Set<Integer> statuses = Set.of(5);
-		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
-		String author = "";
-		String title = "";
-		String startDate = "";
 		String endDate = "01.06.2021";
-
-		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(
-				LocalDate.EPOCH,
-				LocalTime.MIN));
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(
 				LocalDate.parse(endDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
 				LocalTime.MAX));
@@ -1306,37 +1246,32 @@ class PostServiceImplTest {
 
 	@Test
 	void getFakeViewsByPostUrl() {
-		PostEntity postEntity = PostEntity.builder().id(10).build();
-		PostFakeViewEntity postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).views(150).build();
-		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10)).thenReturn(Optional.of(postFakeViewEntity));
+		PostEntity postEntity = PostEntity.builder().id(10).fakeViews(150).build();
+		when(postRepository.getFakeViewsByPostId(10)).thenReturn(150);
 
 		assertEquals(150, postService.getFakeViewsByPostUrl("/posts/10"));
 	}
 
 	@Test
-	void setFakeViewsForPost_withExistPostFakeViewEntity() {
+	void setFakeViewsForPost_withExistPostId() {
 		PostEntity postEntity = PostEntity.builder().id(10).build();
-		PostFakeViewEntity postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).build();
-		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
-				.thenReturn(Optional.of(postFakeViewEntity));
-
+		when(postRepository.findById(10))
+				.thenReturn(Optional.of(postEntity));
 		postService.setFakeViewsForPost(10, 110);
-
-		assertEquals(110, postFakeViewEntity.getViews());
+		assertEquals(110, postEntity.getFakeViews());
 	}
 
 
 
 	@Test
-	void setFakeViewsForPost_withNotExistPostFakeViewEntity() {
+	void setFakeViewsForPost_withNotExistPostId() {
 		PostEntity postEntity = PostEntity.builder().id(10).build();
-		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
-				.thenReturn(Optional.empty());
+
 		when(postRepository.findById(10)).thenReturn(Optional.of(postEntity));
 
 		postService.setFakeViewsForPost(10, 110);
 
-		verify(postFakeViewRepository, times(1)).save(any(PostFakeViewEntity.class));
+		verify(postRepository, times(1)).save(any(PostEntity.class));
 	}
 
 	@Test

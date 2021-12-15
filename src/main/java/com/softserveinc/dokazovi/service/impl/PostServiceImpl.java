@@ -6,13 +6,11 @@ import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
-import com.softserveinc.dokazovi.entity.PostFakeViewEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
-import com.softserveinc.dokazovi.repositories.PostFakeViewRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -38,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -51,7 +50,6 @@ public class PostServiceImpl implements PostService {
 	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
 
 	private final PostRepository postRepository;
-	private final PostFakeViewRepository postFakeViewRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
 	private final DirectionServiceImpl directionService;
@@ -112,9 +110,18 @@ public class PostServiceImpl implements PostService {
 	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
 			String title, String author, String startDate, String endDate, Pageable pageable) {
+		Map<Integer, Integer> postIdsAndViews = googleAnalytics.getAllPostsViewCount();
 		if (directionIds == null && typeIds == null && originIds == null && statuses == null && startDate.isEmpty() &&
 				endDate.isEmpty() && title.isEmpty() && author.isEmpty()) {
 			return postRepository.findAll(pageable)
+					.map(postDTO -> {
+						Integer id = postDTO.getId();
+						Integer views = Optional.ofNullable(postIdsAndViews.get(id)).orElse(0);
+						Integer fakeViews = Optional.ofNullable(postDTO.getFakeViews()).orElse(0);
+						postDTO.setFakeViews(fakeViews + views);
+						postDTO.setViews(views);
+						return postDTO;
+					})
 					.map(postMapper::toPostDTO);
 		}
 		List<Timestamp> filtrationDates = transformToTimestamp(startDate, endDate);
@@ -123,7 +130,6 @@ public class PostServiceImpl implements PostService {
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
 		originIds = validateValues(originIds);
-
 		PostStatus[] statusesArray = PostStatus.values();
 		Set<String> statusNames = statuses == null ? Collections.emptySet() :
 				statuses.stream()
@@ -135,7 +141,16 @@ public class PostServiceImpl implements PostService {
 			return postRepository
 					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
 							originIds, title, author, startDateTimestamp, endDateTimestamp, pageable)
-					.map(postMapper::toPostDTO);
+					.map(postDTO -> {
+						Integer id = postDTO.getId();
+						Integer views = Optional.ofNullable(postIdsAndViews.get(id)).orElse(0);
+						Integer fakeViews = Optional.ofNullable(postDTO.getFakeViews()).orElse(0);
+						postDTO.setFakeViews(fakeViews + views);
+						postDTO.setViews(views);
+						return postDTO;
+					})
+					.map(postMapper::toPostDTO)
+					;
 		} catch (Exception e) {
 			logger.error(
 					String.format("Fail with posts filter with params typeIds=%s, directionIds=%s, statuses=%s, "
@@ -150,15 +165,15 @@ public class PostServiceImpl implements PostService {
 		List<Timestamp> res = new ArrayList<>(2);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		if (!startDate.isEmpty()) {
-			res.add(0,Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(startDate,formatter),LocalTime.MIN)));
+			res.add(0, Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(startDate, formatter), LocalTime.MIN)));
 		} else {
-			res.add(0,Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN)));
+			res.add(0, Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN)));
 		}
 
 		if (!endDate.isEmpty()) {
-			res.add(1,Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(endDate,formatter),LocalTime.MAX)));
+			res.add(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(endDate, formatter), LocalTime.MAX)));
 		} else {
-			res.add(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX)));
+			res.add(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX)));
 		}
 		return res;
 	}
@@ -411,27 +426,20 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Integer getFakeViewsByPostUrl(String url) {
 		Scanner scanner = new Scanner(url);
-		PostFakeViewEntity postFakeViewEntity =
-				postFakeViewRepository.getPostFakeViewEntityByPostId(Integer.parseInt(scanner.findInLine("\\d+")))
-						.orElse(new PostFakeViewEntity());
+		int id = Integer.parseInt(scanner.findInLine("\\d+"));
 		scanner.close();
-		return Optional.ofNullable(postFakeViewEntity.getViews()).orElse(0);
+		return postRepository.getFakeViewsByPostId(id);
 	}
 
 	@Override
 	public void setFakeViewsForPost(Integer postId, Integer view) {
-		PostFakeViewEntity postFakeViewEntity = postFakeViewRepository.getPostFakeViewEntityByPostId(postId)
-				.orElse(null);
-
-		if (postFakeViewEntity == null) {
-			PostEntity postEntity = postRepository.findById(postId)
-					.orElseThrow(() ->
-							new javax.persistence.EntityNotFoundException("Post with this id doesn't exist"));
-			postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).views(view).build();
+		Optional<PostEntity> post;
+		if ((post = postRepository.findById(postId)).isPresent()) {
+			post.get().setFakeViews(view);
+			postRepository.save(post.get());
 		} else {
-			postFakeViewEntity.setViews(view);
+			throw new javax.persistence.EntityNotFoundException("Post with this id doesn't exist");
 		}
-		postFakeViewRepository.save(postFakeViewEntity);
 	}
 
 	@Override
