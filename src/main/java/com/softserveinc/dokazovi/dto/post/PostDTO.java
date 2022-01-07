@@ -38,6 +38,6 @@ public class PostDTO {
 	private Timestamp publishedAt;
 	private Integer importanceOrder;
 	private String importantImageUrl;
-	private Integer fakeViews;
 	private Integer views;
+	private Integer realViews;
 }

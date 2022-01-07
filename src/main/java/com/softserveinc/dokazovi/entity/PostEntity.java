@@ -117,7 +117,11 @@ public class PostEntity {
 	private String importantImageUrl;
 
 	@Column(name = "views")
-	private Integer fakeViews;
-	@Transient
 	private Integer views;
+
+	@Column(name = "real_views")
+	private Integer realViews;
+
+	@Column(name = "fake_views")
+	private Integer fakeViews;
 }
