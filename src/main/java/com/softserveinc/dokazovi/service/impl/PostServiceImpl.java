@@ -462,6 +462,9 @@ public class PostServiceImpl implements PostService {
 		}
 	}
 
+	/**
+	 * Updates views for each post by post_id each 15 min
+	 */
 
 	@Override
 	@Transactional

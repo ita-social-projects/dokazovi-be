@@ -1,11 +1,14 @@
 package com.softserveinc.dokazovi.entity;
 
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,7 +28,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -117,6 +119,7 @@ public class PostEntity {
 	private String importantImageUrl;
 
 	@Column(name = "views")
+	@Setter(AccessLevel.NONE)
 	private Integer views;
 
 	@Column(name = "real_views")

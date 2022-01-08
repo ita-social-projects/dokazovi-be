@@ -59,6 +59,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -1287,6 +1289,14 @@ class PostServiceImplTest {
 
 		assertEquals(PostStatus.PUBLISHED, postEntity1.getStatus());
 
+	}
+
+	@Test
+	void checkUpdateRealViews(){
+		postService = Mockito.mock(PostServiceImpl.class);
+		doNothing().when(postService).updateRealViews();
+		postService.updateRealViews();
+		verify(postService,times(1)).updateRealViews();
 	}
 
 	@Test
