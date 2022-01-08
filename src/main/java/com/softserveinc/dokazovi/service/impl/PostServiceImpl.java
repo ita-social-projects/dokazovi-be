@@ -465,7 +465,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	@Transactional
-	@Scheduled(cron = "0/30 * * * * *")
+	@Scheduled(cron = "0 0/15 * * * *")
 	public void updateRealViews() {
 		Map<Integer, Integer> postIdsAndViews = googleAnalytics.getAllPostsViewCount();
 		postIdsAndViews.forEach(postRepository::updateRealViews);
