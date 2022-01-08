@@ -416,9 +416,10 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public void setFakeViewsForPost(Integer postId, Integer view) {
-
-		if (postRepository.findById(postId).isPresent()) {
-			postRepository.setFakeViews(postId,view);
+		Optional<PostEntity> post;
+		if ((post = postRepository.findById(postId)).isPresent()) {
+			post.get().setFakeViews(view);
+			postRepository.save(post.get());
 		} else {
 			throw new javax.persistence.EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
 		}

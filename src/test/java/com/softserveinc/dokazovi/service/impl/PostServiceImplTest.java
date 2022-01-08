@@ -432,7 +432,6 @@ class PostServiceImplTest {
 		String title = "";
 		String startDate = "";
 		String endDate = "";
-		when(googleAnalytics.getAllPostsViewCount()).thenReturn(new HashMap<>());
 		Mockito.when(postRepository.findAll(any(Pageable.class))).thenReturn(postEntityPage);
 		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
 				originsIds, statuses, title, author,startDate,endDate, pageable);
