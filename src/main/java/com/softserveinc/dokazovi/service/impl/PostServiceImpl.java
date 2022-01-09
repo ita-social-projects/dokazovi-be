@@ -421,7 +421,7 @@ public class PostServiceImpl implements PostService {
 			post.get().setFakeViews(view);
 			postRepository.save(post.get());
 		} else {
-			throw new javax.persistence.EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
+			throw new EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
 		}
 	}
 
