@@ -58,7 +58,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -551,7 +550,7 @@ class PostServiceImplTest {
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
-		String startDate = "";
+		String startDate = "01.03.2021";
 		String endDate = "01.06.2021";
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(
@@ -1263,13 +1262,8 @@ class PostServiceImplTest {
 
 	@Test
 	void setFakeViewsForPost_withNotExistPostId() {
-		PostEntity postEntity = PostEntity.builder().id(10).build();
-
-		when(postRepository.findById(10)).thenReturn(Optional.of(postEntity));
-
-		postService.setFakeViewsForPost(10, 110);
-
-		verify(postRepository, times(1)).save(any(PostEntity.class));
+		when(postRepository.findById(11)).thenThrow(EntityNotFoundException.class);
+		assertThrows(EntityNotFoundException.class, () -> postService.setFakeViewsForPost(11,110));
 	}
 
 	@Test
@@ -1291,7 +1285,6 @@ class PostServiceImplTest {
 	@Test
 	void checkUpdateRealViews() {
 		postService = Mockito.mock(PostServiceImpl.class);
-		doNothing().when(postService).updateRealViews();
 		postService.updateRealViews();
 		verify(postService, times(1)).updateRealViews();
 	}
