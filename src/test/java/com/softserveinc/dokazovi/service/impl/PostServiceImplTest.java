@@ -1268,7 +1268,6 @@ class PostServiceImplTest {
 	void setFakeViewsForPost_withNotExistPostId() {
 		Optional<PostEntity> post = Optional.of(PostEntity.builder().id(11).build());
 		when(postRepository.findById(11)).thenReturn(Optional.empty());
-//		when(post.isPresent()).thenReturn(false);
 		assertThrows(EntityNotFoundException.class, () -> postService.setFakeViewsForPost(11,110));
 	}
 
