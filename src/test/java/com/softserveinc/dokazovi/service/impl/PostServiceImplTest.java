@@ -552,7 +552,9 @@ class PostServiceImplTest {
 		String title = "";
 		String startDate = "01.03.2021";
 		String endDate = "01.06.2021";
-		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(
+				LocalDate.parse(startDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+				LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(
 				LocalDate.parse(endDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
 				LocalTime.MAX));
