@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -1288,14 +1289,15 @@ class PostServiceImplTest {
 
 	@Test
 	void checkUpdateRealViews() {
-		HashMap<Integer, Integer> idsWithViews = new HashMap<>();
+		Map<Integer, Integer> idsWithViews = new HashMap<>();
 		idsWithViews.put(1,1);
 		postService = Mockito.mock(PostServiceImpl.class);
 		when(googleAnalytics.getAllPostsViewCount()).thenReturn(idsWithViews);
-		postRepository.updateRealViews(1,1);
-		verify(postRepository,times(1)).updateRealViews(any(Integer.class),any(Integer.class));
 		assertEquals(idsWithViews, googleAnalytics.getAllPostsViewCount());
-
+		for (Map.Entry<Integer, Integer> entry: idsWithViews.entrySet()) {
+			postRepository.updateRealViews(entry.getKey(),entry.getValue());
+		}
+		verify(postRepository,times(idsWithViews.size())).updateRealViews(any(Integer.class),any(Integer.class));
 	}
 
 	@Test
