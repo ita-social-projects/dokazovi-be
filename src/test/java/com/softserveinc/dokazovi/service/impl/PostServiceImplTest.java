@@ -1291,17 +1291,12 @@ class PostServiceImplTest {
 	void checkUpdateRealViews() {
 		HashMap<Integer, Integer> idsWithViews = new HashMap<>();
 		idsWithViews.put(1,1);
-		idsWithViews.put(3,2);
-		idsWithViews.put(4,5);
 		postService = Mockito.mock(PostServiceImpl.class);
-		postService.updateRealViews();
-		googleAnalytics.getAllPostsViewCount();
-		verify(googleAnalytics,times(1)).getAllPostsViewCount();
-		for (Map.Entry<Integer, Integer> entry: idsWithViews.entrySet()) {
-			postRepository.updateRealViews(entry.getKey(),entry.getValue());
-			verify(postRepository,times(1)).updateRealViews(entry.getKey(),entry.getValue());
-		}
-		verify(postService, times(1)).updateRealViews();
+		when(googleAnalytics.getAllPostsViewCount()).thenReturn(idsWithViews);
+		postRepository.updateRealViews(1,1);
+		verify(postRepository,times(1)).updateRealViews(any(Integer.class),any(Integer.class));
+		assertEquals(idsWithViews, googleAnalytics.getAllPostsViewCount());
+
 	}
 
 	@Test
