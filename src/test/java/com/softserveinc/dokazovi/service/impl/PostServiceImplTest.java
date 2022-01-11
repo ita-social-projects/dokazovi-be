@@ -60,6 +60,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -1291,14 +1292,13 @@ class PostServiceImplTest {
 	void checkUpdateRealViews() {
 		Map<Integer, Integer> idsWithViews = new HashMap<>();
 		idsWithViews.put(1,1);
-		postService = Mockito.mock(PostServiceImpl.class);
 		when(googleAnalytics.getAllPostsViewCount()).thenReturn(idsWithViews);
 		assertEquals(idsWithViews, googleAnalytics.getAllPostsViewCount());
 		for (Map.Entry<Integer, Integer> entry: idsWithViews.entrySet()) {
 			postRepository.updateRealViews(entry.getKey(),entry.getValue());
 		}
 		postService.updateRealViews();
-		verify(postRepository,times(idsWithViews.size())).updateRealViews(any(Integer.class),any(Integer.class));
+		verify(postRepository,times(2)).updateRealViews(any(Integer.class),any(Integer.class));
 	}
 
 	@Test
