@@ -1297,6 +1297,7 @@ class PostServiceImplTest {
 		for (Map.Entry<Integer, Integer> entry: idsWithViews.entrySet()) {
 			postRepository.updateRealViews(entry.getKey(),entry.getValue());
 		}
+		postService.updateRealViews();
 		verify(postRepository,times(idsWithViews.size())).updateRealViews(any(Integer.class),any(Integer.class));
 	}
 
