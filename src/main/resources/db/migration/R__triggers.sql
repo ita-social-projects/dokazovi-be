@@ -199,3 +199,24 @@ CREATE TRIGGER dpdv_handle_update_post_author_for_user_id_trigger
     AFTER UPDATE
     ON public.posts
     FOR EACH ROW EXECUTE PROCEDURE dpdv_handle_update_post_author_for_user_id();
+
+--
+-- Updating views in posts which is sum of fake and real views
+--
+
+CREATE OR REPLACE FUNCTION dpdv_update_views_for_post() RETURNS TRIGGER
+AS $$
+BEGIN
+        UPDATE public.posts
+            SET views = fake_views + real_views
+            WHERE post_id = NEW.post_id;
+        return NEW;
+end;
+$$
+LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS dpdv_update_views_for_post_trigger
+    on public.posts;
+CREATE TRIGGER dpdv_update_views_for_post_trigger
+    AFTER UPDATE OF real_views, fake_views
+    on public.posts
+    FOR EACH ROW EXECUTE PROCEDURE dpdv_update_views_for_post();

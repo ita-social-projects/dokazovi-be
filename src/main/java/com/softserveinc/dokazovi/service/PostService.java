@@ -57,4 +57,6 @@ public interface PostService {
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
 
 	void updatePlannedStatus();
+
+	void updateRealViews();
 }

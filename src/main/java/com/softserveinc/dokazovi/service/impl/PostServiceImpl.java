@@ -110,18 +110,10 @@ public class PostServiceImpl implements PostService {
 	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
 			String title, String author, String startDate, String endDate, Pageable pageable) {
-		Map<Integer, Integer> postIdsAndViews = googleAnalytics.getAllPostsViewCount();
+
 		if (directionIds == null && typeIds == null && originIds == null && statuses == null && startDate.isEmpty() &&
 				endDate.isEmpty() && title.isEmpty() && author.isEmpty()) {
 			return postRepository.findAll(pageable)
-					.map(postDTO -> {
-						Integer id = postDTO.getId();
-						Integer views = Optional.ofNullable(postIdsAndViews.get(id)).orElse(0);
-						Integer fakeViews = Optional.ofNullable(postDTO.getFakeViews()).orElse(0);
-						postDTO.setFakeViews(fakeViews + views);
-						postDTO.setViews(views);
-						return postDTO;
-					})
 					.map(postMapper::toPostDTO);
 		}
 		List<Timestamp> filtrationDates = transformToTimestamp(startDate, endDate);
@@ -141,16 +133,7 @@ public class PostServiceImpl implements PostService {
 			return postRepository
 					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
 							originIds, title, author, startDateTimestamp, endDateTimestamp, pageable)
-					.map(postDTO -> {
-						Integer id = postDTO.getId();
-						Integer views = Optional.ofNullable(postIdsAndViews.get(id)).orElse(0);
-						Integer fakeViews = Optional.ofNullable(postDTO.getFakeViews()).orElse(0);
-						postDTO.setFakeViews(fakeViews + views);
-						postDTO.setViews(views);
-						return postDTO;
-					})
-					.map(postMapper::toPostDTO)
-					;
+					.map(postMapper::toPostDTO);
 		} catch (Exception e) {
 			logger.error(
 					String.format("Fail with posts filter with params typeIds=%s, directionIds=%s, statuses=%s, "
@@ -438,7 +421,7 @@ public class PostServiceImpl implements PostService {
 			post.get().setFakeViews(view);
 			postRepository.save(post.get());
 		} else {
-			throw new javax.persistence.EntityNotFoundException("Post with this id doesn't exist");
+			throw new EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
 		}
 	}
 
@@ -464,10 +447,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	/**
-	 * Updates the post status. If the status planned and
-	 * createdAt lower
-	 * then Now update to Published
-	 * run every minute
+	 * Updates the post status. If the status planned and createdAt lower then Now update to Published run every minute
 	 */
 	@Override
 	@Transactional
@@ -480,5 +460,17 @@ public class PostServiceImpl implements PostService {
 				postRepository.save(postEntity);
 			}
 		}
+	}
+
+	/**
+	 * Updates views for each post by post_id each 15 min
+	 */
+
+	@Override
+	@Transactional
+	@Scheduled(cron = "0 0/15 * * * *")
+	public void updateRealViews() {
+		Map<Integer, Integer> postIdsAndViews = googleAnalytics.getAllPostsViewCount();
+		postIdsAndViews.forEach(postRepository::updateRealViews);
 	}
 }

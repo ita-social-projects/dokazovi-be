@@ -58,6 +58,13 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	@Modifying
 	void setImportantPostOrder(Integer postNumber, Integer postId);
 
+	@Query(value = "UPDATE post_entity p SET realViews =:realViews WHERE id = :postId")
+	@Modifying
+	void updateRealViews(Integer postId, Integer realViews);
+
+	@Query(value = "UPDATE post_entity  SET fakeViews = :fakeViews WHERE id = :postId")
+	@Modifying
+	void setFakeViews(Integer postId, Integer fakeViews);
 
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM POSTS "
