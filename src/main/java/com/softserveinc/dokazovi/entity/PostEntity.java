@@ -117,6 +117,9 @@ public class PostEntity {
 	@Column(name = "important_image_url")
 	private String importantImageUrl;
 
+	@Column(name = "important_mobile_image_url")
+	private String importantMobileImageUrl;
+
 	@Column(name = "views")
 	@Setter(AccessLevel.NONE)
 	private Integer views;
