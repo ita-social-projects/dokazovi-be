@@ -226,6 +226,7 @@ AS $$
 BEGIN
         UPDATE public.posts
             SET first_name = (select first_name from users where posts.author_id = users.user_id);
+        return new;
 end;
 $$
 LANGUAGE plpgsql;
