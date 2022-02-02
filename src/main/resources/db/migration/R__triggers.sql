@@ -220,3 +220,18 @@ CREATE TRIGGER dpdv_update_views_for_post_trigger
     AFTER UPDATE OF real_views, fake_views
     on public.posts
     FOR EACH ROW EXECUTE PROCEDURE dpdv_update_views_for_post();
+
+CREATE OR REPLACE FUNCTION update_first_name_for_post() RETURNS TRIGGER
+AS $$
+BEGIN
+        UPDATE public.posts
+            SET first_name = (select first_name from users where posts.author_id = users.user_id);
+end;
+$$
+LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS update_first_name_for_post_trigger
+    on public.posts;
+CREATE TRIGGER update_first_name_for_post_trigger
+    AFTER UPDATE OR INSERT OR DELETE
+    on public.users
+    for each row execute procedure update_first_name_for_post();
