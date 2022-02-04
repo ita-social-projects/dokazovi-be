@@ -37,6 +37,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -440,7 +441,7 @@ public class PostServiceImpl implements PostService {
 							.get()
 							.getDirections());
 		}
-		if (newEntity != null && newEntity.getDirections() != null) {
+		if (!Objects.isNull(newEntity) && newEntity.getDirections() != null) {
 			directionsToUpdate.addAll(newEntity.getDirections());
 		}
 		return directionsToUpdate;

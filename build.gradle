@@ -119,7 +119,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 
-    integrationTestImplementation('io.rest-assured:rest-assured') {
+    integrationTestImplementation('io.rest-assured:rest-assured:4.5.0') {
         exclude group: 'com.sun.xml.bind', module: 'jaxb-osgi'
     }
     integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: '1.15.3'
