@@ -48,7 +48,8 @@ import static org.hamcrest.Matchers.not;
 */
 /**
  * @author : <a href="https://github.com/mvalchyshen">mvalchyshen</a>
- * Integration tests are falling. The reason is uknown. So we made decision to comment on this class (temporary solution)
+ * Integration tests are falling. The reason is uknown.
+ * So we made decision to comment on this class (temporary solution)
  *
  * Logs show that reason is: ERROR [Test worker] org.springframework.test.context.TestContextManager: Caught exception
  * while allowing TestExecutionListener
