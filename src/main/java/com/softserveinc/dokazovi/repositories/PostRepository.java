@@ -167,8 +167,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 
 	@Query(nativeQuery = true,
-			value = "SELECT * FROM posts p "
-					+ "WHERE CASE WHEN :typeIds IS NOT NULL "
+			value = "SELECT p.*, u.first_name FROM posts p, users u "
+					+ "WHERE p.author_id = u.user_id "
+					+ "AND CASE WHEN :typeIds IS NOT NULL "
 					+ "THEN p.type_id IN (:typeIds) "
 					+ "ELSE p.post_id IS NOT NULL "
 					+ "END "

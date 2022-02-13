@@ -231,8 +231,11 @@ end;
 $$
 LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS update_first_name_for_post_trigger
-    on public.posts;
+    on public.users;
 CREATE TRIGGER update_first_name_for_post_trigger
     AFTER UPDATE OR INSERT OR DELETE
     on public.users
     for each row execute procedure update_first_name_for_post();
+DROP TRIGGER IF EXISTS update_first_name_for_post_trigger on public.posts;
+DROP FUNCTION IF EXISTS update_first_name_for_post() CASCADE;
+
