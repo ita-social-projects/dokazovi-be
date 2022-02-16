@@ -501,8 +501,10 @@ class PostServiceImplTest {
 		String title = "";
 		LocalDateTime startDate = null;
 		LocalDateTime endDate = null;
-		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
-		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+		Timestamp timestampStartDate = Timestamp.valueOf(Optional.ofNullable(startDate)
+				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN)));
+		Timestamp timestampEndDate = Timestamp.valueOf(Optional.ofNullable(endDate)
+				.orElse(LocalDateTime.of(LocalDate.now(), LocalTime.MAX)));
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository

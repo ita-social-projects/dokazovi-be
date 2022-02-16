@@ -116,7 +116,6 @@ public class PostServiceImpl implements PostService {
 			return postRepository.findAll(pageable)
 					.map(postMapper::toPostDTO);
 		}
-
 		Timestamp startDateTimestamp = Timestamp.valueOf(Optional.ofNullable(startDate)
 				.orElse(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN)));
 		Timestamp endDateTimestamp = Timestamp.valueOf(Optional.ofNullable(endDate).orElse(
