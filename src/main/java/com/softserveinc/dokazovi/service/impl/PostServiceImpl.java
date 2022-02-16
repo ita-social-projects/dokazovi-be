@@ -111,15 +111,15 @@ public class PostServiceImpl implements PostService {
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
 			String title, String author, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
 
-		if (directionIds == null && typeIds == null && originIds == null && statuses == null && startDate == null &&
-				endDate == null && title.isEmpty() && author.isEmpty()) {
+		if (directionIds == null && typeIds == null && originIds == null && statuses == null &&
+				startDate == null && endDate == null && title.isEmpty() && author.isEmpty()) {
 			return postRepository.findAll(pageable)
 					.map(postMapper::toPostDTO);
 		}
 		Timestamp startDateTimestamp = Timestamp.valueOf(Optional.ofNullable(startDate)
-				.orElse(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN)));
+				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN)));
 		Timestamp endDateTimestamp = Timestamp.valueOf(Optional.ofNullable(endDate).orElse(
-				LocalDateTime.of(LocalDate.now(),LocalTime.MAX)));
+				LocalDateTime.of(LocalDate.now(), LocalTime.MAX)));
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
 		originIds = validateValues(originIds);
