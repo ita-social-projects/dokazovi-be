@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -43,6 +45,11 @@ public class PostSaveFromUserDTO {
 	@NotNull(message = "PostType are required")
 	@PostTypeExists
 	private PostTypeIdOnlyDTO type;
+
+	@NotNull(message = "PostStatus are required")
+	@Min(value = 0)
+	@Max(value = 6)
+	private Integer postStatus;
 
 	@NotNull(message = "At least one topic are required")
 	@Size(min = 1, max = 3, message = "Number of chosen topics is from 1 to 3. ")

@@ -14,7 +14,6 @@ import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
-import com.softserveinc.dokazovi.entity.PostFakeViewEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
@@ -25,7 +24,6 @@ import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.DirectionRepository;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
-import com.softserveinc.dokazovi.repositories.PostFakeViewRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -43,9 +41,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -87,9 +91,6 @@ class PostServiceImplTest {
 
 	@Mock
 	private GoogleAnalytics googleAnalytics;
-
-	@Mock
-	private PostFakeViewRepository postFakeViewRepository;
 
 	@BeforeEach
 	void init() {
@@ -164,6 +165,7 @@ class PostServiceImplTest {
 				.previewImageUrl("previewImageUrl")
 				.preview("preview")
 				.content("content")
+				.postStatus(3)
 				.build();
 
 		UserPrincipal userPrincipal = UserPrincipal.create(userEntity);
@@ -213,6 +215,7 @@ class PostServiceImplTest {
 				.previewImageUrl("previewImageUrl")
 				.preview("preview")
 				.content("content")
+				.postStatus(3)
 				.build();
 
 		UserPrincipal userPrincipal = UserPrincipal.create(author);
@@ -262,6 +265,7 @@ class PostServiceImplTest {
 				.previewImageUrl("previewImageUrl")
 				.preview("preview")
 				.content("content")
+				.postStatus(3)
 				.build();
 
 		UserPrincipal userPrincipal = UserPrincipal.create(author);
@@ -418,13 +422,20 @@ class PostServiceImplTest {
 
 	@Test
 	void findAllPosts() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		PostEntity postEntity = new PostEntity();
+		PostEntity postEntity1 = new PostEntity();
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(postEntity, postEntity1));
 		Set<Integer> typesIds = null;
 		Set<Integer> originsIds = null;
 		Set<Integer> directionsIds = null;
-
+		Set<Integer> statuses = null;
+		String author = "";
+		String title = "";
+		String startDate = "";
+		String endDate = "";
 		Mockito.when(postRepository.findAll(any(Pageable.class))).thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
+		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+				originsIds, statuses, title, author, startDate, endDate, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -433,27 +444,49 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(1220, 1999);
 		Set<Integer> originsIds = Set.of(12340, 1999);
 		Set<Integer> directionsIds = Set.of(1234, 1999);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
+		Timestamp startDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
+		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2021, 1, 3),
+				LocalTime.MIN));
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames, originsIds, title, author, startDate, endDate, pageable))
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent(),
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
+				postRepository.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+								typesIds, directionsIds, statusNames, originsIds, title, author,
+								startDate, endDate, pageable
+						)
 						.getContent());
 	}
 
 	@Test
 	void findAllPostsByDirections() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		PostEntity post1 = PostEntity.builder().fakeViews(0).views(0).build();
+		PostEntity post2 = PostEntity.builder().fakeViews(0).views(0).build();
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(post1, post2));
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(1, 2);
+		Set<Integer> statuses = Set.of(5);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
+		String startDat = "";
+		String endDat = "";
+		Timestamp startDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
+		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds,
+								statusNames, originsIds, title, author, startDate, endDate, pageable))
 				.thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
+		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+				originsIds, statuses, title, author, startDat, endDat, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -462,14 +495,25 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = Set.of(-1, -2, -3);
+		Set<Integer> statuses = Set.of(5);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
+		String startDate = "";
+		String endDate = "";
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 		Page<PostEntity> postEntityPage = Page.empty();
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
 				.thenReturn(postEntityPage);
-		assertEquals(postEntityPage.getContent(),
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
-						.getContent());
+		assertEquals(postEntityPage.getContent().size(),
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+								originsIds, statuses, title, author, startDate, endDate, pageable)
+						.getContent().size());
 	}
 
 	@Test
@@ -477,25 +521,53 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = null;
+		Set<Integer> statuses = Set.of(3);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
+		String startDate = "";
+		String endDate = "";
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.now());
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames, originsIds, title, author,
+								timestampStartDate, timestampEndDate, pageable))
 				.thenThrow(new EntityNotFoundException("Id does not exist"));
 		assertThrows(EntityNotFoundException.class, () -> postService
-				.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable));
+				.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
+						statuses, title, author, startDate, endDate, pageable));
 	}
 
 	@Test
 	void findAllByPostTypesAndOrigins() {
-		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(new PostEntity(), new PostEntity()));
+		PostEntity postEntity = new PostEntity();
+		PostEntity postEntity1 = new PostEntity();
+		Page<PostEntity> postEntityPage = new PageImpl<>(List.of(postEntity, postEntity1));
 		Set<Integer> typesIds = Set.of(1, 2);
 		Set<Integer> originsIds = Set.of(2, 3);
 		Set<Integer> directionsIds = new HashSet<>();
+		Set<Integer> statuses = Set.of(5);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
+		String startDate = "01.03.2021";
+		String endDate = "01.06.2021";
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(
+				LocalDate.parse(startDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+				LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(
+				LocalDate.parse(endDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+				LocalTime.MAX));
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
 				.thenReturn(postEntityPage);
-		postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable);
+		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds, originsIds,
+				statuses, title, author, startDate, endDate, pageable);
 		verify(postMapper, times(postEntityPage.getNumberOfElements())).toPostDTO(any(PostEntity.class));
 	}
 
@@ -504,18 +576,29 @@ class PostServiceImplTest {
 		Set<Integer> typesIds = Set.of(-1, -2);
 		Set<Integer> originsIds = Set.of(-1, -2, -3);
 		Set<Integer> directionsIds = new HashSet<>();
+		Set<Integer> statuses = Set.of(5);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
 		Page<PostEntity> postEntityPage = Page.empty();
+		String startDate = "";
+		String endDate = "";
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 
 		Mockito.when(postRepository
-				.findAllByDirectionsAndByPostTypesAndByOrigins(typesIds, originsIds, directionsIds, pageable))
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
 				.thenReturn(postEntityPage);
-		assertEquals(postEntityPage.getContent(),
-				postService.findAllByDirectionsAndByPostTypesAndByOrigins(directionsIds, typesIds, originsIds, pageable)
-						.getContent());
+		assertEquals(postEntityPage.getContent().size(),
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+								originsIds, statuses, title, author, startDate, endDate, pageable)
+						.getContent().size());
 	}
 
 	@Test
-	void archivePostById_WhenExists_isOk_AdminRole() {
+	void deletePostById_WhenExists_isOk_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_POST);
 
@@ -556,11 +639,11 @@ class PostServiceImplTest {
 				.build();
 
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
-		Assertions.assertThat(postService.archivePostById(userPrincipal, id)).isTrue();
+		Assertions.assertThat(postService.removePostById(userPrincipal, id, true)).isTrue();
 	}
 
 	@Test
-	void archivePostById_WhenExists_isOk_DoctorRole() {
+	void deletePostById_WhenExists_isOk_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_OWN_POST);
 
@@ -601,7 +684,51 @@ class PostServiceImplTest {
 				.build();
 
 		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
-		Assertions.assertThat(postService.archivePostById(userPrincipal, id)).isTrue();
+		Assertions.assertThat(postService.removePostById(userPrincipal, id, true)).isTrue();
+	}
+
+	@Test
+	void deletePostById_WhenNotPermission_throwsException() {
+		Set<RolePermission> permissions = new HashSet<>();
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(3);
+		roleEntity.setName("Doctor");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeDTO postTypeDTO = new PostTypeDTO();
+		postTypeDTO.setId(1);
+		postTypeDTO.setName("type");
+
+		DirectionDTO directionDTO = new DirectionDTO();
+		directionDTO.setId(1);
+		directionDTO.setName("name");
+		directionDTO.setLabel("label");
+		directionDTO.setColor("color");
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		UserEntity doctorUserEntity = UserEntity.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.author(doctorUserEntity)
+				.build();
+
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		assertThrows(ForbiddenPermissionsException.class, () -> postService.removePostById(userPrincipal, id, true));
 	}
 
 	@Test
@@ -660,6 +787,79 @@ class PostServiceImplTest {
 				.type(postTypeDTO)
 				.directions(directions)
 				.origins(origins)
+				.postStatus(3)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.author(adminUserEntity)
+				.build();
+
+		when(postMapper.updatePostEntityFromDTO(dto, postEntity)).thenReturn(postEntity);
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		Assertions.assertThat(postService.updatePostById(userPrincipal, dto)).isTrue();
+	}
+
+	@Test
+	void archivePostById_WhenExists_isOk_AdminRole() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.UPDATE_POST);
+		permissions.add(RolePermission.DELETE_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(1);
+		roleEntity.setName("Administrator");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeIdOnlyDTO postTypeDTO = new PostTypeIdOnlyDTO();
+		postTypeDTO.setId(1);
+
+		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
+		directionDTO.setId(1);
+
+		Set<@DirectionExists DirectionDTOForSavingPost> directions = new HashSet<>();
+		directions.add(directionDTO);
+
+		TagDTO tagDTO = new TagDTO();
+		tagDTO.setId(1);
+		tagDTO.setTag("tag");
+
+		Set<@TagExists TagDTO> tags = new HashSet<>();
+		tags.add(tagDTO);
+
+		OriginDTOForSavingPost originDTO = new OriginDTOForSavingPost();
+		originDTO.setId(1);
+
+		Set<@OriginExists OriginDTOForSavingPost> origins = new HashSet<>();
+		origins.add(originDTO);
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(27)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		UserEntity adminUserEntity = UserEntity.builder()
+				.id(28)
+				.email("admin@mail.com")
+				.password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+				.role(roleEntity)
+				.build();
+
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.id(1)
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.type(postTypeDTO)
+				.directions(directions)
+				.origins(origins)
+				.postStatus(6)
 				.build();
 
 		Integer id = 1;
@@ -731,6 +931,7 @@ class PostServiceImplTest {
 				.type(postTypeDTO)
 				.directions(directions)
 				.origins(origins)
+				.postStatus(3)
 				.build();
 
 		Integer id = 1;
@@ -746,7 +947,80 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException_AdminRole() {
+	void archivePostById_WhenExists_isOk_DoctorRole() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.UPDATE_OWN_POST);
+		permissions.add(RolePermission.DELETE_OWN_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(3);
+		roleEntity.setName("Doctor");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeIdOnlyDTO postTypeDTO = new PostTypeIdOnlyDTO();
+		postTypeDTO.setId(1);
+
+		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
+		directionDTO.setId(1);
+
+		Set<@DirectionExists DirectionDTOForSavingPost> directions = new HashSet<>();
+		directions.add(directionDTO);
+
+		TagDTO tagDTO = new TagDTO();
+		tagDTO.setId(1);
+		tagDTO.setTag("tag");
+
+		Set<@TagExists TagDTO> tags = new HashSet<>();
+		tags.add(tagDTO);
+
+		OriginDTOForSavingPost originDTO = new OriginDTOForSavingPost();
+		originDTO.setId(1);
+
+		Set<@OriginExists OriginDTOForSavingPost> origins = new HashSet<>();
+		origins.add(originDTO);
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		UserEntity doctorUserEntity = UserEntity.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.id(1)
+				.authorId(1)
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.type(postTypeDTO)
+				.directions(directions)
+				.origins(origins)
+				.postStatus(6)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.author(doctorUserEntity)
+				.build();
+
+		when(postMapper.updatePostEntityFromDTO(dto, postEntity)).thenReturn(postEntity);
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		Assertions.assertThat(postService.updatePostById(userPrincipal, dto)).isTrue();
+	}
+
+	@Test
+	void deletePostById_WhenNotExists_NotFound_ThrowException_AdminRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_POST);
 
@@ -774,11 +1048,11 @@ class PostServiceImplTest {
 				.build();
 
 		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
-		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(userPrincipal, id));
+		assertThrows(EntityNotFoundException.class, () -> postService.removePostById(userPrincipal, id, true));
 	}
 
 	@Test
-	void archivePostById_WhenNotExists_NotFound_ThrowException_DoctorRole() {
+	void deletePostById_WhenNotExists_NotFound_ThrowException_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_POST);
 
@@ -806,7 +1080,7 @@ class PostServiceImplTest {
 				.build();
 
 		when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
-		assertThrows(EntityNotFoundException.class, () -> postService.archivePostById(userPrincipal, id));
+		assertThrows(EntityNotFoundException.class, () -> postService.removePostById(userPrincipal, id, true));
 	}
 
 	@Test
@@ -974,41 +1248,56 @@ class PostServiceImplTest {
 
 	@Test
 	void getFakeViewsByPostUrl() {
-		PostEntity postEntity = PostEntity.builder().id(10).build();
-		PostFakeViewEntity postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).views(150).build();
-		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10)).thenReturn(Optional.of(postFakeViewEntity));
+		PostEntity postEntity = PostEntity.builder().id(10).fakeViews(150).build();
+		when(postRepository.getFakeViewsByPostId(10)).thenReturn(150);
 
 		assertEquals(150, postService.getFakeViewsByPostUrl("/posts/10"));
 	}
 
 	@Test
-	void setFakeViewsForPost_withExistPostFakeViewEntity() {
+	void setFakeViewsForPost_withExistPostId() {
 		PostEntity postEntity = PostEntity.builder().id(10).build();
-		PostFakeViewEntity postFakeViewEntity = PostFakeViewEntity.builder().post(postEntity).build();
-		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
-				.thenReturn(Optional.of(postFakeViewEntity));
-
+		when(postRepository.findById(10))
+				.thenReturn(Optional.of(postEntity));
 		postService.setFakeViewsForPost(10, 110);
+		assertEquals(110, postEntity.getFakeViews());
+	}
 
-		assertEquals(110, postFakeViewEntity.getViews());
+
+	@Test
+	void setFakeViewsForPost_withNotExistPostId() {
+		Optional<PostEntity> post = Optional.of(PostEntity.builder().id(11).build());
+		when(postRepository.findById(11)).thenReturn(Optional.empty());
+		assertThrows(EntityNotFoundException.class, () -> postService.setFakeViewsForPost(11,110));
 	}
 
 	@Test
-	void setFakeViewsForPost_withNotExistPostFakeViewEntity() {
-		PostEntity postEntity = PostEntity.builder().id(10).build();
-		when(postFakeViewRepository.getPostFakeViewEntityByPostId(10))
-				.thenReturn(Optional.empty());
-		when(postRepository.findById(10)).thenReturn(Optional.of(postEntity));
+	void checkUpdatePlannedStatus() {
+		PostEntity postEntity1 = PostEntity.builder().createdAt(new Timestamp(System.currentTimeMillis() - 10000))
+				.status(PostStatus.PLANNED).build();
+		List<PostEntity> postEntities = new ArrayList<>();
+		postEntities.add(postEntity1);
 
-		postService.setFakeViewsForPost(10, 110);
+		when(postRepository.findAll()).thenReturn(postEntities);
+		when(postRepository.save(postEntity1)).thenReturn(postEntity1);
 
-		verify(postFakeViewRepository, times(1)).save(any(PostFakeViewEntity.class));
+		postService.updatePlannedStatus();
+
+		assertEquals(PostStatus.PUBLISHED, postEntity1.getStatus());
+
 	}
 
 	@Test
-	void resetFakeViews() {
-		postService.resetFakeViews(10);
-		verify(postFakeViewRepository, times(1)).resetFakeViews(10);
+	void checkUpdateRealViews() {
+		Map<Integer, Integer> idsWithViews = new HashMap<>();
+		idsWithViews.put(1,1);
+		when(googleAnalytics.getAllPostsViewCount()).thenReturn(idsWithViews);
+		assertEquals(idsWithViews, googleAnalytics.getAllPostsViewCount());
+		for (Map.Entry<Integer, Integer> entry: idsWithViews.entrySet()) {
+			postRepository.updateRealViews(entry.getKey(),entry.getValue());
+		}
+		postService.updateRealViews();
+		verify(postRepository,times(2)).updateRealViews(any(Integer.class),any(Integer.class));
 	}
 
 	@Test
@@ -1102,4 +1391,5 @@ class PostServiceImplTest {
 		Set<DirectionEntity> result = postService.getDirectionsFromPostsEntities(oldEntity, newEntity);
 		assertEquals(2, result.size());
 	}
+
 }

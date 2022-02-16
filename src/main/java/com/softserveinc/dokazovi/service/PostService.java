@@ -8,6 +8,7 @@ import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+
 import java.util.Set;
 
 public interface PostService {
@@ -23,13 +24,14 @@ public interface PostService {
 
 	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
-	Page<PostDTO> findAllByDirectionsAndByPostTypesAndByOrigins(
-			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Pageable pageable);
+	Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Set<Integer> statuses,
+			String title, String author, String startDate, String endDate, Pageable pageable);
 
 	Page<PostDTO> findPostsByAuthorIdAndDirections(
 			Pageable pageable, Integer expertId, Set<Integer> directions);
 
-	Boolean archivePostById(UserPrincipal userId, Integer postId);
+	Boolean removePostById(UserPrincipal userId, Integer postId, boolean delete);
 
 	Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveDTO);
 
@@ -51,8 +53,10 @@ public interface PostService {
 
 	void setFakeViewsForPost(Integer postId, Integer view);
 
-	void resetFakeViews(Integer postId);
-
 	Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
+
+	void updatePlannedStatus();
+
+	void updateRealViews();
 }
