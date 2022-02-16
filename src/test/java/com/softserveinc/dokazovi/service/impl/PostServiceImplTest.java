@@ -552,7 +552,7 @@ class PostServiceImplTest {
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
-		LocalDateTime startDate = LocalDateTime.of(2021, Month.JANUARY,1,0,0);
+		LocalDateTime startDate = LocalDateTime.of(2019, Month.JANUARY,1,0,0);
 		LocalDateTime endDate = LocalDateTime.of(2021, Month.DECEMBER,31,0,0);
 		Timestamp timestampStartDate = Timestamp.valueOf(startDate);
 		Timestamp timestampEndDate = Timestamp.valueOf(endDate);
