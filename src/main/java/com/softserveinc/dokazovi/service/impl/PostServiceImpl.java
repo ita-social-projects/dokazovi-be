@@ -119,7 +119,7 @@ public class PostServiceImpl implements PostService {
 
 		Timestamp startDateTimestamp = Timestamp.valueOf(Optional.ofNullable(startDate)
 				.orElse(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN)));
-		Timestamp endDateTimestamp = Timestamp.valueOf(Optional.ofNullable(startDate).orElse(
+		Timestamp endDateTimestamp = Timestamp.valueOf(Optional.ofNullable(endDate).orElse(
 				LocalDateTime.of(LocalDate.now(),LocalTime.MAX)));
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
