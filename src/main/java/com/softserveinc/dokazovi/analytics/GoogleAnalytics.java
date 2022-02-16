@@ -9,7 +9,6 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.Analytics;
 import com.google.api.services.analytics.AnalyticsScopes;
 import com.google.api.services.analytics.model.Accounts;
-import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.api.services.analytics.model.Webproperties;
 
@@ -24,7 +23,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Provides access to the Google Analytics API using a service account.
@@ -59,13 +64,46 @@ public class GoogleAnalytics {
 				profile = getFirstProfileId(analytics);
 			}
 
-			rows = getResults(analytics, profile, url).getRows();
+			rows = getResults(analytics, profile, url).execute().getRows();
 
 		} catch (IOException ie) {
 			logger.error("IOException occurred", ie);
 		}
 
 		return rows == null ? 0 : Integer.parseInt(rows.get(0).get(1));
+	}
+
+	public Map<Integer, Integer> getAllPostsViewCount() {
+		List<List<String>> rows;
+		Map<Integer, Integer> map = null;
+		try {
+			Analytics analytics = initializeAnalytic();
+
+			String profile = null;
+
+			if (!analyticsProfileId.equals("none")) {
+				profile = getProfileIdByConfig();
+			} else {
+				profile = getFirstProfileId(analytics);
+			}
+
+			rows = getResults(analytics, profile).execute().getRows();
+			map = rows.stream()
+					.filter(e -> Pattern.matches("(/posts/)(\\d+)", e.get(0)))
+					.peek(e -> {
+						Pattern pattern1 = Pattern.compile("(/posts/)(\\d+)");
+						Matcher matcher = pattern1.matcher(e.get(0));
+						while (matcher.find()) {
+							e.add(0, matcher.group(2));
+						}
+						e.remove(1);
+					})
+					.collect(Collectors.toMap(k -> Integer.parseInt(k.get(0)), v -> Integer.parseInt(v.get(1))));
+
+		} catch (IOException ie) {
+			logger.error("IOException occurred", ie);
+		}
+		return Optional.ofNullable(map).orElse(new HashMap<>());
 	}
 
 	/**
@@ -149,7 +187,7 @@ public class GoogleAnalytics {
 		return profileId;
 	}
 
-	private GaData getResults(Analytics analytics, String profileId, String url) throws IOException {
+	private Analytics.Data.Ga.Get getResults(Analytics analytics, String profileId, String url) throws IOException {
 		/** Query the Core Reporting API for the number of sessions
 		 * from start Date until today.
 		 */
@@ -158,7 +196,19 @@ public class GoogleAnalytics {
 				.ga()
 				.get("ga:" + profileId, "2021-03-22", "today", "ga:uniquePageviews")
 				.setDimensions("ga:pagePath")
-				.setFilters("ga:pagePath==" + url)
-				.execute();
+				.setFilters("ga:pagePath==" + url);
+
+	}
+
+	private Analytics.Data.Ga.Get getResults(Analytics analytics, String profileId) throws IOException {
+		/** Query the Core Reporting API for the number of sessions
+		 * from start Date until today.
+		 */
+		return analytics
+				.data()
+				.ga()
+				.get("ga:" + profileId, "2021-03-22", "today", "ga:uniquePageviews")
+				.setDimensions("ga:pagePath");
+
 	}
 }

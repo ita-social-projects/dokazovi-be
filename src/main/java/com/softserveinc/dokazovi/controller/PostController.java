@@ -6,7 +6,6 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
-import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
@@ -23,7 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -263,12 +260,9 @@ public class PostController {
 	 * @param directions direction's ids by which the search is performed
 	 * @param types      the type's ids by which the search is performed
 	 * @param origins    the origin's ids by which the search is performed
-	 * @param startDate  date that represents "from" filtration parameter {@link PostEntity#getModifiedAt()}
-	 * @param endDate  date that represents "to" filtration parameter {@see PostEntity#getModifiedAt()}
 	 * @return page with all posts filtered by directions, by post types and by origins and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_ALL_POSTS)
-	@ApiPageable
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
 	public ResponseEntity<Page<PostDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
 			@PageableDefault Pageable pageable,
@@ -285,12 +279,10 @@ public class PostController {
 			@RequestParam(required = false, defaultValue = "") String title,
 			@ApiParam(value = "Post's author username", type = "string")
 			@RequestParam(required = false, defaultValue = "") String author,
-			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
-			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
-			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+			@ApiParam(value = "dd.MM.yyyy")
+			@RequestParam(required = false, defaultValue = "") String startDate,
+			@ApiParam(value = "dd.MM.yyyy")
+			@RequestParam(required = false, defaultValue = "") String endDate) {
 
 		try {
 			return ResponseEntity
