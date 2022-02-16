@@ -44,6 +44,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -431,8 +432,8 @@ class PostServiceImplTest {
 		Set<Integer> statuses = null;
 		String author = "";
 		String title = "";
-		String startDate = "";
-		String endDate = "";
+		LocalDateTime startDate = null;
+		LocalDateTime endDate = null;
 		Mockito.when(postRepository.findAll(any(Pageable.class))).thenReturn(postEntityPage);
 		postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
 				originsIds, statuses, title, author, startDate, endDate, pageable);
@@ -476,8 +477,8 @@ class PostServiceImplTest {
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
-		String startDat = "";
-		String endDat = "";
+		LocalDateTime startDat = null;
+		LocalDateTime endDat = null;
 		Timestamp startDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 
@@ -499,8 +500,8 @@ class PostServiceImplTest {
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
-		String startDate = "";
-		String endDate = "";
+		LocalDateTime startDate = null;
+		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 		Page<PostEntity> postEntityPage = Page.empty();
@@ -525,10 +526,10 @@ class PostServiceImplTest {
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
-		String startDate = "";
-		String endDate = "";
+		LocalDateTime startDate = null;
+		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
-		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MAX));
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
@@ -552,14 +553,10 @@ class PostServiceImplTest {
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
-		String startDate = "01.03.2021";
-		String endDate = "01.06.2021";
-		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(
-				LocalDate.parse(startDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-				LocalTime.MIN));
-		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(
-				LocalDate.parse(endDate, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-				LocalTime.MAX));
+		LocalDateTime startDate = LocalDateTime.of(2021, Month.JANUARY,1,0,0);
+		LocalDateTime endDate = LocalDateTime.of(2021, Month.DECEMBER,31,0,0);
+		Timestamp timestampStartDate = Timestamp.valueOf(startDate);
+		Timestamp timestampEndDate = Timestamp.valueOf(endDate);
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
@@ -581,8 +578,8 @@ class PostServiceImplTest {
 		String author = "";
 		String title = "";
 		Page<PostEntity> postEntityPage = Page.empty();
-		String startDate = "";
-		String endDate = "";
+		LocalDateTime startDate = null;
+		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 
