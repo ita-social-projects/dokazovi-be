@@ -115,7 +115,7 @@ public class PostServiceImpl implements PostService {
 			return postRepository.findAll(pageable)
 					.map(postMapper::toPostDTO);
 		}
-//		List<Timestamp> filtrationDates = transformToTimestamp(startDate, endDate);
+
 		Timestamp startDateTimestamp = Timestamp.valueOf(Optional.ofNullable(startDate).orElse(
 				LocalDateTime.of(2000,
 						Month.JANUARY, 1, 0, 0)));
