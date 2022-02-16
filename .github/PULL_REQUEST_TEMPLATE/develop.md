@@ -1,3 +1,6 @@
+Pull Request Template
+ 
+
 ### Type of Pull Request *
 - [x] CHANGE (fix or feature that would cause existing functionality to not work as expected)
 - [ ] FEATURE (non-breaking change which adds functionality)
