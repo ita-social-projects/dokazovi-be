@@ -477,9 +477,9 @@ class PostServiceImplTest {
 		String author = "";
 		String title = "";
 		LocalDateTime startDat = null;
-		LocalDateTime endDat = null;
+		LocalDateTime endDat = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 		Timestamp startDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
-		Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+		Timestamp endDate = Timestamp.valueOf(endDat);
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds,
@@ -499,7 +499,7 @@ class PostServiceImplTest {
 		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
 		String author = "";
 		String title = "";
-		LocalDateTime startDate = null;
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN);
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(Optional.ofNullable(startDate)
 				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN)));
