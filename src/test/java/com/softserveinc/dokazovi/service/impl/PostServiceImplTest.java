@@ -1240,9 +1240,14 @@ class PostServiceImplTest {
 	}
 
 	@Test
+	void setPostsAsImportantWhenNoPostIds() {
+		Set<Integer> postIds = null;
+		assertEquals(false,postService.setPostsAsImportantWithOrder(postIds));
+	}
+
+	@Test
 	void getPostViewCount() {
 		when(googleAnalytics.getPostViewCount("some")).thenReturn(1);
-
 		assertEquals(1, postService.getPostViewCount("some"));
 	}
 
@@ -1268,7 +1273,7 @@ class PostServiceImplTest {
 	void setFakeViewsForPost_withNotExistPostId() {
 		Optional<PostEntity> post = Optional.of(PostEntity.builder().id(11).build());
 		when(postRepository.findById(11)).thenReturn(Optional.empty());
-		assertThrows(EntityNotFoundException.class, () -> postService.setFakeViewsForPost(11,110));
+		assertThrows(EntityNotFoundException.class, () -> postService.setFakeViewsForPost(11, 110));
 	}
 
 	@Test
@@ -1290,14 +1295,14 @@ class PostServiceImplTest {
 	@Test
 	void checkUpdateRealViews() {
 		Map<Integer, Integer> idsWithViews = new HashMap<>();
-		idsWithViews.put(1,1);
+		idsWithViews.put(1, 1);
 		when(googleAnalytics.getAllPostsViewCount()).thenReturn(idsWithViews);
 		assertEquals(idsWithViews, googleAnalytics.getAllPostsViewCount());
-		for (Map.Entry<Integer, Integer> entry: idsWithViews.entrySet()) {
-			postRepository.updateRealViews(entry.getKey(),entry.getValue());
+		for (Map.Entry<Integer, Integer> entry : idsWithViews.entrySet()) {
+			postRepository.updateRealViews(entry.getKey(), entry.getValue());
 		}
 		postService.updateRealViews();
-		verify(postRepository,times(2)).updateRealViews(any(Integer.class),any(Integer.class));
+		verify(postRepository, times(2)).updateRealViews(any(Integer.class), any(Integer.class));
 	}
 
 	@Test
