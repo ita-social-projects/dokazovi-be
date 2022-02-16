@@ -1236,6 +1236,11 @@ class PostServiceImplTest {
 		Set<Integer> postIds = Set.of(2, 4, 9);
 		Assertions.assertThat(postService.setPostsAsImportantWithOrder(postIds));
 	}
+	@Test
+	void setPostsAsImportantWhenNoPostIds() {
+		Set<Integer> postIds = null;
+		assertEquals(false,postService.setPostsAsImportantWithOrder(postIds));
+	}
 
 	@Test
 	void getPostViewCount() {
