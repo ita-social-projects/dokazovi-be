@@ -36,7 +36,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -389,7 +392,7 @@ class PostControllerTest {
 		String author = "";
 		String title = "";
 		LocalDateTime startDate = null;
-		LocalDateTime endDate = null;
+		LocalDateTime endDate = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 		Pageable pageable = PageRequest.of(0, 10);
 		PostDTO postDTO = PostDTO.builder()
 				.id(1)
@@ -427,7 +430,7 @@ class PostControllerTest {
 		Set<Integer> statuses = null;
 		String author = "";
 		String title = "";
-		LocalDateTime startDate = null;
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN);
 		LocalDateTime endDate = null;
 		Pageable pageable = PageRequest.of(0, 10);
 		Page<PostDTO> page = null;
@@ -458,7 +461,7 @@ class PostControllerTest {
 		String author = "";
 		String title = "";
 		LocalDateTime startDate = null;
-		LocalDateTime endDate = null;
+		LocalDateTime endDate = LocalDateTime.of(LocalDate.of(2020, Month.JANUARY,1),LocalTime.MAX);
 		Pageable pageable = PageRequest.of(0, 10);
 		PostDTO postDTO = PostDTO.builder()
 				.id(0)
