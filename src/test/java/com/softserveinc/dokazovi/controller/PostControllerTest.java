@@ -461,7 +461,7 @@ class PostControllerTest {
 		String author = "";
 		String title = "";
 		LocalDateTime startDate = null;
-		LocalDateTime endDate = LocalDateTime.of(LocalDate.of(2020, Month.JANUARY,1),LocalTime.MAX);
+		LocalDateTime endDate = null;
 		Pageable pageable = PageRequest.of(0, 10);
 		PostDTO postDTO = PostDTO.builder()
 				.id(0)
