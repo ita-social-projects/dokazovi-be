@@ -621,18 +621,18 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void findAllPostsByStartDateAndAuthor() {
+	void findAllPostsAuthor() {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = new HashSet<>();
 		Set<Integer> statuses = null;
 		Set<String> statusNames = new HashSet<>();
 		String author = "Таржеман";
-		String title = "Massa eget egestas";
+		String title = "";
 		Page<PostEntity> postEntityPage = Page.empty();
-		LocalDateTime startDate = LocalDateTime.of(LocalDate.of(2019, Month.JANUARY, 1), LocalTime.MIN);
+		LocalDateTime startDate = null;
 		LocalDateTime endDate = null;
-		Timestamp timestampStartDate = Timestamp.valueOf(startDate);
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 
 		Mockito.when(postRepository
@@ -647,7 +647,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void findAllPostsByStartDateAndTitle() {
+	void findAllPostsByTitle() {
 		Set<Integer> typesIds = new HashSet<>();
 		Set<Integer> originsIds = new HashSet<>();
 		Set<Integer> directionsIds = new HashSet<>();
@@ -656,9 +656,9 @@ class PostServiceImplTest {
 		String author = "";
 		String title = "Massa eget egestas";
 		Page<PostEntity> postEntityPage = Page.empty();
-		LocalDateTime startDate = LocalDateTime.of(LocalDate.of(2019, Month.JANUARY, 1), LocalTime.MIN);
+		LocalDateTime startDate = null;
 		LocalDateTime endDate = null;
-		Timestamp timestampStartDate = Timestamp.valueOf(startDate);
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 
 		Mockito.when(postRepository
