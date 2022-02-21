@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -279,10 +281,12 @@ public class PostController {
 			@RequestParam(required = false, defaultValue = "") String title,
 			@ApiParam(value = "Post's author username", type = "string")
 			@RequestParam(required = false, defaultValue = "") String author,
-			@ApiParam(value = "dd.MM.yyyy")
-			@RequestParam(required = false, defaultValue = "") String startDate,
-			@ApiParam(value = "dd.MM.yyyy")
-			@RequestParam(required = false, defaultValue = "") String endDate) {
+			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
+			@RequestParam(required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
+			@RequestParam(required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
 
 		try {
 			return ResponseEntity

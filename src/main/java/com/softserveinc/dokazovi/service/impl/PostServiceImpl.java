@@ -30,7 +30,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -110,16 +109,21 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
-			String title, String author, String startDate, String endDate, Pageable pageable) {
+			String title, String author, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
 
-		if (directionIds == null && typeIds == null && originIds == null && statuses == null && startDate.isEmpty() &&
-				endDate.isEmpty() && title.isEmpty() && author.isEmpty()) {
+		if (directionIds == null && typeIds == null && originIds == null && statuses == null &&
+				startDate == null && endDate == null && title.isEmpty() && author.isEmpty()) {
 			return postRepository.findAll(pageable)
 					.map(postMapper::toPostDTO);
 		}
-		List<Timestamp> filtrationDates = transformToTimestamp(startDate, endDate);
-		Timestamp startDateTimestamp = filtrationDates.get(0);
-		Timestamp endDateTimestamp = filtrationDates.get(1);
+		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
+		LocalDateTime startTime = startDate1
+				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
+		Timestamp startDateTimestamp = Timestamp.valueOf(startTime);
+		Optional<LocalDateTime> endDate1 = Optional.ofNullable(endDate);
+		LocalDateTime endTime = endDate1
+				.orElse(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+		Timestamp endDateTimestamp = Timestamp.valueOf(endTime);
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
 		originIds = validateValues(originIds);
@@ -143,23 +147,6 @@ public class PostServiceImpl implements PostService {
 			throw new EntityNotFoundException("Id does not exist");
 		}
 
-	}
-
-	private List<Timestamp> transformToTimestamp(String startDate, String endDate) {
-		List<Timestamp> res = new ArrayList<>(2);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-		if (!startDate.isEmpty()) {
-			res.add(0, Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(startDate, formatter), LocalTime.MIN)));
-		} else {
-			res.add(0, Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN)));
-		}
-
-		if (!endDate.isEmpty()) {
-			res.add(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(endDate, formatter), LocalTime.MAX)));
-		} else {
-			res.add(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX)));
-		}
-		return res;
 	}
 
 	private <T> Set<T> validateValues(Set<T> set) {
