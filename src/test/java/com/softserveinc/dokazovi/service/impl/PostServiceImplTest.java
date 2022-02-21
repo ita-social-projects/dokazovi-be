@@ -656,8 +656,6 @@ class PostServiceImplTest {
 		String author = "";
 		String title = "Massa eget egestas";
 		Page<PostEntity> postEntityPage = Page.empty();
-		LocalDateTime startDate = null;
-		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
 
@@ -667,8 +665,8 @@ class PostServiceImplTest {
 								timestampEndDate, pageable))
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent().size(),
-				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
-								originsIds, statuses, title, author, startDate, endDate, pageable)
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(null, null,
+								null, null, title, author, null, null, pageable)
 						.getContent().size());
 	}
 
