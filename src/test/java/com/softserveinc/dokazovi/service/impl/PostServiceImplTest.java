@@ -1242,6 +1242,7 @@ class PostServiceImplTest {
 	@Test
 	void setPostsAsImportantWhenNoPostIds() {
 		Set<Integer> postIds = null;
+
 		assertEquals(false,postService.setPostsAsImportantWithOrder(postIds));
 	}
 
