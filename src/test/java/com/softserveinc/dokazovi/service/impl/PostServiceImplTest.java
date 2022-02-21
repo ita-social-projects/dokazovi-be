@@ -604,7 +604,59 @@ class PostServiceImplTest {
 		String author = "";
 		String title = "";
 		Page<PostEntity> postEntityPage = Page.empty();
-		LocalDateTime startDate = LocalDateTime.of(LocalDate.of(2019,Month.JANUARY,1),LocalTime.MIN);
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.of(2019, Month.JANUARY, 1), LocalTime.MIN);
+		LocalDateTime endDate = null;
+		Timestamp timestampStartDate = Timestamp.valueOf(startDate);
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+
+		Mockito.when(postRepository
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
+				.thenReturn(postEntityPage);
+		assertEquals(postEntityPage.getContent().size(),
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+								originsIds, statuses, title, author, startDate, endDate, pageable)
+						.getContent().size());
+	}
+
+	@Test
+	void findAllPostsByStartDateAndAuthor() {
+		Set<Integer> typesIds = new HashSet<>();
+		Set<Integer> originsIds = new HashSet<>();
+		Set<Integer> directionsIds = new HashSet<>();
+		Set<Integer> statuses = null;
+		Set<String> statusNames = new HashSet<>();
+		String author = "Таржеман";
+		String title = "";
+		Page<PostEntity> postEntityPage = Page.empty();
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.of(2019, Month.JANUARY, 1), LocalTime.MIN);
+		LocalDateTime endDate = null;
+		Timestamp timestampStartDate = Timestamp.valueOf(startDate);
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+
+		Mockito.when(postRepository
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
+				.thenReturn(postEntityPage);
+		assertEquals(postEntityPage.getContent().size(),
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+								originsIds, statuses, title, author, startDate, endDate, pageable)
+						.getContent().size());
+	}
+
+	@Test
+	void findAllPostsByStartDateAndTitle() {
+		Set<Integer> typesIds = new HashSet<>();
+		Set<Integer> originsIds = new HashSet<>();
+		Set<Integer> directionsIds = new HashSet<>();
+		Set<Integer> statuses = null;
+		Set<String> statusNames = new HashSet<>();
+		String author = "";
+		String title = "Massa eget egestas";
+		Page<PostEntity> postEntityPage = Page.empty();
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.of(2019, Month.JANUARY, 1), LocalTime.MIN);
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(startDate);
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
@@ -631,8 +683,8 @@ class PostServiceImplTest {
 		String title = "";
 		Page<PostEntity> postEntityPage = Page.empty();
 		LocalDateTime startDate = null;
-		LocalDateTime endDate = LocalDateTime.of(LocalDate.of(2022,Month.JANUARY,1), LocalTime.MAX);
-		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH,LocalTime.MIN));
+		LocalDateTime endDate = LocalDateTime.of(LocalDate.of(2022, Month.JANUARY, 1), LocalTime.MAX);
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(endDate);
 
 		Mockito.when(postRepository
@@ -1291,7 +1343,7 @@ class PostServiceImplTest {
 	@Test
 	void setPostsAsImportantWhenNoPostIds() {
 		Set<Integer> postIds = null;
-		assertEquals(false,postService.setPostsAsImportantWithOrder(postIds));
+		assertEquals(false, postService.setPostsAsImportantWithOrder(postIds));
 	}
 
 	@Test
@@ -1323,7 +1375,7 @@ class PostServiceImplTest {
 	void setFakeViewsForPost_withNotExistPostId() {
 		Optional<PostEntity> post = Optional.of(PostEntity.builder().id(11).build());
 		when(postRepository.findById(11)).thenReturn(Optional.empty());
-		assertThrows(EntityNotFoundException.class, () -> postService.setFakeViewsForPost(11,110));
+		assertThrows(EntityNotFoundException.class, () -> postService.setFakeViewsForPost(11, 110));
 	}
 
 	@Test
@@ -1345,14 +1397,14 @@ class PostServiceImplTest {
 	@Test
 	void checkUpdateRealViews() {
 		Map<Integer, Integer> idsWithViews = new HashMap<>();
-		idsWithViews.put(1,1);
+		idsWithViews.put(1, 1);
 		when(googleAnalytics.getAllPostsViewCount()).thenReturn(idsWithViews);
 		assertEquals(idsWithViews, googleAnalytics.getAllPostsViewCount());
-		for (Map.Entry<Integer, Integer> entry: idsWithViews.entrySet()) {
-			postRepository.updateRealViews(entry.getKey(),entry.getValue());
+		for (Map.Entry<Integer, Integer> entry : idsWithViews.entrySet()) {
+			postRepository.updateRealViews(entry.getKey(), entry.getValue());
 		}
 		postService.updateRealViews();
-		verify(postRepository,times(2)).updateRealViews(any(Integer.class),any(Integer.class));
+		verify(postRepository, times(2)).updateRealViews(any(Integer.class), any(Integer.class));
 	}
 
 	@Test
