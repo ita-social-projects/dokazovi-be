@@ -628,7 +628,7 @@ class PostServiceImplTest {
 		Set<Integer> statuses = null;
 		Set<String> statusNames = new HashSet<>();
 		String author = "Таржеман";
-		String title = "";
+		String title = "Massa eget egestas";
 		Page<PostEntity> postEntityPage = Page.empty();
 		LocalDateTime startDate = LocalDateTime.of(LocalDate.of(2019, Month.JANUARY, 1), LocalTime.MIN);
 		LocalDateTime endDate = null;
