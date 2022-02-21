@@ -593,6 +593,7 @@ class PostServiceImplTest {
 								originsIds, statuses, title, author, startDate, endDate, pageable)
 						.getContent().size());
 	}
+
 	@Test
 	void findAllPostsByStartDate() {
 		Set<Integer> typesIds = new HashSet<>();
