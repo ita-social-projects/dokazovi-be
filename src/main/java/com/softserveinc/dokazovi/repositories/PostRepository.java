@@ -218,8 +218,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			+ "THEN p.status IN (:statuses) "
 			+ "ELSE p.post_id IS NOT NULL "
 			+ "END "
+			+ "AND p.author_id = :authorId "
 			+ "AND p.modified_at between :startDate and :endDate "
-			+ "AND p.author_id = :authorId")
+			+ "AND p.title LIKE (:title || '%')")
 	Page<PostEntity> findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(Set<Integer> typeIds,
 	Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, Integer authorId,
 	Timestamp startDate, Timestamp endDate, Pageable pageable);
