@@ -197,4 +197,32 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(Set<Integer> typeIds,
 			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, String author,
 			Timestamp startDate, Timestamp endDate, Pageable pageable);
+
+	@Query(nativeQuery = true,
+	value = "SELECT * FROM posts p "
+			+ "WHERE CASE WHEN :typeIds IS NOT NULL "
+			+ "THEN p.type_id IN (:typeIds) "
+			+ "ELSE p.post_id IS NOT NULL "
+			+ "END "
+			+ "AND CASE WHEN :directionIds IS NOT NULL "
+			+ "THEN p.post_id IN "
+			+ "(SELECT pd.post_id FROM posts_directions pd WHERE pd.direction_id IN (:directionIds)) "
+			+ "ELSE p.post_id IS NOT NULL "
+			+ "END "
+			+ "AND CASE WHEN :originIds IS NOT NULL "
+			+ "THEN p.post_id IN "
+			+ "(SELECT po.post_id FROM posts_origins po WHERE po.origin_id IN (:originIds)) "
+			+ "ELSE p.post_id IS NOT NULL "
+			+ "END "
+			+ "AND CASE WHEN :statuses IS NOT NULL "
+			+ "THEN p.status IN (:statuses) "
+			+ "ELSE p.post_id IS NOT NULL "
+			+ "END "
+			+ "AND p.modified_at between :startDate and :endDate "
+			+ "AND p.author_id = :authorId")
+	Page<PostEntity> findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(Set<Integer> typeIds,
+	Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, Integer authorId,
+	Timestamp startDate, Timestamp endDate, Pageable pageable);
+
+	Page<PostEntity> findAllByAuthorId(Integer authorId, Pageable pageable);
 }

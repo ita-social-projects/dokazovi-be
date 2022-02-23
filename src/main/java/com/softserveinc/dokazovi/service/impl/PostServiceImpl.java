@@ -109,13 +109,21 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
-			String title, String author, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+			String title, String author, Integer authorId, LocalDateTime startDate, LocalDateTime endDate,
+			Pageable pageable) {
+		boolean authorParam = authorId == null;
 
 		if (directionIds == null && typeIds == null && originIds == null && statuses == null &&
 				startDate == null && endDate == null && title.isEmpty() && author.isEmpty()) {
-			return postRepository.findAll(pageable)
-					.map(postMapper::toPostDTO);
+			if (authorParam) {
+				return postRepository.findAll(pageable)
+						.map(postMapper::toPostDTO);
+			} else {
+				return postRepository.findAllByAuthorId(authorId, pageable)
+						.map(postMapper::toPostDTO);
+			}
 		}
+
 		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
 		LocalDateTime startTime = startDate1
 				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
@@ -135,10 +143,18 @@ public class PostServiceImpl implements PostService {
 						.collect(Collectors.toSet());
 
 		try {
-			return postRepository
-					.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds, statusNames,
-							originIds, title, author, startDateTimestamp, endDateTimestamp, pageable)
-					.map(postMapper::toPostDTO);
+			if (authorParam) {
+				return postRepository
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds,
+								statusNames,
+								originIds, title, author, startDateTimestamp, endDateTimestamp, pageable)
+						.map(postMapper::toPostDTO);
+			} else {
+				return postRepository.findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(typeIds,
+								directionIds, statusNames, originIds, title, authorId, startDateTimestamp,
+								endDateTimestamp, pageable)
+						.map(postMapper::toPostDTO);
+			}
 		} catch (Exception e) {
 			logger.error(
 					String.format("Fail with posts filter with params typeIds=%s, directionIds=%s, statuses=%s, "
@@ -147,7 +163,9 @@ public class PostServiceImpl implements PostService {
 			throw new EntityNotFoundException("Id does not exist");
 		}
 
+
 	}
+
 
 	private <T> Set<T> validateValues(Set<T> set) {
 		return set != null ? set : Collections.emptySet();
