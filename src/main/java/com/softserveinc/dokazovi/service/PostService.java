@@ -8,7 +8,7 @@ import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public interface PostService {
@@ -25,8 +25,9 @@ public interface PostService {
 	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
 	Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
-			Set<Integer> directionId, Set<Integer> typeId, Set<Integer> originId, Set<Integer> statuses,
-			String title, String author, String startDate, String endDate, Pageable pageable);
+			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
+			String title, String author, Integer authorId, LocalDateTime startDate, LocalDateTime endDate,
+			Pageable pageable);
 
 	Page<PostDTO> findPostsByAuthorIdAndDirections(
 			Pageable pageable, Integer expertId, Set<Integer> directions);

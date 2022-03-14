@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,9 +39,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.BY_USER_ENDPOINT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_ALL_POSTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_FAKE_VIEW_COUNT;
@@ -279,17 +282,69 @@ public class PostController {
 			@RequestParam(required = false, defaultValue = "") String title,
 			@ApiParam(value = "Post's author username", type = "string")
 			@RequestParam(required = false, defaultValue = "") String author,
-			@ApiParam(value = "dd.MM.yyyy")
-			@RequestParam(required = false, defaultValue = "") String startDate,
-			@ApiParam(value = "dd.MM.yyyy")
-			@RequestParam(required = false, defaultValue = "") String endDate) {
+			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
+			@RequestParam(required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
+			@RequestParam(required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
 
 		try {
 			return ResponseEntity
 					.status(HttpStatus.OK)
 					.body(postService
 							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
-									statuses, title, author, startDate, endDate, pageable));
+									statuses, title, author, null, startDate, endDate, pageable));
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity
+					.status(HttpStatus.NO_CONTENT)
+					.body(null);
+		}
+	}
+
+	/**
+	 * Gets all posts for a concrete author by directions by post types and by origins.
+	 *
+	 * <p>If something went wrong returns HttpStatus 'NO CONTENT'.</p>
+	 *
+	 * @param pageable   interface for pagination information
+	 * @param directions direction's ids by which the search is performed
+	 * @param types      the type's ids by which the search is performed
+	 * @param origins    the origin's ids by which the search is performed
+	 * @param userId    userId by wich the data will be uploaded
+	 * @return page with all posts filtered by directions, by post types and by origins and HttpStatus 'OK'
+	 */
+	@GetMapping(POST_ALL_POSTS + BY_USER_ENDPOINT)
+	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
+	public ResponseEntity<Page<PostDTO>> getAllPostsForUserByDirectionsByPostTypesAndByOrigins(
+			@PageableDefault Pageable pageable,
+			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
+			@RequestParam(required = false) Set<Integer> directions,
+			@ApiParam(value = "Multiple comma-separated post type's IDs, e.g. ?types=1,2,3,4...", type = "string")
+			@RequestParam(required = false) Set<Integer> types,
+			@ApiParam(value = "Multiple comma-separated origin's IDs, e.g. ?origins=1,2,3,4...", type = "string")
+			@RequestParam(required = false) Set<Integer> origins,
+			@ApiParam(value = "Multiple comma-separated statuses, e.g. ?statuses=0,1,2,3...",
+					type = "string")
+			@RequestParam(required = false) Set<Integer> statuses,
+			@ApiParam(value = "Post's title", type = "string")
+			@RequestParam(required = false, defaultValue = "") String title,
+			@ApiParam(value = "Post's author username", type = "string")
+			@RequestParam(required = false, defaultValue = "") String author,
+			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
+			@RequestParam(required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
+			@RequestParam(required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+			@PathVariable("userId") Integer userId) {
+
+		try {
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.body(postService
+							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+									statuses, title, author, userId, startDate, endDate, pageable));
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity
 					.status(HttpStatus.NO_CONTENT)
