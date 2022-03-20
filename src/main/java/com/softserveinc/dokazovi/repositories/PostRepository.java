@@ -167,7 +167,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 
 	@Query(nativeQuery = true,
-			value = "SELECT * FROM posts p "
+			value = "SELECT p.*, u.first_name FROM users u, posts p "
+					+ "WHERE p.author_id = u.user_id "
 					+ "WHERE CASE WHEN :typeIds IS NOT NULL "
 					+ "THEN p.type_id IN (:typeIds) "
 					+ "ELSE p.post_id IS NOT NULL "
@@ -200,7 +201,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			Timestamp startDate, Timestamp endDate, Pageable pageable);
 
 	@Query(nativeQuery = true,
-	value = "SELECT * FROM posts p "
+	value = "SELECT p.*, u.first_name FROM users u, posts p "
+			+ "WHERE p.author_id = u.user_id "
 			+ "WHERE CASE WHEN :typeIds IS NOT NULL "
 			+ "THEN p.type_id IN (:typeIds) "
 			+ "ELSE p.post_id IS NOT NULL "
