@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PostServiceImpl implements PostService {
+public class 	PostServiceImpl implements PostService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
 
