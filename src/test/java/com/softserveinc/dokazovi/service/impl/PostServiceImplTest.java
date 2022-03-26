@@ -45,7 +45,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1577,22 +1576,6 @@ class PostServiceImplTest {
 		Optional<PostEntity> post = Optional.of(PostEntity.builder().id(11).build());
 		when(postRepository.findById(11)).thenReturn(Optional.empty());
 		assertThrows(EntityNotFoundException.class, () -> postService.setFakeViewsForPost(11, 110));
-	}
-
-	@Test
-	void checkUpdatePlannedStatus() {
-		PostEntity postEntity1 = PostEntity.builder().createdAt(new Timestamp(System.currentTimeMillis() - 10000))
-				.status(PostStatus.PLANNED).build();
-		List<PostEntity> postEntities = new ArrayList<>();
-		postEntities.add(postEntity1);
-
-		when(postRepository.findAll()).thenReturn(postEntities);
-		when(postRepository.save(postEntity1)).thenReturn(postEntity1);
-
-		postService.updatePlannedStatus();
-
-		assertEquals(PostStatus.PLANNED, postEntity1.getStatus());
-
 	}
 
 	@Test

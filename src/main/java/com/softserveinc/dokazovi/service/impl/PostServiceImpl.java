@@ -452,24 +452,6 @@ public class PostServiceImpl implements PostService {
 	}
 
 	/**
-	 * Updates the post status. If the status planned and createdAt lower then Now update to Published run every minute
-	 */
-	@Override
-	@Transactional
-	@Scheduled(cron = "0 * * * * *")
-	public void updatePlannedStatus() {
-		/*
-		List<PostEntity> postEntities = postRepository.findAll();
-		for (PostEntity postEntity : postEntities) {
-			if (postEntity.getStatus() == PostStatus.PLANNED && postEntity.getCreatedAt().before(new Date())) {
-				postEntity.setStatus(PostStatus.PUBLISHED);
-				postRepository.save(postEntity);
-			}
-		}
-		 */
-	}
-
-	/**
 	 * Updates views for each post by post_id each 15 min
 	 */
 
