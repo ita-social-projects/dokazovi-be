@@ -459,6 +459,7 @@ public class PostServiceImpl implements PostService {
 	@Transactional
 	@Scheduled(cron = "0 * * * * *")
 	public void updatePlannedStatus() {
+		/*
 		List<PostEntity> postEntities = postRepository.findAll();
 		for (PostEntity postEntity : postEntities) {
 			if (postEntity.getStatus() == PostStatus.PLANNED && postEntity.getCreatedAt().before(new Date())) {
@@ -466,6 +467,7 @@ public class PostServiceImpl implements PostService {
 				postRepository.save(postEntity);
 			}
 		}
+		 */
 	}
 
 	/**
