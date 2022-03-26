@@ -1591,7 +1591,7 @@ class PostServiceImplTest {
 
 		postService.updatePlannedStatus();
 
-		assertEquals(PostStatus.PUBLISHED, postEntity1.getStatus());
+		assertEquals(PostStatus.PLANNED, postEntity1.getStatus());
 
 	}
 
