@@ -57,6 +57,9 @@ public class PostEntity {
 	@Column(name = "preview_image_url")
 	private String previewImageUrl;
 
+	@Column(name = "important_mobile_image_url")
+	private String importantMobileImageUrl;
+
 	@ColumnDefault("false")
 	private Boolean important;
 
