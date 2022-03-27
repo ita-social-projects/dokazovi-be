@@ -167,7 +167,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 
 	@Query(nativeQuery = true,
-			value = "SELECT * FROM posts p "
+			value = "SELECT p.*, u.first_name FROM users u, posts p "
+					+ "WHERE p.author_id = u.user_id "
 					+ "WHERE CASE WHEN :typeIds IS NOT NULL "
 					+ "THEN p.type_id IN (:typeIds) "
 					+ "ELSE p.post_id IS NOT NULL "
@@ -193,13 +194,15 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
 					+ "OR UPPER((u.last_name || ' ' || u.first_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
 					+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\")) "
-					+ "AND p.title LIKE (:title || '%')")
+					+ "AND UPPER((p.title) COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\")")
 	Page<PostEntity> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(Set<Integer> typeIds,
 			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, String author,
 			Timestamp startDate, Timestamp endDate, Pageable pageable);
 
 	@Query(nativeQuery = true,
-	value = "SELECT * FROM posts p "
+	value = "SELECT p.*, u.first_name FROM users u, posts p "
+			+ "WHERE p.author_id = u.user_id "
 			+ "WHERE CASE WHEN :typeIds IS NOT NULL "
 			+ "THEN p.type_id IN (:typeIds) "
 			+ "ELSE p.post_id IS NOT NULL "
@@ -220,7 +223,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			+ "END "
 			+ "AND p.author_id = :authorId "
 			+ "AND p.modified_at between :startDate and :endDate "
-			+ "AND p.title LIKE (:title || '%')")
+			+ "AND UPPER((p.title) COLLATE \"uk-ua-dokazovi-x-icu\") "
+			+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\")")
 	Page<PostEntity> findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(Set<Integer> typeIds,
 	Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, Integer authorId,
 	Timestamp startDate, Timestamp endDate, Pageable pageable);
