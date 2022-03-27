@@ -137,17 +137,19 @@ public class PostController {
 					type = "string")
 			@RequestParam Set<Integer> posts) {
 		ApiResponseMessage apiResponseMessage;
-		try {
+//		try {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(postService.setPostsAsImportantWithOrder(posts))
 					.message("Posts updated successfully")
 					.build();
-		} catch (Exception e) {
+	/*	} catch (Exception e) {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(false)
 					.message(e.getMessage())
 					.build();
 		}
+
+	 */
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
@@ -289,17 +291,19 @@ public class PostController {
 			@RequestParam(required = false)
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
 
-		try {
+//		try {
 			return ResponseEntity
 					.status(HttpStatus.OK)
 					.body(postService
 							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
 									statuses, title, author, null, startDate, endDate, pageable));
-		} catch (EntityNotFoundException e) {
+		/*} catch (EntityNotFoundException e) {
 			return ResponseEntity
 					.status(HttpStatus.NO_CONTENT)
 					.body(null);
 		}
+
+		 */
 	}
 
 	/**
@@ -339,17 +343,18 @@ public class PostController {
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
 			@PathVariable("userId") Integer userId) {
 
-		try {
+//		try {
 			return ResponseEntity
 					.status(HttpStatus.OK)
 					.body(postService
 							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
 									statuses, title, author, userId, startDate, endDate, pageable));
-		} catch (EntityNotFoundException e) {
+		/*} catch (EntityNotFoundException e) {
 			return ResponseEntity
 					.status(HttpStatus.NO_CONTENT)
 					.body(null);
 		}
+		 */
 	}
 
 	/**
@@ -371,17 +376,19 @@ public class PostController {
 			@PathVariable("postId") Integer postId
 	) {
 		ApiResponseMessage apiResponseMessage;
-		try {
+//		try {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(postService.removePostById(userPrincipal, postId, true))
 					.message(String.format("post %s deleted successfully", postId))
 					.build();
-		} catch (EntityNotFoundException e) {
+		/*} catch (EntityNotFoundException e) {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(false)
 					.message(e.getMessage())
 					.build();
 		}
+
+		 */
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
@@ -404,17 +411,18 @@ public class PostController {
 			@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO) {
 
 		ApiResponseMessage apiResponseMessage;
-		try {
+//		try {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(postService.updatePostById(userPrincipal, postSaveFromUserDTO))
 					.message(String.format("post %s updated successfully", postSaveFromUserDTO.getId()))
 					.build();
-		} catch (EntityNotFoundException | ForbiddenPermissionsException e) {
+		/*} catch (EntityNotFoundException | ForbiddenPermissionsException e) {
 			apiResponseMessage = ApiResponseMessage.builder()
 					.success(false)
 					.message(e.getMessage())
 					.build();
 		}
+		 */
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 

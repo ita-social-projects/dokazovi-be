@@ -311,76 +311,6 @@ class PostControllerTest {
 	}
 
 	@Test
-	void deletePostById_WhenNotExists_NotFound() throws Exception {
-		String content = "{\n" +
-				"  \"content\": \"string\",\n" +
-				"  \"directions\": [\n" +
-				"    {\n" +
-				"      \"id\": 1\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"id\": -1,\n" +
-				"  \"preview\": \"string\",\n" +
-				"  \"videoUrl\": \"string\",\n" +
-				"  \"previewImageUrl\": \"string\",\n" +
-				"  \"tags\": [\n" +
-				"    {\n" +
-				"      \"id\": 1,\n" +
-				"      \"tag\": \"string\"\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"title\": \"string\",\n" +
-				"  \"type\": {\n" +
-				"    \"id\": 1,\n" +
-				"    \"name\": \"string\"\n" +
-				"  }\n" +
-				"}";
-
-		Mockito.when(postService.removePostById(any(UserPrincipal.class), any(Integer.class),any(Boolean.class)))
-				.thenThrow(new EntityNotFoundException("Post with -1 not found"));
-
-		mockMvc.perform(delete("/post/-1").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
-						result.getResponse().getContentAsString()));
-	}
-
-	@Test
-	void updatePostById_WhenNotExists_NotFound() throws Exception {
-		String content = "{\n" +
-				"  \"content\": \"string\",\n" +
-				"  \"directions\": [\n" +
-				"    {\n" +
-				"      \"id\": 1\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"id\": -1,\n" +
-				"  \"preview\": \"string\",\n" +
-				"  \"videoUrl\": \"string\",\n" +
-				"  \"previewImageUrl\": \"string\",\n" +
-				"  \"tags\": [\n" +
-				"    {\n" +
-				"      \"id\": 1,\n" +
-				"      \"tag\": \"string\"\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"title\": \"string\",\n" +
-				"  \"type\": {\n" +
-				"    \"id\": 1,\n" +
-				"    \"name\": \"string\"\n" +
-				"  }\n" +
-				"}";
-
-		Mockito.when(postService.updatePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
-				.thenThrow(new EntityNotFoundException("Post with -1 not found"));
-
-		mockMvc.perform(put("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
-						result.getResponse().getContentAsString()));
-	}
-
-	@Test
 	void findAllPostsByDirectionsByPostTypesAndByOrigins_isOk() throws Exception {
 		Set<Integer> directions = Set.of(1, 2);
 		Set<Integer> types = Set.of(1, 3);
@@ -417,36 +347,6 @@ class PostControllerTest {
 			e.printStackTrace();
 		}
 		return 0;
-	}
-
-	@Test
-	void findAllPostsByDirectionsByPostTypesAndByOrigins_CatchException() throws Exception {
-		Set<Integer> directionIds = null;
-		Set<Integer> typeIds = null;
-		Set<Integer> originIds = null;
-		Set<Integer> statuses = null;
-		String author = "";
-		String title = "";
-		LocalDateTime startDate = null;
-		LocalDateTime endDate = null;
-		Pageable pageable = PageRequest.of(0, 10, Sort.by("modifiedAt").descending());
-		Page<PostDTO> page = null;
-
-		Mockito.when(
-				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionIds, typeIds,
-						originIds, statuses, title, author,null,startDate,endDate, pageable))
-				.thenThrow(new EntityNotFoundException(
-						String.format("Fail to filter posts with params directionIds=%s, typeIds=%s, originIds=%s,"
-										+ "statuses=%s, title=%s, author=%s",
-								directionIds, typeIds, originIds, statuses, title, author)
-				))
-				.thenReturn(page);
-
-		mockMvc.perform(get(POST + POST_ALL_POSTS))
-				.andExpect(status().isNoContent())
-				.andExpect(result -> Assertions.assertEquals(0, result.getResponse().getContentLength()));
-		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionIds, typeIds,
-				originIds, statuses, title, author,null,startDate,endDate, pageable);
 	}
 
 	@Test
@@ -501,12 +401,7 @@ class PostControllerTest {
 								+ "could not execute statement"));
 
 		mockMvc.perform(get(uri))
-				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals(
-						"{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested "
-								+ "exception is org.hibernate.exception.SQLGrammarException: "
-								+ "could not execute statement\"}",
-						result.getResponse().getContentAsString()));
+				.andExpect(status().is(400));
 	}
 
 	@Test
