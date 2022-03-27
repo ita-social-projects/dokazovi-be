@@ -33,7 +33,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -450,22 +449,6 @@ public class PostServiceImpl implements PostService {
 			directionsToUpdate.addAll(newEntity.getDirections());
 		}
 		return directionsToUpdate;
-	}
-
-	/**
-	 * Updates the post status. If the status planned and createdAt lower then Now update to Published run every minute
-	 */
-	@Override
-	@Transactional
-	@Scheduled(cron = "0 * * * * *")
-	public void updatePlannedStatus() {
-		List<PostEntity> postEntities = postRepository.findAll();
-		for (PostEntity postEntity : postEntities) {
-			if (postEntity.getStatus() == PostStatus.PLANNED && postEntity.getCreatedAt().before(new Date())) {
-				postEntity.setStatus(PostStatus.PUBLISHED);
-				postRepository.save(postEntity);
-			}
-		}
 	}
 
 	/**

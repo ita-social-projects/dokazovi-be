@@ -268,7 +268,7 @@ public class PostController {
 	@GetMapping(POST_ALL_POSTS)
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
 	public ResponseEntity<Page<PostDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
-			@PageableDefault Pageable pageable,
+			@PageableDefault(sort = {"modifiedAt"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
 			@ApiParam(value = "Multiple comma-separated post type's IDs, e.g. ?types=1,2,3,4...", type = "string")
@@ -311,13 +311,13 @@ public class PostController {
 	 * @param directions direction's ids by which the search is performed
 	 * @param types      the type's ids by which the search is performed
 	 * @param origins    the origin's ids by which the search is performed
-	 * @param userId    userId by wich the data will be uploaded
+	 * @param userId     userId by wich the data will be uploaded
 	 * @return page with all posts filtered by directions, by post types and by origins and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_ALL_POSTS + BY_USER_ENDPOINT)
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
 	public ResponseEntity<Page<PostDTO>> getAllPostsForUserByDirectionsByPostTypesAndByOrigins(
-			@PageableDefault Pageable pageable,
+			@PageableDefault(sort = {"modifiedAt"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
 			@ApiParam(value = "Multiple comma-separated post type's IDs, e.g. ?types=1,2,3,4...", type = "string")
