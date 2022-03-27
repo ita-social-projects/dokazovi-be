@@ -7,8 +7,6 @@ import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.exception.EntityNotFoundException;
-import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -137,19 +135,11 @@ public class PostController {
 					type = "string")
 			@RequestParam Set<Integer> posts) {
 		ApiResponseMessage apiResponseMessage;
-//		try {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.setPostsAsImportantWithOrder(posts))
-					.message("Posts updated successfully")
-					.build();
-	/*	} catch (Exception e) {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(false)
-					.message(e.getMessage())
-					.build();
-		}
 
-	 */
+		apiResponseMessage = ApiResponseMessage.builder()
+				.success(postService.setPostsAsImportantWithOrder(posts))
+				.message("Posts updated successfully")
+				.build();
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
@@ -291,19 +281,12 @@ public class PostController {
 			@RequestParam(required = false)
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
 
-//		try {
-			return ResponseEntity
-					.status(HttpStatus.OK)
-					.body(postService
-							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
-									statuses, title, author, null, startDate, endDate, pageable));
-		/*} catch (EntityNotFoundException e) {
-			return ResponseEntity
-					.status(HttpStatus.NO_CONTENT)
-					.body(null);
-		}
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+								statuses, title, author, null, startDate, endDate, pageable));
 
-		 */
 	}
 
 	/**
@@ -343,18 +326,12 @@ public class PostController {
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
 			@PathVariable("userId") Integer userId) {
 
-//		try {
-			return ResponseEntity
-					.status(HttpStatus.OK)
-					.body(postService
-							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
-									statuses, title, author, userId, startDate, endDate, pageable));
-		/*} catch (EntityNotFoundException e) {
-			return ResponseEntity
-					.status(HttpStatus.NO_CONTENT)
-					.body(null);
-		}
-		 */
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+								statuses, title, author, userId, startDate, endDate, pageable));
+
 	}
 
 	/**
@@ -376,19 +353,12 @@ public class PostController {
 			@PathVariable("postId") Integer postId
 	) {
 		ApiResponseMessage apiResponseMessage;
-//		try {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.removePostById(userPrincipal, postId, true))
-					.message(String.format("post %s deleted successfully", postId))
-					.build();
-		/*} catch (EntityNotFoundException e) {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(false)
-					.message(e.getMessage())
-					.build();
-		}
 
-		 */
+		apiResponseMessage = ApiResponseMessage.builder()
+				.success(postService.removePostById(userPrincipal, postId, true))
+				.message(String.format("post %s deleted successfully", postId))
+				.build();
+
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
@@ -411,18 +381,12 @@ public class PostController {
 			@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO) {
 
 		ApiResponseMessage apiResponseMessage;
-//		try {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.updatePostById(userPrincipal, postSaveFromUserDTO))
-					.message(String.format("post %s updated successfully", postSaveFromUserDTO.getId()))
-					.build();
-		/*} catch (EntityNotFoundException | ForbiddenPermissionsException e) {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(false)
-					.message(e.getMessage())
-					.build();
-		}
-		 */
+
+		apiResponseMessage = ApiResponseMessage.builder()
+				.success(postService.updatePostById(userPrincipal, postSaveFromUserDTO))
+				.message(String.format("post %s updated successfully", postSaveFromUserDTO.getId()))
+				.build();
+
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
