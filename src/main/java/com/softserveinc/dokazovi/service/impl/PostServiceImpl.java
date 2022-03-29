@@ -141,7 +141,6 @@ public class PostServiceImpl implements PostService {
 						.map(statusOrdinal -> statusesArray[statusOrdinal])
 						.map(PostStatus::name)
 						.collect(Collectors.toSet());
-		Sort sort = pageable.getSort();
 		try {
 			if (authorParam) {
 				return postRepository
