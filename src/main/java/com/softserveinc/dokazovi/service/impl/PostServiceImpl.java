@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -140,7 +141,7 @@ public class PostServiceImpl implements PostService {
 						.map(statusOrdinal -> statusesArray[statusOrdinal])
 						.map(PostStatus::name)
 						.collect(Collectors.toSet());
-
+		Sort sort = pageable.getSort();
 		try {
 			if (authorParam) {
 				return postRepository
