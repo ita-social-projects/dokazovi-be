@@ -167,9 +167,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
 
 	@Query(nativeQuery = true,
-			value = "SELECT p.*, u.first_name FROM users u, posts p "
+			value = "SELECT p.*, u.first_name FROM posts p, users u "
 					+ "WHERE p.author_id = u.user_id "
-					+ "WHERE CASE WHEN :typeIds IS NOT NULL "
+					+ "AND CASE WHEN :typeIds IS NOT NULL "
 					+ "THEN p.type_id IN (:typeIds) "
 					+ "ELSE p.post_id IS NOT NULL "
 					+ "END "
@@ -195,7 +195,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "OR UPPER((u.last_name || ' ' || u.first_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
 					+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\")) "
 					+ "AND UPPER((p.title) COLLATE \"uk-ua-dokazovi-x-icu\") "
-					+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\")")
+					+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "ORDER BY p.modified_at DESC")
 	Page<PostEntity> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(Set<Integer> typeIds,
 			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, String author,
 			Timestamp startDate, Timestamp endDate, Pageable pageable);
@@ -203,7 +204,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	@Query(nativeQuery = true,
 	value = "SELECT p.*, u.first_name FROM users u, posts p "
 			+ "WHERE p.author_id = u.user_id "
-			+ "WHERE CASE WHEN :typeIds IS NOT NULL "
+			+ "AND CASE WHEN :typeIds IS NOT NULL "
 			+ "THEN p.type_id IN (:typeIds) "
 			+ "ELSE p.post_id IS NOT NULL "
 			+ "END "
@@ -224,7 +225,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			+ "AND p.author_id = :authorId "
 			+ "AND p.modified_at between :startDate and :endDate "
 			+ "AND UPPER((p.title) COLLATE \"uk-ua-dokazovi-x-icu\") "
-			+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\")")
+			+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
+			+ "ORDER BY p.modified_at DESC")
 	Page<PostEntity> findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(Set<Integer> typeIds,
 	Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, Integer authorId,
 	Timestamp startDate, Timestamp endDate, Pageable pageable);

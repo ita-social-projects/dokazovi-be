@@ -140,7 +140,6 @@ public class PostServiceImpl implements PostService {
 						.map(statusOrdinal -> statusesArray[statusOrdinal])
 						.map(PostStatus::name)
 						.collect(Collectors.toSet());
-
 		try {
 			if (authorParam) {
 				return postRepository
