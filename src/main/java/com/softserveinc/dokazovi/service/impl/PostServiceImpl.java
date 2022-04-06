@@ -123,9 +123,9 @@ public class PostServiceImpl implements PostService {
 						.map(postMapper::toPostDTO);
 			}
 		}
-		Sort modified_at = pageable.getSort().and(Sort.by("modified_at").descending());
+		Sort sort = pageable.getSort().and(Sort.by("modified_at").descending());
 
-		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), modified_at);
+		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
 		LocalDateTime startTime = startDate1
 				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
