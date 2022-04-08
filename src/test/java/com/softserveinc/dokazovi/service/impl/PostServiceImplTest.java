@@ -39,6 +39,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -501,7 +503,7 @@ class PostServiceImplTest {
 				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN)));
 		Timestamp endDate = Timestamp.valueOf(Optional.ofNullable(endDat)
 				.orElse(LocalDateTime.of(LocalDate.now(), LocalTime.MAX)));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds, directionsIds,
 								statusNames, originsIds, title, author, startDate, endDate, pageable))
@@ -529,7 +531,7 @@ class PostServiceImplTest {
 				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN)));
 		Timestamp endDate = Timestamp.valueOf(Optional.ofNullable(endDat)
 				.orElse(LocalDateTime.of(LocalDate.now(), LocalTime.MAX)));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(typesIds, directionsIds,
 								statusNames, originsIds, title, 1, startDate, endDate, pageable))
@@ -552,11 +554,37 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
 								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
 								timestampEndDate, pageable))
+				.thenReturn(postEntityPage);
+		assertEquals(postEntityPage.getContent().size(),
+				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
+								originsIds, statuses, title, author, null, startDate, endDate, pageable)
+						.getContent().size());
+	}
+
+	@Test
+	void findAllPostsByDirections_withSort() {
+		Set<Integer> typesIds = new HashSet<>();
+		Set<Integer> originsIds = new HashSet<>();
+		Set<Integer> directionsIds = Set.of(-1, -2, -3);
+		Set<Integer> statuses = Set.of(5);
+		Set<String> statusNames = Set.of(PostStatus.PUBLISHED.name());
+		String author = "";
+		String title = "";
+		LocalDateTime startDate = null;
+		LocalDateTime endDate = null;
+		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
+		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+		Pageable pageable = PageRequest.of(0, 10,Sort.by("title"));
+		Pageable pageable1 = PageRequest.of(0, 10,Sort.by("title").and(Sort.by("modified_at").descending()));
+		Mockito.when(postRepository
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable1))
 				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent().size(),
 				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
@@ -577,7 +605,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(typesIds,
 								directionsIds, statusNames, originsIds, title, 1, timestampStartDate,
@@ -602,7 +630,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
 								directionsIds, statusNames, originsIds, title, author,
@@ -626,7 +654,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(typesIds,
 								directionsIds, statusNames, originsIds, title, 1,
@@ -653,6 +681,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+		Pageable pageable = PageRequest.of(0, 10);
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
@@ -680,7 +709,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(typesIds,
 								directionsIds, statusNames, originsIds, title, 1, timestampStartDate,
@@ -705,7 +734,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
 								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
@@ -731,7 +760,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(typesIds,
 								directionsIds, statusNames, originsIds, title, 1, timestampStartDate,
@@ -757,6 +786,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(startDate);
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+		Pageable pageable = PageRequest.of(0, 10);
 
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
@@ -783,7 +813,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(startDate);
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(typesIds,
 								directionsIds, statusNames, originsIds, title, 1, timestampStartDate,
@@ -809,7 +839,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
 								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
@@ -835,7 +865,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(typesIds,
 								directionsIds, statusNames, originsIds, title, 1, timestampStartDate,
@@ -860,7 +890,7 @@ class PostServiceImplTest {
 		Page<PostEntity> postEntityPage = Page.empty();
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
 								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
@@ -886,7 +916,7 @@ class PostServiceImplTest {
 		LocalDateTime endDate = LocalDateTime.of(LocalDate.of(2022, Month.JANUARY, 1), LocalTime.MAX);
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(endDate);
-
+		Pageable pageable = PageRequest.of(0, 10);
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
 								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
