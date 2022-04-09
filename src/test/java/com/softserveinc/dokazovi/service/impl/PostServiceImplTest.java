@@ -578,8 +578,8 @@ class PostServiceImplTest {
 		LocalDateTime endDate = null;
 		Timestamp timestampStartDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-		Pageable pageable = PageRequest.of(0, 10,Sort.by("title"));
-		Pageable pageable1 = PageRequest.of(0, 10,Sort.by("title").and(Sort.by("modified_at").descending()));
+		Pageable pageable = PageRequest.of(0, 10, Sort.by("title"));
+		Pageable pageable1 = PageRequest.of(0, 10, Sort.by("title").and(Sort.by("modified_at").descending()));
 		Mockito.when(postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
 								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
