@@ -195,8 +195,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "OR UPPER((u.last_name || ' ' || u.first_name) COLLATE \"uk-ua-dokazovi-x-icu\") "
 					+ "LIKE UPPER((:author || '%') COLLATE \"uk-ua-dokazovi-x-icu\")) "
 					+ "AND UPPER((p.title) COLLATE \"uk-ua-dokazovi-x-icu\") "
-					+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
-					+ "ORDER BY p.modified_at DESC")
+					+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\")")
 	Page<PostEntity> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(Set<Integer> typeIds,
 			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, String author,
 			Timestamp startDate, Timestamp endDate, Pageable pageable);
@@ -225,8 +224,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			+ "AND p.author_id = :authorId "
 			+ "AND p.modified_at between :startDate and :endDate "
 			+ "AND UPPER((p.title) COLLATE \"uk-ua-dokazovi-x-icu\") "
-			+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
-			+ "ORDER BY p.modified_at DESC")
+			+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\")")
 	Page<PostEntity> findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(Set<Integer> typeIds,
 	Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, Integer authorId,
 	Timestamp startDate, Timestamp endDate, Pageable pageable);

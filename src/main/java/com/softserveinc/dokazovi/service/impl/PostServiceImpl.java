@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,7 +123,10 @@ public class PostServiceImpl implements PostService {
 						.map(postMapper::toPostDTO);
 			}
 		}
-
+		if (pageable.getSort().isSorted()) {
+			Sort sort = pageable.getSort().and(Sort.by("modified_at").descending());
+			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+		}
 		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
 		LocalDateTime startTime = startDate1
 				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));

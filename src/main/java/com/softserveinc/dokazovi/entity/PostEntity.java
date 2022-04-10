@@ -128,5 +128,6 @@ public class PostEntity {
 	private Integer realViews;
 
 	@Column(name = "fake_views")
+	@ColumnDefault(value = "0")
 	private Integer fakeViews;
 }
