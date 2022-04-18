@@ -240,7 +240,8 @@ class PostControllerTest {
 				.thenReturn(true);
 		mockMvc.perform(delete("/post/1").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk()).andExpect(
-						result -> Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 deleted successfully\"}",
+						result -> Assertions.assertEquals(
+								"{\"success\":true,\"message\":\"post 1 deleted successfully\"}",
 								result.getResponse().getContentAsString()));
 	}
 
@@ -258,7 +259,8 @@ class PostControllerTest {
 				.thenReturn(true);
 		mockMvc.perform(put("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk()).andExpect(
-						result -> Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 updated successfully\"}",
+						result -> Assertions.assertEquals(
+								"{\"success\":true,\"message\":\"post 1 updated successfully\"}",
 								result.getResponse().getContentAsString()));
 	}
 
@@ -378,7 +380,8 @@ class PostControllerTest {
 		Mockito.when(
 				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
 						statuses, title, author, null, startDate, endDate, pageable)).thenReturn(page);
-		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=0"))
+		mockMvc.perform(get(POST + POST_ALL_POSTS +
+						"?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=0"))
 				.andExpect(status().isOk()).andExpect(
 						result -> Assertions.assertEquals(0, getIdFromResponse(result.getResponse().getContentAsString())));
 
