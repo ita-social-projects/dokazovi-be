@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.service.impl;
 import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
+import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
@@ -48,7 +49,6 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
-
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
@@ -464,5 +464,15 @@ public class PostServiceImpl implements PostService {
 	public void updateRealViews() {
 		Map<Integer, Integer> postIdsAndViews = googleAnalytics.getAllPostsViewCount();
 		postIdsAndViews.forEach(postRepository::updateRealViews);
+	}
+
+	@Override
+	@Transactional
+	public void setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt) {
+		if (postRepository.findById(postId).isPresent()) {
+			postRepository.setPublishedAt(postId, publishedAt.getPublishedAt());
+		} else {
+			throw new EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
+		}
 	}
 }

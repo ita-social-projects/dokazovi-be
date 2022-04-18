@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
+import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
@@ -29,6 +30,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -527,6 +529,17 @@ public class PostController {
 		postService.setFakeViewsForPost(postId, views);
 	}
 
+	@ApiPageable
+	@ApiOperation(value = "Set published_at for post by post id")
+	@PatchMapping(POST_GET_POST_BY_ID)
+//	@PreAuthorize("hasAuthority('UPDATE_POST')")
+	public void setPublishedAt(@ApiParam("Post's id") @PathVariable("postId") Integer postId,
+			@ApiParam("date post need to be published at")
+			@Valid
+			@RequestBody PostPublishedAtDTO publishedAt) {
+			postService.setPublishedAt(postId,publishedAt);
+	}
+
 
 	/**
 	 * Get sum of fake views and real views for post by post's url
@@ -540,5 +553,6 @@ public class PostController {
 	public Integer getFakeViewsForPost(@ApiParam("Post's url") @RequestParam String url) {
 		return postService.getFakeViewsByPostUrl(url) + postService.getPostViewCount(url);
 	}
+
 
 }

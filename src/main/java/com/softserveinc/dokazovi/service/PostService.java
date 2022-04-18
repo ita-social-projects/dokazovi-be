@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service;
 
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
+import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -58,4 +59,5 @@ public interface PostService {
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
 
 	void updateRealViews();
+	void setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt);
 }
