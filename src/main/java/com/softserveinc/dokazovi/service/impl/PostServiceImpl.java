@@ -468,12 +468,13 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	@Transactional
-	public void setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt) {
+	public boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt) {
 		if (postRepository.findById(postId).isPresent()) {
 			postRepository.setPublishedAt(postId, publishedAt.getPublishedAt());
 			PostEntity postEntity = postRepository.findById(postId).get();
 			postEntity.setStatus(PostStatus.PLANNED);
 			postRepository.save(postEntity);
+			return true;
 		} else {
 			throw new EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
 		}
@@ -484,7 +485,7 @@ public class PostServiceImpl implements PostService {
 	@Scheduled(cron = "0 0/1 * * * *")
 	public void updatePlannedStatus() {
 		List<PostEntity> allByStatus = postRepository.findAllByStatus(PostStatus.PLANNED);
-		Timestamp date = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(),LocalTime.MIN));
+		Timestamp date = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MIN));
 		allByStatus.stream()
 				.filter(postEntity -> postEntity.getPublishedAt().before(date))
 				.forEach(postEntity -> postEntity.setStatus(PostStatus.PUBLISHED));

@@ -530,9 +530,10 @@ public class PostController {
 	}
 
 	@ApiPageable
-	@ApiOperation(value = "Set published_at for post by post id")
+	@ApiOperation(value = "Set published_at for post by post id",
+			authorizations = {@Authorization(value = "Authorization")})
 	@PatchMapping(POST_GET_POST_BY_ID)
-//	@PreAuthorize("hasAuthority('UPDATE_POST')")
+	@PreAuthorize("hasAuthority('UPDATE_POST')")
 	public void setPublishedAt(@ApiParam("Post's id") @PathVariable("postId") Integer postId,
 			@ApiParam("date post need to be published at")
 			@Valid
