@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -19,6 +20,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findAllByImportantIsTrueAndStatusOrderByImportanceOrder(PostStatus status, Pageable pageable);
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
+
+
+	List<PostEntity> findAllByStatus(PostStatus postStatus);
 
 	Page<PostEntity> findAllByDirectionsContainsAndStatus(
 			DirectionEntity direction, PostStatus postStatus, Pageable pageable);
