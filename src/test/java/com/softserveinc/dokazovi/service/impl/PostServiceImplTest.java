@@ -1739,6 +1739,7 @@ class PostServiceImplTest {
 
 	@Test
 	void updateStatusTest() {
+
 		Timestamp publishedAt = Timestamp.valueOf(LocalDateTime.of(
 				LocalDate.of(2002, Month.JANUARY, 14),
 				LocalTime.MIN));
