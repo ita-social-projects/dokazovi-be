@@ -469,9 +469,10 @@ public class PostServiceImpl implements PostService {
 	@Override
 	@Transactional
 	public boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt) {
-		if (postRepository.findById(postId).isPresent()) {
+		Optional<PostEntity> post = postRepository.findById(postId);
+		if (post.isPresent()) {
 			postRepository.setPublishedAt(postId, publishedAt.getPublishedAt());
-			PostEntity postEntity = postRepository.findById(postId).get();
+			PostEntity postEntity = post.get();
 			postEntity.setStatus(PostStatus.PLANNED);
 			postRepository.save(postEntity);
 			return true;
