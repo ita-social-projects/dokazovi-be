@@ -47,7 +47,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1736,23 +1735,4 @@ class PostServiceImplTest {
 		assertThrows(EntityNotFoundException.class,
 				() -> postService.setPublishedAt(postId, postPublishedAtDTO));
 	}
-
-	@Test
-	void updateStatusTest() {
-
-		Timestamp publishedAt = Timestamp.valueOf(LocalDateTime.of(
-				LocalDate.of(2002, Month.JANUARY, 14),
-				LocalTime.MIN));
-		PostEntity postEntity = PostEntity.builder()
-				.id(1)
-				.publishedAt(publishedAt)
-				.status(PostStatus.PLANNED).build();
-		List<PostEntity> posts = new ArrayList<>();
-		posts.add(postEntity);
-		when(postRepository.findAllByStatus(PostStatus.PLANNED)).thenReturn(posts);
-		postService.updatePlannedStatus();
-		assertEquals(PostStatus.PUBLISHED, postEntity.getStatus());
-	}
-
-
 }
