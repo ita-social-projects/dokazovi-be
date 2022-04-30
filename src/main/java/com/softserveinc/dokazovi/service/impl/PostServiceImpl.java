@@ -74,9 +74,9 @@ public class PostServiceImpl implements PostService {
 		);
 		mappedEntity.setFakeViews(0);
 
-		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
 		mappedEntity.setImportant(false);
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
 
 		if (userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities().stream()
 				.anyMatch(grantedAuthority -> grantedAuthority
