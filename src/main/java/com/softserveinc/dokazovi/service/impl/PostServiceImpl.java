@@ -73,6 +73,7 @@ public class PostServiceImpl implements PostService {
 				mappedEntity
 		);
 		mappedEntity.setFakeViews(0);
+
 		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
 		mappedEntity.setImportant(false);
 
