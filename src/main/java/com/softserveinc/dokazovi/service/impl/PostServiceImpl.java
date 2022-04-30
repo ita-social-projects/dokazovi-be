@@ -73,7 +73,6 @@ public class PostServiceImpl implements PostService {
 				mappedEntity
 		);
 		mappedEntity.setFakeViews(0);
-
 		mappedEntity.setImportant(false);
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
