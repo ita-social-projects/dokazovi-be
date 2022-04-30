@@ -72,7 +72,6 @@ public class PostServiceImpl implements PostService {
 				oldEntity,
 				mappedEntity
 		);
-		mappedEntity.setFakeViews(0);
 		mappedEntity.setImportant(false);
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
@@ -482,7 +481,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	@Transactional
-	@Scheduled(cron = "0 0/1 * * * *")
+	@Scheduled(cron = "0 0/5 * * * *")
 	public void updatePlannedStatus() {
 		List<PostEntity> allByStatus = postRepository.findAllByStatus(PostStatus.PLANNED);
 		Timestamp date = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MIN));
