@@ -160,7 +160,8 @@ class PostControllerTest {
 		Set<Integer> type = Set.of(2);
 		Set<Integer> tag = Set.of(3, 4, 5, 6);
 		Pageable pageable = PageRequest.of(0, 6, Sort.by("createdAt", "id").descending());
-		mockMvc.perform(get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tag=3,4,5,6"))
+		mockMvc.perform(get(POST + POST_LATEST_BY_DIRECTION +
+						"?direction=1&page=0&size=6&type=2&tag=3,4,5,6"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByDirection(directionId, type, tag, PostStatus.PUBLISHED, pageable);
 	}
@@ -279,7 +280,8 @@ class PostControllerTest {
 
 		mockMvc.perform(delete("/post/-1").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk()).andExpect(
-						result -> Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
+						result -> Assertions.assertEquals(
+								"{\"success\":false,\"message\":\"Post with -1 not found\"}",
 								result.getResponse().getContentAsString()));
 	}
 
@@ -298,7 +300,8 @@ class PostControllerTest {
 
 		mockMvc.perform(put("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk()).andExpect(
-						result -> Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
+						result -> Assertions.assertEquals(
+								"{\"success\":false,\"message\":\"Post with -1 not found\"}",
 								result.getResponse().getContentAsString()));
 	}
 
@@ -318,7 +321,8 @@ class PostControllerTest {
 		Mockito.when(
 				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
 						statuses, title, author, null, startDate, endDate, pageable)).thenReturn(page);
-		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=1,2&types=1,3&origins=2,3")).andExpect(status().isOk())
+		mockMvc.perform(get(POST + POST_ALL_POSTS +
+						"?directions=1,2&types=1,3&origins=2,3")).andExpect(status().isOk())
 				.andExpect(result -> Assertions.assertEquals(1,
 						getIdFromResponse(result.getResponse().getContentAsString())));
 
@@ -383,7 +387,8 @@ class PostControllerTest {
 		mockMvc.perform(get(POST + POST_ALL_POSTS +
 						"?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=0"))
 				.andExpect(status().isOk()).andExpect(
-						result -> Assertions.assertEquals(0, getIdFromResponse(result.getResponse().getContentAsString())));
+						result -> Assertions.assertEquals(0,
+								getIdFromResponse(result.getResponse().getContentAsString())));
 
 		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
 				statuses, title, author, null, startDate, endDate, pageable);
@@ -429,7 +434,8 @@ class PostControllerTest {
 		Page<PostMainPageDTO> page = new PageImpl<>(List.of(postMainPageDTO));
 		when(postService.findLatestByPostTypesAndOriginsForMobile(any(Pageable.class))).thenReturn(page);
 
-		mockMvc.perform(get(POST + POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE)).andExpect(status().isOk());
+		mockMvc.perform(get(POST + POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE))
+				.andExpect(status().isOk());
 		verify(postService).findLatestByPostTypesAndOriginsForMobile(any(Pageable.class));
 	}
 
