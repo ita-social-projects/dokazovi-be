@@ -17,5 +17,6 @@ public final class HttpStatuses {
 	public static final String NOT_FOUND = "Not Found";
 	public static final String SEE_OTHER = "SEE_OTHER";
 	public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+	public static final String INTERNAL_SERVER_ERROR1 = "INTERNAL_SERVER_ERROR";
 
 }

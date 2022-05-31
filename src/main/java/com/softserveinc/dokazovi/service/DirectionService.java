@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Set;
 
 public interface DirectionService {
-
+	// same method at OriginService, PostTypeService, RegionService
 	List<DirectionDTO> findAllDirections();
-
+	// how can we put in on top
 	List<DirectionDTO> findAllDirectionsByUserId(Integer userId);
 
 	List<DirectionDTO> findAllDirectionsByDoctorId(Integer userId);
@@ -17,7 +17,7 @@ public interface DirectionService {
 	List<DirectionDTO> findAllDirectionsOfPostsByUserId(Integer userId);
 
 	List<DirectionDTO> findAllDirectionsOfPostsByDoctorId(Integer userId);
-
+	//same method at Interfaces except PlatformInformationService,
 	DirectionEntity getById(Integer id);
 
 	void updateDirectionsHasDoctorsStatus();

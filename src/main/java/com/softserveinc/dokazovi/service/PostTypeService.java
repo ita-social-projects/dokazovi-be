@@ -6,7 +6,7 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import java.util.List;
 
 public interface PostTypeService {
-
+	//	same method at DirectionService, OriginService, RegionService
 	List<PostTypeDTO> findAll();
 
 	List<PostTypeDTO> findAllPostTypesByUserId(Integer userId);
