@@ -58,4 +58,8 @@ public class PostSaveFromUserDTO {
 	private Set<@DirectionExists DirectionDTOForSavingPost> directions;
 
 	private Set<@OriginExists OriginDTOForSavingPost> origins;
+
+	private Integer views;
+
+	private Integer realViews;
 }
