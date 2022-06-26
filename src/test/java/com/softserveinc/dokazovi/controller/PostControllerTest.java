@@ -332,7 +332,7 @@ class PostControllerTest {
 		String title = "";
 		LocalDateTime startDate = null;
 		LocalDateTime endDate = null;
-		Pageable pageable = PageRequest.of(0, 10, Sort.by("modifiedAt").descending());
+		Pageable pageable = PageRequest.of(0, 10);
 		PostDTO postDTO = PostDTO.builder()
 				.id(1)
 				.build();
@@ -371,7 +371,7 @@ class PostControllerTest {
 		String title = "";
 		LocalDateTime startDate = null;
 		LocalDateTime endDate = null;
-		Pageable pageable = PageRequest.of(0, 10, Sort.by("modifiedAt").descending());
+		Pageable pageable = PageRequest.of(0, 10);
 		PostDTO postDTO = PostDTO.builder()
 				.id(0)
 				.build();
