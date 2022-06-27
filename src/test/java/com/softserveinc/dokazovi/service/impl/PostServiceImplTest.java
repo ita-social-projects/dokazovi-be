@@ -1723,16 +1723,4 @@ class PostServiceImplTest {
 		Mockito.when(postRepository.findById(1)).thenReturn(Optional.of(postEntity));
 		assertTrue(postService.setPublishedAt(1, postPublishedAtDTO));
 	}
-
-	@Test
-	void setPublishedAtTest_NotPresent() {
-		Timestamp publishedAt = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2002, Month.JANUARY, 14),
-				LocalTime.MIN));
-		int postId = -1;
-		PostPublishedAtDTO postPublishedAtDTO = PostPublishedAtDTO.builder().publishedAt(publishedAt).build();
-		Mockito.when(postRepository.findById(postId)).thenThrow(
-				new EntityNotFoundException("Post with this id=" + postId + " doesn't exist"));
-		assertThrows(EntityNotFoundException.class,
-				() -> postService.setPublishedAt(postId, postPublishedAtDTO));
-	}
 }
