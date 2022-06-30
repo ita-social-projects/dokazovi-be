@@ -62,4 +62,6 @@ public class PostSaveFromUserDTO {
 	private Integer views;
 
 	private Integer realViews;
+
+	private Integer fakeViews;
 }
