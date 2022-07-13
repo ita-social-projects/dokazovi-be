@@ -1,0 +1,1 @@
+alter table users_social_networks rename column social_networks to link;

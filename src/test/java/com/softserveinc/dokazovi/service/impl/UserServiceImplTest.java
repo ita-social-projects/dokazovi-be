@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -440,8 +441,11 @@ class UserServiceImplTest {
 		UserEntity userEntity = userService.getById(1);
 		userEntity.setEmail(expectedEmail);
 		when(userRepository.save(any(UserEntity.class))).thenReturn(expected);
+		Assertions.assertNull(expected.getEditedAt());
 		UserEntity actual = userService.update(userEntity);
 		Assertions.assertEquals(expectedEmail, actual.getEmail());
+		Assertions.assertNotNull(actual.getEditedAt());
+
 	}
 
 	@Test
