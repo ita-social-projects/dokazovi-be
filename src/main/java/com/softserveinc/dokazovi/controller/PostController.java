@@ -306,7 +306,7 @@ public class PostController {
 	@GetMapping(POST_ALL_POSTS + BY_USER_ENDPOINT)
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
 	public ResponseEntity<Page<PostDTO>> getAllPostsForUserByDirectionsByPostTypesAndByOrigins(
-			@PageableDefault(sort = {"modifiedAt"}, direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
 			@ApiParam(value = "Multiple comma-separated post type's IDs, e.g. ?types=1,2,3,4...", type = "string")
