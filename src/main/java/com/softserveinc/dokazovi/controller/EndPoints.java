@@ -44,6 +44,7 @@ public final class EndPoints {
 	public static final String REGION = "/region";
 	public static final String AUTH = "/auth";
 	public static final String AUTH_VERIFICATION = "/verification";
+	public static final String REFRESH_TOKEN = "/refreshtoken";
 	public static final String AUTH_LOGIN = "/login";
 	public static final String AUTH_SIGNUP = "/signup";
 	public static final String POST_TYPES = "/post-types";

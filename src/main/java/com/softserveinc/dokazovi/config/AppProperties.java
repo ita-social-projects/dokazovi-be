@@ -14,6 +14,8 @@ public class AppProperties {
         private String tokenSecret;
         private long tokenExpirationMsec;
 
+        private long refreshTokenExpirationMsec;
+
         public String getTokenSecret() {
             return tokenSecret;
         }
@@ -29,6 +31,14 @@ public class AppProperties {
         public void setTokenExpirationMsec(long tokenExpirationMsec) {
             this.tokenExpirationMsec = tokenExpirationMsec;
         }
+
+        public long getRefreshTokenExpirationMsec() {
+            return refreshTokenExpirationMsec;
+        }
+        public void setRefreshTokenExpirationMsec(long refreshTokenExpirationMsec) {
+             this.refreshTokenExpirationMsec = refreshTokenExpirationMsec;
+        }
+
     }
 
     public static final class OAuth2 {

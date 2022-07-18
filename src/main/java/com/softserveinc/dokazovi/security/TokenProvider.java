@@ -30,6 +30,10 @@ public class TokenProvider {
 
 	public String createToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		return createToken(userPrincipal);
+	}
+
+	public String createToken(UserPrincipal userPrincipal){
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
 		Map<String, Object> claims = new HashMap<>();
@@ -42,6 +46,7 @@ public class TokenProvider {
 				.signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
 				.compact();
 	}
+
 
 	public Integer getUserIdFromToken(String token) {
 		Claims claims = Jwts.parser()
