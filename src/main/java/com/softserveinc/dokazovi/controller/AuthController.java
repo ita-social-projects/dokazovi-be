@@ -63,21 +63,20 @@ public class AuthController {
 				)
 		);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-
 		UserEntity userEntity = userService.findByEmail(loginRequest.getEmail());
 		if (!userEntity.getEnabled()) {
 			throw new BadRequestException("Please confirm your email!");
 		} else {
 			String token = tokenProvider.createToken(authentication);
-			RefreshToken refreshToken = refreshTokenService.createRefreshToken(userEntity.getId());
-			AuthResponse authResponse = new AuthResponse(token, refreshToken.getToken());
+			String refreshToken = refreshTokenService.createRefreshToken(userEntity.getId()).getToken();
+			AuthResponse authResponse = new AuthResponse(token, refreshToken);
 			authResponse.setAccessToken(token);
 			return ResponseEntity.ok(authResponse);
 		}
 	}
 
 	@PostMapping(REFRESH_TOKEN)
-	public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+	public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
 		String requestRefreshToken = request.getRefreshToken();
 
 		return refreshTokenService.findByToken(requestRefreshToken)
