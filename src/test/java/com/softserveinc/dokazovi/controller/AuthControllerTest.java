@@ -77,15 +77,20 @@ class AuthControllerTest {
 		LoginRequest loginRequest = new LoginRequest();
 		loginRequest.setEmail(email);
 		loginRequest.setPassword(password);
+
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
 						loginRequest.getEmail(),
 						loginRequest.getPassword()
 				)
 		);
+
 		String token = "950c9760-805e-449c-a966-2d0d5ebd86f4";
+
 		String refreshTokenString = "4a714dd1-a71d-4a29-9327-e172db25a042";
+
 		String uri = AUTH + AUTH_LOGIN;
+
 		UserEntity user = UserEntity.builder()
 				.id(1)
 				.email(email)
