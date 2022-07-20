@@ -19,6 +19,7 @@ public class AppProperties {
 		private long tokenExpirationMsec;
 		@Value("#{new Long('${app.auth.refreshTokenExpirationMsec}')}")
 		private long refreshTokenExpirationMsec;
+
 		public String getTokenSecret() {
 			return tokenSecret;
 		}
