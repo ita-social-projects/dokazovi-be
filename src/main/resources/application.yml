@@ -23,8 +23,8 @@ spring:
 app:
   auth:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
-    tokenExpirationMsec: 60000
-    refreshTokenExpirationMsec: 120000
+    tokenExpirationMsec: ${TOKEN_EXPIRATION_MSEC}
+    refreshTokenExpirationMsec: ${REFRESH_TOKEN_EXPIRATION_MSEC}
   oauth2:
     authorizedRedirectUris:
       - http://localhost:3000/oauth2/redirect

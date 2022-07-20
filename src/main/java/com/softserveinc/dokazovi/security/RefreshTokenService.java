@@ -6,7 +6,7 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.exception.TokenRefreshException;
 import com.softserveinc.dokazovi.repositories.RefreshTokenRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,17 +14,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
 
-	private AppProperties appProperties;
-	@Autowired
-	private RefreshTokenRepository refreshTokenRepository;
-	@Autowired
-	private UserRepository userRepository;
-
-	public RefreshTokenService(AppProperties appProperties) {
-		this.appProperties = appProperties;
-	}
+	private final AppProperties appProperties;
+	private final RefreshTokenRepository refreshTokenRepository;
+	private final UserRepository userRepository;
 
 	public Optional<RefreshToken> findByToken(String token){
 		return refreshTokenRepository.findByToken(token);
@@ -32,11 +27,12 @@ public class RefreshTokenService {
 
 	public RefreshToken createRefreshToken(Integer userId){
 		RefreshToken refreshToken = new RefreshToken();
+		long expireTime = appProperties.getAuth().getRefreshTokenExpirationMsec();
 
 		Optional<UserEntity> userEntity = userRepository.findById(userId);
 		if(userEntity.isPresent()){
 			refreshToken.setUser(userEntity.get());
-			refreshToken.setExpiryDate(Instant.now().plusMillis(appProperties.getAuth().getRefreshTokenExpirationMsec()));
+			refreshToken.setExpiryDate(Instant.now().plusMillis(expireTime));
 			refreshToken.setToken(UUID.randomUUID().toString());
 		}
 
