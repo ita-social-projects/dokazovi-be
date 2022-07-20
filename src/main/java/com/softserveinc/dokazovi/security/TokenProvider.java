@@ -33,11 +33,11 @@ public class TokenProvider {
 		return createToken(userPrincipal);
 	}
 
-	public String createToken(UserPrincipal userPrincipal){
+	public String createToken(UserPrincipal userPrincipal) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
 		Map<String, Object> claims = new HashMap<>();
-		claims.put("Permissions",userPrincipal.getAuthorities().toString());
+		claims.put("Permissions", userPrincipal.getAuthorities().toString());
 		return Jwts.builder()
 				.setSubject(Long.toString(userPrincipal.getId()))
 				.setIssuedAt(new Date())
