@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
@@ -12,8 +13,9 @@ public class AppProperties {
 
     public static class Auth {
         private String tokenSecret;
+//        @Value("${TOKEN_EXPIRATION_MSEC:600000}")
         private long tokenExpirationMsec;
-
+//        @Value("${REFRESH_TOKEN_EXPIRATION_MSEC:1200000}")
         private long refreshTokenExpirationMsec;
 
         public String getTokenSecret() {
