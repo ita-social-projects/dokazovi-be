@@ -13,7 +13,7 @@ public class AppProperties {
 
     public static class Auth {
         private String tokenSecret;
-        @Value("${TOKEN_EXPIRATION_MSEC:600000}")
+        @Value("${app.auth.tokenExpirationMsec}")
         private long tokenExpirationMsec;
 
         public String getTokenSecret() {
