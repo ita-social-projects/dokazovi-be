@@ -13,9 +13,9 @@ public class AppProperties {
 
     public static class Auth {
         private String tokenSecret;
-//        @Value("${TOKEN_EXPIRATION_MSEC:600000}")
+        @Value("${app.auth.tokenExpirationMsec}")
         private long tokenExpirationMsec;
-//        @Value("${REFRESH_TOKEN_EXPIRATION_MSEC:1200000}")
+        @Value("${app.auth.refreshTokenExpirationMsec}")
         private long refreshTokenExpirationMsec;
 
         public String getTokenSecret() {
