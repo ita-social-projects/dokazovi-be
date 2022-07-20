@@ -21,16 +21,16 @@ public class RefreshTokenService {
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final UserRepository userRepository;
 
-	public Optional<RefreshToken> findByToken(String token){
+	public Optional<RefreshToken> findByToken(String token) {
 		return refreshTokenRepository.findByToken(token);
 	}
 
-	public RefreshToken createRefreshToken(Integer userId){
+	public RefreshToken createRefreshToken(Integer userId) {
 		RefreshToken refreshToken = new RefreshToken();
 		long expireTime = appProperties.getAuth().getRefreshTokenExpirationMsec();
 
 		Optional<UserEntity> userEntity = userRepository.findById(userId);
-		if(userEntity.isPresent()){
+		if (userEntity.isPresent()) {
 			refreshToken.setUser(userEntity.get());
 			refreshToken.setExpiryDate(Instant.now().plusMillis(expireTime));
 			refreshToken.setToken(UUID.randomUUID().toString());
@@ -41,10 +41,11 @@ public class RefreshTokenService {
 		return refreshToken;
 	}
 
-	public RefreshToken verifyExpiration(RefreshToken token){
-		if(token.getExpiryDate().compareTo(Instant.now()) < 0){
+	public RefreshToken verifyExpiration(RefreshToken token) {
+		if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
 			refreshTokenRepository.delete(token);
-			throw new TokenRefreshException(token.getToken(), "Refresh token was expired. Please make a new signin request");
+			throw new TokenRefreshException(token.getToken(),
+					"Refresh token was expired. Please make a new signin request");
 		}
 		return token;
 	}
