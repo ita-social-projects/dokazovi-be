@@ -15,11 +15,10 @@ public class AppProperties {
 	public static class Auth {
 
 		private String tokenSecret;
-		@Value("${app.auth.tokenExpirationMsec}")
+		@Value("#{new Long('${app.auth.tokenExpirationMsec}')}")
 		private long tokenExpirationMsec;
-		@Value("${app.auth.refreshTokenExpirationMsec}")
+		@Value("#{new Long('${app.auth.refreshTokenExpirationMsec}')}")
 		private long refreshTokenExpirationMsec;
-
 		public String getTokenSecret() {
 			return tokenSecret;
 		}
