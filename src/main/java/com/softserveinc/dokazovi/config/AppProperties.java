@@ -16,7 +16,6 @@ public class AppProperties {
         @Value("${TOKEN_EXPIRATION_MSEC:600000}")
         private long tokenExpirationMsec;
 
-        @Value("${REFRESH_TOKEN_EXPIRATION_MSEC:1200000}")
         public String getTokenSecret() {
             return tokenSecret;
         }
