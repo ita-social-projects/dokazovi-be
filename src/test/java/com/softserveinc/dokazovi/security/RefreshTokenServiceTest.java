@@ -38,6 +38,7 @@ class RefreshTokenServiceTest {
 	RefreshTokenService refreshTokenService;
 
 	UserEntity user;
+
 	@BeforeEach
 	void setUp() {
 		user = UserEntity.builder()
