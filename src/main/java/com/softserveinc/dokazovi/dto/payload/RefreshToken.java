@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.dto.payload;
 
 import com.softserveinc.dokazovi.entity.UserEntity;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

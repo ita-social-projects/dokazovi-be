@@ -8,60 +8,64 @@ import java.util.List;
 
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
-    private final Auth auth = new Auth();
-    private final OAuth2 oauth2 = new OAuth2();
 
-    public static class Auth {
-        private String tokenSecret;
-        @Value("${app.auth.tokenExpirationMsec}")
-        private long tokenExpirationMsec;
-        @Value("${app.auth.refreshTokenExpirationMsec}")
-        private long refreshTokenExpirationMsec;
+	private final Auth auth = new Auth();
+	private final OAuth2 oauth2 = new OAuth2();
 
-        public String getTokenSecret() {
-            return tokenSecret;
-        }
+	public static class Auth {
 
-        public void setTokenSecret(String tokenSecret) {
-            this.tokenSecret = tokenSecret;
-        }
+		private String tokenSecret;
+		@Value("${app.auth.tokenExpirationMsec}")
+		private long tokenExpirationMsec;
+		@Value("${app.auth.refreshTokenExpirationMsec}")
+		private long refreshTokenExpirationMsec;
 
-        public long getTokenExpirationMsec() {
-            return tokenExpirationMsec;
-        }
+		public String getTokenSecret() {
+			return tokenSecret;
+		}
 
-        public void setTokenExpirationMsec(long tokenExpirationMsec) {
-            this.tokenExpirationMsec = tokenExpirationMsec;
-        }
+		public void setTokenSecret(String tokenSecret) {
+			this.tokenSecret = tokenSecret;
+		}
 
-        public long getRefreshTokenExpirationMsec() {
-            return refreshTokenExpirationMsec;
-        }
-        public void setRefreshTokenExpirationMsec(long refreshTokenExpirationMsec) {
-             this.refreshTokenExpirationMsec = refreshTokenExpirationMsec;
-        }
+		public long getTokenExpirationMsec() {
+			return tokenExpirationMsec;
+		}
 
-    }
+		public void setTokenExpirationMsec(long tokenExpirationMsec) {
+			this.tokenExpirationMsec = tokenExpirationMsec;
+		}
 
-    public static final class OAuth2 {
-        private List<String> authorizedRedirectUris = new ArrayList<>();
+		public long getRefreshTokenExpirationMsec() {
+			return refreshTokenExpirationMsec;
+		}
 
-        public List<String> getAuthorizedRedirectUris() {
-            return authorizedRedirectUris;
-        }
+		public void setRefreshTokenExpirationMsec(long refreshTokenExpirationMsec) {
+			this.refreshTokenExpirationMsec = refreshTokenExpirationMsec;
+		}
 
-        public OAuth2 authorizedRedirectUris(List<String> authorizedRedirectUris) {
-            this.authorizedRedirectUris = authorizedRedirectUris;
-            return this;
-        }
-    }
+	}
 
-    public Auth getAuth() {
-        return auth;
-    }
+	public static final class OAuth2 {
 
-    public OAuth2 getOauth2() {
-        return oauth2;
-    }
+		private List<String> authorizedRedirectUris = new ArrayList<>();
+
+		public List<String> getAuthorizedRedirectUris() {
+			return authorizedRedirectUris;
+		}
+
+		public OAuth2 authorizedRedirectUris(List<String> authorizedRedirectUris) {
+			this.authorizedRedirectUris = authorizedRedirectUris;
+			return this;
+		}
+	}
+
+	public Auth getAuth() {
+		return auth;
+	}
+
+	public OAuth2 getOauth2() {
+		return oauth2;
+	}
 }
 
