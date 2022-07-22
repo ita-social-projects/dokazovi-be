@@ -30,7 +30,7 @@ public interface UserService {
 
 	VerificationToken getVerificationToken(String verificationToken);
 
-	UserEntity getById (Integer userId);
+	UserEntity getById(Integer userId);
 
 	UserEntity update(UserEntity user);
 
@@ -39,4 +39,6 @@ public interface UserService {
 	void sendPasswordResetToken(UserEntity user, String origin);
 
 	boolean isPasswordMatches(UserEntity user, String password);
+
+	UserEntity save(UserEntity user);
 }

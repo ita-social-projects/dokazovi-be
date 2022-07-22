@@ -53,6 +53,7 @@ public final class EndPoints {
 	public static final String PLATFORM_INFORMATION_BY_ID = "/{infoId}";
 	public static final String POST_GET_BY_IMPORTANT_IMAGE = "/get-by-important-image";
 	public static final String USER_EXPERT_ALL_POST_DIRECTIONS = "/experts/{expertId}/post-directions";
+	public static final String SAVE_USER = "/user";
 
 	/**
 	 * Method that adds slash after each endpoint while calling

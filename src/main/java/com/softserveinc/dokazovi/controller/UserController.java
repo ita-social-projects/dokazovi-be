@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
+import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
@@ -26,6 +27,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +44,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.SAVE_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
@@ -248,5 +251,16 @@ public class UserController {
 		}
 		return ResponseEntity.status(authorities != null
 				? HttpStatus.OK : HttpStatus.NOT_FOUND).body(authorities);
+	}
+	@PostMapping
+	@ApiOperation(value = "Save post of user",
+			authorizations = {@Authorization(value = "Authorization")})
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = UserEntity.class),
+			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)})
+	public ResponseEntity<UserEntity> saveUser(UserEntity user) {
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(userService.save(user));
 	}
 }
