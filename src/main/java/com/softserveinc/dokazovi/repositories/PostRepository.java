@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -19,6 +20,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	Page<PostEntity> findAllByImportantIsTrueAndStatusOrderByImportanceOrder(PostStatus status, Pageable pageable);
 
 	Page<PostEntity> findAllByStatus(PostStatus postStatus, Pageable pageable);
+
+
+	List<PostEntity> findAllByStatus(PostStatus postStatus);
 
 	Page<PostEntity> findAllByDirectionsContainsAndStatus(
 			DirectionEntity direction, PostStatus postStatus, Pageable pageable);
@@ -62,9 +66,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 	@Modifying
 	void updateRealViews(Integer postId, Integer realViews);
 
-	@Query(value = "UPDATE post_entity  SET fakeViews = :fakeViews WHERE id = :postId")
+	@Query(value = "UPDATE post_entity p SET publishedAt =:publishedAt WHERE id =:postId")
 	@Modifying
-	void setFakeViews(Integer postId, Integer fakeViews);
+	void setPublishedAt(Integer postId, Timestamp publishedAt);
 
 	@Query(nativeQuery = true,
 			value = "SELECT * FROM POSTS "
@@ -201,33 +205,33 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			Timestamp startDate, Timestamp endDate, Pageable pageable);
 
 	@Query(nativeQuery = true,
-	value = "SELECT p.*, u.first_name FROM users u, posts p "
-			+ "WHERE p.author_id = u.user_id "
-			+ "AND CASE WHEN :typeIds IS NOT NULL "
-			+ "THEN p.type_id IN (:typeIds) "
-			+ "ELSE p.post_id IS NOT NULL "
-			+ "END "
-			+ "AND CASE WHEN :directionIds IS NOT NULL "
-			+ "THEN p.post_id IN "
-			+ "(SELECT pd.post_id FROM posts_directions pd WHERE pd.direction_id IN (:directionIds)) "
-			+ "ELSE p.post_id IS NOT NULL "
-			+ "END "
-			+ "AND CASE WHEN :originIds IS NOT NULL "
-			+ "THEN p.post_id IN "
-			+ "(SELECT po.post_id FROM posts_origins po WHERE po.origin_id IN (:originIds)) "
-			+ "ELSE p.post_id IS NOT NULL "
-			+ "END "
-			+ "AND CASE WHEN :statuses IS NOT NULL "
-			+ "THEN p.status IN (:statuses) "
-			+ "ELSE p.post_id IS NOT NULL "
-			+ "END "
-			+ "AND p.author_id = :authorId "
-			+ "AND p.modified_at between :startDate and :endDate "
-			+ "AND UPPER((p.title) COLLATE \"uk-ua-dokazovi-x-icu\") "
-			+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\")")
+			value = "SELECT p.*, u.first_name FROM users u, posts p "
+					+ "WHERE p.author_id = u.user_id "
+					+ "AND CASE WHEN :typeIds IS NOT NULL "
+					+ "THEN p.type_id IN (:typeIds) "
+					+ "ELSE p.post_id IS NOT NULL "
+					+ "END "
+					+ "AND CASE WHEN :directionIds IS NOT NULL "
+					+ "THEN p.post_id IN "
+					+ "(SELECT pd.post_id FROM posts_directions pd WHERE pd.direction_id IN (:directionIds)) "
+					+ "ELSE p.post_id IS NOT NULL "
+					+ "END "
+					+ "AND CASE WHEN :originIds IS NOT NULL "
+					+ "THEN p.post_id IN "
+					+ "(SELECT po.post_id FROM posts_origins po WHERE po.origin_id IN (:originIds)) "
+					+ "ELSE p.post_id IS NOT NULL "
+					+ "END "
+					+ "AND CASE WHEN :statuses IS NOT NULL "
+					+ "THEN p.status IN (:statuses) "
+					+ "ELSE p.post_id IS NOT NULL "
+					+ "END "
+					+ "AND p.author_id = :authorId "
+					+ "AND p.modified_at between :startDate and :endDate "
+					+ "AND UPPER((p.title) COLLATE \"uk-ua-dokazovi-x-icu\") "
+					+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\")")
 	Page<PostEntity> findAllByAuthorIdByTypesAndStatusAndDirectionsAndOriginsAndTitle(Set<Integer> typeIds,
-	Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, Integer authorId,
-	Timestamp startDate, Timestamp endDate, Pageable pageable);
+			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, Integer authorId,
+			Timestamp startDate, Timestamp endDate, Pageable pageable);
 
 	Page<PostEntity> findAllByAuthorId(Integer authorId, Pageable pageable);
 }

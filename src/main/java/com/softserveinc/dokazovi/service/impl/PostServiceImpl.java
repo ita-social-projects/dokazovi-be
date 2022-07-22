@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.service.impl;
 import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
+import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
@@ -48,7 +49,6 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
-
 	private final PostRepository postRepository;
 	private final PostMapper postMapper;
 	private final UserRepository userRepository;
@@ -72,11 +72,9 @@ public class PostServiceImpl implements PostService {
 				oldEntity,
 				mappedEntity
 		);
-		mappedEntity.setFakeViews(0);
-		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
 		mappedEntity.setImportant(false);
-
 		mappedEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+		UserEntity userEntity = userRepository.getOne(userPrincipal.getId());
 
 		if (userEntity.getId().equals(postDTO.getAuthorId()) && userPrincipal.getAuthorities().stream()
 				.anyMatch(grantedAuthority -> grantedAuthority
@@ -464,5 +462,31 @@ public class PostServiceImpl implements PostService {
 	public void updateRealViews() {
 		Map<Integer, Integer> postIdsAndViews = googleAnalytics.getAllPostsViewCount();
 		postIdsAndViews.forEach(postRepository::updateRealViews);
+	}
+
+	@Override
+	@Transactional
+	public boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt) {
+		Optional<PostEntity> post = postRepository.findById(postId);
+		if (post.isPresent()) {
+			postRepository.setPublishedAt(postId, publishedAt.getPublishedAt());
+			PostEntity postEntity = post.get();
+			postEntity.setStatus(PostStatus.PLANNED);
+			postRepository.save(postEntity);
+			return true;
+		} else {
+			throw new EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
+		}
+	}
+
+	@Override
+	@Transactional
+	@Scheduled(cron = "0 0/5 * * * *")
+	public void updatePlannedStatus() {
+		List<PostEntity> allByStatus = postRepository.findAllByStatus(PostStatus.PLANNED);
+		Timestamp date = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MIN));
+		allByStatus.stream()
+				.filter(postEntity -> postEntity.getPublishedAt().before(date))
+				.forEach(postEntity -> postEntity.setStatus(PostStatus.PUBLISHED));
 	}
 }

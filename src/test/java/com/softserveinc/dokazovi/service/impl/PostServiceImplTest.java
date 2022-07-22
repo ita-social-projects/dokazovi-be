@@ -7,6 +7,7 @@ import com.softserveinc.dokazovi.annotations.TagExists;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTOForSavingPost;
 import com.softserveinc.dokazovi.dto.origin.OriginDTOForSavingPost;
+import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeIdOnlyDTO;
@@ -56,6 +57,7 @@ import java.util.Set;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -1712,4 +1714,13 @@ class PostServiceImplTest {
 		assertEquals(2, result.size());
 	}
 
+	@Test
+	void setPublishedAtTest() {
+		Timestamp publishedAt = Timestamp.valueOf(LocalDateTime.of(LocalDate.of(2002, Month.JANUARY, 14),
+				LocalTime.MIN));
+		PostPublishedAtDTO postPublishedAtDTO = PostPublishedAtDTO.builder().publishedAt(publishedAt).build();
+		PostEntity postEntity = PostEntity.builder().id(1).publishedAt(publishedAt).build();
+		Mockito.when(postRepository.findById(1)).thenReturn(Optional.of(postEntity));
+		assertTrue(postService.setPublishedAt(1, postPublishedAtDTO));
+	}
 }

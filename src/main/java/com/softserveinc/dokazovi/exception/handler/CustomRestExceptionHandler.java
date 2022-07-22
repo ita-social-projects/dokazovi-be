@@ -1,6 +1,8 @@
 package com.softserveinc.dokazovi.exception.handler;
 
 import com.softserveinc.dokazovi.exception.DtoException;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
+import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +38,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
 	}
 
-	@ExceptionHandler({DtoException.class})
-	public ResponseEntity<Object> handleEntityException(final DtoException ex) {
+	@ExceptionHandler({DtoException.class, EntityNotFoundException.class, ForbiddenPermissionsException.class})
+	public ResponseEntity<Object> handleEntityException(final Exception ex) {
 		logger.info(ex.getClass().getName());
 		final ApiError apiError = ApiError.builder()
 				.status(HttpStatus.BAD_REQUEST)
@@ -45,4 +47,5 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 				.build();
 		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
+
 }

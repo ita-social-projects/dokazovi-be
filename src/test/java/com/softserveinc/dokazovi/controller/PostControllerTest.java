@@ -3,10 +3,10 @@ package com.softserveinc.dokazovi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
+import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
-import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -63,6 +63,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -143,10 +144,21 @@ class PostControllerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
 		mockMvc.perform(post(POST)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content))
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(content))
 				.andExpect(status().isCreated());
 		verify(postService).saveFromUser(eq(post), any());
+	}
+
+	@Test
+	void setPublishedAtTest_isOk() throws Exception {
+		int postId = 4;
+		String content = "{\n" + "  \"publishedAt\": \"19.05.2022\"\n" + "}";
+		ObjectMapper mapper = new ObjectMapper();
+		PostPublishedAtDTO postPublishedAtDTO = mapper.readValue(content, PostPublishedAtDTO.class);
+		mockMvc.perform(patch("/post/" + postId).contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk());
+		verify(postService, times(1)).setPublishedAt(postId, postPublishedAtDTO);
 	}
 
 	@Test
@@ -172,7 +184,7 @@ class PostControllerTest {
 		Set<Integer> tag = Set.of(3, 4, 5, 6);
 		Pageable pageable = PageRequest.of(0, 6, Sort.by("createdAt", "id").descending());
 		mockMvc.perform(
-				get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tag=3,4,5,6"))
+						get(POST + POST_LATEST_BY_DIRECTION + "?direction=1&page=0&size=6&type=2&tag=3,4,5,6"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByDirection(directionId, type, tag, PostStatus.PUBLISHED, pageable);
 	}
@@ -219,7 +231,7 @@ class PostControllerTest {
 		Set<Integer> directionId = Set.of(1, 2, 3);
 		Pageable pageable = PageRequest.of(0, 10);
 		mockMvc.perform(
-				get(POST + POST_LATEST_BY_EXPERT + "?expert=2&type=1,2&direction=1,2,3"))
+						get(POST + POST_LATEST_BY_EXPERT + "?expert=2&type=1,2&direction=1,2,3"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByExpertAndTypeAndDirections(expertId, typeId, directionId, pageable);
 	}
@@ -231,7 +243,7 @@ class PostControllerTest {
 		PostStatus postStatus = PostStatus.DRAFT;
 		Pageable pageable = PageRequest.of(0, 10);
 		mockMvc.perform(
-				get(POST + POST_LATEST_BY_EXPERT_AND_STATUS + "?expert=2&types=1,2&status=DRAFT"))
+						get(POST + POST_LATEST_BY_EXPERT_AND_STATUS + "?expert=2&types=1,2&status=DRAFT"))
 				.andExpect(status().isOk());
 		verify(postService).findAllByExpertAndTypeAndStatus(expertId, typeId, postStatus, pageable);
 	}
@@ -268,12 +280,12 @@ class PostControllerTest {
 				"  }\n" +
 				"}";
 
-		Mockito.when(postService.removePostById(any(UserPrincipal.class), any(Integer.class),any(Boolean.class)))
+		Mockito.when(postService.removePostById(any(UserPrincipal.class), any(Integer.class), any(Boolean.class)))
 				.thenReturn(true);
 		mockMvc.perform(delete("/post/1").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 deleted successfully\"}",
-						result.getResponse().getContentAsString()));
+						Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 deleted successfully\"}",
+								result.getResponse().getContentAsString()));
 	}
 
 	@Test
@@ -306,78 +318,8 @@ class PostControllerTest {
 				.thenReturn(true);
 		mockMvc.perform(put("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 updated successfully\"}",
-						result.getResponse().getContentAsString()));
-	}
-
-	@Test
-	void deletePostById_WhenNotExists_NotFound() throws Exception {
-		String content = "{\n" +
-				"  \"content\": \"string\",\n" +
-				"  \"directions\": [\n" +
-				"    {\n" +
-				"      \"id\": 1\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"id\": -1,\n" +
-				"  \"preview\": \"string\",\n" +
-				"  \"videoUrl\": \"string\",\n" +
-				"  \"previewImageUrl\": \"string\",\n" +
-				"  \"tags\": [\n" +
-				"    {\n" +
-				"      \"id\": 1,\n" +
-				"      \"tag\": \"string\"\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"title\": \"string\",\n" +
-				"  \"type\": {\n" +
-				"    \"id\": 1,\n" +
-				"    \"name\": \"string\"\n" +
-				"  }\n" +
-				"}";
-
-		Mockito.when(postService.removePostById(any(UserPrincipal.class), any(Integer.class),any(Boolean.class)))
-				.thenThrow(new EntityNotFoundException("Post with -1 not found"));
-
-		mockMvc.perform(delete("/post/-1").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
-						result.getResponse().getContentAsString()));
-	}
-
-	@Test
-	void updatePostById_WhenNotExists_NotFound() throws Exception {
-		String content = "{\n" +
-				"  \"content\": \"string\",\n" +
-				"  \"directions\": [\n" +
-				"    {\n" +
-				"      \"id\": 1\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"id\": -1,\n" +
-				"  \"preview\": \"string\",\n" +
-				"  \"videoUrl\": \"string\",\n" +
-				"  \"previewImageUrl\": \"string\",\n" +
-				"  \"tags\": [\n" +
-				"    {\n" +
-				"      \"id\": 1,\n" +
-				"      \"tag\": \"string\"\n" +
-				"    }\n" +
-				"  ],\n" +
-				"  \"title\": \"string\",\n" +
-				"  \"type\": {\n" +
-				"    \"id\": 1,\n" +
-				"    \"name\": \"string\"\n" +
-				"  }\n" +
-				"}";
-
-		Mockito.when(postService.updatePostById(any(UserPrincipal.class), any(PostSaveFromUserDTO.class)))
-				.thenThrow(new EntityNotFoundException("Post with -1 not found"));
-
-		mockMvc.perform(put("/post/").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals("{\"success\":false,\"message\":\"Post with -1 not found\"}",
-						result.getResponse().getContentAsString()));
+						Assertions.assertEquals("{\"success\":true,\"message\":\"post 1 updated successfully\"}",
+								result.getResponse().getContentAsString()));
 	}
 
 	@Test
@@ -396,7 +338,7 @@ class PostControllerTest {
 				.build();
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
 		Mockito.when(postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
-				origins, statuses, title, author,null,startDate,endDate, pageable))
+						origins, statuses, title, author, null, startDate, endDate, pageable))
 				.thenReturn(page);
 		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=1,2&types=1,3&origins=2,3"))
 				.andExpect(status().isOk())
@@ -405,7 +347,7 @@ class PostControllerTest {
 				);
 
 		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
-				origins, statuses, title, author,null,startDate,endDate, pageable);
+				origins, statuses, title, author, null, startDate, endDate, pageable);
 	}
 
 	private Integer getIdFromResponse(String json) {
@@ -417,36 +359,6 @@ class PostControllerTest {
 			e.printStackTrace();
 		}
 		return 0;
-	}
-
-	@Test
-	void findAllPostsByDirectionsByPostTypesAndByOrigins_CatchException() throws Exception {
-		Set<Integer> directionIds = null;
-		Set<Integer> typeIds = null;
-		Set<Integer> originIds = null;
-		Set<Integer> statuses = null;
-		String author = "";
-		String title = "";
-		LocalDateTime startDate = null;
-		LocalDateTime endDate = null;
-		Pageable pageable = PageRequest.of(0, 10);
-		Page<PostDTO> page = null;
-
-		Mockito.when(
-				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionIds, typeIds,
-						originIds, statuses, title, author,null,startDate,endDate, pageable))
-				.thenThrow(new EntityNotFoundException(
-						String.format("Fail to filter posts with params directionIds=%s, typeIds=%s, originIds=%s,"
-										+ "statuses=%s, title=%s, author=%s",
-								directionIds, typeIds, originIds, statuses, title, author)
-				))
-				.thenReturn(page);
-
-		mockMvc.perform(get(POST + POST_ALL_POSTS))
-				.andExpect(status().isNoContent())
-				.andExpect(result -> Assertions.assertEquals(0, result.getResponse().getContentLength()));
-		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionIds, typeIds,
-				originIds, statuses, title, author,null,startDate,endDate, pageable);
 	}
 
 	@Test
@@ -466,17 +378,17 @@ class PostControllerTest {
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
 
 		Mockito.when(postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
-				origins, statuses, title, author,null,startDate,endDate, pageable))
+						origins, statuses, title, author, null, startDate, endDate, pageable))
 				.thenReturn(page);
 		mockMvc.perform(get(POST + POST_ALL_POSTS +
-					"?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=0"))
+						"?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=0"))
 				.andExpect(status().isOk())
 				.andExpect(result -> Assertions.assertEquals(0,
 						getIdFromResponse(result.getResponse().getContentAsString()))
 				);
 
 		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
-				origins, statuses, title, author,null,startDate,endDate, pageable);
+				origins, statuses, title, author, null, startDate, endDate, pageable);
 	}
 
 	@Test
@@ -501,12 +413,7 @@ class PostControllerTest {
 								+ "could not execute statement"));
 
 		mockMvc.perform(get(uri))
-				.andExpect(status().isOk()).andExpect(result ->
-				Assertions.assertEquals(
-						"{\"success\":false,\"message\":\"could not execute statement; SQL [n/a]; nested "
-								+ "exception is org.hibernate.exception.SQLGrammarException: "
-								+ "could not execute statement\"}",
-						result.getResponse().getContentAsString()));
+				.andExpect(status().is(400));
 	}
 
 	@Test
@@ -525,7 +432,8 @@ class PostControllerTest {
 		Page<PostMainPageDTO> page = new PageImpl<>(List.of(postMainPageDTO));
 		when(postService.findLatestByPostTypesAndOriginsForMobile(any(Pageable.class))).thenReturn(page);
 
-		mockMvc.perform(get(POST + POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE)).andExpect(status().isOk());
+		mockMvc.perform(get(POST + POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE))
+				.andExpect(status().isOk());
 		verify(postService).findLatestByPostTypesAndOriginsForMobile(any(Pageable.class));
 	}
 
@@ -542,7 +450,7 @@ class PostControllerTest {
 	void setFakeViewsForPost() throws Exception {
 		String uri = POST + "/set-fake-view/110";
 
-		mockMvc.perform(post(uri).param("views","150"))
+		mockMvc.perform(post(uri).param("views", "150"))
 				.andExpect(status().isOk());
 
 		verify(postService, times(1)).setFakeViewsForPost(110, 150);
@@ -571,7 +479,7 @@ class PostControllerTest {
 						new HashSet<>(), new HashSet<>(), new HashSet<>(), pageable))
 				.thenReturn(page);
 		mockMvc.perform(MockMvcRequestBuilders
-				.get(POST + POST_GET_BY_IMPORTANT_IMAGE))
+						.get(POST + POST_GET_BY_IMPORTANT_IMAGE))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 

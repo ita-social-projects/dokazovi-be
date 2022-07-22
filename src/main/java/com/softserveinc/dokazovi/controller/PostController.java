@@ -4,11 +4,10 @@ import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
+import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.exception.EntityNotFoundException;
-import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import com.softserveinc.dokazovi.service.PostTypeService;
@@ -29,6 +28,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -137,17 +137,11 @@ public class PostController {
 					type = "string")
 			@RequestParam Set<Integer> posts) {
 		ApiResponseMessage apiResponseMessage;
-		try {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.setPostsAsImportantWithOrder(posts))
-					.message("Posts updated successfully")
-					.build();
-		} catch (Exception e) {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(false)
-					.message(e.getMessage())
-					.build();
-		}
+
+		apiResponseMessage = ApiResponseMessage.builder()
+				.success(postService.setPostsAsImportantWithOrder(posts))
+				.message("Posts updated successfully")
+				.build();
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
@@ -289,17 +283,12 @@ public class PostController {
 			@RequestParam(required = false)
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
 
-		try {
-			return ResponseEntity
-					.status(HttpStatus.OK)
-					.body(postService
-							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
-									statuses, title, author, null, startDate, endDate, pageable));
-		} catch (EntityNotFoundException e) {
-			return ResponseEntity
-					.status(HttpStatus.NO_CONTENT)
-					.body(null);
-		}
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+								statuses, title, author, null, startDate, endDate, pageable));
+
 	}
 
 	/**
@@ -317,7 +306,7 @@ public class PostController {
 	@GetMapping(POST_ALL_POSTS + BY_USER_ENDPOINT)
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
 	public ResponseEntity<Page<PostDTO>> getAllPostsForUserByDirectionsByPostTypesAndByOrigins(
-			@PageableDefault(sort = {"modified_at"}, direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault(sort = {"modifiedAt"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
 			@ApiParam(value = "Multiple comma-separated post type's IDs, e.g. ?types=1,2,3,4...", type = "string")
@@ -339,17 +328,12 @@ public class PostController {
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
 			@PathVariable("userId") Integer userId) {
 
-		try {
-			return ResponseEntity
-					.status(HttpStatus.OK)
-					.body(postService
-							.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
-									statuses, title, author, userId, startDate, endDate, pageable));
-		} catch (EntityNotFoundException e) {
-			return ResponseEntity
-					.status(HttpStatus.NO_CONTENT)
-					.body(null);
-		}
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(postService
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types, origins,
+								statuses, title, author, userId, startDate, endDate, pageable));
+
 	}
 
 	/**
@@ -371,17 +355,12 @@ public class PostController {
 			@PathVariable("postId") Integer postId
 	) {
 		ApiResponseMessage apiResponseMessage;
-		try {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.removePostById(userPrincipal, postId, true))
-					.message(String.format("post %s deleted successfully", postId))
-					.build();
-		} catch (EntityNotFoundException e) {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(false)
-					.message(e.getMessage())
-					.build();
-		}
+
+		apiResponseMessage = ApiResponseMessage.builder()
+				.success(postService.removePostById(userPrincipal, postId, true))
+				.message(String.format("post %s deleted successfully", postId))
+				.build();
+
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
@@ -404,17 +383,12 @@ public class PostController {
 			@Valid @RequestBody PostSaveFromUserDTO postSaveFromUserDTO) {
 
 		ApiResponseMessage apiResponseMessage;
-		try {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(postService.updatePostById(userPrincipal, postSaveFromUserDTO))
-					.message(String.format("post %s updated successfully", postSaveFromUserDTO.getId()))
-					.build();
-		} catch (EntityNotFoundException | ForbiddenPermissionsException e) {
-			apiResponseMessage = ApiResponseMessage.builder()
-					.success(false)
-					.message(e.getMessage())
-					.build();
-		}
+
+		apiResponseMessage = ApiResponseMessage.builder()
+				.success(postService.updatePostById(userPrincipal, postSaveFromUserDTO))
+				.message(String.format("post %s updated successfully", postSaveFromUserDTO.getId()))
+				.build();
+
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
@@ -527,6 +501,18 @@ public class PostController {
 		postService.setFakeViewsForPost(postId, views);
 	}
 
+	@ApiPageable
+	@ApiOperation(value = "Set published_at for post by post id",
+			authorizations = {@Authorization(value = "Authorization")})
+	@PatchMapping(POST_GET_POST_BY_ID)
+	@PreAuthorize("hasAuthority('UPDATE_POST')")
+	public void setPublishedAt(@ApiParam("Post's id") @PathVariable("postId") Integer postId,
+			@ApiParam("date post need to be published at")
+			@Valid
+			@RequestBody PostPublishedAtDTO publishedAt) {
+			postService.setPublishedAt(postId,publishedAt);
+	}
+
 
 	/**
 	 * Get sum of fake views and real views for post by post's url
@@ -540,5 +526,6 @@ public class PostController {
 	public Integer getFakeViewsForPost(@ApiParam("Post's url") @RequestParam String url) {
 		return postService.getFakeViewsByPostUrl(url) + postService.getPostViewCount(url);
 	}
+
 
 }

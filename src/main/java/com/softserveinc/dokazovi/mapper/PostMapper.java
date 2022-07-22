@@ -16,7 +16,9 @@ public interface PostMapper {
 	@Mapping(target = "author.bio", source = "author.doctor.bio")
 	PostDTO toPostDTO(PostEntity postEntity);
 
-
+	@Mapping(target = "views", defaultValue = "0")
+	@Mapping(target = "realViews", defaultValue = "0")
+	@Mapping(target = "fakeViews", defaultValue = "0")
 	PostEntity toPostEntity(PostSaveFromUserDTO postSaveFromUserDTO);
 
 	PostEntity updatePostEntityFromDTO(PostSaveFromUserDTO postSaveFromUserDTO, @MappingTarget PostEntity postEntity);
