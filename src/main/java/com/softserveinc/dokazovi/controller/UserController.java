@@ -243,7 +243,7 @@ public class UserController {
 	}
 
 	@PostMapping
-	@ApiOperation(value = "Save post of user",
+	@ApiOperation(value = "Save user",
 			authorizations = {@Authorization(value = "Authorization")})
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = UserEntity.class),
