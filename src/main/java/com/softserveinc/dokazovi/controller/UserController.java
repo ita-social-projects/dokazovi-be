@@ -2,9 +2,8 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
-import com.softserveinc.dokazovi.dto.post.PostDTO;
-import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
@@ -27,7 +26,6 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +42,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.SAVE_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
@@ -71,11 +68,9 @@ public class UserController {
 	private final PasswordResetTokenService passwordResetTokenService;
 
 	/**
-	 * Gets preview of random experts,
-	 * filtered by directions.
-	 * Default 12 max per page.
+	 * Gets preview of random experts, filtered by directions. Default 12 max per page.
 	 *
-	 * @param pageable interface for pagination information
+	 * @param pageable   interface for pagination information
 	 * @param directions direction id
 	 * @return page with found posts and 'OK' httpStatus
 	 */
@@ -92,11 +87,10 @@ public class UserController {
 	}
 
 	/**
-	 * Gets all experts depending on the parameters coming through the request,
-	 * ordered by relevance.
-	 * Default 6 max per page.
+	 * Gets all experts depending on the parameters coming through the request, ordered by relevance. Default 6 max per
+	 * page.
 	 *
-	 * @param pageable interface for pagination information
+	 * @param pageable           interface for pagination information
 	 * @param userSearchCriteria binds request parameters to an object
 	 * @return page with found experts and 'OK' httpStatus
 	 */
@@ -124,8 +118,7 @@ public class UserController {
 	}
 
 	/**
-	 * Gets the user by its id.
-	 * Checks if the user exists. If no - returns HttpStatus 'NOT FOUND'.
+	 * Gets the user by its id. Checks if the user exists. If no - returns HttpStatus 'NOT FOUND'.
 	 *
 	 * @param userId id of user that we want to get
 	 * @return found user and HttpStatus 'OK'
@@ -140,9 +133,8 @@ public class UserController {
 	}
 
 	/**
-	 * Gets current user.
-	 * Checks if userPrincipal exists via findExpertById method.
-	 * If no - returns HttpStatus 'NOT FOUND'.
+	 * Gets current user. Checks if userPrincipal exists via findExpertById method. If no - returns HttpStatus 'NOT
+	 * FOUND'.
 	 *
 	 * @param userPrincipal id of user that we want to get
 	 * @return found user and HttpStatus 'OK'
@@ -158,8 +150,8 @@ public class UserController {
 	}
 
 	/**
-	 * Post request with email for reset user password and send verification email
-	 * Checks if user with email exists in DB.
+	 * Post request with email for reset user password and send verification email Checks if user with email exists in
+	 * DB.
 	 *
 	 * @param email to find user that we want to reset password
 	 * @return HttpStatus 'OK'
@@ -177,8 +169,7 @@ public class UserController {
 	}
 
 	/**
-	 * Get request with token for validate one
-	 * Checks if token exists in DB and not expired.
+	 * Get request with token for validate one Checks if token exists in DB and not expired.
 	 *
 	 * @param token token which we have to validate or not
 	 * @return HttpStatus 'OK' and token value if token is available and not expired
@@ -190,8 +181,8 @@ public class UserController {
 			@ApiResponse(code = 200, message = HttpStatuses.OK),
 			@ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
 	})
-	public ResponseEntity<String> checkToken (
-		@RequestParam String token) {
+	public ResponseEntity<String> checkToken(
+			@RequestParam String token) {
 		CacheControl cacheControl = CacheControl.noCache();
 		if (passwordResetTokenService.validatePasswordResetToken(token)) {
 			return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).build();
@@ -232,9 +223,7 @@ public class UserController {
 	}
 
 	/**
-	 * Gets current user's authorities.
-	 * Checks if userPrincipal not null.
-	 * If no - returns HttpStatus 'NOT FOUND'.
+	 * Gets current user's authorities. Checks if userPrincipal not null. If no - returns HttpStatus 'NOT FOUND'.
 	 *
 	 * @param userPrincipal authorities of user that we want to get
 	 * @return found user's authorities and HttpStatus 'OK'
@@ -252,6 +241,7 @@ public class UserController {
 		return ResponseEntity.status(authorities != null
 				? HttpStatus.OK : HttpStatus.NOT_FOUND).body(authorities);
 	}
+
 	@PostMapping
 	@ApiOperation(value = "Save post of user",
 			authorizations = {@Authorization(value = "Authorization")})
