@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
 	public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
 		if (validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS, HAS_NO_USERNAME)) {
-			return userRepository.findDoctorsProfiles(pageable).map(userMapper::toUserDTO);
+			return userRepository.findAll(pageable).map(userMapper::toUserDTO);
 		}
 
 		final String name = userSearchCriteria.getUserName();
