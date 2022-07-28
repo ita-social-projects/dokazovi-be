@@ -90,7 +90,7 @@ public class DoctorEntity {
 			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<CharityEntity> charities;
 
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "city_id")
 	private CityEntity city;
 

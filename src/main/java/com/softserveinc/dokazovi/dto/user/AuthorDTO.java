@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.dto.user;
 
-import com.softserveinc.dokazovi.dto.region.CityDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,5 +27,5 @@ public class AuthorDTO {
 
 	private String socialNetwork;
 
-	private CityDTO city;
+	private Integer city;
 }

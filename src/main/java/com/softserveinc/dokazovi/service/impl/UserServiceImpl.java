@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.AuthorDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
@@ -14,6 +15,7 @@ import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
+import com.softserveinc.dokazovi.repositories.CityRepository;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
@@ -45,6 +47,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
+	private final CityRepository cityRepository;
 	private final DoctorRepository doctorRepository;
 	private final VerificationTokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -284,10 +287,12 @@ public class UserServiceImpl implements UserService {
 				.lastName(savedUser.getLastName())
 				.placeOfWork(savedDoctor.getQualification())
 				.email(savedUser.getEmail())
+				.city(savedDoctor.getCity().getId())
 				.build();
 	}
 
 	private DoctorEntity toDoctorEntity(AuthorDTO authorDTO) {
+		CityEntity city = cityRepository.getOne(authorDTO.getCity());
 		return DoctorEntity.builder()
 				.bio(authorDTO.getBio())
 				.qualification(authorDTO.getPlaceOfWork())
@@ -295,6 +300,7 @@ public class UserServiceImpl implements UserService {
 				.publishedPosts(0L)
 				.promotionScale(1.0)
 				.promotionLevel(UserPromotionLevel.BASIC)
+				.city(city)
 				.build();
 	}
 
