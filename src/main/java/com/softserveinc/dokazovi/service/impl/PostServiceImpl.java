@@ -109,15 +109,6 @@ public class PostServiceImpl implements PostService {
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
 			String title, String author, Integer authorId, LocalDateTime startDate, LocalDateTime endDate,
 			Pageable pageable) {
-
-		if (pageable.getSort().isSorted()) {
-			Sort sort = pageable.getSort().and(Sort.by("modified_at").descending());
-			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-		} else {
-			Sort sort = Sort.by("modified_at").descending();
-			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-		}
-
 		boolean isAuthorIdNotSet = authorId == null;
 
 		if (directionIds == null && typeIds == null && originIds == null && statuses == null &&
@@ -130,6 +121,12 @@ public class PostServiceImpl implements PostService {
 						.map(postMapper::toPostDTO);
 			}
 		}
+
+		if (pageable.getSort().isSorted()) {
+			Sort sort = pageable.getSort().and(Sort.by("modified_at").descending());
+			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+		}
+
 		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
 		LocalDateTime startTime = startDate1
 				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
