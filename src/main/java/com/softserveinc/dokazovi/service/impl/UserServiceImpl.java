@@ -268,7 +268,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public AuthorDTO saveAuthor(AuthorDTO authorDTO) {
+	public AuthorDTO createAuthor(AuthorDTO authorDTO) {
 		UserEntity userEntity = toUserEntity(authorDTO);
 		DoctorEntity doctorEntity = toDoctorEntity(authorDTO);
 		userEntity.setDoctor(doctorEntity);

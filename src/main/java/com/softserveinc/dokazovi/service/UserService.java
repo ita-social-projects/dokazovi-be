@@ -41,7 +41,7 @@ public interface UserService {
 
 	boolean isPasswordMatches(UserEntity user, String password);
 
-	AuthorDTO saveAuthor(AuthorDTO authorDTO);
+	AuthorDTO createAuthor(AuthorDTO authorDTO);
 
 	Boolean removeDoctorById(Integer doctorId);
 

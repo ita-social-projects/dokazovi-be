@@ -257,7 +257,7 @@ public class UserController {
 	public ResponseEntity<AuthorDTO> createAuthor(AuthorDTO author) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
-				.body(userService.saveAuthor(author));
+				.body(userService.createAuthor(author));
 	}
 
 	@PutMapping

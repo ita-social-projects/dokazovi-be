@@ -1,8 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.user.AuthorDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
@@ -40,7 +38,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
@@ -376,11 +373,11 @@ class UserControllerTest {
 				+ "  \"city\": 1\n"
 				+ "}";
 		ObjectMapper mapper = new ObjectMapper();
-		AuthorDTO authorDTO = mapper.readValue(content, AuthorDTO.class);
-		mockMvc.perform(post(POST)
+		AuthorDTO author = mapper.readValue(content, AuthorDTO.class);
+		mockMvc.perform(post("/user")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(content))
 				.andExpect(status().isCreated());
-		verify(userService).saveAuthor(eq(authorDTO));
+		verify(userService).createAuthor(eq(author));
 	}
 }
