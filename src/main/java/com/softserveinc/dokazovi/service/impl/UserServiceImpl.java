@@ -274,8 +274,33 @@ public class UserServiceImpl implements UserService {
 		userEntity.setDoctor(doctorEntity);
 		doctorEntity.setProfile(userEntity);
 		DoctorEntity savedDoctor = doctorRepository.save(doctorEntity);
-		return toAuthorDTO(savedDoctor.getProfile(),savedDoctor);
+		return toAuthorDTO(savedDoctor.getProfile(), savedDoctor);
 
+	}
+
+	@Override
+	public AuthorDTO updateAuthor(AuthorDTO authorDTO) {
+		DoctorEntity doctor = doctorRepository.getOne(authorDTO.getId());
+		doctor.setBio(authorDTO.getBio());
+		doctor.setQualification(authorDTO.getPlaceOfWork());
+		doctor.setCity(cityRepository.getOne(authorDTO.getCity()));
+		doctor.setSocialNetwork(authorDTO.getSocialNetwork());
+		UserEntity user = userRepository.getOne(doctor.getProfile().getId());
+		user.setEmail(authorDTO.getEmail());
+		user.setFirstName(authorDTO.getFirstName());
+		user.setLastName(authorDTO.getLastName());
+		user.setDoctor(doctor);
+		doctor.setProfile(user);
+		DoctorEntity savedDoctor = doctorRepository.save(doctor);
+		return toAuthorDTO(savedDoctor.getProfile(),savedDoctor);
+	}
+
+	@Override
+	public Boolean removeDoctorById(Integer doctorId) {
+		Integer userId = doctorRepository.getOne(doctorId).getProfile().getId();
+		doctorRepository.deleteById(doctorId);
+		userRepository.deleteById(userId);
+		return true;
 	}
 
 	private AuthorDTO toAuthorDTO(UserEntity savedUser, DoctorEntity savedDoctor) {
