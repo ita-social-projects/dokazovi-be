@@ -73,7 +73,7 @@ public class DoctorEntity {
 			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private InstitutionEntity mainInstitution;
 
-	@OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	@OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.ALL}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
@@ -89,6 +89,10 @@ public class DoctorEntity {
 			property = "id",
 			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private Set<CharityEntity> charities;
+
+	@ManyToOne(cascade = {CascadeType.ALL})
+	@JoinColumn(name = "city_id")
+	private CityEntity city;
 
 	@ManyToMany
 	@JoinTable(

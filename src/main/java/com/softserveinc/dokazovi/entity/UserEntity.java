@@ -64,7 +64,7 @@ public class UserEntity {
 	@JoinColumn(name = "role_id")
 	private RoleEntity role;
 
-	@OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
+	@OneToOne(mappedBy = "profile", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private DoctorEntity doctor;
 
 	@CreationTimestamp

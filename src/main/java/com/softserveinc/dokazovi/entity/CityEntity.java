@@ -37,4 +37,5 @@ public class CityEntity {
 			property = "id",
 			generator = ObjectIdGenerators.PropertyGenerator.class)
 	private RegionEntity region;
+
 }

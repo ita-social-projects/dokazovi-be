@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.mapper;
 
 
 import com.softserveinc.dokazovi.dto.post.PostUserInstitutionCityDTO;
+import com.softserveinc.dokazovi.dto.region.CityDTO;
 import com.softserveinc.dokazovi.dto.user.UserInstitutionCityDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import org.mapstruct.Mapper;
@@ -12,5 +13,7 @@ public interface CityMapper {
 	UserInstitutionCityDTO toExpertInstitutionCityDTO(CityEntity cityEntity);
 
 	PostUserInstitutionCityDTO toPostUserInstitutionCityDTO(CityEntity cityEntity);
+
+	CityEntity toCityEntity(CityDTO cityDTO);
 
 }

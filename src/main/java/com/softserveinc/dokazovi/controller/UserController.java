@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
+import com.softserveinc.dokazovi.dto.user.AuthorDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
@@ -243,14 +244,15 @@ public class UserController {
 	}
 
 	@PostMapping
-	@ApiOperation(value = "Save user",
-			authorizations = {@Authorization(value = "Authorization")})
+	@ApiOperation(value = "Save user"//,
+//			authorizations = {@Authorization(value = "Authorization")}
+	)
 	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = UserEntity.class),
-			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)})
-	public ResponseEntity<UserEntity> saveUser(UserEntity user) {
+			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = UserEntity.class)}
+	)
+	public ResponseEntity<AuthorDTO> createAuthor(AuthorDTO author) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
-				.body(userService.save(user));
+				.body(userService.saveAuthor(author));
 	}
 }

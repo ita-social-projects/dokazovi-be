@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.service;
 
+import com.softserveinc.dokazovi.dto.user.AuthorDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -40,5 +41,5 @@ public interface UserService {
 
 	boolean isPasswordMatches(UserEntity user, String password);
 
-	UserEntity save(UserEntity user);
+	AuthorDTO saveAuthor(AuthorDTO authorDTO);
 }

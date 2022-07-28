@@ -1,13 +1,20 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.dto.user.AuthorDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
+import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
+import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
+import com.softserveinc.dokazovi.entity.enumerations.UserPromotionLevel;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
+import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.MailSenderService;
@@ -21,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,6 +45,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
+	private final DoctorRepository doctorRepository;
 	private final VerificationTokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final PasswordResetTokenService passwordResetTokenService;
@@ -255,13 +265,51 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserEntity save(UserEntity user) {
-		if (user != null) {
-			UserEntity u = getById(user.getId());
-			if (u == null) {
-				return userRepository.save(user);
-			}
-		}
-		throw new BadRequestException("Bad request");
+	public AuthorDTO saveAuthor(AuthorDTO authorDTO) {
+		UserEntity userEntity = toUserEntity(authorDTO);
+		DoctorEntity doctorEntity = toDoctorEntity(authorDTO);
+		userEntity.setDoctor(doctorEntity);
+		doctorEntity.setProfile(userEntity);
+		DoctorEntity savedDoctor = doctorRepository.save(doctorEntity);
+		return toAuthorDTO(savedDoctor.getProfile(),savedDoctor);
+
+	}
+
+	private AuthorDTO toAuthorDTO(UserEntity savedUser, DoctorEntity savedDoctor) {
+		return AuthorDTO.builder().id(savedDoctor.getId())
+				.socialNetwork(savedDoctor.getSocialNetwork())
+				.avatar(savedUser.getAvatar())
+				.bio(savedDoctor.getBio())
+				.firstName(savedUser.getFirstName())
+				.lastName(savedUser.getLastName())
+				.placeOfWork(savedDoctor.getQualification())
+				.email(savedUser.getEmail())
+				.build();
+	}
+
+	private DoctorEntity toDoctorEntity(AuthorDTO authorDTO) {
+		return DoctorEntity.builder()
+				.bio(authorDTO.getBio())
+				.qualification(authorDTO.getPlaceOfWork())
+				.socialNetwork(authorDTO.getSocialNetwork())
+				.publishedPosts(0L)
+				.promotionScale(1.0)
+				.promotionLevel(UserPromotionLevel.BASIC)
+				.build();
+	}
+
+	private UserEntity toUserEntity(AuthorDTO authorDTO) {
+		UserEntity userEntity = userMapper.toUser(authorDTO);
+		userEntity.setId(null);
+		userEntity.setStatus(UserStatus.ACTIVE);
+		userEntity.setEnabled(true);
+		userEntity.setRole(RoleEntity.builder()
+				.id(3)
+				.name("Doctor")
+				.permissions(Set.of(RolePermission.SAVE_OWN_PUBLICATION))
+				.build());
+		userEntity.setPassword(passwordEncoder.encode("Kolala"));
+		userEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+		return userEntity;
 	}
 }
