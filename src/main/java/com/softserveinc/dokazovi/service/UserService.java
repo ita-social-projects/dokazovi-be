@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service;
 
 import com.softserveinc.dokazovi.dto.user.AuthorDTO;
+import com.softserveinc.dokazovi.dto.user.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -47,5 +48,5 @@ public interface UserService {
 
 	AuthorDTO updateAuthor(AuthorDTO authorDTO);
 
-	Page<AuthorDTO> getDoctors(Pageable pageable);
+	Page<AuthorForAdminDTO> getDoctors(Pageable pageable);
 }

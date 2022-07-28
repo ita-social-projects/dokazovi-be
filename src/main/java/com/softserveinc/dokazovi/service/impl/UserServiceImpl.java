@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.AuthorDTO;
+import com.softserveinc.dokazovi.dto.user.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
@@ -296,20 +297,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<AuthorDTO> getDoctors(Pageable pageable) {
+	public Page<AuthorForAdminDTO> getDoctors(Pageable pageable) {
 		Page<DoctorEntity> all = doctorRepository.findAll(pageable);
 		return all.map(doctorEntity -> {
 			UserEntity one = userRepository.getOne(doctorEntity.getProfile().getId());
-			return AuthorDTO.builder()
+			String regionName = doctorEntity.getCity().getRegion().getName();
+			String cityName = doctorEntity.getCity().getName();
+			return AuthorForAdminDTO.builder()
 					.id(doctorEntity.getId())
-					.email(one.getEmail())
 					.firstName(one.getFirstName())
 					.lastName(one.getLastName())
-					.placeOfWork(doctorEntity.getQualification())
-					.avatar(one.getAvatar())
-					.bio(doctorEntity.getBio())
-					.socialNetwork(doctorEntity.getSocialNetwork())
-					.city(doctorEntity.getCity().getId())
+					.cityName(cityName)
+					.regionName(regionName)
+					.creationDate(one.getCreatedAt())
+					.updateTime(one.getModifiedAt())
 					.build();
 
 		});

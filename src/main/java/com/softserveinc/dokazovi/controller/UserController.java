@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.user.AuthorDTO;
+import com.softserveinc.dokazovi.dto.user.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
@@ -283,8 +284,8 @@ public class UserController {
 
 	@GetMapping(DOCTORS)
 	@ApiOperation(value = "get all authors")
-	public ResponseEntity<Page<AuthorDTO>> getAuthors(@PageableDefault Pageable pageable) {
-		Page<AuthorDTO> authors = userService.getDoctors(pageable);
+	public ResponseEntity<Page<AuthorForAdminDTO>> getAuthors(@PageableDefault Pageable pageable) {
+		Page<AuthorForAdminDTO> authors = userService.getDoctors(pageable);
 		return ResponseEntity.status(200).body(authors);
 	}
 }
