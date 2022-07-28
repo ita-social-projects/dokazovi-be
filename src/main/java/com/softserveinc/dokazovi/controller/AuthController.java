@@ -59,7 +59,8 @@ public class AuthController {
 	 * @return authorizes user and sets access token
 	 */
 	@PostMapping(AUTH_LOGIN)
-	public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+	public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
+															HttpServletResponse response) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
 						loginRequest.getEmail(),
@@ -71,7 +72,6 @@ public class AuthController {
 		if (!userEntity.getEnabled()) {
 			throw new BadRequestException("Please confirm your email!");
 		} else {
-			String token = tokenProvider.createToken(authentication);
 			RefreshToken refreshToken = refreshTokenService.createRefreshToken(userEntity.getId());
 			Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken.getToken());
 			refreshTokenCookie.setMaxAge(
@@ -79,6 +79,7 @@ public class AuthController {
 			refreshTokenCookie.setSecure(true);
 			refreshTokenCookie.setHttpOnly(true);
 			response.addCookie(refreshTokenCookie);
+			String token = tokenProvider.createToken(authentication);
 			AuthResponse authResponse = new AuthResponse(token, refreshToken.getToken());
 			authResponse.setAccessToken(token);
 			return ResponseEntity.ok(authResponse);
