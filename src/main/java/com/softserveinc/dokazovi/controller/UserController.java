@@ -46,6 +46,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.DOCTORS;
 import static com.softserveinc.dokazovi.controller.EndPoints.DOCTOR_GET_DOCTOR_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
@@ -278,5 +279,12 @@ public class UserController {
 				.message(String.format("Doctor %s deleted successfully", authorId))
 				.build();
 		return ResponseEntity.ok().body(apiResponseMessage);
+	}
+
+	@GetMapping(DOCTORS)
+	@ApiOperation(value = "get all authors")
+	public ResponseEntity<Page<AuthorDTO>> getAuthors(@PageableDefault Pageable pageable) {
+		Page<AuthorDTO> authors = userService.getDoctors(pageable);
+		return ResponseEntity.status(200).body(authors);
 	}
 }

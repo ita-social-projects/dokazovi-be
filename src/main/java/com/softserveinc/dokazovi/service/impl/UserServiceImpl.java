@@ -292,7 +292,27 @@ public class UserServiceImpl implements UserService {
 		user.setDoctor(doctor);
 		doctor.setProfile(user);
 		DoctorEntity savedDoctor = doctorRepository.save(doctor);
-		return toAuthorDTO(savedDoctor.getProfile(),savedDoctor);
+		return toAuthorDTO(savedDoctor.getProfile(), savedDoctor);
+	}
+
+	@Override
+	public Page<AuthorDTO> getDoctors(Pageable pageable) {
+		Page<DoctorEntity> all = doctorRepository.findAll(pageable);
+		return all.map(doctorEntity -> {
+			UserEntity one = userRepository.getOne(doctorEntity.getProfile().getId());
+			return AuthorDTO.builder()
+					.id(doctorEntity.getId())
+					.email(one.getEmail())
+					.firstName(one.getFirstName())
+					.lastName(one.getLastName())
+					.placeOfWork(doctorEntity.getQualification())
+					.avatar(one.getAvatar())
+					.bio(doctorEntity.getBio())
+					.socialNetwork(doctorEntity.getSocialNetwork())
+					.city(doctorEntity.getCity().getId())
+					.build();
+
+		});
 	}
 
 	@Override

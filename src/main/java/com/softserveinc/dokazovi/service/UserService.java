@@ -46,4 +46,6 @@ public interface UserService {
 	Boolean removeDoctorById(Integer doctorId);
 
 	AuthorDTO updateAuthor(AuthorDTO authorDTO);
+
+	Page<AuthorDTO> getDoctors(Pageable pageable);
 }
