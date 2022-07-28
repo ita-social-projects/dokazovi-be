@@ -249,12 +249,11 @@ public class UserController {
 	}
 
 	@PostMapping
-	@ApiOperation(value = "Save user"//,
-//			authorizations = {@Authorization(value = "Authorization")}
-	)
+	@ApiOperation(value = "Save user")
 	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = UserEntity.class)}
-	)
+			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = AuthorDTO.class),
+			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+	})
 	public ResponseEntity<AuthorDTO> createAuthor(AuthorDTO author) {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
@@ -262,15 +261,15 @@ public class UserController {
 	}
 
 	@PutMapping
-	@ApiOperation(value = "update doctor")
+	@ApiOperation(value = "update author")
 	public ResponseEntity<AuthorDTO> updateAuthor(AuthorDTO authorDTO) {
-		return ResponseEntity.
-				status(200)
+		return ResponseEntity
+				.status(200)
 				.body(userService.updateAuthor(authorDTO));
 	}
 
 	@DeleteMapping(DOCTOR_GET_DOCTOR_BY_ID)
-	@ApiOperation(value = "update doctor")
+	@ApiOperation(value = "remove author")
 	public ResponseEntity<ApiResponseMessage> deleteAuthor(Integer authorId) {
 		ApiResponseMessage apiResponseMessage;
 

@@ -1,5 +1,9 @@
 package com.softserveinc.dokazovi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.user.AuthorDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -36,6 +40,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
@@ -355,5 +360,27 @@ class UserControllerTest {
 		mockMvc.perform(get(USER + "/experts/" + "1" + "/post-directions"))
 				.andExpect(status().isOk());
 		verify(directionService, times(1)).findAllDirectionsOfPostsByUserId(1);
+	}
+
+	@Test
+	void createAuthor() throws Exception {
+		String content = "{\n"
+				+ "  \"id\": 2,\n"
+				+ "  \"email\": \"mmaksry@gmail.com\",\n"
+				+ "  \"firstName\": \"MAKS\",\n"
+				+ "  \"lastName\": \"LUKIANEN\",\n"
+				+ "  \"placeOfWork\": \"ANYWHERE\",\n"
+				+ "  \"avatar\": \"avatar\",\n"
+				+ "  \"bio\": \"BIO\",\n"
+				+ "  \"socialNetwork\": \"facebook.com\",\n"
+				+ "  \"city\": 1\n"
+				+ "}";
+		ObjectMapper mapper = new ObjectMapper();
+		AuthorDTO authorDTO = mapper.readValue(content, AuthorDTO.class);
+		mockMvc.perform(post(POST)
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(content))
+				.andExpect(status().isCreated());
+		verify(userService).saveAuthor(eq(authorDTO));
 	}
 }
