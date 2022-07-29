@@ -29,12 +29,14 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -357,6 +359,21 @@ class UserServiceImplTest {
 		assertTrue(userEntity.getEnabled());
 		verify(userRepository, times(1))
 				.findById(any(Integer.class));
+	}
+
+	@Test
+	void setEnableTrue_WhenNotFound_ThrowException() {
+		UserEntity userEntity = UserEntity.builder()
+				.id(0)
+				.build();
+		Exception exception = assertThrows(BadRequestException.class, () ->
+				userService.setEnableTrue(userEntity));
+		String expectedMessage = "Something went wrong!!!";
+		assertEquals(expectedMessage, exception.getMessage());
+		verify(userRepository, times(1))
+				.findById(any(Integer.class));
+		verify(userRepository, never())
+				.save(userEntity);
 	}
 
 	@Test
