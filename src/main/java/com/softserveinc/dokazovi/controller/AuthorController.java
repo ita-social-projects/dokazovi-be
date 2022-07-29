@@ -55,20 +55,26 @@ public class AuthorController {
 	}
 
 	@PutMapping
-	@ApiOperation(value = "update author")
-	public ResponseEntity<AuthorDTO> updateAuthor(AuthorDTO authorDTO) {
+	@PreAuthorize("hasAuthority('UPDATE_AUTHOR')")
+	@ApiOperation(value = "update author",
+	authorizations = {@Authorization(value = "Authorization")})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = HttpStatuses.OK, response = AuthorDTO.class),
+			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+	})
+	public ResponseEntity<AuthorDTO> updateAuthor(AuthorDTO authorDTO, UserPrincipal userPrincipal) {
 		return ResponseEntity
 				.status(200)
-				.body(userService.updateAuthor(authorDTO));
+				.body(authorService.update(authorDTO, userPrincipal));
 	}
 
 	@DeleteMapping(DOCTOR_GET_DOCTOR_BY_ID)
 	@ApiOperation(value = "remove author")
-	public ResponseEntity<ApiResponseMessage> deleteAuthor(Integer authorId) {
+	public ResponseEntity<ApiResponseMessage> deleteAuthor(Integer authorId, UserPrincipal userPrincipal) {
 		ApiResponseMessage apiResponseMessage;
 
 		apiResponseMessage = ApiResponseMessage.builder()
-				.success(userService.removeDoctorById(authorId))
+				.success(authorService.delete(authorId, userPrincipal))
 				.message(String.format("Doctor %s deleted successfully", authorId))
 				.build();
 		return ResponseEntity.ok().body(apiResponseMessage);
@@ -77,7 +83,7 @@ public class AuthorController {
 	@GetMapping(DOCTORS)
 	@ApiOperation(value = "get all authors")
 	public ResponseEntity<Page<AuthorDTO>> getAuthors(@PageableDefault Pageable pageable) {
-		Page<AuthorDTO> authors = userService.getDoctors(pageable);
+		Page<AuthorDTO> authors = null;
 		return ResponseEntity.status(200).body(authors);
 	}
 }

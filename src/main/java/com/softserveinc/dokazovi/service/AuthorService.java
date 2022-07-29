@@ -6,5 +6,5 @@ import com.softserveinc.dokazovi.security.UserPrincipal;
 public interface AuthorService {
 	AuthorDTO save(AuthorDTO authorDTO, UserPrincipal userPrincipal);
 	AuthorDTO update(AuthorDTO authorDTO, UserPrincipal userPrincipal);
-	Boolean delete(AuthorDTO authorDTO, UserPrincipal userPrincipal);
+	Boolean delete(Integer authorId, UserPrincipal userPrincipal);
 }
