@@ -248,42 +248,4 @@ public class UserController {
 				? HttpStatus.OK : HttpStatus.NOT_FOUND).body(authorities);
 	}
 
-	@PostMapping
-	@ApiOperation(value = "Save user")
-	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = AuthorDTO.class),
-			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
-	})
-	public ResponseEntity<AuthorDTO> createAuthor(AuthorDTO author) {
-		return ResponseEntity
-				.status(HttpStatus.CREATED)
-				.body(userService.createAuthor(author));
-	}
-
-	@PutMapping
-	@ApiOperation(value = "update author")
-	public ResponseEntity<AuthorDTO> updateAuthor(AuthorDTO authorDTO) {
-		return ResponseEntity
-				.status(200)
-				.body(userService.updateAuthor(authorDTO));
-	}
-
-	@DeleteMapping(DOCTOR_GET_DOCTOR_BY_ID)
-	@ApiOperation(value = "remove author")
-	public ResponseEntity<ApiResponseMessage> deleteAuthor(Integer authorId) {
-		ApiResponseMessage apiResponseMessage;
-
-		apiResponseMessage = ApiResponseMessage.builder()
-				.success(userService.removeDoctorById(authorId))
-				.message(String.format("Doctor %s deleted successfully", authorId))
-				.build();
-		return ResponseEntity.ok().body(apiResponseMessage);
-	}
-
-	@GetMapping(DOCTORS)
-	@ApiOperation(value = "get all authors")
-	public ResponseEntity<Page<AuthorDTO>> getAuthors(@PageableDefault Pageable pageable) {
-		Page<AuthorDTO> authors = userService.getDoctors(pageable);
-		return ResponseEntity.status(200).body(authors);
-	}
 }

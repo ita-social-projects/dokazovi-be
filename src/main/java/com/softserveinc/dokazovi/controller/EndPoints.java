@@ -31,6 +31,7 @@ public final class EndPoints {
 	public static final String USER_GET_USER_BY_ID = "/{userId}";
 	public static final String DOCTOR_GET_DOCTOR_BY_ID = "/{doctorId}";
 	public static final String DOCTORS = "/doctors";
+	public static final String DOCTOR = "/doctor";
 	public static final String USER_GET_AUTHORITIES = "/get-authorities";
 	public static final String POST_GET_USER_BY_ID = "/{userId}";
 	public static final String USER_GET_CURRENT_USER = "/me";
