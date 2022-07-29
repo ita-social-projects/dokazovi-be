@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -56,8 +57,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -372,10 +375,52 @@ class UserControllerTest {
 				+ "  \"socialNetwork\": \"facebook.com\",\n"
 				+ "  \"city\": 1\n"
 				+ "}";
-		ObjectMapper mapper = new ObjectMapper();
 		mockMvc.perform(post("/user")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(content))
 				.andExpect(status().isCreated());
+	}
+
+	@Test
+	void updateAuthor() throws Exception {
+		String content = "{\n"
+				+ "  \"id\": 2,\n"
+				+ "  \"email\": \"mmaksry@GMAIL.com\",\n"
+				+ "  \"firstName\": \"MAKS\",\n"
+				+ "  \"lastName\": \"LUKIANEN\",\n"
+				+ "  \"placeOfWork\": \"ANYWHERE\",\n"
+				+ "  \"avatar\": \"avatar\",\n"
+				+ "  \"bio\": \"BIO\",\n"
+				+ "  \"socialNetwork\": \"facebook.com\",\n"
+				+ "  \"city\": 1\n"
+				+ "}";
+		ObjectMapper mapper = new ObjectMapper();
+		AuthorDTO author = mapper.readValue(content, AuthorDTO.class);
+		mockMvc.perform(put("/user")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(content))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	void deleteAuthor_IfIdExists_isOk() throws Exception {
+		String content = "{\n"
+				+ "  \"id\": 2,\n"
+				+ "  \"email\": \"mmaksry@GMAIL.com\",\n"
+				+ "  \"firstName\": \"MAKS\",\n"
+				+ "  \"lastName\": \"LUKIANEN\",\n"
+				+ "  \"placeOfWork\": \"ANYWHERE\",\n"
+				+ "  \"avatar\": \"avatar\",\n"
+				+ "  \"bio\": \"BIO\",\n"
+				+ "  \"socialNetwork\": \"facebook.com\",\n"
+				+ "  \"city\": 1\n"
+				+ "}";
+		Mockito.when(userService.removeDoctorById(any(Integer.class)))
+				.thenReturn(true);
+		mockMvc.perform(delete("/user/2").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk()).andExpect(result ->
+						Assertions.assertEquals(
+								"{\"success\":true,\"message\":\"Doctor 2 deleted successfully\"}",
+								result.getResponse().getContentAsString()));
 	}
 }
