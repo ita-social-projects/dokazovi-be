@@ -401,26 +401,4 @@ class UserControllerTest {
 				.content(content))
 				.andExpect(status().isOk());
 	}
-
-	@Test
-	void deleteAuthor_IfIdExists_isOk() throws Exception {
-		String content = "{\n"
-				+ "  \"id\": 2,\n"
-				+ "  \"email\": \"mmaksry@GMAIL.com\",\n"
-				+ "  \"firstName\": \"MAKS\",\n"
-				+ "  \"lastName\": \"LUKIANEN\",\n"
-				+ "  \"placeOfWork\": \"ANYWHERE\",\n"
-				+ "  \"avatar\": \"avatar\",\n"
-				+ "  \"bio\": \"BIO\",\n"
-				+ "  \"socialNetwork\": \"facebook.com\",\n"
-				+ "  \"city\": 1\n"
-				+ "}";
-		Mockito.when(userService.removeDoctorById(any(Integer.class)))
-				.thenReturn(true);
-		mockMvc.perform(delete("/user/2").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isOk()).andExpect(result ->
-						Assertions.assertEquals(
-								"{\"success\":true,\"message\":\"Doctor 2 deleted successfully\"}",
-								result.getResponse().getContentAsString()));
-	}
 }
