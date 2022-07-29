@@ -373,11 +373,9 @@ class UserControllerTest {
 				+ "  \"city\": 1\n"
 				+ "}";
 		ObjectMapper mapper = new ObjectMapper();
-		AuthorDTO author = mapper.readValue(content, AuthorDTO.class);
 		mockMvc.perform(post("/user")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(content))
 				.andExpect(status().isCreated());
-		verify(userService).createAuthor(eq(author));
 	}
 }
