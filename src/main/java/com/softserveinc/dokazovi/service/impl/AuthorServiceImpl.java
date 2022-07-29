@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.AuthorDTO;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
@@ -29,6 +30,13 @@ public class AuthorServiceImpl implements AuthorService {
 	}
 
 	private DoctorEntity createDoctorEntity(AuthorDTO authorDTO) {
+		UserEntity userEntity = UserEntity.builder()
+				.firstName(authorDTO.getFirstName())
+				.lastName(authorDTO.getLastName())
+				.avatar(authorDTO.getAvatar())
+				.email(authorDTO.getEmail())
+				.password("")
+				.build();
 		return DoctorEntity.builder()
 				.build();
 	}
