@@ -1,6 +1,8 @@
 package com.softserveinc.dokazovi.mapper;
 
+import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.dto.user.UserInstitutionDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
@@ -13,9 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class UserMapperTest {
 
@@ -80,6 +86,7 @@ class UserMapperTest {
 				.qualification("qualification 1")
 				.bio("bio 1")
 				.mainInstitution(mainInstitution)
+				.socialNetwork("Facebook")
 				.build();
 
 		userEntity.setDoctor(doctorEntity);
@@ -130,5 +137,78 @@ class UserMapperTest {
 
 		assertEquals(userDTO.getLastAddedPost().getId(), latestPostEntity.getId());
 		assertEquals(userDTO.getLastAddedPost().getTitle(), latestPostEntity.getTitle());
+
+		assertEquals(userDTO.getSocialNetwork(), userEntity.getDoctor().getSocialNetwork());
+
 	}
+
+	@Test
+	public void toUserDtoInstitutions() {
+		UserDTO userDTO = mapper.toUserDTO(userEntity);
+
+		assertEquals(userDTO.getInstitutions().size(), userEntity.getDoctor().getInstitutions().size());
+
+		List<UserInstitutionDTO> institutionDTOList = new ArrayList<>(userDTO.getInstitutions());
+		institutionDTOList.sort(Comparator.comparingInt(UserInstitutionDTO::getId));
+
+		List<InstitutionEntity> institutionEntityList = new ArrayList<>(userEntity.getDoctor().getInstitutions());
+		institutionEntityList.sort(Comparator.comparingInt(InstitutionEntity::getId));
+
+		for (int i = 0; i < institutionDTOList.size(); i++) {
+			assertEquals(institutionDTOList.get(i).getId(), institutionEntityList.get(i).getId());
+			assertEquals(institutionDTOList.get(i).getName(), institutionEntityList.get(i).getName());
+			assertEquals(institutionDTOList.get(i).getCity().getId(), institutionEntityList.get(i).getCity().getId());
+			assertEquals(institutionDTOList.get(i).getCity().getName(), institutionEntityList.get(i).getCity().getName());
+		}
+	}
+
+	@Test
+	public void toUserDtoDirections() {
+		UserDTO userDTO = mapper.toUserDTO(userEntity);
+
+		assertEquals(userDTO.getDirections().size(), userEntity.getDoctor().getDirections().size());
+
+		List<DirectionDTO> directionDTOList = new ArrayList<>(userDTO.getDirections());
+		directionDTOList.sort(Comparator.comparingInt(DirectionDTO::getId));
+
+		List<DirectionEntity> directionEntityList = new ArrayList<>(userEntity.getDoctor().getDirections());
+		directionEntityList.sort(Comparator.comparingInt(DirectionEntity::getId));
+
+		for (int i = 0; i < directionDTOList.size(); i++) {
+			assertEquals(directionDTOList.get(i).getId(), directionEntityList.get(i).getId());
+			assertEquals(directionDTOList.get(i).getName(), directionEntityList.get(i).getName());
+			assertEquals(directionDTOList.get(i).getColor(), directionEntityList.get(i).getColor());
+			assertEquals(directionDTOList.get(i).getHasDoctors(), directionEntityList.get(i).getHasDoctors());
+			assertEquals(directionDTOList.get(i).getHasPosts(), directionEntityList.get(i).getHasPosts());
+			assertEquals(directionDTOList.get(i).getLabel(), directionEntityList.get(i).getLabel());
+		}
+	}
+
+	@Test
+	public void tooUserDtoEmptyOrNullCases() {
+		userEntity.getDoctor().getMainInstitution().setCity(null);
+		UserDTO userDTO = mapper.toUserDTO(userEntity);
+		assertNull(userDTO.getMainInstitution().getCity());
+
+		userDTO = mapper.toUserDTO(new UserEntity());
+		assertNull(userDTO.getBio());
+		assertNull(userDTO.getInstitutions());
+		assertNull(userDTO.getQualification());
+		assertNull(userDTO.getMainInstitution());
+		assertNull(userDTO.getDirections());
+		assertNull(userDTO.getSocialNetwork());
+
+		userEntity.setDoctor(new DoctorEntity());
+		userDTO = mapper.toUserDTO(userEntity);
+		assertNull(userDTO.getBio());
+		assertNull(userDTO.getInstitutions());
+		assertNull(userDTO.getQualification());
+		assertNull(userDTO.getMainInstitution());
+		assertNull(userDTO.getDirections());
+		assertNull(userDTO.getSocialNetwork());
+
+		userDTO = mapper.toUserDTO(null);
+		assertNull(userDTO);
+	}
+
 }
