@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.service;
 
-import com.softserveinc.dokazovi.dto.user.AuthorDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -40,12 +39,4 @@ public interface UserService {
 	void sendPasswordResetToken(UserEntity user, String origin);
 
 	boolean isPasswordMatches(UserEntity user, String password);
-
-	AuthorDTO createAuthor(AuthorDTO authorDTO);
-
-	Boolean removeDoctorById(Integer doctorId);
-
-	AuthorDTO updateAuthor(AuthorDTO authorDTO);
-
-	Page<AuthorDTO> getDoctors(Pageable pageable);
 }

@@ -360,43 +360,5 @@ class UserControllerTest {
 		verify(directionService, times(1)).findAllDirectionsOfPostsByUserId(1);
 	}
 
-	@Test
-	void createAuthor() throws Exception {
-		String content = "{\n"
-				+ "  \"id\": 2,\n"
-				+ "  \"email\": \"mmaksry@gmail.com\",\n"
-				+ "  \"firstName\": \"MAKS\",\n"
-				+ "  \"lastName\": \"LUKIANEN\",\n"
-				+ "  \"placeOfWork\": \"ANYWHERE\",\n"
-				+ "  \"avatar\": \"avatar\",\n"
-				+ "  \"bio\": \"BIO\",\n"
-				+ "  \"socialNetwork\": \"facebook.com\",\n"
-				+ "  \"city\": 1\n"
-				+ "}";
-		mockMvc.perform(post("/user")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(content))
-				.andExpect(status().isCreated());
-	}
 
-	@Test
-	void updateAuthor() throws Exception {
-		String content = "{\n"
-				+ "  \"id\": 2,\n"
-				+ "  \"email\": \"mmaksry@GMAIL.com\",\n"
-				+ "  \"firstName\": \"MAKS\",\n"
-				+ "  \"lastName\": \"LUKIANEN\",\n"
-				+ "  \"placeOfWork\": \"ANYWHERE\",\n"
-				+ "  \"avatar\": \"avatar\",\n"
-				+ "  \"bio\": \"BIO\",\n"
-				+ "  \"socialNetwork\": \"facebook.com\",\n"
-				+ "  \"city\": 1\n"
-				+ "}";
-		ObjectMapper mapper = new ObjectMapper();
-		AuthorDTO author = mapper.readValue(content, AuthorDTO.class);
-		mockMvc.perform(put("/user")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content))
-				.andExpect(status().isOk());
-	}
 }

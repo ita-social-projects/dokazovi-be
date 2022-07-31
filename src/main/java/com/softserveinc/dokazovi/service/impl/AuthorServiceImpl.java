@@ -97,26 +97,38 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public AuthorDTO update(AuthorDTO authorDTO, UserPrincipal userPrincipal) {
-		DoctorEntity doctor = doctorRepository.getOne(authorDTO.getId());
-		doctor.setBio(authorDTO.getBio());
-		doctor.setQualification(authorDTO.getPlaceOfWork());
-		doctor.setCity(cityRepository.getOne(authorDTO.getCity()));
-		doctor.setSocialNetwork(authorDTO.getSocialNetwork());
-		UserEntity user = userRepository.getOne(doctor.getProfile().getId());
-		user.setEmail(authorDTO.getEmail());
-		user.setFirstName(authorDTO.getFirstName());
-		user.setLastName(authorDTO.getLastName());
-		user.setDoctor(doctor);
-		doctor.setProfile(user);
-		DoctorEntity savedDoctor = doctorRepository.save(doctor);
-		return toAuthorDTO(savedDoctor.getProfile(), savedDoctor);
+		if (userPrincipal.getAuthorities().stream()
+				.anyMatch(
+						grantedAuthority -> grantedAuthority.getAuthority()
+								.equals(RolePermission.UPDATE_AUTHOR.getAuthority()))) {
+			DoctorEntity doctor = doctorRepository.getOne(authorDTO.getId());
+			doctor.setBio(authorDTO.getBio());
+			doctor.setQualification(authorDTO.getPlaceOfWork());
+			doctor.setCity(cityRepository.getOne(authorDTO.getCity()));
+			doctor.setSocialNetwork(authorDTO.getSocialNetwork());
+			UserEntity user = userRepository.getOne(doctor.getProfile().getId());
+			user.setEmail(authorDTO.getEmail());
+			user.setFirstName(authorDTO.getFirstName());
+			user.setLastName(authorDTO.getLastName());
+			user.setDoctor(doctor);
+			doctor.setProfile(user);
+			DoctorEntity savedDoctor = doctorRepository.save(doctor);
+			return toAuthorDTO(savedDoctor.getProfile(), savedDoctor);
+		}
+		throw new ForbiddenPermissionsException();
 	}
 
 	@Override
 	public Boolean delete(Integer authorId, UserPrincipal userPrincipal) {
-		Integer userId = doctorRepository.getOne(authorId).getProfile().getId();
-		doctorRepository.deleteById(authorId);
-		userRepository.deleteById(userId);
-		return true;
+		if (userPrincipal.getAuthorities().stream()
+				.anyMatch(
+						grantedAuthority -> grantedAuthority.getAuthority()
+								.equals(RolePermission.DELETE_AUTHOR.getAuthority()))) {
+			Integer userId = doctorRepository.getOne(authorId).getProfile().getId();
+			doctorRepository.deleteById(authorId);
+			userRepository.deleteById(userId);
+			return true;
+		}
+		throw new ForbiddenPermissionsException();
 	}
 }

@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,17 +63,23 @@ public class AuthorController {
 			@ApiResponse(code = 200, message = HttpStatuses.OK, response = AuthorDTO.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
 	})
-	public ResponseEntity<AuthorDTO> updateAuthor(AuthorDTO authorDTO, UserPrincipal userPrincipal) {
+	public ResponseEntity<AuthorDTO> updateAuthor(@RequestBody AuthorDTO authorDTO,
+			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		return ResponseEntity
 				.status(200)
 				.body(authorService.update(authorDTO, userPrincipal));
 	}
 
 	@DeleteMapping(DOCTOR_GET_DOCTOR_BY_ID)
+	@PreAuthorize("hasAuthority('DELETE_AUTHOR')")
 	@ApiOperation(value = "remove author")
-	public ResponseEntity<ApiResponseMessage> deleteAuthor(Integer authorId, UserPrincipal userPrincipal) {
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = HttpStatuses.OK, response = ApiResponseMessage.class),
+			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+	})
+	public ResponseEntity<ApiResponseMessage> deleteAuthor(@PathVariable("doctorId") Integer authorId,
+			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		ApiResponseMessage apiResponseMessage;
-
 		apiResponseMessage = ApiResponseMessage.builder()
 				.success(authorService.delete(authorId, userPrincipal))
 				.message(String.format("Doctor %s deleted successfully", authorId))
