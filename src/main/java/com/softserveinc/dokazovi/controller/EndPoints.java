@@ -29,7 +29,7 @@ public final class EndPoints {
 	public static final String USER_RANDOM_EXPERTS = "/random-experts";
 	public static final String USER_ALL_EXPERTS = "/all-experts";
 	public static final String USER_GET_USER_BY_ID = "/{userId}";
-	public static final String DOCTOR_GET_DOCTOR_BY_ID = "/{doctorId}";
+	public static final String AUTHOR_GET_DOCTOR_BY_ID = "/{authorId}";
 	public static final String DOCTORS = "/doctors";
 	public static final String DOCTOR = "/doctor";
 	public static final String USER_GET_AUTHORITIES = "/get-authorities";

@@ -76,7 +76,6 @@ public class AuthorControllerTest {
 	@Test
 	void removeAuthor() throws Exception {
 		String content = "{\n"
-				+ "  \"id\": 1,\n"
 				+ "  \"email\": \"mmaksry@GMAIL.com\",\n"
 				+ "  \"firstName\": \"MAKS\",\n"
 				+ "  \"lastName\": \"LUKIANEN\",\n"

@@ -30,7 +30,7 @@ import javax.validation.Valid;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.DOCTOR;
 import static com.softserveinc.dokazovi.controller.EndPoints.DOCTORS;
-import static com.softserveinc.dokazovi.controller.EndPoints.DOCTOR_GET_DOCTOR_BY_ID;
+import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR_GET_DOCTOR_BY_ID;
 
 @RestController
 @RequestMapping(DOCTOR)
@@ -70,14 +70,14 @@ public class AuthorController {
 				.body(authorService.update(authorDTO, userPrincipal));
 	}
 
-	@DeleteMapping(DOCTOR_GET_DOCTOR_BY_ID)
+	@DeleteMapping(AUTHOR_GET_DOCTOR_BY_ID)
 	@PreAuthorize("hasAuthority('DELETE_AUTHOR')")
 	@ApiOperation(value = "remove author")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = HttpStatuses.OK, response = ApiResponseMessage.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
 	})
-	public ResponseEntity<ApiResponseMessage> deleteAuthor(@PathVariable("doctorId") Integer authorId,
+	public ResponseEntity<ApiResponseMessage> deleteAuthor(@PathVariable("authorId") Integer authorId,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		ApiResponseMessage apiResponseMessage;
 		apiResponseMessage = ApiResponseMessage.builder()
