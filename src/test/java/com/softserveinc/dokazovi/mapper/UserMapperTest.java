@@ -22,6 +22,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserMapperTest {
 
@@ -144,43 +145,105 @@ class UserMapperTest {
 
 	@Test
 	public void toUserDtoInstitutions() {
-		UserDTO userDTO = mapper.toUserDTO(userEntity);
 
-		assertEquals(userDTO.getInstitutions().size(), userEntity.getDoctor().getInstitutions().size());
+		if (userEntity == null) {
+			return;
+		}
 
-		List<UserInstitutionDTO> institutionDTOList = new ArrayList<>(userDTO.getInstitutions());
-		institutionDTOList.sort(Comparator.comparingInt(UserInstitutionDTO::getId));
+		final UserDTO userDTO = mapper.toUserDTO(userEntity);
+		final UserInstitutionDTO emptyInstitutionDTO = UserInstitutionDTO.builder().build();
+		final InstitutionEntity emptyInstitutionEntity = new InstitutionEntity();
+		final Set<UserInstitutionDTO> dtoSet = userDTO.getInstitutions();
+		final Set<InstitutionEntity> entitySet = userEntity.getDoctor().getInstitutions();
 
-		List<InstitutionEntity> institutionEntityList = new ArrayList<>(userEntity.getDoctor().getInstitutions());
-		institutionEntityList.sort(Comparator.comparingInt(InstitutionEntity::getId));
+		if (dtoSet == null || entitySet == null) {
+			assertNull(dtoSet);
+			assertNull(entitySet);
+			return;
+		}
 
-		for (int i = 0; i < institutionDTOList.size(); i++) {
-			assertEquals(institutionDTOList.get(i).getId(), institutionEntityList.get(i).getId());
-			assertEquals(institutionDTOList.get(i).getName(), institutionEntityList.get(i).getName());
-			assertEquals(institutionDTOList.get(i).getCity().getId(), institutionEntityList.get(i).getCity().getId());
-			assertEquals(institutionDTOList.get(i).getCity().getName(), institutionEntityList.get(i).getCity().getName());
+		assertEquals(dtoSet.size(), entitySet.size());
+
+		if (dtoSet.contains(null) || entitySet.contains(null)) {
+			assertTrue(dtoSet.contains(null));
+			assertTrue(entitySet.contains(null));
+
+			dtoSet.remove(null);
+			entitySet.remove(null);
+		}
+
+		if (dtoSet.contains(emptyInstitutionDTO) || entitySet.contains(emptyInstitutionEntity)) {
+			assertTrue(dtoSet.contains(emptyInstitutionDTO));
+			assertTrue(entitySet.contains(emptyInstitutionEntity));
+
+			dtoSet.remove(emptyInstitutionDTO);
+			entitySet.remove(emptyInstitutionEntity);
+		}
+
+		List<UserInstitutionDTO> dtoList = new ArrayList<>(dtoSet);
+		dtoList.sort(Comparator.comparingInt(UserInstitutionDTO::getId));
+
+		List<InstitutionEntity> entityList = new ArrayList<>(entitySet);
+		entityList.sort(Comparator.comparingInt(InstitutionEntity::getId));
+
+		for (int i = 0; i < dtoList.size(); i++) {
+			assertEquals(dtoList.get(i).getId(), entityList.get(i).getId());
+			assertEquals(dtoList.get(i).getName(), entityList.get(i).getName());
+			assertEquals(dtoList.get(i).getCity().getId(), entityList.get(i).getCity().getId());
+			assertEquals(dtoList.get(i).getCity().getName(), entityList.get(i).getCity().getName());
 		}
 	}
 
 	@Test
 	public void toUserDtoDirections() {
-		UserDTO userDTO = mapper.toUserDTO(userEntity);
 
-		assertEquals(userDTO.getDirections().size(), userEntity.getDoctor().getDirections().size());
+		if (userEntity == null) {
+			return;
+		}
 
-		List<DirectionDTO> directionDTOList = new ArrayList<>(userDTO.getDirections());
-		directionDTOList.sort(Comparator.comparingInt(DirectionDTO::getId));
+		final UserDTO userDTO = mapper.toUserDTO(userEntity);
+		final DirectionDTO emptyDirectionDTO = DirectionDTO.builder().build();
+		final DirectionEntity emptyDirectionEntity = new DirectionEntity();
+		final Set<DirectionDTO> dtoSet = userDTO.getDirections();
+		final Set<DirectionEntity> entitySet = userEntity.getDoctor().getDirections();
 
-		List<DirectionEntity> directionEntityList = new ArrayList<>(userEntity.getDoctor().getDirections());
-		directionEntityList.sort(Comparator.comparingInt(DirectionEntity::getId));
+		if (dtoSet == null || entitySet == null) {
+			assertNull(dtoSet);
+			assertNull(entitySet);
+			return;
+		}
 
-		for (int i = 0; i < directionDTOList.size(); i++) {
-			assertEquals(directionDTOList.get(i).getId(), directionEntityList.get(i).getId());
-			assertEquals(directionDTOList.get(i).getName(), directionEntityList.get(i).getName());
-			assertEquals(directionDTOList.get(i).getColor(), directionEntityList.get(i).getColor());
-			assertEquals(directionDTOList.get(i).getHasDoctors(), directionEntityList.get(i).getHasDoctors());
-			assertEquals(directionDTOList.get(i).getHasPosts(), directionEntityList.get(i).getHasPosts());
-			assertEquals(directionDTOList.get(i).getLabel(), directionEntityList.get(i).getLabel());
+		assertEquals(dtoSet.size(), entitySet.size());
+
+		if (dtoSet.contains(null) || entitySet.contains(null)) {
+			assertTrue(dtoSet.contains(null));
+			assertTrue(entitySet.contains(null));
+
+			dtoSet.remove(null);
+			entitySet.remove(null);
+		}
+
+		if (dtoSet.contains(emptyDirectionDTO) || entitySet.contains(emptyDirectionEntity)) {
+			assertTrue(dtoSet.contains(emptyDirectionDTO));
+			assertTrue(entitySet.contains(emptyDirectionEntity));
+
+			dtoSet.remove(emptyDirectionDTO);
+			entitySet.remove(emptyDirectionEntity);
+		}
+
+		List<DirectionDTO> dtoList = new ArrayList<>(dtoSet);
+		dtoList.sort(Comparator.comparingInt(DirectionDTO::getId));
+
+		List<DirectionEntity> entityList = new ArrayList<>(entitySet);
+		entityList.sort(Comparator.comparingInt(DirectionEntity::getId));
+
+		for (int i = 0; i < dtoList.size(); i++) {
+			assertEquals(dtoList.get(i).getId(), entityList.get(i).getId());
+			assertEquals(dtoList.get(i).getName(), entityList.get(i).getName());
+			assertEquals(dtoList.get(i).getColor(), entityList.get(i).getColor());
+			assertEquals(dtoList.get(i).getHasDoctors(), entityList.get(i).getHasDoctors());
+			assertEquals(dtoList.get(i).getHasPosts(), entityList.get(i).getHasPosts());
+			assertEquals(dtoList.get(i).getLabel(), entityList.get(i).getLabel());
 		}
 	}
 
@@ -191,20 +254,18 @@ class UserMapperTest {
 		assertNull(userDTO.getMainInstitution().getCity());
 
 		userDTO = mapper.toUserDTO(new UserEntity());
+		assertNull(userDTO.getId());
 		assertNull(userDTO.getBio());
-		assertNull(userDTO.getInstitutions());
 		assertNull(userDTO.getQualification());
 		assertNull(userDTO.getMainInstitution());
-		assertNull(userDTO.getDirections());
 		assertNull(userDTO.getSocialNetwork());
 
 		userEntity.setDoctor(new DoctorEntity());
 		userDTO = mapper.toUserDTO(userEntity);
+		assertEquals(userDTO.getId(), userEntity.getId());
 		assertNull(userDTO.getBio());
-		assertNull(userDTO.getInstitutions());
 		assertNull(userDTO.getQualification());
 		assertNull(userDTO.getMainInstitution());
-		assertNull(userDTO.getDirections());
 		assertNull(userDTO.getSocialNetwork());
 
 		userDTO = mapper.toUserDTO(null);
