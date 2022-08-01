@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.entity.ProviderEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
+import com.softserveinc.dokazovi.exception.ResourceNotFoundException;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -26,17 +29,10 @@ import static org.mockito.Mockito.when;
 class CustomUserDetailsServiceTest {
 
 	@Mock
-	private UserEntity userEntity;
-
-	@Mock
 	private UserRepository userRepository;
-
-	@Mock
-	private UserPrincipal userPrincipal;
 
 	@InjectMocks
 	private CustomUserDetailsService customUserDetailsService;
-
 
 	@Test
 	void loadUserByUsername() {
@@ -82,5 +78,17 @@ class CustomUserDetailsServiceTest {
 		UserDetails resultUser = customUserDetailsService.loadUserById(id);
 		verify(userRepository, times(1)).findById(id);
 		assertEquals(email, resultUser.getUsername());
+	}
+
+	@Test
+	void loadUserById_UserNotFound_ThrowException() {
+		Integer id = 0;
+		Exception exception = assertThrows(ResourceNotFoundException.class, () ->
+				customUserDetailsService.loadUserById(id)
+		);
+		String expectedMessage = String.format("%s not found with %s : '%s'", "User", "id", id);
+		assertEquals(expectedMessage, exception.getMessage());
+		verify(userRepository, times(1))
+				.findById(any(Integer.class));
 	}
 }

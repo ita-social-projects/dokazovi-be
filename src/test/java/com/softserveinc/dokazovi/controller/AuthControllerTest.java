@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.payload.LoginRequest;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
@@ -26,6 +27,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -36,6 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class AuthControllerTest {
+
+
 
     private MockMvc mockMvc;
     @Mock
@@ -51,42 +56,36 @@ class AuthControllerTest {
     @InjectMocks
     private AuthController authController;
 
+    private static final String EMAIL = "user@mail.com";
+    private static final String PASSWORD = "user";
+    private static final String TOKEN = "950c9760-805e-449c-a966-2d0d5ebd86f4";
+    private static final String URI = AUTH + AUTH_LOGIN;
+    public static final String BAD_REQUEST_MESSAGE = "Please confirm your email!";
+
     @BeforeEach
     public void init() {
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(authController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .build();
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail(EMAIL);
+        loginRequest.setPassword(PASSWORD);
     }
 
     @Test
     void loginUser() throws Exception {
-        String email = "user@mail.com";
-        String password = "user";
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail(email);
-        loginRequest.setPassword(password);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
-        String token = "950c9760-805e-449c-a966-2d0d5ebd86f4";
-        String uri = AUTH + AUTH_LOGIN;
-        UserEntity user = UserEntity.builder()
-                .email(email)
-                .password(password)
-                .enabled(true)
-                .build();
+        LoginRequest loginRequest = createLoginRequest(EMAIL, PASSWORD);
+        Authentication authentication = authenticate(loginRequest);
+        UserEntity user = buildUserEntity(EMAIL, PASSWORD, true);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(tokenProvider.createToken(any(Authentication.class))).thenReturn(token);
+        when(tokenProvider.createToken(any(Authentication.class))).thenReturn(TOKEN);
         when(userService.findByEmail(anyString())).thenReturn(user);
-        mockMvc.perform(MockMvcRequestBuilders.post(uri)
-                .content(asJsonString(loginRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.post(URI)
+                        .content(asJsonString(loginRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(authenticationManager, times(2))
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
@@ -94,7 +93,58 @@ class AuthControllerTest {
                 .findByEmail(anyString());
     }
 
-    public static String asJsonString(final Object obj) {
+    @Test
+    void loginUser_WhenEnabledFalse_ThrowException() throws Exception {
+        LoginRequest loginRequest = createLoginRequest(EMAIL, PASSWORD);
+        Authentication authentication = authenticate(loginRequest);
+        UserEntity user = buildUserEntity(EMAIL, PASSWORD, false);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authentication);
+        when(tokenProvider.createToken(any(Authentication.class))).thenReturn(TOKEN);
+        when(userService.findByEmail(anyString())).thenReturn(user);
+        mockMvc.perform(MockMvcRequestBuilders.post(URI)
+                        .content(asJsonString(loginRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException()
+                                instanceof
+                                BadRequestException))
+                .andExpect(result ->
+                        assertEquals(
+                                BAD_REQUEST_MESSAGE,
+                                result.getResolvedException().getMessage()));
+        verify(userService, times(1))
+                .findByEmail(anyString());
+    }
+
+    private LoginRequest createLoginRequest(String email, String password) {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail(email);
+        loginRequest.setPassword(password);
+
+        return loginRequest;
+    }
+
+    private Authentication authenticate(LoginRequest loginRequest) {
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
+    }
+
+    private  UserEntity buildUserEntity(String email, String password, boolean enabled) {
+        return UserEntity.builder()
+                .email(email)
+                .password(password)
+                .enabled(enabled)
+                .build();
+    }
+
+    private String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
         } catch (Exception e) {

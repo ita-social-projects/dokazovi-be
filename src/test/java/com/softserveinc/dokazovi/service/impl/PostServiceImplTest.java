@@ -62,6 +62,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -1279,6 +1280,79 @@ class PostServiceImplTest {
 	}
 
 	@Test
+	void updatePostById_WhenPostStatus_NotFount_ThrowException() {
+		Set<RolePermission> permissions = new HashSet<>();
+		permissions.add(RolePermission.DELETE_OWN_POST);
+
+		RoleEntity roleEntity = new RoleEntity();
+		roleEntity.setId(3);
+		roleEntity.setName("Doctor");
+		roleEntity.setPermissions(permissions);
+
+		PostTypeIdOnlyDTO postTypeDTO = new PostTypeIdOnlyDTO();
+		postTypeDTO.setId(1);
+
+		DirectionDTOForSavingPost directionDTO = new DirectionDTOForSavingPost();
+		directionDTO.setId(1);
+
+		Set<@DirectionExists DirectionDTOForSavingPost> directions = new HashSet<>();
+		directions.add(directionDTO);
+
+		OriginDTOForSavingPost originDTO = new OriginDTOForSavingPost();
+		originDTO.setId(1);
+
+		Set<@OriginExists OriginDTOForSavingPost> origins = new HashSet<>();
+		origins.add(originDTO);
+
+		UserPrincipal userPrincipal = UserPrincipal.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		UserEntity doctorUserEntity = UserEntity.builder()
+				.id(38)
+				.email("doctor@mail.com")
+				.password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
+				.role(roleEntity)
+				.build();
+
+		PostSaveFromUserDTO dto = PostSaveFromUserDTO.builder()
+				.id(1)
+				.authorId(1)
+				.title("title")
+				.videoUrl("videoUrl")
+				.previewImageUrl("previewImageUrl")
+				.preview("preview")
+				.content("content")
+				.type(postTypeDTO)
+				.directions(directions)
+				.origins(origins)
+				.postStatus(3)
+				.build();
+
+		Integer id = 1;
+		PostEntity postEntity = PostEntity
+				.builder()
+				.id(id)
+				.author(doctorUserEntity)
+				.build();
+
+		when(postMapper.updatePostEntityFromDTO(dto, postEntity)).thenReturn(postEntity);
+		when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+		Exception exception = assertThrows(ForbiddenPermissionsException.class, () ->
+				postService.updatePostById(userPrincipal, dto)
+		);
+		String expectedMessage = "Forbidden permission";
+		assertEquals(expectedMessage, exception.getMessage());
+		verify(postRepository, never())
+				.save(any(PostEntity.class)
+				);
+
+	}
+
+	@Test
 	void archivePostById_WhenExists_isOk_DoctorRole() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.UPDATE_OWN_POST);
@@ -1722,5 +1796,31 @@ class PostServiceImplTest {
 		PostEntity postEntity = PostEntity.builder().id(1).publishedAt(publishedAt).build();
 		Mockito.when(postRepository.findById(1)).thenReturn(Optional.of(postEntity));
 		assertTrue(postService.setPublishedAt(1, postPublishedAtDTO));
+	}
+
+	@Test
+	void setPublishedAt_WhenPost_NotFound_ThrowException() {
+		Integer postId = 0;
+		Timestamp publishedAt = Timestamp.valueOf(
+				LocalDateTime.of(
+						LocalDate.of(
+								2002, Month.JANUARY, 14),
+						LocalTime.MIN)
+		);
+		PostPublishedAtDTO postPublishedAtDTO = PostPublishedAtDTO
+				.builder()
+				.publishedAt(publishedAt)
+				.build();
+		Exception exception = assertThrows(EntityNotFoundException.class, () ->
+				postService.setPublishedAt(postId, postPublishedAtDTO)
+		);
+		String expectedMessage = "Post with this id=" + postId + " doesn't exist";
+		assertEquals(expectedMessage, exception.getMessage());
+		verify(postRepository, times(1))
+				.findById(any(Integer.class));
+		verify(postRepository, never())
+				.setPublishedAt(any(Integer.class), any(Timestamp.class));
+		verify(postRepository, never())
+				.save(any(PostEntity.class));
 	}
 }
