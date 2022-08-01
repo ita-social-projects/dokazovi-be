@@ -119,7 +119,7 @@ class AuthControllerTest {
                 .findByEmail(anyString());
     }
 
-    private LoginRequest createLoginRequest(String email, String password){
+    private LoginRequest createLoginRequest(String email, String password) {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail(email);
         loginRequest.setPassword(password);
@@ -127,7 +127,7 @@ class AuthControllerTest {
         return loginRequest;
     }
 
-    private Authentication authenticate(LoginRequest loginRequest){
+    private Authentication authenticate(LoginRequest loginRequest) {
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
