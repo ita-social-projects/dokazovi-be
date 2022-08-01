@@ -164,14 +164,6 @@ class UserMapperTest {
 
 		assertEquals(dtoSet.size(), entitySet.size());
 
-		if (dtoSet.contains(null) || entitySet.contains(null)) {
-			assertTrue(dtoSet.contains(null));
-			assertTrue(entitySet.contains(null));
-
-			dtoSet.remove(null);
-			entitySet.remove(null);
-		}
-
 		if (dtoSet.contains(emptyInstitutionDTO) || entitySet.contains(emptyInstitutionEntity)) {
 			assertTrue(dtoSet.contains(emptyInstitutionDTO));
 			assertTrue(entitySet.contains(emptyInstitutionEntity));
@@ -214,14 +206,6 @@ class UserMapperTest {
 		}
 
 		assertEquals(dtoSet.size(), entitySet.size());
-
-		if (dtoSet.contains(null) || entitySet.contains(null)) {
-			assertTrue(dtoSet.contains(null));
-			assertTrue(entitySet.contains(null));
-
-			dtoSet.remove(null);
-			entitySet.remove(null);
-		}
 
 		if (dtoSet.contains(emptyDirectionDTO) || entitySet.contains(emptyDirectionEntity)) {
 			assertTrue(dtoSet.contains(emptyDirectionDTO));
