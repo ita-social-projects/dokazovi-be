@@ -142,6 +142,7 @@ class UserMapperTest {
 		assertEquals(userDTO.getSocialNetwork(), userEntity.getDoctor().getSocialNetwork());
 
 		toUserDtoInstitutionsTest(userDTO, userEntity);
+		toUserDtoDirections(userDTO, userEntity);
 	}
 
 	private void toUserDtoInstitutionsTest(UserDTO userDTO, UserEntity userEntity) {
@@ -185,7 +186,7 @@ class UserMapperTest {
 		}
 	}
 
-	public void toUserDtoDirections(UserDTO userDTO, UserEntity userEntity) {
+	private void toUserDtoDirections(UserDTO userDTO, UserEntity userEntity) {
 
 		if (userEntity == null || userEntity.getDoctor() == null) {
 			return;
@@ -242,6 +243,7 @@ class UserMapperTest {
 		assertNull(userDTO.getMainInstitution());
 		assertNull(userDTO.getSocialNetwork());
 		toUserDtoInstitutionsTest(userDTO, userEntity1);
+		toUserDtoDirections(userDTO, userEntity1);
 
 		userEntity.setDoctor(new DoctorEntity());
 		userDTO = mapper.toUserDTO(userEntity);
@@ -251,10 +253,13 @@ class UserMapperTest {
 		assertNull(userDTO.getMainInstitution());
 		assertNull(userDTO.getSocialNetwork());
 		toUserDtoInstitutionsTest(userDTO, userEntity);
+		toUserDtoDirections(userDTO, userEntity);
 
 		userDTO = mapper.toUserDTO(null);
 		assertNull(userDTO);
 		toUserDtoInstitutionsTest(userDTO, null);
+		toUserDtoDirections(userDTO, null);
+
 	}
 
 }
