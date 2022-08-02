@@ -21,12 +21,12 @@ class RestAuthenticationEntryPointTest {
 	@Mock
 	private HttpServletResponse httpServletResponse;
 	@Mock
-	private AuthenticationException e;
+	private AuthenticationException exception;
 
 	@Test
 	void commence() throws IOException {
 		RestAuthenticationEntryPoint target = new RestAuthenticationEntryPoint();
-		target.commence(httpServletRequest, httpServletResponse, e);
-		verify(httpServletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getLocalizedMessage());
+		target.commence(httpServletRequest, httpServletResponse, exception);
+		verify(httpServletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getLocalizedMessage());
 	}
 }

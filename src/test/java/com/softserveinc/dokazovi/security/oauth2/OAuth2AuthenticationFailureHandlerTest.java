@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 class OAuth2AuthenticationFailureHandlerTest {
 
 	@Mock
-	private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+	private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
 	@Mock
 	HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 	@Mock
@@ -28,14 +28,15 @@ class OAuth2AuthenticationFailureHandlerTest {
 
 	@BeforeEach
 	void init() {
-		oAuth2AuthenticationFailureHandler = new OAuth2AuthenticationFailureHandler(httpCookieOAuth2AuthorizationRequestRepository);
+		oauth2AuthenticationFailureHandler =
+				new OAuth2AuthenticationFailureHandler(httpCookieOAuth2AuthorizationRequestRepository);
 	}
 
 	@Test
 	void testOnAuthenticationFailure() throws Exception {
 		final AuthenticationException exception = new BadCredentialsException("error");
 
-		oAuth2AuthenticationFailureHandler.onAuthenticationFailure(request, response, exception);
+		oauth2AuthenticationFailureHandler.onAuthenticationFailure(request, response, exception);
 
 		verify(httpCookieOAuth2AuthorizationRequestRepository)
 				.removeAuthorizationRequestCookies(any(HttpServletRequest.class),
