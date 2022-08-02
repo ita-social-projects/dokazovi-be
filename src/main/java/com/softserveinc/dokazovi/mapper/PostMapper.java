@@ -10,7 +10,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
+@Mapper(componentModel = "spring",
+		unmappedTargetPolicy = ReportingPolicy.IGNORE,
+		collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
 public interface PostMapper {
 
 	@Mapping(target = "author.mainInstitution", source = "author.doctor.mainInstitution")
