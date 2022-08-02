@@ -141,16 +141,15 @@ class UserMapperTest {
 
 		assertEquals(userDTO.getSocialNetwork(), userEntity.getDoctor().getSocialNetwork());
 
+		toUserDtoInstitutionsTest(userDTO, userEntity);
 	}
 
-	@Test
-	public void toUserDtoInstitutions() {
+	private void toUserDtoInstitutionsTest(UserDTO userDTO, UserEntity userEntity) {
 
-		if (userEntity == null) {
+		if (userEntity == null || userEntity.getDoctor() == null) {
 			return;
 		}
 
-		final UserDTO userDTO = mapper.toUserDTO(userEntity);
 		final UserInstitutionDTO emptyInstitutionDTO = UserInstitutionDTO.builder().build();
 		final InstitutionEntity emptyInstitutionEntity = new InstitutionEntity();
 		final Set<UserInstitutionDTO> dtoSet = userDTO.getInstitutions();
@@ -186,14 +185,12 @@ class UserMapperTest {
 		}
 	}
 
-	@Test
-	public void toUserDtoDirections() {
+	public void toUserDtoDirections(UserDTO userDTO, UserEntity userEntity) {
 
-		if (userEntity == null) {
+		if (userEntity == null || userEntity.getDoctor() == null) {
 			return;
 		}
 
-		final UserDTO userDTO = mapper.toUserDTO(userEntity);
 		final DirectionDTO emptyDirectionDTO = DirectionDTO.builder().build();
 		final DirectionEntity emptyDirectionEntity = new DirectionEntity();
 		final Set<DirectionDTO> dtoSet = userDTO.getDirections();
@@ -237,12 +234,14 @@ class UserMapperTest {
 		UserDTO userDTO = mapper.toUserDTO(userEntity);
 		assertNull(userDTO.getMainInstitution().getCity());
 
-		userDTO = mapper.toUserDTO(new UserEntity());
+		UserEntity userEntity1 = new UserEntity();
+		userDTO = mapper.toUserDTO(userEntity1);
 		assertNull(userDTO.getId());
 		assertNull(userDTO.getBio());
 		assertNull(userDTO.getQualification());
 		assertNull(userDTO.getMainInstitution());
 		assertNull(userDTO.getSocialNetwork());
+		toUserDtoInstitutionsTest(userDTO, userEntity1);
 
 		userEntity.setDoctor(new DoctorEntity());
 		userDTO = mapper.toUserDTO(userEntity);
@@ -251,9 +250,11 @@ class UserMapperTest {
 		assertNull(userDTO.getQualification());
 		assertNull(userDTO.getMainInstitution());
 		assertNull(userDTO.getSocialNetwork());
+		toUserDtoInstitutionsTest(userDTO, userEntity);
 
 		userDTO = mapper.toUserDTO(null);
 		assertNull(userDTO);
+		toUserDtoInstitutionsTest(userDTO, null);
 	}
 
 }
