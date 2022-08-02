@@ -179,14 +179,14 @@ class PostMapperTest {
 		assertEquals(postDTO.getAuthor().getLastName(), author.getLastName());
 		assertEquals(postDTO.getAuthor().getAvatar(), author.getAvatar());
 		assertEquals(postDTO.getAuthor().getBio(), author.getDoctor().getBio());
-		assertEquals(
-				postDTO.getAuthor().getMainInstitution().getId(), author.getDoctor().getMainInstitution().getId());
-		assertEquals(
-				postDTO.getAuthor().getMainInstitution().getName(), author.getDoctor().getMainInstitution().getName());
-		assertEquals(
-				postDTO.getAuthor().getMainInstitution().getCity().getId(), author.getDoctor().getMainInstitution().getCity().getId());
-		assertEquals(
-				postDTO.getAuthor().getMainInstitution().getCity().getName(), author.getDoctor().getMainInstitution().getCity().getName());
+		assertEquals(postDTO.getAuthor().getMainInstitution().getId(),
+				author.getDoctor().getMainInstitution().getId());
+		assertEquals(postDTO.getAuthor().getMainInstitution().getName(),
+				author.getDoctor().getMainInstitution().getName());
+		assertEquals(postDTO.getAuthor().getMainInstitution().getCity().getId(),
+				author.getDoctor().getMainInstitution().getCity().getId());
+		assertEquals(postDTO.getAuthor().getMainInstitution().getCity().getName(),
+				author.getDoctor().getMainInstitution().getCity().getName());
 		assertEquals(postDTO.getType().getId(), type.getId());
 		assertEquals(postDTO.getType().getName(), type.getName());
 		assertEquals(postDTO.getCreatedAt(), post.getCreatedAt());
