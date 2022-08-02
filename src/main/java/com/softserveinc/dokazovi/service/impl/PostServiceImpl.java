@@ -109,11 +109,11 @@ public class PostServiceImpl implements PostService {
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
 			String title, String author, Integer authorId, LocalDateTime startDate, LocalDateTime endDate,
 			Pageable pageable) {
-		boolean authorParam = authorId == null;
+		boolean isAuthorIdNotSet = authorId == null;
 
 		if (directionIds == null && typeIds == null && originIds == null && statuses == null &&
 				startDate == null && endDate == null && title.isEmpty() && author.isEmpty()) {
-			if (authorParam) {
+			if (isAuthorIdNotSet) {
 				return postRepository.findAll(pageable)
 						.map(postMapper::toPostDTO);
 			} else {
@@ -121,10 +121,12 @@ public class PostServiceImpl implements PostService {
 						.map(postMapper::toPostDTO);
 			}
 		}
+
 		if (pageable.getSort().isSorted()) {
 			Sort sort = pageable.getSort().and(Sort.by("modified_at").descending());
 			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 		}
+
 		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
 		LocalDateTime startTime = startDate1
 				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
@@ -143,7 +145,7 @@ public class PostServiceImpl implements PostService {
 						.map(PostStatus::name)
 						.collect(Collectors.toSet());
 		try {
-			if (authorParam) {
+			if (isAuthorIdNotSet) {
 				return postRepository
 						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typeIds, directionIds,
 								statusNames,
@@ -162,8 +164,6 @@ public class PostServiceImpl implements PostService {
 							typeIds, directionIds, statuses, originIds, title, author, startDate, endDate));
 			throw new EntityNotFoundException("Id does not exist");
 		}
-
-
 	}
 
 
