@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
-import com.softserveinc.dokazovi.dto.user.AuthorDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorDTO;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -11,10 +11,8 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Incubating;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Timestamp;

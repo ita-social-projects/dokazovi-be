@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
-import com.softserveinc.dokazovi.dto.user.AuthorDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorForAdminDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
@@ -15,6 +16,8 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -130,5 +133,26 @@ public class AuthorServiceImpl implements AuthorService {
 			return true;
 		}
 		throw new ForbiddenPermissionsException();
+	}
+
+	@Override
+
+	public Page<AuthorForAdminDTO> getAuthors(Pageable pageable) {
+		Page<DoctorEntity> all = doctorRepository.findAll(pageable);
+		return all.map(doctorEntity -> {
+			UserEntity one = userRepository.getOne(doctorEntity.getProfile().getId());
+			String regionName = doctorEntity.getCity().getRegion().getName();
+			String cityName = doctorEntity.getCity().getName();
+			return AuthorForAdminDTO.builder()
+					.id(doctorEntity.getId())
+					.firstName(one.getFirstName())
+					.lastName(one.getLastName())
+					.cityName(cityName)
+					.regionName(regionName)
+					.creationDate(one.getCreatedAt())
+					.updateTime(one.getModifiedAt())
+					.build();
+
+		});
 	}
 }

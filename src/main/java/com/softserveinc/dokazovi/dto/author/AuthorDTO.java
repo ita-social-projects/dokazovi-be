@@ -1,4 +1,4 @@
-package com.softserveinc.dokazovi.dto.user;
+package com.softserveinc.dokazovi.dto.author;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

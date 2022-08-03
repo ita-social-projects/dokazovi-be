@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -69,6 +70,10 @@ public class UserEntity {
 
 	@CreationTimestamp
 	private Timestamp createdAt;
+
+	@UpdateTimestamp
+	@Column(name = "modified_at")
+	private Timestamp modifiedAt;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude

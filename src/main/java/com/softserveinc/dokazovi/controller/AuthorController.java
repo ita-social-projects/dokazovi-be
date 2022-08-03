@@ -1,8 +1,9 @@
 package com.softserveinc.dokazovi.controller;
 
 
+import com.softserveinc.dokazovi.dto.author.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
-import com.softserveinc.dokazovi.dto.user.AuthorDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorDTO;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
 import io.swagger.annotations.ApiOperation;
@@ -89,8 +90,8 @@ public class AuthorController {
 
 	@GetMapping(DOCTORS)
 	@ApiOperation(value = "get all authors")
-	public ResponseEntity<Page<AuthorDTO>> getAuthors(@PageableDefault Pageable pageable) {
-		Page<AuthorDTO> authors = null;
+	public ResponseEntity<Page<AuthorForAdminDTO>> getAuthors(@PageableDefault Pageable pageable) {
+		Page<AuthorForAdminDTO> authors = authorService.getAuthors(pageable);
 		return ResponseEntity.status(200).body(authors);
 	}
 }

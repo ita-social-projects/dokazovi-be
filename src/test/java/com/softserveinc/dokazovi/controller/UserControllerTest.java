@@ -1,7 +1,5 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserveinc.dokazovi.dto.user.AuthorDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;

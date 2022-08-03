@@ -1,7 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserveinc.dokazovi.dto.user.AuthorDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorDTO;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
 import org.junit.jupiter.api.Assertions;
