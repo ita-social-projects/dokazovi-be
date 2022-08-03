@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.dto.author;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +24,9 @@ public class AuthorForAdminDTO {
 	private String cityName;
 
 	private String regionName;
-
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private Timestamp creationDate;
-
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private Timestamp updateTime;
 }
 
