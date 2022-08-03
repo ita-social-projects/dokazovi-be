@@ -136,7 +136,6 @@ public class AuthorServiceImpl implements AuthorService {
 	}
 
 	@Override
-
 	public Page<AuthorForAdminDTO> getAuthors(Pageable pageable) {
 		Page<DoctorEntity> all = doctorRepository.findAll(pageable);
 		return all.map(doctorEntity -> {

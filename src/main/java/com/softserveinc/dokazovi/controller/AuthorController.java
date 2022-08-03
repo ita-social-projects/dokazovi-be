@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 
+import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.author.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.author.AuthorDTO;
@@ -73,7 +74,8 @@ public class AuthorController {
 
 	@DeleteMapping(AUTHOR_GET_DOCTOR_BY_ID)
 	@PreAuthorize("hasAuthority('DELETE_AUTHOR')")
-	@ApiOperation(value = "remove author")
+	@ApiOperation(value = "remove author",
+			authorizations = {@Authorization(value = "Authorization")})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = HttpStatuses.OK, response = ApiResponseMessage.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
@@ -89,6 +91,7 @@ public class AuthorController {
 	}
 
 	@GetMapping(DOCTORS)
+	@ApiPageable
 	@ApiOperation(value = "get all authors")
 	public ResponseEntity<Page<AuthorForAdminDTO>> getAuthors(@PageableDefault Pageable pageable) {
 		Page<AuthorForAdminDTO> authors = authorService.getAuthors(pageable);
