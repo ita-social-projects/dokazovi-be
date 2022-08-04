@@ -47,7 +47,6 @@ public class TokenProvider {
 				.compact();
 	}
 
-
 	public Integer getUserIdFromToken(String token) {
 		Claims claims = Jwts.parser()
 				.setSigningKey(appProperties.getAuth().getTokenSecret())

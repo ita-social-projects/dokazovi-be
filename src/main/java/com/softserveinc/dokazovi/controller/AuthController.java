@@ -60,7 +60,7 @@ public class AuthController {
 	 */
 	@PostMapping(AUTH_LOGIN)
 	public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
-															HttpServletResponse response) {
+			HttpServletResponse response) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
 						loginRequest.getEmail(),

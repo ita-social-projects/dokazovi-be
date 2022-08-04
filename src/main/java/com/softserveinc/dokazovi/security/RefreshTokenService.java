@@ -27,18 +27,15 @@ public class RefreshTokenService {
 
 	public RefreshToken createRefreshToken(Integer userId) {
 		RefreshToken refreshToken = new RefreshToken();
-		long expireTime = appProperties.getAuth().getRefreshTokenExpirationMsec();
+		long expirationTime = appProperties.getAuth().getRefreshTokenExpirationMsec();
 
 		Optional<UserEntity> userEntity = userRepository.findById(userId);
 		if (userEntity.isPresent()) {
 			refreshToken.setUser(userEntity.get());
-			refreshToken.setExpiryDate(Instant.now().plusMillis(expireTime));
+			refreshToken.setExpiryDate(Instant.now().plusMillis(expirationTime));
 			refreshToken.setToken(UUID.randomUUID().toString());
 		}
-
-		refreshToken = refreshTokenRepository.save(refreshToken);
-
-		return refreshToken;
+		return refreshTokenRepository.save(refreshToken);
 	}
 
 	public RefreshToken verifyExpiration(RefreshToken token) {
@@ -49,6 +46,4 @@ public class RefreshTokenService {
 		}
 		return token;
 	}
-
-
 }

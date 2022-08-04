@@ -43,7 +43,6 @@ public class AppProperties {
 		public void setRefreshTokenExpirationMsec(long refreshTokenExpirationMsec) {
 			this.refreshTokenExpirationMsec = refreshTokenExpirationMsec;
 		}
-
 	}
 
 	public static final class OAuth2 {

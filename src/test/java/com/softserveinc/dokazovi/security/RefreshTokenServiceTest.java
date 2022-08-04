@@ -81,6 +81,4 @@ class RefreshTokenServiceTest {
 		refreshToken.setToken("950c9760-805e-449c-a966-2d0d5ebd86f4");
 		assertThrows(TokenRefreshException.class, () -> refreshTokenService.verifyExpiration(refreshToken));
 	}
-
-
 }
