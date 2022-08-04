@@ -20,19 +20,19 @@ import java.time.Instant;
 @Table(name = "refreshtoken")
 public class RefreshToken {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "refreshtoken_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "refreshtoken_id")
+    private Integer id;
 
-	@OneToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
-	private UserEntity user;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private UserEntity user;
 
-	@Column(nullable = false, unique = true)
-	private String token;
+    @Column(nullable = false, unique = true)
+    private String token;
 
-	@Column(nullable = false)
-	private Instant expiryDate;
+    @Column(nullable = false)
+    private Instant expiryDate;
 
 }
