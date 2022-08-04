@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
+import javax.annotation.Nonnull;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -145,9 +146,9 @@ class UserMapperTest {
 		toUserDtoDirections(userDTO, userEntity);
 	}
 
-	private void toUserDtoInstitutionsTest(UserDTO userDTO, UserEntity userEntity) {
+	private void toUserDtoInstitutionsTest(@Nonnull UserDTO userDTO, @Nonnull UserEntity userEntity) {
 
-		if (userEntity == null || userEntity.getDoctor() == null) {
+		if (userEntity.getDoctor() == null) {
 			return;
 		}
 
@@ -186,9 +187,9 @@ class UserMapperTest {
 		}
 	}
 
-	private void toUserDtoDirections(UserDTO userDTO, UserEntity userEntity) {
+	private void toUserDtoDirections(@Nonnull UserDTO userDTO, @Nonnull UserEntity userEntity) {
 
-		if (userEntity == null || userEntity.getDoctor() == null) {
+		if (userEntity.getDoctor() == null) {
 			return;
 		}
 
@@ -257,8 +258,6 @@ class UserMapperTest {
 
 		userDTO = mapper.toUserDTO(null);
 		assertNull(userDTO);
-		toUserDtoInstitutionsTest(userDTO, null);
-		toUserDtoDirections(userDTO, null);
 
 	}
 

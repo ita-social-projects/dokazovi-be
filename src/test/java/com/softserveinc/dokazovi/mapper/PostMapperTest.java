@@ -275,21 +275,27 @@ class PostMapperTest {
 
 	@Test
 	void updatePostEntityFromDTO() {
-		postMapper.updatePostEntityFromDTO(postSaveFromUserDTO, post);
-		assertEquals(post.getId(), postSaveFromUserDTO.getId());
-		assertEquals(post.getTitle(), postSaveFromUserDTO.getTitle());
-		assertEquals(post.getPreview(), postSaveFromUserDTO.getPreview());
-		assertEquals(post.getContent(), postSaveFromUserDTO.getContent());
-		assertEquals(post.getVideoUrl(), postSaveFromUserDTO.getVideoUrl());
-		assertEquals(post.getPreviewImageUrl(), postSaveFromUserDTO.getPreviewImageUrl());
-		assertEquals(post.getImportantImageUrl(), postSaveFromUserDTO.getImportantImageUrl());
-		assertEquals(post.getImportantMobileImageUrl(), postSaveFromUserDTO.getImportantMobileImageUrl());
-		assertEquals(post.getRealViews(), postSaveFromUserDTO.getRealViews());
-		assertEquals(post.getFakeViews(), postSaveFromUserDTO.getFakeViews());
-		assertEquals(post.getType().getId(), postSaveFromUserDTO.getType().getId());
+		PostEntity post1 = new PostEntity();
+		postMapper.updatePostEntityFromDTO(postSaveFromUserDTO, post1);
+		assertEquals(post1.getId(), postSaveFromUserDTO.getId());
+		assertEquals(post1.getTitle(), postSaveFromUserDTO.getTitle());
+		assertEquals(post1.getPreview(), postSaveFromUserDTO.getPreview());
+		assertEquals(post1.getContent(), postSaveFromUserDTO.getContent());
+		assertEquals(post1.getVideoUrl(), postSaveFromUserDTO.getVideoUrl());
+		assertEquals(post1.getPreviewImageUrl(), postSaveFromUserDTO.getPreviewImageUrl());
+		assertEquals(post1.getImportantImageUrl(), postSaveFromUserDTO.getImportantImageUrl());
+		assertEquals(post1.getImportantMobileImageUrl(), postSaveFromUserDTO.getImportantMobileImageUrl());
+		assertEquals(post1.getRealViews(), postSaveFromUserDTO.getRealViews());
+		assertEquals(post1.getFakeViews(), postSaveFromUserDTO.getFakeViews());
+		assertEquals(post1.getType().getId(), postSaveFromUserDTO.getType().getId());
 
-		checkToEntityOrigins(postSaveFromUserDTO, post);
-		checkToEntityDirections(postSaveFromUserDTO, post);
+		checkToEntityOrigins(postSaveFromUserDTO, post1);
+		checkToEntityDirections(postSaveFromUserDTO, post1);
+
+		post1 = new PostEntity();
+		postSaveFromUserDTO.setType(null);
+		postMapper.updatePostEntityFromDTO(postSaveFromUserDTO, post1);
+		assertNull(post1.getType());
 	}
 
 	@Test
