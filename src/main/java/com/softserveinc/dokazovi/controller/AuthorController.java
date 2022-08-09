@@ -2,9 +2,9 @@ package com.softserveinc.dokazovi.controller;
 
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.author.AuthorDTO;
 import com.softserveinc.dokazovi.dto.author.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
-import com.softserveinc.dokazovi.dto.author.AuthorDTO;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
 import io.swagger.annotations.ApiOperation;
@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR_GET_DOCTOR_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.DOCTOR;
 import static com.softserveinc.dokazovi.controller.EndPoints.DOCTORS;
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR_GET_DOCTOR_BY_ID;
 
 @RestController
 @RequestMapping(DOCTOR)
@@ -40,7 +40,6 @@ import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR_GET_DOCTOR_B
 public class AuthorController {
 
 	private final AuthorService authorService;
-
 
 	@PostMapping
 	@PreAuthorize("hasAuthority('CREATE_AUTHOR')")
@@ -60,7 +59,7 @@ public class AuthorController {
 	@PutMapping
 	@PreAuthorize("hasAuthority('UPDATE_AUTHOR')")
 	@ApiOperation(value = "update author",
-	authorizations = {@Authorization(value = "Authorization")})
+			authorizations = {@Authorization(value = "Authorization")})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = HttpStatuses.OK, response = AuthorDTO.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
