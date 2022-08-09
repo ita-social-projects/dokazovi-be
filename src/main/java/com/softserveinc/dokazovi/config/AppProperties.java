@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
@@ -7,12 +8,17 @@ import java.util.List;
 
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
+
     private final Auth auth = new Auth();
     private final OAuth2 oauth2 = new OAuth2();
 
     public static class Auth {
+
         private String tokenSecret;
-        private long tokenExpirationMsec;
+        @Value("${app.auth.tokenExpirationMsec}")
+        private Long tokenExpirationMsec;
+        @Value("${app.auth.refreshTokenExpirationMsec}")
+        private Long refreshTokenExpirationMsec;
 
         public String getTokenSecret() {
             return tokenSecret;
@@ -29,9 +35,18 @@ public class AppProperties {
         public void setTokenExpirationMsec(long tokenExpirationMsec) {
             this.tokenExpirationMsec = tokenExpirationMsec;
         }
+
+        public long getRefreshTokenExpirationMsec() {
+            return refreshTokenExpirationMsec;
+        }
+
+        public void setRefreshTokenExpirationMsec(long refreshTokenExpirationMsec) {
+            this.refreshTokenExpirationMsec = refreshTokenExpirationMsec;
+        }
     }
 
     public static final class OAuth2 {
+
         private List<String> authorizedRedirectUris = new ArrayList<>();
 
         public List<String> getAuthorizedRedirectUris() {
