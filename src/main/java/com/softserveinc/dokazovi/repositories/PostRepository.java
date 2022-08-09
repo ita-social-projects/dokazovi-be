@@ -205,8 +205,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			Timestamp startDate, Timestamp endDate, Pageable pageable);
 
 	@Query(nativeQuery = true,
-			value = "SELECT p.*, u.first_name FROM users u, posts p "
-					+ "WHERE p.author_id = u.user_id "
+			value = "SELECT p.* FROM posts p "
+					+ "WHERE p.author_id = :authorId "
 					+ "AND CASE WHEN :typeIds IS NOT NULL "
 					+ "THEN p.type_id IN (:typeIds) "
 					+ "ELSE p.post_id IS NOT NULL "
@@ -225,7 +225,6 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 					+ "THEN p.status IN (:statuses) "
 					+ "ELSE p.post_id IS NOT NULL "
 					+ "END "
-					+ "AND p.author_id = :authorId "
 					+ "AND p.modified_at between :startDate and :endDate "
 					+ "AND UPPER((p.title) COLLATE \"uk-ua-dokazovi-x-icu\") "
 					+ "LIKE UPPER(('%' || :title || '%') COLLATE \"uk-ua-dokazovi-x-icu\")")
@@ -233,5 +232,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 			Set<Integer> directionIds, Set<String> statuses, Set<Integer> originIds, String title, Integer authorId,
 			Timestamp startDate, Timestamp endDate, Pageable pageable);
 
+	@Query(nativeQuery = true,
+	value = "SELECT p.* FROM posts p "
+			+ "WHERE p.author_id = :authorId")
 	Page<PostEntity> findAllByAuthorId(Integer authorId, Pageable pageable);
 }
