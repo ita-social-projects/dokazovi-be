@@ -22,6 +22,7 @@ import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthorServiceImplTest {
+
 	@Mock
 	private UserRepository userRepository;
 	@Mock
@@ -58,6 +59,7 @@ public class AuthorServiceImplTest {
 				.enabled(true)
 				.build();
 	}
+
 	@Test
 	void createAuthor() {
 		AuthorDTO authorDTO = AuthorDTO.builder()
