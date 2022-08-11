@@ -72,7 +72,6 @@ public class UserEntity {
 	@CreationTimestamp
 	private Timestamp createdAt;
 
-	@EqualsAndHashCode.Exclude
 	private Timestamp editedAt;
 
 	private String region;
