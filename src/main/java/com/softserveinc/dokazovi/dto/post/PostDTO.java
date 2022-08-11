@@ -31,7 +31,7 @@ public class PostDTO {
 	private PostTypeDTO type;
 	private String status;
 	private Set<OriginDTO> origins;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd.MM.yyyy")
 	private Timestamp createdAt;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private Timestamp modifiedAt;
