@@ -76,6 +76,8 @@ public class UserEntity {
 
 	private String region;
 
+	private String city;
+
 	@ElementCollection
 	@CollectionTable(
 			name = "users_social_networks",

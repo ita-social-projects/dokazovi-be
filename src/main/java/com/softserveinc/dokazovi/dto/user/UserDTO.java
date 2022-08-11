@@ -33,6 +33,8 @@ public class UserDTO {
 
 	private String region;
 
+	private String city;
+
 	private Set<String> socialNetworks;
 
 	private Set<DirectionDTO> directions;

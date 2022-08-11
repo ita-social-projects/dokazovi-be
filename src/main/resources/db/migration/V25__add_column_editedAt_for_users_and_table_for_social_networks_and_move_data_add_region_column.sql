@@ -16,3 +16,6 @@ alter table public.doctors
 
 alter table public.users
     add column REGION varchar;
+
+alter table public.users
+    add column CITY varchar;
