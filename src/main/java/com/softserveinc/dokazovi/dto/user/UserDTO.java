@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import lombok.Builder;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
 /**
@@ -30,7 +31,11 @@ public class UserDTO {
 
 	private String bio;
 
-	private String socialNetwork;
+	private String region;
+
+	private String city;
+
+	private Set<String> socialNetworks;
 
 	private Set<DirectionDTO> directions;
 
@@ -40,4 +45,7 @@ public class UserDTO {
 
 	private LatestUserPostDTO lastAddedPost;
 
+	private Timestamp createdAt;
+
+	private Timestamp editedAt;
 }
