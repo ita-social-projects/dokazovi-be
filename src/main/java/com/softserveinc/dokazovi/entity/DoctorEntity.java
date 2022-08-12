@@ -51,9 +51,6 @@ public class DoctorEntity {
 	@Column(columnDefinition = "TEXT")
 	private String bio;
 
-	@Column(columnDefinition = "TEXT")
-	private String socialNetwork;
-
 	@ColumnDefault("1.0")
 	private Double promotionScale;
 
