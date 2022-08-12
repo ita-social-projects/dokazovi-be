@@ -330,7 +330,7 @@ class UserControllerTest {
 	void getAuthoritiesTestNotFound() throws Exception {
 		String uri = USER + USER_GET_AUTHORITIES;
 		when(userPrincipal.getAuthorities()).thenReturn(null);
-		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+		mockMvc.perform(get(uri)).andExpect(status().isForbidden());
 		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
 		Assertions.assertNull(actual);
 	}
