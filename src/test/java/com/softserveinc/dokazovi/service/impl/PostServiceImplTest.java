@@ -1280,7 +1280,7 @@ class PostServiceImplTest {
 	}
 
 	@Test
-	void updatePostById_WhenPostStatus_NotFount_ThrowException() {
+	void updatePostById_WhenPostStatus_NotFound_ThrowException() {
 		Set<RolePermission> permissions = new HashSet<>();
 		permissions.add(RolePermission.DELETE_OWN_POST);
 
@@ -1349,7 +1349,6 @@ class PostServiceImplTest {
 		verify(postRepository, never())
 				.save(any(PostEntity.class)
 				);
-
 	}
 
 	@Test
@@ -1803,8 +1802,7 @@ class PostServiceImplTest {
 		Integer postId = 0;
 		Timestamp publishedAt = Timestamp.valueOf(
 				LocalDateTime.of(
-						LocalDate.of(
-								2002, Month.JANUARY, 14),
+						LocalDate.of(2002, Month.JANUARY, 14),
 						LocalTime.MIN)
 		);
 		PostPublishedAtDTO postPublishedAtDTO = PostPublishedAtDTO

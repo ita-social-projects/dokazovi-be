@@ -40,8 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoSettings(strictness = Strictness.LENIENT)
 class AuthControllerTest {
 
-
-
     private MockMvc mockMvc;
     @Mock
     private TokenProvider tokenProvider;
@@ -80,17 +78,20 @@ class AuthControllerTest {
         UserEntity user = buildUserEntity(EMAIL, PASSWORD, true);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(tokenProvider.createToken(any(Authentication.class))).thenReturn(TOKEN);
+        when(tokenProvider.createToken(authentication)).thenReturn(TOKEN);
         when(userService.findByEmail(anyString())).thenReturn(user);
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .content(asJsonString(loginRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(authenticationManager, times(2))
+        assertEquals(TOKEN, tokenProvider.createToken(authentication));
+        verify(authenticationManager, times(1))
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(userService, times(1))
                 .findByEmail(anyString());
+        verify(tokenProvider, times(2))
+                .createToken(authentication);
     }
 
     @Test
@@ -128,11 +129,9 @@ class AuthControllerTest {
     }
 
     private Authentication authenticate(LoginRequest loginRequest) {
-        return authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
+        return new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
                         loginRequest.getPassword()
-                )
         );
     }
 
