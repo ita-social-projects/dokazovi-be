@@ -66,5 +66,4 @@ class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 				() -> assertTrue(cookies[0].getValue().isEmpty())
 		);
 	}
-
 }
