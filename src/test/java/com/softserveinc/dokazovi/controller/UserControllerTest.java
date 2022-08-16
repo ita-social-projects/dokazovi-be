@@ -56,7 +56,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -78,7 +77,7 @@ class UserControllerTest {
 	@InjectMocks
 	private UserController userController;
 
-	private HandlerMethodArgumentResolver methodArgumentResolver = new HandlerMethodArgumentResolver() {
+	private final HandlerMethodArgumentResolver methodArgumentResolver = new HandlerMethodArgumentResolver() {
 		@Override
 		public boolean supportsParameter(MethodParameter parameter) {
 			return parameter.getParameterType().isAssignableFrom(UserPrincipal.class);
@@ -253,15 +252,15 @@ class UserControllerTest {
 		when(userService.findUserEntityByEmail(any(String.class)))
 				.thenReturn(userEntity);
 		mockMvc.perform(post(USER + USER_RESET_PASSWORD)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(emailContent))
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(emailContent))
 				.andExpect(status().isOk());
 		verify(userService).findUserEntityByEmail(any(String.class));
 		verify(userService).sendPasswordResetToken(userEntity, null);
 	}
 
 	@Test
-	void updatePasswordTestIsOk () throws Exception {
+	void updatePasswordTestIsOk() throws Exception {
 		String content = "{\n"
 				+ "  \"matchPassword\": \"qwerty12345\",\n"
 				+ "  \"newPassword\": \"qwerty12345\",\n"
@@ -279,8 +278,8 @@ class UserControllerTest {
 				.build();
 		when(passwordResetTokenService.getByToken(token)).thenReturn(tokenEntity);
 		mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content))
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(content))
 				.andExpect(status().isOk());
 	}
 
@@ -297,14 +296,14 @@ class UserControllerTest {
 		when(userService.findUserEntityByEmail(any(String.class)))
 				.thenReturn(userEntity);
 		mockMvc.perform(post(USER + USER_CHANGE_PASSWORD)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content))
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(content))
 				.andExpect(status().isOk());
 		verify(userService).findUserEntityByEmail(any(String.class));
 	}
 
 	@Test
-	void updatePasswordTestNotFound () throws Exception {
+	void updatePasswordTestNotFound() throws Exception {
 		String content = "{\n"
 				+ "  \"matchPassword\": \"qwerty12345\",\n"
 				+ "  \"newPassword\": \"qwerty12345\",\n"
@@ -313,8 +312,8 @@ class UserControllerTest {
 		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
 		when(passwordResetTokenService.getByToken(token)).thenReturn(null);
 		mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content))
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(content))
 				.andExpect(status().isNotFound());
 	}
 

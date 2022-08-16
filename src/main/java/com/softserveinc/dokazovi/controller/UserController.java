@@ -181,8 +181,7 @@ public class UserController {
 			@ApiResponse(code = 200, message = HttpStatuses.OK),
 			@ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
 	})
-	public ResponseEntity<String> checkToken(
-			@RequestParam String token) {
+	public ResponseEntity<String> checkToken(@RequestParam String token) {
 		CacheControl cacheControl = CacheControl.noCache();
 		if (passwordResetTokenService.validatePasswordResetToken(token)) {
 			return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).build();
