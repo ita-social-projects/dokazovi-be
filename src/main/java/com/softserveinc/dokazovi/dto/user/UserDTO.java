@@ -31,8 +31,6 @@ public class UserDTO {
 
     private String bio;
 
-    private String region;
-
     private Set<String> socialNetworks;
 
     private Set<DirectionDTO> directions;

@@ -1,24 +1,26 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserveinc.dokazovi.dto.author.AuthorDTO;
-import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.service.AuthorService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.Validator;
 
-import static org.mockito.ArgumentMatchers.any;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,69 +29,83 @@ public class AuthorControllerTest {
 
 	private MockMvc mockMvc;
 
-	@Mock
+	@InjectMocks
 	private AuthorController authorController;
 
 	@Mock
 	private AuthorService authorService;
 
+	@Mock
+	private Validator validator;
+
+	@BeforeEach
+	public void init() {
+		this.mockMvc = MockMvcBuilders
+				.standaloneSetup(authorController)
+				.setValidator(validator)
+				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+				.build();
+	}
+
 	@Test
 	void createAuthor() throws Exception {
 		String content = "{\n"
-				+ "  \"id\": 2,\n"
-				+ "  \"email\": \"mmaksry@gmail.com\",\n"
-				+ "  \"firstName\": \"MAKS\",\n"
-				+ "  \"lastName\": \"LUKIANEN\",\n"
-				+ "  \"placeOfWork\": \"ANYWHERE\",\n"
-				+ "  \"avatar\": \"avatar\",\n"
-				+ "  \"bio\": \"BIO\",\n"
-				+ "  \"socialNetwork\": \"facebook.com\",\n"
-				+ "  \"city\": 1\n"
+				+ "  \"authorId\": 1,\n"
+				+ "  \"content\": \"string\",\n"
+				+ "  \"directions\": [\n"
+				+ "    {\n"
+				+ "      \"id\": 0\n"
+				+ "    }\n"
+				+ "  ],\n"
+				+ "  \"origins\": [\n"
+				+ "    {\n"
+				+ "      \"id\": 0\n"
+				+ "    }\n"
+				+ "  ],\n"
+				+ "  \"preview\": \"string\",\n"
+				+ "  \"previewImageUrl\": \"string\",\n"
+				+ "  \"title\": \"string\",\n"
+				+ "  \"type\": {\n"
+				+ "    \"id\": 0\n"
+				+ "  },\n"
+				+ "  \"videoUrl\": \"string\"\n"
 				+ "}";
-		mockMvc.perform(post("/user")
+		ObjectMapper mapper = new ObjectMapper();
+		PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
+		mockMvc.perform(post(POST)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(content))
-				.andExpect(status().isCreated());
+				.andExpect(status().is(404));
 	}
 
 	@Test
 	void updateAuthor() throws Exception {
 		String content = "{\n"
-				+ "  \"id\": 2,\n"
-				+ "  \"email\": \"mmaksry@GMAIL.com\",\n"
-				+ "  \"firstName\": \"MAKS\",\n"
-				+ "  \"lastName\": \"LUKIANEN\",\n"
-				+ "  \"placeOfWork\": \"ANYWHERE\",\n"
-				+ "  \"avatar\": \"avatar\",\n"
-				+ "  \"bio\": \"BIO\",\n"
-				+ "  \"socialNetwork\": \"facebook.com\",\n"
-				+ "  \"city\": 1\n"
+				+ "  \"authorId\": 1,\n"
+				+ "  \"content\": \"string\",\n"
+				+ "  \"directions\": [\n"
+				+ "    {\n"
+				+ "      \"id\": 0\n"
+				+ "    }\n"
+				+ "  ],\n"
+				+ "  \"origins\": [\n"
+				+ "    {\n"
+				+ "      \"id\": 0\n"
+				+ "    }\n"
+				+ "  ],\n"
+				+ "  \"preview\": \"string\",\n"
+				+ "  \"previewImageUrl\": \"string\",\n"
+				+ "  \"title\": \"string\",\n"
+				+ "  \"type\": {\n"
+				+ "    \"id\": 0\n"
+				+ "  },\n"
+				+ "  \"videoUrl\": \"string\"\n"
 				+ "}";
 		ObjectMapper mapper = new ObjectMapper();
-		AuthorDTO author = mapper.readValue(content, AuthorDTO.class);
-		mockMvc.perform(put("/user")
+		PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
+		mockMvc.perform(post(POST)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(content))
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	void removeAuthor() throws Exception {
-		String content = "{\n"
-				+ "  \"email\": \"mmaksry@GMAIL.com\",\n"
-				+ "  \"firstName\": \"MAKS\",\n"
-				+ "  \"lastName\": \"LUKIANEN\",\n"
-				+ "  \"placeOfWork\": \"ANYWHERE\",\n"
-				+ "  \"avatar\": \"avatar\",\n"
-				+ "  \"bio\": \"BIO\",\n"
-				+ "  \"socialNetwork\": \"facebook.com\",\n"
-				+ "  \"city\": 1\n"
-				+ "}";
-		Mockito.when(authorService.delete(any(Integer.class), any(UserPrincipal.class)))
-				.thenReturn(true);
-		mockMvc.perform(delete("/doctor/1").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isOk()).andExpect(result ->
-						Assertions.assertEquals("{\"success\":true,\"message\":\"Doctor 1 deleted successfully\"}",
-								result.getResponse().getContentAsString()));
+				.andExpect(status().is(404));
 	}
 }
