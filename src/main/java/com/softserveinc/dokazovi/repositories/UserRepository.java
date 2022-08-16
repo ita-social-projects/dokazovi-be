@@ -80,8 +80,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	 * @return the resulting user entity page
 	 */
 	@Query(nativeQuery = true,
-			value = " SELECT U.* FROM DOCTORS D "
+			value = " SELECT U.*, SN.LINK FROM DOCTORS D "
 					+ "     JOIN USERS U ON U.USER_ID = D.USER_ID "
+					+ "     JOIN USERS_SOCIAL_NETWORKS SN ON D.USER_ID = SN.USER_ID"
 					+ " ORDER BY D.PROMOTION_LEVEL DESC, D.RATING DESC, "
 					+ "          U.LAST_NAME, U.FIRST_NAME ")
 	Page<UserEntity> findDoctorsProfiles(Pageable pageable);

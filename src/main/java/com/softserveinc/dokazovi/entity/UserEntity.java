@@ -9,10 +9,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -65,15 +66,26 @@ public class UserEntity {
 	@JoinColumn(name = "role_id")
 	private RoleEntity role;
 
-	@OneToOne(mappedBy = "profile", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
 	private DoctorEntity doctor;
 
 	@CreationTimestamp
 	private Timestamp createdAt;
 
-	@UpdateTimestamp
-	@Column(name = "modified_at")
-	private Timestamp modifiedAt;
+	private Timestamp editedAt;
+
+	private String region;
+
+	private String city;
+
+	@ElementCollection
+	@CollectionTable(
+			name = "users_social_networks",
+			joinColumns = @JoinColumn(name = "user_id"))
+	@Column(name = "link")
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
+	private Set<String> socialNetworks;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude
