@@ -2,10 +2,9 @@ package com.softserveinc.dokazovi.controller;
 
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.author.AuthorDTO;
 import com.softserveinc.dokazovi.dto.author.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
-import com.softserveinc.dokazovi.dto.author.AuthorDTO;
-import com.softserveinc.dokazovi.dto.post.PostUserDTO;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
 import io.swagger.annotations.ApiOperation;
@@ -13,7 +12,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
-import org.apache.http.auth.AUTH;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -32,9 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.DOCTOR;
-import static com.softserveinc.dokazovi.controller.EndPoints.DOCTORS;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR_GET_DOCTOR_BY_ID;
+import static com.softserveinc.dokazovi.controller.EndPoints.DOCTOR;
 
 @RestController
 @RequestMapping(DOCTOR)
@@ -92,7 +89,7 @@ public class AuthorController {
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
-	@GetMapping(DOCTORS)
+	@GetMapping()
 	@ApiPageable
 	@ApiOperation(value = "get all authors")
 	public ResponseEntity<Page<AuthorForAdminDTO>> getAuthors(@PageableDefault Pageable pageable) {

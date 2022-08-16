@@ -1,8 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
-import com.softserveinc.dokazovi.dto.author.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.author.AuthorDTO;
-import com.softserveinc.dokazovi.dto.post.PostUserDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
