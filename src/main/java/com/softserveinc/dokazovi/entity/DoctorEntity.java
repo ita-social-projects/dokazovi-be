@@ -91,6 +91,8 @@ public class DoctorEntity {
 	@JoinColumn(name = "city_id")
 	private CityEntity city;
 
+	private String socialNetwork;
+
 	@ManyToMany
 	@JoinTable(
 			name = "doctors_institutions",

@@ -151,7 +151,7 @@ public class AuthorServiceImpl implements AuthorService {
 					.cityName(cityName)
 					.regionName(regionName)
 					.creationDate(one.getCreatedAt())
-					.updateTime(one.getModifiedAt())
+					.updateTime(one.getEditedAt())
 					.build();
 
 		});

@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -72,6 +73,7 @@ public class UserEntity {
 	@CreationTimestamp
 	private Timestamp createdAt;
 
+	@UpdateTimestamp
 	private Timestamp editedAt;
 
 	private String region;
