@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.mapper;
 
-import com.softserveinc.dokazovi.dto.author.AuthorDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import org.mapstruct.Mapper;

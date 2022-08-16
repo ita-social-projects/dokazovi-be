@@ -44,77 +44,72 @@ import java.util.Set;
 @Table(name = "users")
 public class UserEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id")
-	private Integer id;
-	private String firstName;
-	private String lastName;
-	private String email;
-	private String password;
-	private String phone;
-	private String avatar;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Integer id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private String phone;
+    private String avatar;
 
-	@Enumerated(EnumType.STRING)
-	private UserStatus status;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
-	@OneToMany(mappedBy = "author")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<PostEntity> posts;
+    @OneToMany(mappedBy = "author")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<PostEntity> posts;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "role_id")
-	private RoleEntity role;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private RoleEntity role;
 
-	@OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
-	private DoctorEntity doctor;
+    @OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
+    private DoctorEntity doctor;
 
-	@CreationTimestamp
-	private Timestamp createdAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
 
-	@UpdateTimestamp
-	private Timestamp editedAt;
+    @UpdateTimestamp
+    private Timestamp editedAt;
 
-	private String region;
+    @ElementCollection
+    @CollectionTable(
+            name = "users_social_networks",
+            joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "link")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<String> socialNetworks;
 
-	private String city;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<ProviderEntity> userProviderEntities;
 
-	@ElementCollection
-	@CollectionTable(
-			name = "users_social_networks",
-			joinColumns = @JoinColumn(name = "user_id"))
-	@Column(name = "link")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<String> socialNetworks;
+    @Column(name = "enabled")
+    @EqualsAndHashCode.Exclude
+    private Boolean enabled;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<ProviderEntity> userProviderEntities;
+    /**
+     * Gets latest expert post, if it exists. If not - returns null
+     *
+     * @return the resulting post entity
+     */
+    public PostEntity getLatestExpertPost() {
+        if (posts == null || posts.isEmpty()) {
+            return null;
+        }
+        return posts.stream()
+                .filter(postEntity -> Objects.equals(postEntity.getStatus(), PostStatus.PUBLISHED))
+                .max(Comparator.comparing(PostEntity::getCreatedAt))
+                .orElse(null);
+    }
 
-	@Column(name = "enabled")
-	@EqualsAndHashCode.Exclude
-	private Boolean enabled;
-
-	/**
-	 * Gets latest expert post, if it exists.
-	 * If not - returns null
-	 *
-	 * @return the resulting post entity
-	 */
-	public PostEntity getLatestExpertPost() {
-		if (posts == null || posts.isEmpty()) {
-			return null;
-		}
-		return posts.stream()
-				.filter(postEntity -> Objects.equals(postEntity.getStatus(), PostStatus.PUBLISHED))
-				.max(Comparator.comparing(PostEntity::getCreatedAt))
-				.orElse(null);
-	}
-
-	public boolean getEnabled() {
-		return this.enabled;
-	}
+    public boolean getEnabled() {
+        return this.enabled;
+    }
 }

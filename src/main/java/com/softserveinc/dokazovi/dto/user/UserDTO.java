@@ -15,37 +15,35 @@ import java.util.Set;
 @Builder
 public class UserDTO {
 
-	private Integer id;
+    private Integer id;
 
-	private String firstName;
+    private String firstName;
 
-	private String lastName;
+    private String lastName;
 
-	private String email;
+    private String email;
 
-	private String qualification;
+    private String qualification;
 
-	private String phone;
+    private String phone;
 
-	private String avatar;
+    private String avatar;
 
-	private String bio;
+    private String bio;
 
-	private String region;
+    private String region;
 
-	private String city;
+    private Set<String> socialNetworks;
 
-	private Set<String> socialNetworks;
+    private Set<DirectionDTO> directions;
 
-	private Set<DirectionDTO> directions;
+    private UserInstitutionDTO mainInstitution;
 
-	private UserInstitutionDTO mainInstitution;
+    private Set<UserInstitutionDTO> institutions;
 
-	private Set<UserInstitutionDTO> institutions;
+    private LatestUserPostDTO lastAddedPost;
 
-	private LatestUserPostDTO lastAddedPost;
+    private Timestamp createdAt;
 
-	private Timestamp createdAt;
-
-	private Timestamp editedAt;
+    private Timestamp editedAt;
 }
