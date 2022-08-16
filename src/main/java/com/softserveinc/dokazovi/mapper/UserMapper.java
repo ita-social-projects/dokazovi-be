@@ -21,6 +21,4 @@ public interface UserMapper {
 	@Mapping(target = "lastAddedPost",
 			expression = "java(POST_MAPPER.toLatestExpertPostDTO(userEntity.getLatestExpertPost()))")
 	UserDTO toUserDTO(UserEntity userEntity);
-
-	UserEntity toUser(AuthorDTO author);
 }

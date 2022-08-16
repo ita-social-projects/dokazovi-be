@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.annotations.ApiPageable;
 import com.softserveinc.dokazovi.dto.author.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.author.AuthorDTO;
+import com.softserveinc.dokazovi.dto.post.PostUserDTO;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.auth.AUTH;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -65,11 +67,11 @@ public class AuthorController {
 			@ApiResponse(code = 200, message = HttpStatuses.OK, response = AuthorDTO.class),
 			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
 	})
-	public ResponseEntity<AuthorDTO> updateAuthor(@RequestBody AuthorDTO authorDTO,
+	public ResponseEntity<AuthorDTO> updateAuthor(@RequestBody AuthorDTO author,
 			@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		return ResponseEntity
 				.status(200)
-				.body(authorService.update(authorDTO, userPrincipal));
+				.body(authorService.update(author, userPrincipal));
 	}
 
 	@DeleteMapping(AUTHOR_GET_DOCTOR_BY_ID)

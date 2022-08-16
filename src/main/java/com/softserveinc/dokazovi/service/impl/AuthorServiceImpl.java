@@ -2,6 +2,7 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.author.AuthorForAdminDTO;
 import com.softserveinc.dokazovi.dto.author.AuthorDTO;
+import com.softserveinc.dokazovi.dto.post.PostUserDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
@@ -10,6 +11,7 @@ import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.entity.enumerations.UserPromotionLevel;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
+import com.softserveinc.dokazovi.mapper.InstitutionMapper;
 import com.softserveinc.dokazovi.repositories.CityRepository;
 import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -33,6 +35,7 @@ public class AuthorServiceImpl implements AuthorService {
 	private final CityRepository cityRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final UserRepository userRepository;
+	private final InstitutionMapper institutionMapper;
 
 
 	@Override
@@ -60,17 +63,16 @@ public class AuthorServiceImpl implements AuthorService {
 				.bio(savedDoctor.getBio())
 				.firstName(savedUser.getFirstName())
 				.lastName(savedUser.getLastName())
-				.placeOfWork(savedDoctor.getQualification())
+				.mainInstitution(institutionMapper.toExpertInstitutionDTO(savedDoctor.getMainInstitution()))
 				.email(savedUser.getEmail())
-				.city(savedDoctor.getCity().getId())
 				.build();
 	}
 
 	private DoctorEntity createDoctorEntity(AuthorDTO authorDTO) {
-		CityEntity city = cityRepository.getOne(authorDTO.getCity());
+		CityEntity city = cityRepository.getOne(authorDTO.getMainInstitution().getCity().getId());
 		return DoctorEntity.builder()
 				.bio(authorDTO.getBio())
-				.qualification(authorDTO.getPlaceOfWork())
+				.qualification(authorDTO.getQualification())
 				.socialNetwork(authorDTO.getSocialNetwork())
 				.publishedPosts(0L)
 				.promotionScale(1.0)
@@ -106,8 +108,8 @@ public class AuthorServiceImpl implements AuthorService {
 								.equals(RolePermission.UPDATE_AUTHOR.getAuthority()))) {
 			DoctorEntity doctor = doctorRepository.getOne(authorDTO.getId());
 			doctor.setBio(authorDTO.getBio());
-			doctor.setQualification(authorDTO.getPlaceOfWork());
-			doctor.setCity(cityRepository.getOne(authorDTO.getCity()));
+			doctor.setQualification(authorDTO.getQualification());
+			doctor.setCity(cityRepository.getOne(authorDTO.getMainInstitution().getCity().getId()));
 			doctor.setSocialNetwork(authorDTO.getSocialNetwork());
 			UserEntity user = userRepository.getOne(doctor.getProfile().getId());
 			user.setEmail(authorDTO.getEmail());

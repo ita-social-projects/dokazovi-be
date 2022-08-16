@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.dto.author;
 
+import com.softserveinc.dokazovi.dto.user.UserInstitutionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,13 +20,13 @@ public class AuthorDTO {
 
 	private String lastName;
 
-	private String placeOfWork;
+	private String qualification;
+
+	private UserInstitutionDTO mainInstitution;
 
 	private String avatar;
 
 	private String bio;
 
 	private String socialNetwork;
-
-	private Integer city;
 }
