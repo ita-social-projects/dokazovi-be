@@ -497,5 +497,4 @@ class PostMapperTest {
 			assertEquals(dtoList.get(i).getId(), entityList.get(i).getId());
 		}
 	}
-
 }

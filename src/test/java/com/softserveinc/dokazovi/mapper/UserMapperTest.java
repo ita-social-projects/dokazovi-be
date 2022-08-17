@@ -258,7 +258,5 @@ class UserMapperTest {
 
 		userDTO = mapper.toUserDTO(null);
 		assertNull(userDTO);
-
 	}
-
 }
