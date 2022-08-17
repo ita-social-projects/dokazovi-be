@@ -82,13 +82,13 @@ class UserMapperTest {
 				.email("mail@mail.com")
 				.phone("380990099009")
 				.avatar("Some avatar url")
+				.socialNetworks(Set.of("Facebook", "Twitter"))
 				.build();
 
 		doctorEntity = DoctorEntity.builder()
 				.qualification("qualification 1")
 				.bio("bio 1")
 				.mainInstitution(mainInstitution)
-				.socialNetwork("Facebook")
 				.build();
 
 		userEntity.setDoctor(doctorEntity);
@@ -140,7 +140,7 @@ class UserMapperTest {
 		assertEquals(userDTO.getLastAddedPost().getId(), latestPostEntity.getId());
 		assertEquals(userDTO.getLastAddedPost().getTitle(), latestPostEntity.getTitle());
 
-		assertEquals(userDTO.getSocialNetwork(), userEntity.getDoctor().getSocialNetwork());
+		assertEquals(userDTO.getSocialNetworks(), userEntity.getSocialNetworks());
 
 		toUserDtoInstitutionsTest(userDTO, userEntity);
 		toUserDtoDirections(userDTO, userEntity);
@@ -242,7 +242,7 @@ class UserMapperTest {
 		assertNull(userDTO.getBio());
 		assertNull(userDTO.getQualification());
 		assertNull(userDTO.getMainInstitution());
-		assertNull(userDTO.getSocialNetwork());
+		assertNull(userDTO.getSocialNetworks());
 		toUserDtoInstitutionsTest(userDTO, userEntity1);
 		toUserDtoDirections(userDTO, userEntity1);
 
@@ -252,7 +252,6 @@ class UserMapperTest {
 		assertNull(userDTO.getBio());
 		assertNull(userDTO.getQualification());
 		assertNull(userDTO.getMainInstitution());
-		assertNull(userDTO.getSocialNetwork());
 		toUserDtoInstitutionsTest(userDTO, userEntity);
 		toUserDtoDirections(userDTO, userEntity);
 
