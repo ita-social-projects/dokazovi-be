@@ -148,6 +148,9 @@ public class UserController {
 	@ApiOperation(value = "Get current user",
 			authorizations = {@Authorization(value = "Authorization")})
 	public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		if (userPrincipal == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
 		UserDTO userDTO = userService.findExpertById(userPrincipal.getId());
 		return ResponseEntity
 				.status((userDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
@@ -247,6 +250,6 @@ public class UserController {
 			authorities = userPrincipal.getAuthorities();
 		}
 		return ResponseEntity.status(authorities != null
-				? HttpStatus.OK : HttpStatus.NOT_FOUND).body(authorities);
+				? HttpStatus.OK : HttpStatus.FORBIDDEN).body(authorities);
 	}
 }

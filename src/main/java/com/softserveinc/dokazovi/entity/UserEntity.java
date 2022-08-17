@@ -11,7 +11,9 @@ import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -69,6 +71,21 @@ public class UserEntity {
 
 	@CreationTimestamp
 	private Timestamp createdAt;
+
+	private Timestamp editedAt;
+
+	private String region;
+
+	private String city;
+
+	@ElementCollection
+	@CollectionTable(
+			name = "users_social_networks",
+			joinColumns = @JoinColumn(name = "user_id"))
+	@Column(name = "link")
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
+	private Set<String> socialNetworks;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
 	@EqualsAndHashCode.Exclude
