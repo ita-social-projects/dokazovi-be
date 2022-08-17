@@ -440,8 +440,10 @@ class UserServiceImplTest {
 		UserEntity userEntity = userService.getById(1);
 		userEntity.setEmail(expectedEmail);
 		when(userRepository.save(any(UserEntity.class))).thenReturn(expected);
+		Assertions.assertNull(expected.getEditedAt());
 		UserEntity actual = userService.update(userEntity);
 		Assertions.assertEquals(expectedEmail, actual.getEmail());
+		Assertions.assertNotNull(actual.getEditedAt());
 	}
 
 	@Test
