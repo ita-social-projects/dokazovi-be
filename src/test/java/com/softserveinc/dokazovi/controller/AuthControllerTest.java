@@ -84,13 +84,13 @@ class AuthControllerTest {
                         .content(asJsonString(loginRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        assertEquals(TOKEN, tokenProvider.createToken(authentication));
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> mvcResult.getResponse().getContentAsString().equals(TOKEN));
         verify(authenticationManager, times(1))
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(userService, times(1))
                 .findByEmail(anyString());
-        verify(tokenProvider, times(2))
+        verify(tokenProvider, times(1))
                 .createToken(authentication);
     }
 
