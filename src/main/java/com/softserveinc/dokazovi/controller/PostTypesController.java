@@ -32,7 +32,7 @@ public class PostTypesController {
 	/**
 	 * getAllPostTypesByUserId method returns all post types of posts published by certain user
 	 *
-	 * @param userId  Id of user whose materials we want to receive
+	 * @param userId Id of user whose materials we want to receive
 	 * @return 'OK' HttpStatus and method call from service
 	 */
 	@GetMapping(POST_TYPES_ALL_TYPES_BY_USER)

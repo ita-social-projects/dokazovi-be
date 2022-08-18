@@ -70,7 +70,7 @@ public class UserController {
 	/**
 	 * Gets preview of random experts, filtered by directions. Default 12 max per page.
 	 *
-	 * @param pageable   interface for pagination information
+	 * @param pageable interface for pagination information
 	 * @param directions direction id
 	 * @return page with found posts and 'OK' httpStatus
 	 */
@@ -90,7 +90,7 @@ public class UserController {
 	 * Gets all experts depending on the parameters coming through the request, ordered by relevance. Default 6 max per
 	 * page.
 	 *
-	 * @param pageable           interface for pagination information
+	 * @param pageable interface for pagination information
 	 * @param userSearchCriteria binds request parameters to an object
 	 * @return page with found experts and 'OK' httpStatus
 	 */

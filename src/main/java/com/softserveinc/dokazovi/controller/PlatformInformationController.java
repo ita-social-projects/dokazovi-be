@@ -59,7 +59,7 @@ public class PlatformInformationController {
 	 *
 	 * <p>Verifies whether a user possesses the authority to add information.</p>
 	 *
-	 * @param userPrincipal          the authorized user's data, in the current case it must be an administrator in
+	 * @param userPrincipal the authorized user's data, in the current case it must be an administrator in
 	 *                               order to be able to perform the operation
 	 * @param platformInformationDTO a DTO that contains the information to be saved
 	 * @return the saved info and HttpStatus 'CREATED' and saves new info to DB

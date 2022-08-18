@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
 	 * findDoctorsProfiles method without parameters is called
 	 *
 	 * @param userSearchCriteria received from User controller
-	 * @param pageable           received from User controller
+	 * @param pageable received from User controller
 	 * @return found doctor by criteria
 	 */
 	@Override
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
 	 * Gets random experts by directions. If directions are empty, gets random experts without filters
 	 *
 	 * @param directionsIds the directions ids received from User controller
-	 * @param pageable      received from User controller
+	 * @param pageable received from User controller
 	 * @return found doctor by directions
 	 */
 	@Override
@@ -208,7 +208,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Gets the verification token received from tokenRepository.
 	 *
-	 * @param user  user received from Mail Sender
+	 * @param user user received from Mail Sender
 	 * @param token token received from Mail Sender
 	 */
 	@Override

@@ -79,7 +79,7 @@ public class PostController {
 	 * <p>Checks if user has authority to create own post.</p>
 	 *
 	 * @param postSaveFromUserDTO DTO of new post created by authorized user
-	 * @param userPrincipal       authorized user data
+	 * @param userPrincipal authorized user data
 	 * @return HttpStatus 'CREATED' and saves new post to db
 	 */
 	@PostMapping
@@ -150,8 +150,8 @@ public class PostController {
 	 *
 	 * @param pageable  interface for pagination information
 	 * @param direction direction id
-	 * @param type      type ids
-	 * @param tag       tag ids
+	 * @param type type ids
+	 * @param tag tag ids
 	 * @return page with found latest posts and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_LATEST_BY_DIRECTION)
@@ -174,8 +174,8 @@ public class PostController {
 	 * findLatestByExpert method returns latest post by expert id.
 	 *
 	 * @param pageable interface for pagination information
-	 * @param expert   expert id
-	 * @param type     post type id
+	 * @param expert expert id
+	 * @param type post type id
 	 * @return page with found posts and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_LATEST_BY_EXPERT)
@@ -198,8 +198,8 @@ public class PostController {
 	 * Finds post by expert id, type and status
 	 *
 	 * @param pageable interface for pagination information
-	 * @param expert   expert id
-	 * @param types    the type's ids by which the search is performed
+	 * @param expert expert id
+	 * @param types the type's ids by which the search is performed
 	 * @return page with found posts and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_LATEST_BY_EXPERT_AND_STATUS)
@@ -253,10 +253,10 @@ public class PostController {
 	 *
 	 * <p>If something went wrong returns HttpStatus 'NO CONTENT'.</p>
 	 *
-	 * @param pageable   interface for pagination information
+	 * @param pageable interface for pagination information
 	 * @param directions direction's ids by which the search is performed
-	 * @param types      the type's ids by which the search is performed
-	 * @param origins    the origin's ids by which the search is performed
+	 * @param types the type's ids by which the search is performed
+	 * @param origins the origin's ids by which the search is performed
 	 * @return page with all posts filtered by directions, by post types and by origins and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_ALL_POSTS)
@@ -296,11 +296,11 @@ public class PostController {
 	 *
 	 * <p>If something went wrong returns HttpStatus 'NO CONTENT'.</p>
 	 *
-	 * @param pageable   interface for pagination information
+	 * @param pageable interface for pagination information
 	 * @param directions direction's ids by which the search is performed
-	 * @param types      the type's ids by which the search is performed
-	 * @param origins    the origin's ids by which the search is performed
-	 * @param userId     userId by wich the data will be uploaded
+	 * @param types the type's ids by which the search is performed
+	 * @param origins the origin's ids by which the search is performed
+	 * @param userId userId by wich the data will be uploaded
 	 * @return page with all posts filtered by directions, by post types and by origins and HttpStatus 'OK'
 	 */
 	@GetMapping(POST_ALL_POSTS + BY_USER_ENDPOINT)
@@ -343,7 +343,7 @@ public class PostController {
 	 * If something went wrong returns unsuccessful response message.</p>
 	 *
 	 * @param userPrincipal authorized user data
-	 * @param postId        the post id
+	 * @param postId the post id
 	 * @return marks found post as archived and prints that post was successfully deleted
 	 */
 	@DeleteMapping(POST_GET_POST_BY_ID)
@@ -370,7 +370,7 @@ public class PostController {
 	 * <p>Checks if user has authority to update found post.
 	 * If something went wrong returns unsuccessful response message.</p>
 	 *
-	 * @param userPrincipal       authorized user data
+	 * @param userPrincipal authorized user data
 	 * @param postSaveFromUserDTO DTO of updated post
 	 * @return updates post in db and prints message 'post updated successfully'
 	 */
@@ -397,8 +397,8 @@ public class PostController {
 	 *
 	 * <p>If something went wrong returns 'NOT FOUND' HttpStatus.</p>
 	 *
-	 * @param pageable   interface for pagination information
-	 * @param authorId   the author id
+	 * @param pageable interface for pagination information
+	 * @param authorId the author id
 	 * @param directions directions ids
 	 * @return found posts filtered by author id and directions and HttpStatus 'OK'
 	 */
@@ -460,10 +460,10 @@ public class PostController {
 	 * Gets all published posts sorted by important image url presence then by createdAt filtered by directions, by post
 	 * types and by origins
 	 *
-	 * @param pageable   interface for pagination information
+	 * @param pageable interface for pagination information
 	 * @param directions direction's ids by which the search is performed
-	 * @param types      the type's ids by which the search is performed
-	 * @param origins    the origin's ids by which the search is performed
+	 * @param types the type's ids by which the search is performed
+	 * @param origins the origin's ids by which the search is performed
 	 * @return found posts and HttpStatus 'OK'
 	 */
 	@ApiPageable
@@ -489,7 +489,7 @@ public class PostController {
 	 * Set a number for fake views
 	 *
 	 * @param postId id of post for which set fake views
-	 * @param views  number of fake views
+	 * @param views number of fake views
 	 */
 	@ApiPageable
 	@ApiOperation(value = "Set fake views for post by post id",
