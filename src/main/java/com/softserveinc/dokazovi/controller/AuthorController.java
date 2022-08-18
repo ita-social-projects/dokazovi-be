@@ -90,7 +90,7 @@ public class AuthorController {
 		return ResponseEntity.ok().body(apiResponseMessage);
 	}
 
-	@GetMapping()
+	@GetMapping(DOCTORS)
 	@ApiPageable
 	@ApiOperation(value = "get all authors")
 	public ResponseEntity<Page<AuthorForAdminDTO>> getAuthors(@PageableDefault Pageable pageable) {
