@@ -35,14 +35,14 @@ import static com.softserveinc.dokazovi.controller.EndPoints.DOCTOR;
 import static com.softserveinc.dokazovi.controller.EndPoints.DOCTORS;
 
 @RestController
-@RequestMapping(DOCTORS)
+@RequestMapping(DOCTOR)
 @RequiredArgsConstructor
 public class AuthorController {
 
 	private final AuthorService authorService;
 
 
-	@PostMapping(DOCTOR)
+	@PostMapping()
 	@PreAuthorize("hasAuthority('CREATE_AUTHOR')")
 	@ApiOperation(value = "Сreate author",
 			authorizations = {@Authorization(value = "Authorization")})
@@ -57,7 +57,7 @@ public class AuthorController {
 				.body(authorService.save(author, userPrincipal));
 	}
 
-	@PutMapping(DOCTOR)
+	@PutMapping()
 	@PreAuthorize("hasAuthority('UPDATE_AUTHOR')")
 	@ApiOperation(value = "update author",
 	authorizations = {@Authorization(value = "Authorization")})
