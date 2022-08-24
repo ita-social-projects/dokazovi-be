@@ -19,12 +19,12 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Bean
     public TomcatContextCustomizer sameSiteCookie() {
-                return context -> {
-                        final Rfc6265CookieProcessor cookieProcessor = new Rfc6265CookieProcessor();
-                        cookieProcessor.setSameSiteCookies(SameSiteCookies.NONE.getValue());
-                        context.setCookieProcessor(cookieProcessor);
-                    };
-            }
+        return context -> {
+            final Rfc6265CookieProcessor cookieProcessor = new Rfc6265CookieProcessor();
+            cookieProcessor.setSameSiteCookies(SameSiteCookies.NONE.getValue());
+            context.setCookieProcessor(cookieProcessor);
+        };
+    }
 
     @Value("${endpoints.cors}")
     private String[]  allowedOrigins;
