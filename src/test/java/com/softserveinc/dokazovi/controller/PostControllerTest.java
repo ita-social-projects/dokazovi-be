@@ -36,6 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -330,15 +331,15 @@ class PostControllerTest {
 		Set<Integer> statuses = null;
 		String author = "";
 		String title = "";
-		LocalDateTime startDate = null;
-		LocalDateTime endDate = null;
+		LocalDate startLocalDate = null;
+		LocalDate endLocalDate = null;
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("modified_at").descending());
 		PostDTO postDTO = PostDTO.builder()
 				.id(1)
 				.build();
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
 		Mockito.when(postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
-						origins, statuses, title, author, null, startDate, endDate, pageable))
+						origins, statuses, title, author, null, startLocalDate, endLocalDate, pageable))
 				.thenReturn(page);
 		mockMvc.perform(get(POST + POST_ALL_POSTS + "?directions=1,2&types=1,3&origins=2,3"))
 				.andExpect(status().isOk())
@@ -347,7 +348,7 @@ class PostControllerTest {
 				);
 
 		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
-				origins, statuses, title, author, null, startDate, endDate, pageable);
+				origins, statuses, title, author, null, startLocalDate, endLocalDate, pageable);
 	}
 
 	private Integer getIdFromResponse(String json) {
@@ -369,8 +370,8 @@ class PostControllerTest {
 		Set<Integer> statuses = Set.of(0);
 		String author = "";
 		String title = "";
-		LocalDateTime startDate = null;
-		LocalDateTime endDate = null;
+		LocalDate startLocalDate = null;
+		LocalDate endLocalDate = null;
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("modified_at").descending());
 		PostDTO postDTO = PostDTO.builder()
 				.id(0)
@@ -378,7 +379,7 @@ class PostControllerTest {
 		Page<PostDTO> page = new PageImpl<>(List.of(postDTO));
 
 		Mockito.when(postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
-						origins, statuses, title, author, null, startDate, endDate, pageable))
+						origins, statuses, title, author, null, startLocalDate, endLocalDate, pageable))
 				.thenReturn(page);
 		mockMvc.perform(get(POST + POST_ALL_POSTS +
 						"?directions=-1,1111&types=123,2345&origins=1234,1231&statuses=0"))
@@ -388,7 +389,7 @@ class PostControllerTest {
 				);
 
 		verify(postService).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directions, types,
-				origins, statuses, title, author, null, startDate, endDate, pageable);
+				origins, statuses, title, author, null, startLocalDate, endLocalDate, pageable);
 	}
 
 	@Test

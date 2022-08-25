@@ -17,6 +17,7 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.jni.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -107,7 +108,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
-			String title, String author, Integer authorId, LocalDateTime startDate, LocalDateTime endDate,
+			String title, String author, Integer authorId, LocalDate startDate, LocalDate endDate,
 			Pageable pageable) {
 		boolean isAuthorIdNotSet = authorId == null;
 
@@ -127,14 +128,18 @@ public class PostServiceImpl implements PostService {
 			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 		}
 
-		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
-		LocalDateTime startTime = startDate1
-				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
-		Timestamp startDateTimestamp = Timestamp.valueOf(startTime);
-		Optional<LocalDateTime> endDate1 = Optional.ofNullable(endDate);
-		LocalDateTime endTime = endDate1
-				.orElse(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-		Timestamp endDateTimestamp = Timestamp.valueOf(endTime);
+//		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
+//		LocalDateTime startTime = startDate1
+//				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
+//		Timestamp startDateTimestamp = Timestamp.valueOf(startTime);
+//		Optional<LocalDateTime> endDate1 = Optional.ofNullable(endDate);
+//		LocalDateTime endTime = endDate1
+//				.orElse(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+//		Timestamp endDateTimestamp = Timestamp.valueOf(endTime);
+		LocalDate startLocalDate = Optional.ofNullable(startDate).orElse(LocalDate.EPOCH);
+		LocalDate endLocalDate = Optional.ofNullable(endDate).orElse(LocalDate.now());
+		Timestamp startDateTimestamp = Timestamp.valueOf(startLocalDate.atStartOfDay());
+		Timestamp endDateTimestamp = Timestamp.valueOf(endLocalDate.atStartOfDay());
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
 		originIds = validateValues(originIds);

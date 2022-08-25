@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -278,10 +279,10 @@ public class PostController {
 			@RequestParam(required = false, defaultValue = "") String author,
 			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
 		return ResponseEntity
 				.status(HttpStatus.OK)
@@ -322,10 +323,10 @@ public class PostController {
 			@RequestParam(required = false, defaultValue = "") String author,
 			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
 			@PathVariable("userId") Integer userId) {
 
 		return ResponseEntity
