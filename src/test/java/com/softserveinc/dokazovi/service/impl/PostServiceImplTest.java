@@ -794,14 +794,11 @@ class PostServiceImplTest {
 		Timestamp timestampEndDate = Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MIN));
 		Pageable pageable = PageRequest.of(0, 10);
 
-//		Mockito.when(postRepository
-//						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
-//								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
-//								timestampEndDate, pageable))
-//				.thenReturn(postEntityPage);
-		doReturn(postEntityPage).when(postRepository).findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
-				directionsIds, statusNames, originsIds, title, author, timestampStartDate,
-				timestampEndDate, pageable);
+		Mockito.when(postRepository
+						.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(typesIds,
+								directionsIds, statusNames, originsIds, title, author, timestampStartDate,
+								timestampEndDate, pageable))
+				.thenReturn(postEntityPage);
 		assertEquals(postEntityPage.getContent().size(),
 				postService.findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(directionsIds, typesIds,
 								originsIds, statuses, title, author, null, startLocalDate, endLocalDate, pageable)
