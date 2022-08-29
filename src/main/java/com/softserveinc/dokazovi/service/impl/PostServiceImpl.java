@@ -17,7 +17,6 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
