@@ -126,15 +126,6 @@ public class PostServiceImpl implements PostService {
 			Sort sort = pageable.getSort().and(Sort.by("modified_at").descending());
 			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 		}
-
-//		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
-//		LocalDateTime startTime = startDate1
-//				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
-//		Timestamp startDateTimestamp = Timestamp.valueOf(startTime);
-//		Optional<LocalDateTime> endDate1 = Optional.ofNullable(endDate);
-//		LocalDateTime endTime = endDate1
-//				.orElse(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-//		Timestamp endDateTimestamp = Timestamp.valueOf(endTime);
 		LocalDate startLocalDate = Optional.ofNullable(startDate).orElse(LocalDate.EPOCH);
 		LocalDate endLocalDate = Optional.ofNullable(endDate).orElse(LocalDate.now());
 		Timestamp startDateTimestamp = Timestamp.valueOf(startLocalDate.atStartOfDay());
