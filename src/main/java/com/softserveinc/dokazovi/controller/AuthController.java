@@ -78,6 +78,7 @@ public class AuthController {
                     Math.toIntExact(refreshToken.getExpiryDate().getEpochSecond() - Instant.now().getEpochSecond()));
             refreshTokenCookie.setSecure(true);
             refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setDomain("dokazovi-fe-release.herokuapp.com");
             response.addCookie(refreshTokenCookie);
             String token = tokenProvider.createToken(authentication);
             AuthResponse authResponse = new AuthResponse(token, refreshToken.getToken());
