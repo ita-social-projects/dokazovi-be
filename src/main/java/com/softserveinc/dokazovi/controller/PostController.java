@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -262,7 +262,7 @@ public class PostController {
 	@GetMapping(POST_ALL_POSTS)
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
 	public ResponseEntity<Page<PostDTO>> getAllPostsByDirectionsByPostTypesAndByOrigins(
-			@PageableDefault Pageable pageable,
+			@PageableDefault(sort = {"modified_at"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
 			@ApiParam(value = "Multiple comma-separated post type's IDs, e.g. ?types=1,2,3,4...", type = "string")
@@ -278,10 +278,10 @@ public class PostController {
 			@RequestParam(required = false, defaultValue = "") String author,
 			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
 		return ResponseEntity
 				.status(HttpStatus.OK)
@@ -306,7 +306,7 @@ public class PostController {
 	@GetMapping(POST_ALL_POSTS + BY_USER_ENDPOINT)
 	@ApiOperation(value = "Get posts, filtered by directions, post types and origins.")
 	public ResponseEntity<Page<PostDTO>> getAllPostsForUserByDirectionsByPostTypesAndByOrigins(
-			@PageableDefault(sort = {"modifiedAt"}, direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault(sort = {"modified_at"}, direction = Sort.Direction.DESC) Pageable pageable,
 			@ApiParam(value = "Multiple comma-separated direction's IDs, e.g. ?directions=1,2,3,4...", type = "string")
 			@RequestParam(required = false) Set<Integer> directions,
 			@ApiParam(value = "Multiple comma-separated post type's IDs, e.g. ?types=1,2,3,4...", type = "string")
@@ -322,10 +322,10 @@ public class PostController {
 			@RequestParam(required = false, defaultValue = "") String author,
 			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@ApiParam(value = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
 			@PathVariable("userId") Integer userId) {
 
 		return ResponseEntity

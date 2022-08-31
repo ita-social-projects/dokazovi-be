@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
 
@@ -232,6 +233,7 @@ public class UserServiceImpl implements UserService {
 		if (user != null) {
 			UserEntity oldUser = getById(user.getId());
 			if (oldUser != null) {
+				user.setEditedAt(new Timestamp(System.currentTimeMillis()));
 				return userRepository.save(user);
 			}
 		}

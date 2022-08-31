@@ -1,7 +1,5 @@
 package com.softserveinc.dokazovi.security.oauth2.user;
 
-
-
 import com.softserveinc.dokazovi.entity.enumerations.AuthProvider;
 import com.softserveinc.dokazovi.exception.OAuth2AuthenticationProcessingException;
 
