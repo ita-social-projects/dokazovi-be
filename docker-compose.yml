@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: dokazovi
+      POSTGRES_USER: dokazovi
+      POSTGRES_PASSWORD: dokazovi
+    volumes:
+      - "postgres:/var/lib/postgresql/data/"
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "5433:8080"
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - "redis:/data"
+
+volumes:
+  postgres: {}
+  redis: {}
