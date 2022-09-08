@@ -84,5 +84,4 @@ public class AuthorServiceImplTest {
                 .build();
         assertEquals(1, 1);
     }
-
 }

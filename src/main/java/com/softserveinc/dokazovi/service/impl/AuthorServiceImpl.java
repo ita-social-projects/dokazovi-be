@@ -30,129 +30,125 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
-	private final DoctorRepository doctorRepository;
-	private final CityRepository cityRepository;
-	private final PasswordEncoder passwordEncoder;
-	private final UserRepository userRepository;
-	private final InstitutionMapper institutionMapper;
+    private final DoctorRepository doctorRepository;
+    private final CityRepository cityRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final InstitutionMapper institutionMapper;
 
 
-	@Override
-	public AuthorDTO save(AuthorDTO authorDTO, UserPrincipal userPrincipal) {
-		if (doctorRepository.findById(authorDTO.getId()).isPresent()) {
-			update(authorDTO, userPrincipal);
-		}
-		AuthorDTO dto;
-		if (userPrincipal.getAuthorities().stream()
-				.anyMatch(
-						grantedAuthority -> grantedAuthority.getAuthority()
-								.equals(RolePermission.CREATE_AUTHOR.getAuthority()))) {
-			DoctorEntity doctorEntity = createDoctorEntity(authorDTO);
-			DoctorEntity doctor = doctorRepository.save(doctorEntity);
-			dto = toAuthorDTO(doctor.getProfile(), doctor);
-			return dto;
-		}
-		throw new ForbiddenPermissionsException();
-	}
+    @Override
+    public AuthorDTO save(AuthorDTO authorDTO, UserPrincipal userPrincipal) {
+        if (doctorRepository.findById(authorDTO.getId()).isPresent()) {
+            update(authorDTO, userPrincipal);
+        }
+        AuthorDTO dto;
+        if (hasEnoughAuthorities(userPrincipal, RolePermission.CREATE_AUTHOR)) {
+            DoctorEntity doctorEntity = createDoctorEntity(authorDTO);
+            DoctorEntity doctor = doctorRepository.save(doctorEntity);
+            dto = toAuthorDTO(doctor.getProfile(), doctor);
+            return dto;
+        }
+        throw new ForbiddenPermissionsException();
+    }
 
-	private AuthorDTO toAuthorDTO(UserEntity savedUser, DoctorEntity savedDoctor) {
-		return AuthorDTO.builder().id(savedDoctor.getId())
-				.socialNetwork(savedDoctor.getSocialNetwork())
-				.avatar(savedUser.getAvatar())
-				.bio(savedDoctor.getBio())
-				.firstName(savedUser.getFirstName())
-				.lastName(savedUser.getLastName())
-				.mainInstitution(institutionMapper.toExpertInstitutionDTO(savedDoctor.getMainInstitution()))
-				.email(savedUser.getEmail())
-				.build();
-	}
+    private AuthorDTO toAuthorDTO(UserEntity savedUser, DoctorEntity savedDoctor) {
+        return AuthorDTO.builder().id(savedDoctor.getId())
+                .socialNetwork(savedDoctor.getSocialNetwork())
+                .avatar(savedUser.getAvatar())
+                .bio(savedDoctor.getBio())
+                .firstName(savedUser.getFirstName())
+                .lastName(savedUser.getLastName())
+                .mainInstitution(institutionMapper.toExpertInstitutionDTO(savedDoctor.getMainInstitution()))
+                .email(savedUser.getEmail())
+                .build();
+    }
 
-	private DoctorEntity createDoctorEntity(AuthorDTO authorDTO) {
-		CityEntity city = cityRepository.getOne(authorDTO.getMainInstitution().getCity().getId());
-		return DoctorEntity.builder()
-				.bio(authorDTO.getBio())
-				.qualification(authorDTO.getQualification())
-				.socialNetwork(authorDTO.getSocialNetwork())
-				.publishedPosts(0L)
-				.promotionScale(1.0)
-				.profile(toUserEntity(authorDTO))
-				.promotionLevel(UserPromotionLevel.BASIC)
-				.city(city)
-				.build();
-	}
+    private DoctorEntity createDoctorEntity(AuthorDTO authorDTO) {
+        CityEntity city = cityRepository.getOne(authorDTO.getMainInstitution().getCity().getId());
+        return DoctorEntity.builder()
+                .bio(authorDTO.getBio())
+                .qualification(authorDTO.getQualification())
+                .socialNetwork(authorDTO.getSocialNetwork())
+                .publishedPosts(0L)
+                .promotionScale(1.0)
+                .profile(toUserEntity(authorDTO))
+                .promotionLevel(UserPromotionLevel.BASIC)
+                .city(city)
+                .build();
+    }
 
-	private UserEntity toUserEntity(AuthorDTO authorDTO) {
-		return UserEntity.builder()
-				.id(null)
-				.firstName(authorDTO.getFirstName())
-				.lastName(authorDTO.getLastName())
-				.email(authorDTO.getEmail())
-				.status(UserStatus.ACTIVE)
-				.enabled(true)
-				.role(RoleEntity.builder()
-						.id(3)
-						.name("Doctor")
-						.permissions(Set.of(RolePermission.SAVE_OWN_PUBLICATION))
-						.build())
-				.password(passwordEncoder.encode("Kolala"))
-				.createdAt(Timestamp.valueOf(LocalDateTime.now()))
-				.build();
-	}
+    private UserEntity toUserEntity(AuthorDTO authorDTO) {
+        return UserEntity.builder()
+                .id(null)
+                .firstName(authorDTO.getFirstName())
+                .lastName(authorDTO.getLastName())
+                .email(authorDTO.getEmail())
+                .status(UserStatus.ACTIVE)
+                .enabled(true)
+                .role(RoleEntity.builder()
+                        .id(3)
+                        .name("Doctor")
+                        .permissions(Set.of(RolePermission.SAVE_OWN_PUBLICATION))
+                        .build())
+                .password(passwordEncoder.encode("Kolala"))
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+    }
 
-	@Override
-	public AuthorDTO update(AuthorDTO authorDTO, UserPrincipal userPrincipal) {
-		if (userPrincipal.getAuthorities().stream()
-				.anyMatch(
-						grantedAuthority -> grantedAuthority.getAuthority()
-								.equals(RolePermission.UPDATE_AUTHOR.getAuthority()))) {
-			DoctorEntity doctor = doctorRepository.getOne(authorDTO.getId());
-			doctor.setBio(authorDTO.getBio());
-			doctor.setQualification(authorDTO.getQualification());
-			doctor.setCity(cityRepository.getOne(authorDTO.getMainInstitution().getCity().getId()));
-			doctor.setSocialNetwork(authorDTO.getSocialNetwork());
-			UserEntity user = userRepository.getOne(doctor.getProfile().getId());
-			user.setEmail(authorDTO.getEmail());
-			user.setFirstName(authorDTO.getFirstName());
-			user.setLastName(authorDTO.getLastName());
-			user.setDoctor(doctor);
-			doctor.setProfile(user);
-			DoctorEntity savedDoctor = doctorRepository.save(doctor);
-			return toAuthorDTO(savedDoctor.getProfile(), savedDoctor);
-		}
-		throw new ForbiddenPermissionsException();
-	}
+    @Override
+    public AuthorDTO update(AuthorDTO authorDTO, UserPrincipal userPrincipal) {
+        if (hasEnoughAuthorities(userPrincipal, RolePermission.UPDATE_AUTHOR)) {
+            DoctorEntity doctor = doctorRepository.getOne(authorDTO.getId());
+            doctor.setBio(authorDTO.getBio());
+            doctor.setQualification(authorDTO.getQualification());
+            doctor.setCity(cityRepository.getOne(authorDTO.getMainInstitution().getCity().getId()));
+            doctor.setSocialNetwork(authorDTO.getSocialNetwork());
+            UserEntity user = userRepository.getOne(doctor.getProfile().getId());
+            user.setEmail(authorDTO.getEmail());
+            user.setFirstName(authorDTO.getFirstName());
+            user.setLastName(authorDTO.getLastName());
+            user.setDoctor(doctor);
+            doctor.setProfile(user);
+            DoctorEntity savedDoctor = doctorRepository.save(doctor);
+            return toAuthorDTO(savedDoctor.getProfile(), savedDoctor);
+        }
+        throw new ForbiddenPermissionsException();
+    }
 
-	@Override
-	public Boolean delete(Integer authorId, UserPrincipal userPrincipal) {
-		if (userPrincipal.getAuthorities().stream()
-				.anyMatch(
-						grantedAuthority -> grantedAuthority.getAuthority()
-								.equals(RolePermission.DELETE_AUTHOR.getAuthority()))) {
-			Integer userId = doctorRepository.getOne(authorId).getProfile().getId();
-			doctorRepository.deleteById(authorId);
-			userRepository.deleteById(userId);
-			return true;
-		}
-		throw new ForbiddenPermissionsException();
-	}
+    @Override
+    public Boolean delete(Integer authorId, UserPrincipal userPrincipal) {
+        if (hasEnoughAuthorities(userPrincipal, RolePermission.DELETE_AUTHOR)) {
+            Integer userId = doctorRepository.getOne(authorId).getProfile().getId();
+            doctorRepository.deleteById(authorId);
+            userRepository.deleteById(userId);
+            return true;
+        }
+        throw new ForbiddenPermissionsException();
+    }
 
-	@Override
-	public Page<AuthorForAdminDTO> getAuthors(Pageable pageable) {
-		Page<DoctorEntity> all = doctorRepository.findAll(pageable);
-		return all.map(doctorEntity -> {
-			UserEntity one = userRepository.getOne(doctorEntity.getProfile().getId());
-			String regionName = doctorEntity.getCity().getRegion().getName();
-			String cityName = doctorEntity.getCity().getName();
-			return AuthorForAdminDTO.builder()
-					.id(doctorEntity.getId())
-					.firstName(one.getFirstName())
-					.lastName(one.getLastName())
-					.cityName(cityName)
-					.regionName(regionName)
-					.creationDate(one.getCreatedAt())
-					.updateTime(one.getEditedAt())
-					.build();
+    @Override
+    public Page<AuthorForAdminDTO> getAuthors(Pageable pageable) {
+        Page<DoctorEntity> all = doctorRepository.findAll(pageable);
+        return all.map(doctorEntity -> {
+            UserEntity one = userRepository.getOne(doctorEntity.getProfile().getId());
+            String regionName = doctorEntity.getCity().getRegion().getName();
+            String cityName = doctorEntity.getCity().getName();
+            return AuthorForAdminDTO.builder()
+                    .id(doctorEntity.getId())
+                    .firstName(one.getFirstName())
+                    .lastName(one.getLastName())
+                    .cityName(cityName)
+                    .regionName(regionName)
+                    .creationDate(one.getCreatedAt())
+                    .updateTime(one.getEditedAt())
+                    .build();
 
-		});
-	}
+        });
+    }
+
+    private boolean hasEnoughAuthorities(UserPrincipal userPrincipal, RolePermission rolePermission) {
+        return userPrincipal.getAuthorities().stream()
+                .allMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(rolePermission.getAuthority()));
+    }
 }

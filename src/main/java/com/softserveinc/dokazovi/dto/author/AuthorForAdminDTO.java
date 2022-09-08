@@ -15,19 +15,17 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class AuthorForAdminDTO {
 
-	private Integer id;
+    private Integer id;
 
-	private String firstName;
+    private String firstName;
 
-	private String lastName;
+    private String lastName;
 
-	private String cityName;
+    private String cityName;
 
-	private String regionName;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-	private Timestamp creationDate;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-	private Timestamp updateTime;
+    private String regionName;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    private Timestamp creationDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    private Timestamp updateTime;
 }
-
-

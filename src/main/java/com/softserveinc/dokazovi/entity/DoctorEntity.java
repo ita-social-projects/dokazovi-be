@@ -41,95 +41,95 @@ import java.util.Set;
 @Table(name = "doctors")
 public class DoctorEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "doctor_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "doctor_id")
+    private Integer id;
 
-	private String qualification;
+    private String qualification;
 
-	@Column(columnDefinition = "TEXT")
-	private String bio;
+    @Column(columnDefinition = "TEXT")
+    private String bio;
 
-	@ColumnDefault("1.0")
-	private Double promotionScale;
+    @ColumnDefault("1.0")
+    private Double promotionScale;
 
-	private Long publishedPosts;
+    private Long publishedPosts;
 
-	@Setter(AccessLevel.NONE)
-	private Long rating;
+    @Setter(AccessLevel.NONE)
+    private Long rating;
 
-	@Enumerated(EnumType.ORDINAL)
-	@ColumnDefault("0")
-	private UserPromotionLevel promotionLevel;
+    @Enumerated(EnumType.ORDINAL)
+    @ColumnDefault("0")
+    private UserPromotionLevel promotionLevel;
 
-	@ManyToOne
-	@JoinColumn(name = "institution_id")
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private InstitutionEntity mainInstitution;
+    @ManyToOne
+    @JoinColumn(name = "institution_id")
+    @JsonIdentityInfo(
+            property = "id",
+            generator = ObjectIdGenerators.PropertyGenerator.class)
+    private InstitutionEntity mainInstitution;
 
-	@OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.ALL}, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private UserEntity profile;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIdentityInfo(
+            property = "id",
+            generator = ObjectIdGenerators.PropertyGenerator.class)
+    private UserEntity profile;
 
-	@OneToMany(mappedBy = "author")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private Set<CharityEntity> charities;
+    @OneToMany(mappedBy = "author")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIdentityInfo(
+            property = "id",
+            generator = ObjectIdGenerators.PropertyGenerator.class)
+    private Set<CharityEntity> charities;
 
-	@ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-	@JoinColumn(name = "city_id")
-	private CityEntity city;
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id")
+    private CityEntity city;
 
-	private String socialNetwork;
+    private String socialNetwork;
 
-	@ManyToMany
-	@JoinTable(
-			name = "doctors_institutions",
-			joinColumns = {@JoinColumn(name = "doctor_id")},
-			inverseJoinColumns = {@JoinColumn(name = "institution_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private Set<InstitutionEntity> institutions;
+    @ManyToMany
+    @JoinTable(
+            name = "doctors_institutions",
+            joinColumns = {@JoinColumn(name = "doctor_id")},
+            inverseJoinColumns = {@JoinColumn(name = "institution_id")}
+    )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIdentityInfo(
+            property = "id",
+            generator = ObjectIdGenerators.PropertyGenerator.class)
+    private Set<InstitutionEntity> institutions;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "doctors_directions",
-			joinColumns = {@JoinColumn(name = "doctor_id")},
-			inverseJoinColumns = {@JoinColumn(name = "direction_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private Set<DirectionEntity> directions;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "doctors_directions",
+            joinColumns = {@JoinColumn(name = "doctor_id")},
+            inverseJoinColumns = {@JoinColumn(name = "direction_id")}
+    )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIdentityInfo(
+            property = "id",
+            generator = ObjectIdGenerators.PropertyGenerator.class)
+    private Set<DirectionEntity> directions;
 
-	private void updateUserRating() {
-		rating = (long) Math.ceil(publishedPosts * promotionScale);
-	}
+    private void updateUserRating() {
+        rating = (long) Math.ceil(publishedPosts * promotionScale);
+    }
 
-	@PreUpdate
-	public void preUpdateFunction() {
-		updateUserRating();
-	}
+    @PreUpdate
+    public void preUpdateFunction() {
+        updateUserRating();
+    }
 
-	@PrePersist
-	public void prePersistFunction() {
-		updateUserRating();
-	}
+    @PrePersist
+    public void prePersistFunction() {
+        updateUserRating();
+    }
 }
