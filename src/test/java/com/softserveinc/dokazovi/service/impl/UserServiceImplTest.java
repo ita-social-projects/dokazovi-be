@@ -108,7 +108,7 @@ class UserServiceImplTest {
 
 		Page<UserEntity> userEntityPage = Page.empty();
 
-		when(userRepository.findDoctorsProfiles(pageable)).thenReturn(userEntityPage);
+		when(userRepository.findAll(pageable)).thenReturn(userEntityPage);
 
 		assertEquals(userEntityPage, userService.findAllExperts(userSearchCriteria, pageable));
 
@@ -209,7 +209,7 @@ class UserServiceImplTest {
 		userSearchCriteria.setDirections(set);
 		userSearchCriteria.setRegions(set);
 
-		when(userRepository.findDoctorsProfiles(any(Pageable.class)))
+		when(userRepository.findAll(any(Pageable.class)))
 				.thenReturn(userEntityPage);
 
 		userService.findAllExperts(userSearchCriteria, pageable);
