@@ -92,8 +92,9 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Gets doctors by search criteria. For example, if directions, regions and user name fields are empty, the
-     * findDoctorsProfiles method without parameters is called
+     * Gets doctors by search criteria.
+     * For example, if directions, regions and user name fields
+     * are empty, the findDoctorsProfiles method without parameters is called
      *
      * @param userSearchCriteria received from User controller
      * @param pageable received from User controller
@@ -104,7 +105,7 @@ public class UserServiceImpl implements UserService {
     public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
         if (validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS, HAS_NO_USERNAME)) {
-            return userRepository.findDoctorsProfiles(pageable).map(userMapper::toUserDTO);
+            return userRepository.findAll(pageable).map(userMapper::toUserDTO);
         }
 
         final String name = userSearchCriteria.getUserName();
@@ -162,7 +163,8 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Gets random experts by directions. If directions are empty, gets random experts without filters
+     * Gets random experts by directions.
+     * If directions are empty, gets random experts without filters
      *
      * @param directionsIds the directions ids received from User controller
      * @param pageable received from User controller
@@ -221,7 +223,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity getById(Integer userId) {
+    public UserEntity getById (Integer userId) {
         return userRepository.findById(userId).orElse(null);
     }
 
