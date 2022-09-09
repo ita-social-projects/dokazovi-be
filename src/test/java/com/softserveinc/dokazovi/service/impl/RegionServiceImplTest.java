@@ -23,8 +23,6 @@ class RegionServiceImplTest {
 	private RegionRepository regionRepository;
 	@Mock
 	private RegionMapper regionMapper;
-	@Mock
-	private RegionServiceImpl regionServiceMock;
 	@InjectMocks
 	private RegionServiceImpl regionService;
 

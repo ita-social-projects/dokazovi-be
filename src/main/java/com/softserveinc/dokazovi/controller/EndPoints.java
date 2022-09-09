@@ -42,6 +42,7 @@ public final class EndPoints {
     public static final String DIRECTION = "/direction";
     public static final String ORIGIN = "/origin";
     public static final String REGION = "/region";
+    public static final String CITY = "/city";
     public static final String AUTH = "/auth";
     public static final String AUTH_VERIFICATION = "/verification";
     public static final String REFRESH_TOKEN = "/refreshtoken";
