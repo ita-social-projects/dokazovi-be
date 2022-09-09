@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface RegionRepository extends JpaRepository<RegionEntity, Integer> {
 
 	/**
-	 * Updates the regions status.
+	 * Updates the region's status.
 	 * If regions have at least one doctor, its status changes to "true".
 	 * In other cases - "false"
 	 */

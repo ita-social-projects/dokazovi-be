@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,5 +30,5 @@ public class AuthorDTO {
 
 	private String bio;
 
-	private String socialNetwork;
+	private Set<String> socialNetwork;
 }

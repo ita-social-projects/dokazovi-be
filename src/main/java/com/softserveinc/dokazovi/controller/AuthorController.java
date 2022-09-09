@@ -42,7 +42,7 @@ public class AuthorController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('CREATE_AUTHOR')")
-    @ApiOperation(value = "Сreate author",
+    @ApiOperation(value = "Create author",
             authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = HttpStatuses.CREATED, response = AuthorDTO.class),
