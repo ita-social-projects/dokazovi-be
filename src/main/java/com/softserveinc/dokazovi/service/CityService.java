@@ -7,4 +7,6 @@ import java.util.List;
 public interface CityService {
 
     List<CityDTO> findAllCities();
+
+    List<CityDTO> findAllCitiesByRegion(Integer regionId);
 }

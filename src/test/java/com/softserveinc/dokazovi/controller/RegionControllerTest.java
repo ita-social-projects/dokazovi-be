@@ -14,8 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.REGION;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,4 +45,11 @@ class RegionControllerTest {
 
 		verify(regionService).findAllRegions();
 	}
+
+    @Test
+    void getRegionByCity() throws Exception {
+		mockMvc.perform(post(REGION + "/" + any(Integer.class))).andExpect(status().isOk());
+
+		verify(regionService).findRegionByCity(any(Integer.class));
+    }
 }

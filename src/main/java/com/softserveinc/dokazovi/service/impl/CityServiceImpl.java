@@ -23,4 +23,11 @@ public class CityServiceImpl implements CityService {
                 .map(cityMapper::toCityDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<CityDTO> findAllCitiesByRegion(Integer regionId) {
+        return cityRepository.findAllByRegionId(regionId).stream()
+                .map(cityMapper::toCityDTO)
+                .collect(Collectors.toList());
+    }
 }

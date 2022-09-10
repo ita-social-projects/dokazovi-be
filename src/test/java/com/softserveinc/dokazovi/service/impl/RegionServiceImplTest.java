@@ -43,4 +43,14 @@ class RegionServiceImplTest {
 
 		verify(regionRepository, times(1)).updateRegionsStatus();
 	}
+
+    @Test
+    void findRegionByCity() {
+		RegionEntity regionEntity = new RegionEntity();
+		when(regionRepository.findByCitiesId(any(Integer.class))).thenReturn(regionEntity);
+
+		regionService.findRegionByCity(any(Integer.class));
+
+		verify(regionMapper, times(1)).toRegionDTO(any(RegionEntity.class));
+	}
 }

@@ -35,4 +35,14 @@ class CityServiceImplTest {
 
         verify(cityMapper, times(cities.size())).toCityDTO(any(CityEntity.class));
     }
+
+    @Test
+    void findAllCitiesByRegion() {
+        List<CityEntity> cities = List.of(new CityEntity(), new CityEntity());
+
+        when(cityRepository.findAllByRegionId(any(Integer.class))).thenReturn(cities);
+        cityService.findAllCitiesByRegion(any(Integer.class));
+
+        verify(cityMapper, times(cities.size())).toCityDTO(any(CityEntity.class));
+    }
 }

@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.region.RegionDTO;
+import com.softserveinc.dokazovi.entity.RegionEntity;
 import com.softserveinc.dokazovi.mapper.RegionMapper;
 import com.softserveinc.dokazovi.repositories.RegionRepository;
 import com.softserveinc.dokazovi.service.RegionService;
@@ -47,4 +48,10 @@ public class RegionServiceImpl implements RegionService {
 	public void updateRegionsStatus() {
 		regionRepository.updateRegionsStatus();
 	}
+
+    @Override
+    public RegionDTO findRegionByCity(Integer cityId) {
+		RegionEntity regionEntity = regionRepository.findByCitiesId(cityId);
+		return regionMapper.toRegionDTO(regionEntity);
+    }
 }
