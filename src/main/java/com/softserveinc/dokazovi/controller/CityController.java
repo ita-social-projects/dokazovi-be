@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,7 +31,7 @@ public class CityController {
                 .body(cityService.findAllCities());
     }
 
-    @PostMapping(CITIES_BY_REGION)
+    @GetMapping(CITIES_BY_REGION)
     @ApiOperation("Get list of cities by region")
     public ResponseEntity<List<CityDTO>> getAllCitiesByRegion(@PathVariable Integer regionId) {
         return ResponseEntity
