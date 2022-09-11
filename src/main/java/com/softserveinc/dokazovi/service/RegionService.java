@@ -9,4 +9,6 @@ public interface RegionService {
 	List<RegionDTO> findAllRegions();
 
 	public void updateRegionsStatus();
+
+	RegionDTO findRegionByCity(Integer cityId);
 }
