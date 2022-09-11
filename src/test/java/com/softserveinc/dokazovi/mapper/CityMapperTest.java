@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.mapper;
 
+import com.softserveinc.dokazovi.dto.city.CityDTO;
 import com.softserveinc.dokazovi.dto.post.PostUserInstitutionCityDTO;
 import com.softserveinc.dokazovi.dto.user.UserInstitutionCityDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
@@ -35,5 +36,13 @@ class CityMapperTest {
 
 		assertEquals(userInstitutionCityDTO.getId(), cityEntity.getId());
 		assertEquals(userInstitutionCityDTO.getName(), cityEntity.getName());
+	}
+
+	@Test
+	void toCityDTO() {
+		CityDTO cityDTO = mapper.toCityDTO(cityEntity);
+
+		assertEquals(cityDTO.getId(), cityEntity.getId());
+		assertEquals(cityDTO.getName(), cityEntity.getName());
 	}
 }

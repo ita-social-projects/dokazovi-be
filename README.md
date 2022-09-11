@@ -64,7 +64,38 @@ Check code style for tests:
 ./gradlew checkstyleTest
 ```
 
-## Installing Redis
+## Running Postgres and Redis using Docker (Desktop)
+
+Please note that this config is designed for the default Spring Datasource configuration, so there is no need to set
+DATASOURCE environment variables explicitly if you use this.
+
+...
+
+Install Docker Desktop if you are on Windows or macOS.
+
+On Linux feel free to choose between Docker Desktop or Docker Engine, but remember that the latter one will be lighter
+on your hardware, even though without a graphical user interface.
+
+After installing Docker, navigate to the `dokazovi-be` root directory and run (works on all systems):
+
+```bash
+$ docker-compose up -d
+```
+
+This will start next environment services:
+* Postgres, `localhost:5432`
+* Adminer (a simple admin panel for databases), `localhost:5433`
+* Redis, `localhost:6379`
+
+To shut the environment down, run in the same directory:
+
+```bash
+$ docker-compose down
+```
+
+You should also be able to use docker-compose from your IDE.
+
+## Installing Redis manually
 
 The easiest way to install latest Redis on Windows 10+ is using WSL2 -
 to do that, install Ubuntu 20.04 from Microsoft Store and run next commands:

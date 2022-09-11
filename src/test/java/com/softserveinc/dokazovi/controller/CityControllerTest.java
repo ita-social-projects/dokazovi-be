@@ -1,6 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.service.RegionService;
+import com.softserveinc.dokazovi.service.CityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +13,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.REGION;
+import static com.softserveinc.dokazovi.controller.EndPoints.CITY;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,34 +21,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-class RegionControllerTest {
+class CityControllerTest {
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
+    @Mock
+    private CityService cityService;
+    @InjectMocks
+    private CityController cityController;
 
-	@Mock
-	private RegionService regionService;
-	@InjectMocks
-	private RegionController regionController;
-
-	@BeforeEach
-	void setUp() {
-		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(regionController)
-				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-				.build();
-	}
-
-	@Test
-	void getAllRegions() throws Exception {
-		mockMvc.perform(get(REGION)).andExpect(status().isOk());
-
-		verify(regionService).findAllRegions();
-	}
+    @BeforeEach
+    void setUp() {
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(cityController)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
+    }
 
     @Test
-    void getRegionByCity() throws Exception {
-		mockMvc.perform(get(REGION + "/" + any(Integer.class))).andExpect(status().isOk());
+    void getAllCities() throws Exception {
+        mockMvc.perform(get(CITY)).andExpect(status().isOk());
 
-		verify(regionService).findRegionByCity(any(Integer.class));
+        verify(cityService).findAllCities();
+    }
+
+    @Test
+    void getAllCitiesByRegion() throws Exception {
+        mockMvc.perform(get(CITY + "/" + any(Integer.class))).andExpect(status().isOk());
+
+        verify(cityService).findAllCitiesByRegion(any(Integer.class));
     }
 }

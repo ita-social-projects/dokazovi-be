@@ -26,4 +26,6 @@ public interface RegionRepository extends JpaRepository<RegionEntity, Integer> {
 			+ "          WHERE INSTITUTION_ID IN (SELECT DISTINCT INSTITUTION_ID FROM DOCTORS)))")
 	@Modifying
 	void updateRegionsStatus();
+
+	RegionEntity findByCitiesId(Integer cityId);
 }

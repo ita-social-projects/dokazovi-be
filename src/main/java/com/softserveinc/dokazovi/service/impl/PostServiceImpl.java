@@ -107,7 +107,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
 			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
-			String title, String author, Integer authorId, LocalDateTime startDate, LocalDateTime endDate,
+			String title, String author, Integer authorId, LocalDate startDate, LocalDate endDate,
 			Pageable pageable) {
 		boolean isAuthorIdNotSet = authorId == null;
 
@@ -126,15 +126,10 @@ public class PostServiceImpl implements PostService {
 			Sort sort = pageable.getSort().and(Sort.by("modified_at").descending());
 			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 		}
-
-		Optional<LocalDateTime> startDate1 = Optional.ofNullable(startDate);
-		LocalDateTime startTime = startDate1
-				.orElse(LocalDateTime.of(LocalDate.EPOCH, LocalTime.MIN));
-		Timestamp startDateTimestamp = Timestamp.valueOf(startTime);
-		Optional<LocalDateTime> endDate1 = Optional.ofNullable(endDate);
-		LocalDateTime endTime = endDate1
-				.orElse(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-		Timestamp endDateTimestamp = Timestamp.valueOf(endTime);
+		LocalDate startLocalDate = Optional.ofNullable(startDate).orElse(LocalDate.EPOCH);
+		LocalDate endLocalDate = Optional.ofNullable(endDate).orElse(LocalDate.now());
+		Timestamp startDateTimestamp = Timestamp.valueOf(startLocalDate.atStartOfDay());
+		Timestamp endDateTimestamp = Timestamp.valueOf(endLocalDate.atTime(LocalTime.MAX));
 		directionIds = validateValues(directionIds);
 		typeIds = validateValues(typeIds);
 		originIds = validateValues(originIds);
