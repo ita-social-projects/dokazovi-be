@@ -47,7 +47,7 @@ class CityControllerTest {
 
     @Test
     void getAllCitiesByRegion() throws Exception {
-        mockMvc.perform(post(CITY + "/" + any(Integer.class))).andExpect(status().isOk());
+        mockMvc.perform(get(CITY + "/" + any(Integer.class))).andExpect(status().isOk());
 
         verify(cityService).findAllCitiesByRegion(any(Integer.class));
     }
