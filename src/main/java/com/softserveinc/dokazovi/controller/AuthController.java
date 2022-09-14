@@ -14,6 +14,8 @@ import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.service.impl.MailSenderServiceImpl;
 import com.softserveinc.dokazovi.security.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,11 +26,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
-import java.time.Instant;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTH_LOGIN;
@@ -73,13 +72,13 @@ public class AuthController {
             throw new BadRequestException("Please confirm your email!");
         } else {
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userEntity.getId());
-            Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken.getToken());
-            refreshTokenCookie.setMaxAge(
-                    Math.toIntExact(refreshToken.getExpiryDate().getEpochSecond() - Instant.now().getEpochSecond()));
-            refreshTokenCookie.setSecure(true);
-            refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setDomain("dokazovi-fe-release.herokuapp.com");
-            response.addCookie(refreshTokenCookie);
+            ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken.getToken())
+                    .httpOnly(true)
+                    .secure(true)
+                    .domain("dokazovi-fe-release.herokuapp.com")
+                    .sameSite("none")
+                    .build();
+            response.setHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
             String token = tokenProvider.createToken(authentication);
             AuthResponse authResponse = new AuthResponse(token, refreshToken.getToken());
             authResponse.setAccessToken(token);
