@@ -79,7 +79,6 @@ public class AuthController {
                     .domain("dokazovi-fe-release.herokuapp.com")
                     .sameSite("none")
                     .build();
-            new Cookie("refreshToken", refreshToken.getToken());
             response.setHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
             String token = tokenProvider.createToken(authentication);
             AuthResponse authResponse = new AuthResponse(token, refreshToken.getToken());
