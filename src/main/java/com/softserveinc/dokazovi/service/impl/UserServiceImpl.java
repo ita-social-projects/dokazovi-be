@@ -77,8 +77,8 @@ public class UserServiceImpl implements UserService {
 	 * @return all found users
 	 */
 	@Override
-	public Page<UserDTO> findAll(Pageable pageable) {
-		return userRepository.findAll(pageable).map(userMapper::toUserDTO);
+	public Page<UserEntity> findAll(Pageable pageable) {
+		return userRepository.findAll(pageable);
 	}
 
 	/**
