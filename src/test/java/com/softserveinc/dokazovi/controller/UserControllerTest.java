@@ -38,6 +38,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS_FOR_ADMINISTRATION_PURPOSE;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_AUTHORITIES;
@@ -224,6 +225,33 @@ class UserControllerTest {
 		mockMvc.perform(get(uri)).andExpect(status().isOk());
 
 		Pageable pageable = PageRequest.of(0, 6);
+
+		verify(userService).findAllExperts(userSearchCriteria, pageable);
+	}
+
+	@Test
+	void getAllExpertsForAdminByDirectionsAndByRegions_NotFiltered_isOk() throws Exception {
+		String uri = USER + USER_ALL_EXPERTS_FOR_ADMINISTRATION_PURPOSE + "/?page=0";
+
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		Pageable pageable = PageRequest.of(0, 25);
+
+		verify(userService).findAllExperts(userSearchCriteria, pageable);
+	}
+
+	@Test
+	void getAllExpertsForAdminByName_isOk() throws Exception {
+		String uri = USER + USER_ALL_EXPERTS_FOR_ADMINISTRATION_PURPOSE + "/?userName=Ivan Ivanov";
+
+		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+		userSearchCriteria.setUserName("Ivan Ivanov");
+
+		mockMvc.perform(get(uri)).andExpect(status().isOk());
+
+		Pageable pageable = PageRequest.of(0, 25);
 
 		verify(userService).findAllExperts(userSearchCriteria, pageable);
 	}
