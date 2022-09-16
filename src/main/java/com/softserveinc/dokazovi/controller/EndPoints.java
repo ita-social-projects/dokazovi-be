@@ -28,6 +28,7 @@ public final class EndPoints {
     public static final String USER_CHECK_TOKEN = "/check-token";
     public static final String USER_RANDOM_EXPERTS = "/random-experts";
     public static final String USER_ALL_EXPERTS = "/all-experts";
+    public static final String USER_ALL_EXPERTS_FOR_ADMINISTRATION_PURPOSE = "/all-experts-for-admin";
     public static final String USER_GET_USER_BY_ID = "/{userId}";
     public static final String USER_GET_AUTHORITIES = "/get-authorities";
     public static final String POST_GET_USER_BY_ID = "/{userId}";

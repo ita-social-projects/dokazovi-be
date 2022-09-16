@@ -16,7 +16,7 @@ public interface UserService {
 
 	UserEntity findUserEntityByEmail(String email);
 
-	Page<UserEntity> findAll(Pageable pageable);
+	Page<UserDTO> findAll(Pageable pageable);
 
 	UserDTO findExpertById(Integer userId);
 

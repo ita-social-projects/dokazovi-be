@@ -26,6 +26,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +45,7 @@ import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS_FOR_ADMINISTRATION_PURPOSE;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_EXPERT_ALL_POST_DIRECTIONS;
@@ -108,16 +110,25 @@ public class UserController {
 				.body(userService.findAllExperts(userSearchCriteria, pageable));
 	}
 
+	@GetMapping(USER_ALL_EXPERTS_FOR_ADMINISTRATION_PURPOSE)
+	@ApiPageable
+	@ApiOperation(value = "Get all experts for admin page + sorting")
+	@PreAuthorize("hasAuthority('EDIT_AUTHOR')")
+	public ResponseEntity<Page<UserDTO>> getAllExpertsFprAdminPage(
+			@PageableDefault(size = 25) Pageable pageable, UserSearchCriteria userSearchCriteria) {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(userService.findAllExperts(userSearchCriteria, pageable));
+	}
+
 	@GetMapping(USER_EXPERT_ALL_POST_DIRECTIONS)
 	@ApiOperation(value = "Get list of all directions which is used in all posts of user")
 	public ResponseEntity<List<DirectionDTO>> getAllDirectionsOfUserPosts(@PathVariable("expertId") Integer userId) {
 		var body = directionService.findAllDirectionsOfPostsByUserId(userId);
 
-		var response = ResponseEntity
+		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(body);
-
-		return response;
 	}
 
 	/**
