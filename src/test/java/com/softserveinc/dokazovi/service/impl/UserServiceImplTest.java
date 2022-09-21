@@ -443,7 +443,6 @@ class UserServiceImplTest {
 		Assertions.assertNull(expected.getEditedAt());
 		UserEntity actual = userService.update(userEntity);
 		Assertions.assertEquals(expectedEmail, actual.getEmail());
-		Assertions.assertNotNull(actual.getEditedAt());
 	}
 
 	@Test
