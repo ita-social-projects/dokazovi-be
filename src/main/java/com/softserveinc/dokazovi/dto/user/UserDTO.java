@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.dto.user;
 
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
+import com.softserveinc.dokazovi.dto.region.RegionDTO;
 import lombok.Builder;
 import lombok.Data;
 
@@ -31,9 +32,7 @@ public class UserDTO {
 
 	private String bio;
 
-	private String region;
-
-	private String city;
+	private RegionDTO region;
 
 	private Set<String> socialNetworks;
 

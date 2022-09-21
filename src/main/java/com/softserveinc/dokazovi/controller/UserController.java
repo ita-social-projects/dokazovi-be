@@ -113,11 +113,9 @@ public class UserController {
 	public ResponseEntity<List<DirectionDTO>> getAllDirectionsOfUserPosts(@PathVariable("expertId") Integer userId) {
 		var body = directionService.findAllDirectionsOfPostsByUserId(userId);
 
-		var response = ResponseEntity
+		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(body);
-
-		return response;
 	}
 
 	/**
