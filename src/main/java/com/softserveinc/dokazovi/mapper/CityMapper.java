@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.post.PostUserInstitutionCityDTO;
 import com.softserveinc.dokazovi.dto.user.UserInstitutionCityDTO;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CityMapper {
@@ -13,5 +14,6 @@ public interface CityMapper {
 
 	PostUserInstitutionCityDTO toPostUserInstitutionCityDTO(CityEntity cityEntity);
 
+	@Mapping(target = "regionId", source = "cityEntity.region.id")
 	CityDTO toCityDTO(CityEntity cityEntity);
 }
