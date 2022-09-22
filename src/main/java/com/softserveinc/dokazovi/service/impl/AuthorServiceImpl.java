@@ -99,7 +99,7 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorDTO update(AuthorDTO authorDTO, Integer doctorId, UserPrincipal userPrincipal) {
         if (hasEnoughAuthorities(userPrincipal)) {
             Optional<DoctorEntity> doctor = doctorRepository.findById(doctorId);
-            if(doctor.isPresent()) {
+            if (doctor.isPresent()) {
                 DoctorEntity doctorToSave = doctor.get();
                 UserEntity userToSave = doctorToSave.getProfile();
                 if (authorDTO.getEmail() != null) {
