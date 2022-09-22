@@ -13,9 +13,7 @@ public enum RolePermission implements GrantedAuthority {
 	SET_IMPORTANCE,
 	SAVE_PLATFORM_INFORMATION,
 	UPDATE_PLATFORM_INFORMATION,
-	CREATE_AUTHOR,
-	DELETE_AUTHOR,
-	UPDATE_AUTHOR;
+	EDIT_AUTHOR;
 
 	@Override
 	public String getAuthority() {

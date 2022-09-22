@@ -11,4 +11,6 @@ public interface InstitutionMapper {
 	PostUserInstitutionDTO toPostUserInstitutionDTO (InstitutionEntity institution);
 
 	UserInstitutionDTO toExpertInstitutionDTO (InstitutionEntity institution);
+
+	InstitutionEntity toInstitutionEntity(UserInstitutionDTO institutionDTO);
 }

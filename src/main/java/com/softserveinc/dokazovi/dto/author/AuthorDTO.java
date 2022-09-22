@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.dto.author;
 
-import com.softserveinc.dokazovi.dto.user.UserInstitutionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +13,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class AuthorDTO {
 
-	private Integer id;
-
 	private String email;
+
+	private String password;
 
 	private String firstName;
 
@@ -24,7 +23,7 @@ public class AuthorDTO {
 
 	private String qualification;
 
-	private UserInstitutionDTO mainInstitution;
+	private Integer mainInstitutionId;
 
 	private String avatar;
 

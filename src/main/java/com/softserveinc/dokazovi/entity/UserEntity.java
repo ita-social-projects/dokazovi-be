@@ -95,7 +95,8 @@ public class UserEntity {
     private Boolean enabled;
 
     /**
-     * Gets latest expert post, if it exists. If not - returns null
+     * Gets latest expert post, if it exists.
+     * If not - returns null
      *
      * @return the resulting post entity
      */

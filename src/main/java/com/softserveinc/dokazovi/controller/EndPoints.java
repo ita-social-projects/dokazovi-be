@@ -55,8 +55,8 @@ public final class EndPoints {
     public static final String POST_GET_BY_IMPORTANT_IMAGE = "/get-by-important-image";
     public static final String USER_EXPERT_ALL_POST_DIRECTIONS = "/experts/{expertId}/post-directions";
     public static final String AUTHOR_GET_AUTHOR_BY_ID = "/{authorId}";
-    public static final String AUTHOR_ALL_AUTHORS = "/all-authors";
     public static final String AUTHOR = "/author";
+    public static final String AUTHOR_UPDATE = "/{doctorId}";
 
     /**
      * Method that adds slash after each endpoint while calling

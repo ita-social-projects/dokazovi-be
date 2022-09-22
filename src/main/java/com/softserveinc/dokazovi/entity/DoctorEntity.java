@@ -14,9 +14,7 @@ import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -72,7 +70,7 @@ public class DoctorEntity {
             generator = ObjectIdGenerators.PropertyGenerator.class)
     private InstitutionEntity mainInstitution;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -88,18 +86,6 @@ public class DoctorEntity {
             property = "id",
             generator = ObjectIdGenerators.PropertyGenerator.class)
     private Set<CharityEntity> charities;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "cities",
-                inverseJoinColumns = @JoinColumn(name = "city_id"))
-    private CityEntity city;
-
-    @ElementCollection
-    @CollectionTable(
-            name = "users_social_networks",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"))
-    @Column(name = "link")
-    private Set<String> socialNetwork;
 
     @ManyToMany
     @JoinTable(
