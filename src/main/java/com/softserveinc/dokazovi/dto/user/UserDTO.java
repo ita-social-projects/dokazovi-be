@@ -2,8 +2,10 @@ package com.softserveinc.dokazovi.dto.user;
 
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.region.RegionDTO;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Set;
@@ -11,7 +13,10 @@ import java.util.Set;
 /**
  * The User DTO is responsible for passing user data from the server to the client.
  */
-
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
 
 	private Integer id;
