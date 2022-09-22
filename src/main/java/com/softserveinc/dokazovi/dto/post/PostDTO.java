@@ -35,7 +35,7 @@ public class PostDTO {
 	private Timestamp createdAt;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
 	private Timestamp modifiedAt;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM.dd.yyyy HH:mm")
 	private Timestamp publishedAt;
 	private Integer importanceOrder;
 	private String importantImageUrl;
