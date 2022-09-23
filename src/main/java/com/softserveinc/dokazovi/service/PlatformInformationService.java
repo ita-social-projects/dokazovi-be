@@ -5,9 +5,9 @@ import com.softserveinc.dokazovi.security.UserPrincipal;
 
 public interface PlatformInformationService {
 
-	PlatformInformationDTO getInfoById(Integer infoId);
+    PlatformInformationDTO getInfoById(Integer infoId);
 
-	PlatformInformationDTO saveInfo(UserPrincipal userPrincipal, PlatformInformationDTO infoDTO);
+    PlatformInformationDTO saveInfo(UserPrincipal userPrincipal, PlatformInformationDTO infoDTO);
 
-	PlatformInformationDTO updateInfo(UserPrincipal userPrincipal, PlatformInformationDTO infoDTO);
+    PlatformInformationDTO updateInfo(UserPrincipal userPrincipal, PlatformInformationDTO infoDTO);
 }

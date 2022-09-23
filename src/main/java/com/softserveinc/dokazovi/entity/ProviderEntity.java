@@ -26,24 +26,24 @@ import javax.persistence.Table;
 @Table(name = "providers")
 public class ProviderEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "provider_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "provider_id")
+    private Integer id;
 
-	@Column(name = "provider_name")
-	private String name;
+    @Column(name = "provider_name")
+    private String name;
 
-	private String email;
+    private String email;
 
-	private String userIdByProvider;
+    private String userIdByProvider;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "user_id", nullable = false)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private UserEntity user;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIdentityInfo(
+            property = "id",
+            generator = ObjectIdGenerators.PropertyGenerator.class)
+    private UserEntity user;
 }

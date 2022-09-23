@@ -14,22 +14,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class VersionControllerTest {
 
-	private final BuildProperties buildProperties = new BuildProperties(new Properties());
-	private final VersionController versionController = new VersionController(buildProperties);
+    private final BuildProperties buildProperties = new BuildProperties(new Properties());
+    private final VersionController versionController = new VersionController(buildProperties);
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@BeforeEach
-	void setUp() {
-		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(versionController)
-				.build();
-	}
+    @BeforeEach
+    void setUp() {
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(versionController)
+                .build();
+    }
 
-	@Test
-	void getBuildVersion() throws Exception {
-		mockMvc
-				.perform(get(VERSION))
-				.andExpect(status().isOk());
-	}
+    @Test
+    void getBuildVersion() throws Exception {
+        mockMvc
+                .perform(get(VERSION))
+                .andExpect(status().isOk());
+    }
 }

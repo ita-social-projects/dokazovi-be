@@ -25,85 +25,85 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class AuthorControllerTest {
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@InjectMocks
-	private AuthorController authorController;
+    @InjectMocks
+    private AuthorController authorController;
 
-	@Mock
-	private AuthorService authorService;
+    @Mock
+    private AuthorService authorService;
 
-	@Mock
-	private Validator validator;
+    @Mock
+    private Validator validator;
 
-	@BeforeEach
-	public void init() {
-		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(authorController)
-				.setValidator(validator)
-				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-				.build();
-	}
+    @BeforeEach
+    public void init() {
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(authorController)
+                .setValidator(validator)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
+    }
 
-	@Test
-	void createAuthor() throws Exception {
-		String content = "{\n"
-				+ "  \"authorId\": 1,\n"
-				+ "  \"content\": \"string\",\n"
-				+ "  \"directions\": [\n"
-				+ "    {\n"
-				+ "      \"id\": 0\n"
-				+ "    }\n"
-				+ "  ],\n"
-				+ "  \"origins\": [\n"
-				+ "    {\n"
-				+ "      \"id\": 0\n"
-				+ "    }\n"
-				+ "  ],\n"
-				+ "  \"preview\": \"string\",\n"
-				+ "  \"previewImageUrl\": \"string\",\n"
-				+ "  \"title\": \"string\",\n"
-				+ "  \"type\": {\n"
-				+ "    \"id\": 0\n"
-				+ "  },\n"
-				+ "  \"videoUrl\": \"string\"\n"
-				+ "}";
-		ObjectMapper mapper = new ObjectMapper();
-		PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
-		mockMvc.perform(post(POST)
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(content))
-				.andExpect(status().is(404));
-	}
+    @Test
+    void createAuthor() throws Exception {
+        String content = "{\n"
+                + "  \"authorId\": 1,\n"
+                + "  \"content\": \"string\",\n"
+                + "  \"directions\": [\n"
+                + "    {\n"
+                + "      \"id\": 0\n"
+                + "    }\n"
+                + "  ],\n"
+                + "  \"origins\": [\n"
+                + "    {\n"
+                + "      \"id\": 0\n"
+                + "    }\n"
+                + "  ],\n"
+                + "  \"preview\": \"string\",\n"
+                + "  \"previewImageUrl\": \"string\",\n"
+                + "  \"title\": \"string\",\n"
+                + "  \"type\": {\n"
+                + "    \"id\": 0\n"
+                + "  },\n"
+                + "  \"videoUrl\": \"string\"\n"
+                + "}";
+        ObjectMapper mapper = new ObjectMapper();
+        PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
+        mockMvc.perform(post(POST)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().is(404));
+    }
 
-	@Test
-	void updateAuthor() throws Exception {
-		String content = "{\n"
-				+ "  \"authorId\": 1,\n"
-				+ "  \"content\": \"string\",\n"
-				+ "  \"directions\": [\n"
-				+ "    {\n"
-				+ "      \"id\": 0\n"
-				+ "    }\n"
-				+ "  ],\n"
-				+ "  \"origins\": [\n"
-				+ "    {\n"
-				+ "      \"id\": 0\n"
-				+ "    }\n"
-				+ "  ],\n"
-				+ "  \"preview\": \"string\",\n"
-				+ "  \"previewImageUrl\": \"string\",\n"
-				+ "  \"title\": \"string\",\n"
-				+ "  \"type\": {\n"
-				+ "    \"id\": 0\n"
-				+ "  },\n"
-				+ "  \"videoUrl\": \"string\"\n"
-				+ "}";
-		ObjectMapper mapper = new ObjectMapper();
-		PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
-		mockMvc.perform(post(POST)
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(content))
-				.andExpect(status().is(404));
-	}
+    @Test
+    void updateAuthor() throws Exception {
+        String content = "{\n"
+                + "  \"authorId\": 1,\n"
+                + "  \"content\": \"string\",\n"
+                + "  \"directions\": [\n"
+                + "    {\n"
+                + "      \"id\": 0\n"
+                + "    }\n"
+                + "  ],\n"
+                + "  \"origins\": [\n"
+                + "    {\n"
+                + "      \"id\": 0\n"
+                + "    }\n"
+                + "  ],\n"
+                + "  \"preview\": \"string\",\n"
+                + "  \"previewImageUrl\": \"string\",\n"
+                + "  \"title\": \"string\",\n"
+                + "  \"type\": {\n"
+                + "    \"id\": 0\n"
+                + "  },\n"
+                + "  \"videoUrl\": \"string\"\n"
+                + "}";
+        ObjectMapper mapper = new ObjectMapper();
+        PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
+        mockMvc.perform(post(POST)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().is(404));
+    }
 }

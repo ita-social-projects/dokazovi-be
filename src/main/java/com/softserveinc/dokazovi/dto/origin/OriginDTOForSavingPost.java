@@ -16,6 +16,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OriginDTOForSavingPost {
-	@NotNull(message = "Origin id are required")
-	private Integer id;
+    @NotNull(message = "Origin id are required")
+    private Integer id;
 }

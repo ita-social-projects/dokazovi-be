@@ -10,5 +10,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface OriginMapper {
 
-	OriginDTO toOriginDTO(OriginEntity originEntity);
+    OriginDTO toOriginDTO(OriginEntity originEntity);
 }

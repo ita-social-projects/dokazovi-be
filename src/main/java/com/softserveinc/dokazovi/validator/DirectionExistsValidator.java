@@ -16,23 +16,23 @@ import javax.validation.ConstraintValidatorContext;
 @RequiredArgsConstructor
 public class DirectionExistsValidator implements ConstraintValidator<DirectionExists, DirectionDTOForSavingPost> {
 
-	private final DirectionRepository repository;
+    private final DirectionRepository repository;
 
-	/**
-	 * Validates the Direction DTO for saving post.
-	 * If direction id is zero, it returns "false".
-	 *
-	 * @param value DirectionDTOForSavingPost to validate
-	 * @param context  context in which the constraint is evaluated
-	 * @return true or false
-	 */
+    /**
+     * Validates the Direction DTO for saving post.
+     * If direction id is zero, it returns "false".
+     *
+     * @param value DirectionDTOForSavingPost to validate
+     * @param context  context in which the constraint is evaluated
+     * @return true or false
+     */
 
-	@Override
-	public boolean isValid(DirectionDTOForSavingPost value, ConstraintValidatorContext context) {
-		Integer id = value.getId();
-		if (id == null) {
-			return false;
-		}
-		return repository.existsById(id);
-	}
+    @Override
+    public boolean isValid(DirectionDTOForSavingPost value, ConstraintValidatorContext context) {
+        Integer id = value.getId();
+        if (id == null) {
+            return false;
+        }
+        return repository.existsById(id);
+    }
 }

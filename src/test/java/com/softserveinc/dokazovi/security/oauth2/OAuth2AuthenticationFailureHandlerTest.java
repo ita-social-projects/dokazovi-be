@@ -17,29 +17,29 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class OAuth2AuthenticationFailureHandlerTest {
 
-	@Mock
-	private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
-	@Mock
-	HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
-	@Mock
-	private HttpServletRequest request;
-	@Mock
-	private HttpServletResponse response;
+    @Mock
+    private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
+    @Mock
+    HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
+    private HttpServletResponse response;
 
-	@BeforeEach
-	void init() {
-		oauth2AuthenticationFailureHandler =
-				new OAuth2AuthenticationFailureHandler(httpCookieOAuth2AuthorizationRequestRepository);
-	}
+    @BeforeEach
+    void init() {
+        oauth2AuthenticationFailureHandler =
+                new OAuth2AuthenticationFailureHandler(httpCookieOAuth2AuthorizationRequestRepository);
+    }
 
-	@Test
-	void testOnAuthenticationFailure() throws Exception {
-		final AuthenticationException exception = new BadCredentialsException("error");
+    @Test
+    void testOnAuthenticationFailure() throws Exception {
+        final AuthenticationException exception = new BadCredentialsException("error");
 
-		oauth2AuthenticationFailureHandler.onAuthenticationFailure(request, response, exception);
+        oauth2AuthenticationFailureHandler.onAuthenticationFailure(request, response, exception);
 
-		verify(httpCookieOAuth2AuthorizationRequestRepository)
-				.removeAuthorizationRequestCookies(any(HttpServletRequest.class),
-						any(HttpServletResponse.class));
-	}
+        verify(httpCookieOAuth2AuthorizationRequestRepository)
+                .removeAuthorizationRequestCookies(any(HttpServletRequest.class),
+                        any(HttpServletResponse.class));
+    }
 }

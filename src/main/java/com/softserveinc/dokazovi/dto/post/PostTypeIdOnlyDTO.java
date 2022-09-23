@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class PostTypeIdOnlyDTO {
 
-	@NotNull(message = "PostType id are required")
-	private Integer id;
+    @NotNull(message = "PostType id are required")
+    private Integer id;
 
 }

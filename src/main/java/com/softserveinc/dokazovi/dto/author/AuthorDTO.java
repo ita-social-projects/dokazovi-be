@@ -13,21 +13,21 @@ import java.util.Set;
 @AllArgsConstructor
 public class AuthorDTO {
 
-	private String email;
+    private String email;
 
-	private String password;
+    private String password;
 
-	private String firstName;
+    private String firstName;
 
-	private String lastName;
+    private String lastName;
 
-	private String qualification;
+    private String qualification;
 
-	private Integer mainInstitutionId;
+    private Integer mainInstitutionId;
 
-	private String avatar;
+    private String avatar;
 
-	private String bio;
+    private String bio;
 
-	private Set<String> socialNetwork;
+    private Set<String> socialNetwork;
 }

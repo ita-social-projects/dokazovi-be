@@ -10,21 +10,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PostTypeMapperTest {
 
-	private final PostTypeMapper mapper = Mappers.getMapper(PostTypeMapper.class);
-	private PostTypeEntity postTypeEntity;
+    private final PostTypeMapper mapper = Mappers.getMapper(PostTypeMapper.class);
+    private PostTypeEntity postTypeEntity;
 
-	@BeforeEach
-	void init() {
-		postTypeEntity = PostTypeEntity.builder()
-				.id(1)
-				.name("Some name")
-				.build();
-	}
+    @BeforeEach
+    void init() {
+        postTypeEntity = PostTypeEntity.builder()
+                .id(1)
+                .name("Some name")
+                .build();
+    }
 
-	@Test
-	void toPostTypeDTO_whenMaps_thenCorrect() {
-		PostTypeDTO postTypeDTO = mapper.toPostTypeDTO(postTypeEntity);
-		assertEquals(postTypeEntity.getId(), postTypeDTO.getId());
-		assertEquals(postTypeEntity.getName(), postTypeDTO.getName());
-	}
+    @Test
+    void toPostTypeDTO_whenMaps_thenCorrect() {
+        PostTypeDTO postTypeDTO = mapper.toPostTypeDTO(postTypeEntity);
+        assertEquals(postTypeEntity.getId(), postTypeDTO.getId());
+        assertEquals(postTypeEntity.getName(), postTypeDTO.getName());
+    }
 }

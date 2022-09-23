@@ -19,33 +19,33 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
-	// 400
+    // 400
 
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
-			final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-		logger.info(ex.getClass().getName());
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
+            final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+        logger.info(ex.getClass().getName());
 
-		List<String> errors = ex.getBindingResult().getFieldErrors()
-				.stream()
-				.map(error -> error.getField() + ": " + error.getDefaultMessage())
-				.collect(Collectors.toList());
+        List<String> errors = ex.getBindingResult().getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.toList());
 
-		final ApiError apiError = ApiError.builder()
-				.status(HttpStatus.BAD_REQUEST)
-				.errors(errors)
-				.build();
-		return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
-	}
+        final ApiError apiError = ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .errors(errors)
+                .build();
+        return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
+    }
 
-	@ExceptionHandler({DtoException.class, EntityNotFoundException.class, ForbiddenPermissionsException.class})
-	public ResponseEntity<Object> handleEntityException(final Exception ex) {
-		logger.info(ex.getClass().getName());
-		final ApiError apiError = ApiError.builder()
-				.status(HttpStatus.BAD_REQUEST)
-				.errors(Collections.singletonList(ex.getLocalizedMessage()))
-				.build();
-		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
-	}
+    @ExceptionHandler({DtoException.class, EntityNotFoundException.class, ForbiddenPermissionsException.class})
+    public ResponseEntity<Object> handleEntityException(final Exception ex) {
+        logger.info(ex.getClass().getName());
+        final ApiError apiError = ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .errors(Collections.singletonList(ex.getLocalizedMessage()))
+                .build();
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
 
 }

@@ -10,10 +10,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface CityMapper {
 
-	UserInstitutionCityDTO toExpertInstitutionCityDTO(CityEntity cityEntity);
+    UserInstitutionCityDTO toExpertInstitutionCityDTO(CityEntity cityEntity);
 
-	PostUserInstitutionCityDTO toPostUserInstitutionCityDTO(CityEntity cityEntity);
+    PostUserInstitutionCityDTO toPostUserInstitutionCityDTO(CityEntity cityEntity);
 
-	@Mapping(target = "regionId", source = "cityEntity.region.id")
-	CityDTO toCityDTO(CityEntity cityEntity);
+    @Mapping(target = "regionId", source = "cityEntity.region.id")
+    CityDTO toCityDTO(CityEntity cityEntity);
 }

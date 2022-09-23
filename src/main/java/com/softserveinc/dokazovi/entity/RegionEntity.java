@@ -29,17 +29,17 @@ import java.util.Set;
 @Table(name = "regions")
 public class RegionEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "region_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "region_id")
+    private Integer id;
 
-	private String name;
+    private String name;
 
-	private Boolean usersPresent;
+    private Boolean usersPresent;
 
-	@OneToMany(mappedBy = "region")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<CityEntity> cities;
+    @OneToMany(mappedBy = "region")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<CityEntity> cities;
 }

@@ -12,31 +12,31 @@ import java.util.Set;
 
 public interface UserService {
 
-	UserEntity findByEmail(String email);
+    UserEntity findByEmail(String email);
 
-	UserEntity findUserEntityByEmail(String email);
+    UserEntity findUserEntityByEmail(String email);
 
-	Page<UserEntity> findAll(Pageable pageable);
+    Page<UserEntity> findAll(Pageable pageable);
 
-	UserDTO findExpertById(Integer userId);
+    UserDTO findExpertById(Integer userId);
 
-	Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable);
+    Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable);
 
-	Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
+    Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
-	void setEnableTrue(UserEntity user);
+    void setEnableTrue(UserEntity user);
 
-	void createVerificationToken(UserEntity user, String token);
+    void createVerificationToken(UserEntity user, String token);
 
-	VerificationToken getVerificationToken(String verificationToken);
+    VerificationToken getVerificationToken(String verificationToken);
 
-	UserEntity getById(Integer userId);
+    UserEntity getById(Integer userId);
 
-	UserEntity update(UserEntity user);
+    UserEntity update(UserEntity user);
 
-	void updatePassword(UserEntity user, String password, PasswordResetTokenEntity token);
+    void updatePassword(UserEntity user, String password, PasswordResetTokenEntity token);
 
-	void sendPasswordResetToken(UserEntity user, String origin);
+    void sendPasswordResetToken(UserEntity user, String origin);
 
-	boolean isPasswordMatches(UserEntity user, String password);
+    boolean isPasswordMatches(UserEntity user, String password);
 }

@@ -18,27 +18,27 @@ import java.util.Set;
 @AllArgsConstructor
 public class PostDTO {
 
-	private Integer id;
-	private String title;
-	private String preview;
-	private String content;
-	private String videoUrl;
-	private String previewImageUrl;
-	private String importantMobileImageUrl;
-	private PostUserDTO author;
-	private Set<DirectionDTO> directions;
-	private Set<TagDTO> tags;
-	private PostTypeDTO type;
-	private String status;
-	private Set<OriginDTO> origins;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd.MM.yyyy")
-	private Timestamp createdAt;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-	private Timestamp modifiedAt;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM.dd.yyyy HH:mm")
-	private Timestamp publishedAt;
-	private Integer importanceOrder;
-	private String importantImageUrl;
-	private Integer views;
-	private Integer realViews;
+    private Integer id;
+    private String title;
+    private String preview;
+    private String content;
+    private String videoUrl;
+    private String previewImageUrl;
+    private String importantMobileImageUrl;
+    private PostUserDTO author;
+    private Set<DirectionDTO> directions;
+    private Set<TagDTO> tags;
+    private PostTypeDTO type;
+    private String status;
+    private Set<OriginDTO> origins;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd.MM.yyyy")
+    private Timestamp createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    private Timestamp modifiedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM.dd.yyyy HH:mm")
+    private Timestamp publishedAt;
+    private Integer importanceOrder;
+    private String importantImageUrl;
+    private Integer views;
+    private Integer realViews;
 }

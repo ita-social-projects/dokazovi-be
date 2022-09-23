@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface TagRepository extends JpaRepository<TagEntity, Integer> {
 
-	@Override
-	@Cacheable("tags")
-	List<TagEntity> findAll();
+    @Override
+    @Cacheable("tags")
+    List<TagEntity> findAll();
 }

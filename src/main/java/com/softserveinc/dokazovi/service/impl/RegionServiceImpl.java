@@ -23,35 +23,35 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RegionServiceImpl implements RegionService {
 
-	private final RegionRepository regionRepository;
-	private final RegionMapper regionMapper;
+    private final RegionRepository regionRepository;
+    private final RegionMapper regionMapper;
 
-	/**
-	 * Gets all regions.
-	 *
-	 * @return all found regions
-	 */
-	@Override
-	public List<RegionDTO> findAllRegions() {
-		return regionRepository.findAll().stream()
-				.map(regionMapper::toRegionDTO)
-				.collect(Collectors.toList());
-	}
+    /**
+     * Gets all regions.
+     *
+     * @return all found regions
+     */
+    @Override
+    public List<RegionDTO> findAllRegions() {
+        return regionRepository.findAll().stream()
+                .map(regionMapper::toRegionDTO)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 * Updates the region status depending on the availability of doctors in it.
-	 * Runs every four hours
-	 */
-	@Override
-	@Transactional
-	@Scheduled(cron = "0 0 */4 * * *")
-	public void updateRegionsStatus() {
-		regionRepository.updateRegionsStatus();
-	}
+    /**
+     * Updates the region status depending on the availability of doctors in it.
+     * Runs every four hours
+     */
+    @Override
+    @Transactional
+    @Scheduled(cron = "0 0 */4 * * *")
+    public void updateRegionsStatus() {
+        regionRepository.updateRegionsStatus();
+    }
 
     @Override
     public RegionDTO findRegionByCity(Integer cityId) {
-		RegionEntity regionEntity = regionRepository.findByCitiesId(cityId);
-		return regionMapper.toRegionDTO(regionEntity);
+        RegionEntity regionEntity = regionRepository.findByCitiesId(cityId);
+        return regionMapper.toRegionDTO(regionEntity);
     }
 }

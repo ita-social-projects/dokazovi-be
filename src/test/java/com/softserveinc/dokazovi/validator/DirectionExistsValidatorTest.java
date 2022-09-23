@@ -16,26 +16,26 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class DirectionExistsValidatorTest {
 
-	@Mock
-	private DirectionRepository repository;
+    @Mock
+    private DirectionRepository repository;
 
-	@InjectMocks
-	private DirectionExistsValidator validator;
+    @InjectMocks
+    private DirectionExistsValidator validator;
 
-	@Test
-	void isValid_WhenIdNotNull_ReturnTrue() {
-		when(repository.existsById(anyInt())).thenReturn(true);
-		DirectionDTOForSavingPost dto = DirectionDTOForSavingPost.builder()
-				.id(1)
-				.build();
-		assertTrue(validator.isValid(dto, null));
-	}
+    @Test
+    void isValid_WhenIdNotNull_ReturnTrue() {
+        when(repository.existsById(anyInt())).thenReturn(true);
+        DirectionDTOForSavingPost dto = DirectionDTOForSavingPost.builder()
+                .id(1)
+                .build();
+        assertTrue(validator.isValid(dto, null));
+    }
 
-	@Test
-	void isValid_WhenIdIsNull_ReturnFalse() {
-		DirectionDTOForSavingPost dto = DirectionDTOForSavingPost.builder()
-				.id(null)
-				.build();
-		assertFalse(validator.isValid(dto, null));
-	}
+    @Test
+    void isValid_WhenIdIsNull_ReturnFalse() {
+        DirectionDTOForSavingPost dto = DirectionDTOForSavingPost.builder()
+                .id(null)
+                .build();
+        assertFalse(validator.isValid(dto, null));
+    }
 }

@@ -11,8 +11,8 @@ import lombok.Data;
 @Builder
 public class LatestUserPostDTO {
 
-	private Integer id;
+    private Integer id;
 
-	private String title;
+    private String title;
 
 }

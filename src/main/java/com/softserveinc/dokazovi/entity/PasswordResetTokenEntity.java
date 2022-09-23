@@ -24,19 +24,19 @@ import java.time.LocalDateTime;
 @Table(name = "password_reset_tokens")
 public class PasswordResetTokenEntity {
 
-	public static final int EXPIRATION = 60;
+    public static final int EXPIRATION = 60;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "token_id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "token_id")
+    private Long id;
 
-	private String token;
+    private String token;
 
-	@OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER)
-	@JoinColumn(nullable = false, name = "user_id")
-	private UserEntity userEntity;
+    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
+    private UserEntity userEntity;
 
-	@Column(name = "date_expiration")
-	private LocalDateTime dateExpiration;
+    @Column(name = "date_expiration")
+    private LocalDateTime dateExpiration;
 }

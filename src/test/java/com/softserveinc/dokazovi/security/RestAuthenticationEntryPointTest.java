@@ -16,17 +16,17 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class RestAuthenticationEntryPointTest {
 
-	@Mock
-	private HttpServletRequest httpServletRequest;
-	@Mock
-	private HttpServletResponse httpServletResponse;
-	@Mock
-	private AuthenticationException exception;
+    @Mock
+    private HttpServletRequest httpServletRequest;
+    @Mock
+    private HttpServletResponse httpServletResponse;
+    @Mock
+    private AuthenticationException exception;
 
-	@Test
-	void commence() throws IOException {
-		RestAuthenticationEntryPoint target = new RestAuthenticationEntryPoint();
-		target.commence(httpServletRequest, httpServletResponse, exception);
-		verify(httpServletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getLocalizedMessage());
-	}
+    @Test
+    void commence() throws IOException {
+        RestAuthenticationEntryPoint target = new RestAuthenticationEntryPoint();
+        target.commence(httpServletRequest, httpServletResponse, exception);
+        verify(httpServletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getLocalizedMessage());
+    }
 }

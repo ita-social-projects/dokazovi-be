@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.InitBinder;
 @ControllerAdvice
 public class BindingControllerAdvice {
 
-	/**
-	 * Accepts the binder as an input.
-	 */
-	@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		binder.initDirectFieldAccess();
-	}
+    /**
+     * Accepts the binder as an input.
+     */
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.initDirectFieldAccess();
+    }
 }

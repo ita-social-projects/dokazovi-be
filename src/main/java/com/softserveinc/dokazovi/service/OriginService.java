@@ -4,5 +4,5 @@ import com.softserveinc.dokazovi.dto.origin.OriginDTO;
 import java.util.List;
 
 public interface OriginService {
-	List<OriginDTO> findAllOrigins();
+    List<OriginDTO> findAllOrigins();
 }

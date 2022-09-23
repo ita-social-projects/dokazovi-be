@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class VersionController {
 
-	private final BuildProperties buildProperties;
+    private final BuildProperties buildProperties;
 
-	/**
-	 * Returns all build-related information of project version.
-	 *
-	 * @return build properties and 'OK' HttpStatus
-	 */
-	@GetMapping
-	@ApiOperation(value = "Get build version")
-	public ResponseEntity<BuildProperties> getBuildVersion() {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(buildProperties);
-	}
+    /**
+     * Returns all build-related information of project version.
+     *
+     * @return build properties and 'OK' HttpStatus
+     */
+    @GetMapping
+    @ApiOperation(value = "Get build version")
+    public ResponseEntity<BuildProperties> getBuildVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildProperties);
+    }
 }

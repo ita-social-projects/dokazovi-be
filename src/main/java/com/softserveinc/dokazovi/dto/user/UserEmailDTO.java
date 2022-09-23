@@ -13,6 +13,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class UserEmailDTO {
 
-	@NotNull
-	private String email;
+    @NotNull
+    private String email;
 }

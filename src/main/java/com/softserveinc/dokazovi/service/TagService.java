@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TagService {
 
-	TagDTO save(TagSaveDTO tagSaveDTO);
+    TagDTO save(TagSaveDTO tagSaveDTO);
 
-	List<TagDTO> findTagsByValue(String value, Integer limit);
+    List<TagDTO> findTagsByValue(String value, Integer limit);
 }

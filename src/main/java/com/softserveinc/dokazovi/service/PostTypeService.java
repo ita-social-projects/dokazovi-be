@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface PostTypeService {
 
-	List<PostTypeDTO> findAll();
+    List<PostTypeDTO> findAll();
 
-	List<PostTypeDTO> findAllPostTypesByUserId(Integer userId);
+    List<PostTypeDTO> findAllPostTypesByUserId(Integer userId);
 
-	List<PostTypeDTO> findAllPostTypesByUserIdAndStatus(Integer userId, PostStatus postStatus);
+    List<PostTypeDTO> findAllPostTypesByUserIdAndStatus(Integer userId, PostStatus postStatus);
 }

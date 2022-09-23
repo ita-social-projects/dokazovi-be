@@ -14,9 +14,9 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class TagDTO {
 
-	@NotNull(message = "Tag id are required")
-	private Integer id;
+    @NotNull(message = "Tag id are required")
+    private Integer id;
 
-	@NotBlank(message = "Tag cannot be empty")
-	private String tag;
+    @NotBlank(message = "Tag cannot be empty")
+    private String tag;
 }

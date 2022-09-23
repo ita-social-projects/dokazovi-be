@@ -11,12 +11,12 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring")
 public interface PlatformInformationMapper {
 
-	PlatformInformationDTO toPlatformInformationDTO(PlatformInformationEntity platformInformationEntity);
+    PlatformInformationDTO toPlatformInformationDTO(PlatformInformationEntity platformInformationEntity);
 
-	PlatformInformationEntity toPlatformInformationEntity(PlatformInformationDTO platformInformationDTO);
+    PlatformInformationEntity toPlatformInformationEntity(PlatformInformationDTO platformInformationDTO);
 
-	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-			nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-	PlatformInformationEntity updatePlatformInformationEntity(PlatformInformationDTO platformInformationDTO,
-			@MappingTarget PlatformInformationEntity platformInformationEntity);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+            nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+    PlatformInformationEntity updatePlatformInformationEntity(PlatformInformationDTO platformInformationDTO,
+            @MappingTarget PlatformInformationEntity platformInformationEntity);
 }

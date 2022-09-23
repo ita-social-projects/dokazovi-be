@@ -17,22 +17,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
 
-	private final TagRepository tagRepository;
-	private final TagMapper tagMapper;
+    private final TagRepository tagRepository;
+    private final TagMapper tagMapper;
 
-	@CacheEvict(value = "tags", allEntries = true)
-	public TagDTO save(TagSaveDTO tagSaveDTO) {
-		TagEntity tagEntity = tagRepository.save(tagMapper.toTagEntity(tagSaveDTO));
-		return tagMapper.toTagDTO(tagEntity);
-	}
+    @CacheEvict(value = "tags", allEntries = true)
+    public TagDTO save(TagSaveDTO tagSaveDTO) {
+        TagEntity tagEntity = tagRepository.save(tagMapper.toTagEntity(tagSaveDTO));
+        return tagMapper.toTagDTO(tagEntity);
+    }
 
-	public List<TagDTO> findTagsByValue(String value, Integer limit) {
-		String filter = value.toLowerCase();
-		return tagRepository.findAll()
-				.stream()
-				.filter(tagDTO -> tagDTO.getTag().toLowerCase().contains(filter))
-				.limit(limit)
-				.map(tagMapper::toTagDTO)
-				.collect(Collectors.toList());
-	}
+    public List<TagDTO> findTagsByValue(String value, Integer limit) {
+        String filter = value.toLowerCase();
+        return tagRepository.findAll()
+                .stream()
+                .filter(tagDTO -> tagDTO.getTag().toLowerCase().contains(filter))
+                .limit(limit)
+                .map(tagMapper::toTagDTO)
+                .collect(Collectors.toList());
+    }
 }

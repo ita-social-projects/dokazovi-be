@@ -35,72 +35,72 @@ import static com.softserveinc.dokazovi.controller.EndPoints.PLATFORM_INFORMATIO
 @RequiredArgsConstructor
 public class PlatformInformationController {
 
-	private final PlatformInformationService platformInformationService;
+    private final PlatformInformationService platformInformationService;
 
-	/**
-	 * Gets by id a chunk of info (represented as a chapter that has a title and a text) regarding the platform.
-	 *
-	 * <p> Checks if the requested info exists, if it doesn't then returns HttpStatus 'NOT FOUND'.</p>
-	 *
-	 * @param infoId id of the information we want to receive
-	 * @return the found info and HttpStatus 'OK'
-	 */
-	@GetMapping(PLATFORM_INFORMATION_BY_ID)
-	@ApiOperation(value = "Get a chunk of information about the platform")
-	public ResponseEntity<PlatformInformationDTO> getInfoById(@PathVariable("infoId") Integer infoId) {
-		PlatformInformationDTO platformInformationDTO = platformInformationService.getInfoById(infoId);
-		return ResponseEntity
-				.status((platformInformationDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
-				.body(platformInformationDTO);
-	}
+    /**
+     * Gets by id a chunk of info (represented as a chapter that has a title and a text) regarding the platform.
+     *
+     * <p> Checks if the requested info exists, if it doesn't then returns HttpStatus 'NOT FOUND'.</p>
+     *
+     * @param infoId id of the information we want to receive
+     * @return the found info and HttpStatus 'OK'
+     */
+    @GetMapping(PLATFORM_INFORMATION_BY_ID)
+    @ApiOperation(value = "Get a chunk of information about the platform")
+    public ResponseEntity<PlatformInformationDTO> getInfoById(@PathVariable("infoId") Integer infoId) {
+        PlatformInformationDTO platformInformationDTO = platformInformationService.getInfoById(infoId);
+        return ResponseEntity
+                .status((platformInformationDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+                .body(platformInformationDTO);
+    }
 
-	/**
-	 * Saves (creates) a chapter of information about the platform.
-	 *
-	 * <p>Verifies whether a user possesses the authority to add information.</p>
-	 *
-	 * @param userPrincipal the authorized user's data, in the current case it must be an administrator in
-	 *                               order to be able to perform the operation
-	 * @param platformInformationDTO a DTO that contains the information to be saved
-	 * @return the saved info and HttpStatus 'CREATED' and saves new info to DB
-	 */
-	@PostMapping
-	@PreAuthorize("hasAuthority('SAVE_PLATFORM_INFORMATION')")
-	@ApiOperation(value = "Save a chapter of information about the platform",
-			authorizations = {@Authorization(value = "Authorization")})
-	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = PlatformInformationDTO.class),
-			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
-	})
-	public ResponseEntity<PlatformInformationDTO> saveInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
-			@Valid @RequestBody PlatformInformationDTO platformInformationDTO) {
-		return ResponseEntity
-				.status(HttpStatus.CREATED)
-				.body(platformInformationService.saveInfo(userPrincipal, platformInformationDTO));
-	}
+    /**
+     * Saves (creates) a chapter of information about the platform.
+     *
+     * <p>Verifies whether a user possesses the authority to add information.</p>
+     *
+     * @param userPrincipal the authorized user's data, in the current case it must be an administrator in
+     *                               order to be able to perform the operation
+     * @param platformInformationDTO a DTO that contains the information to be saved
+     * @return the saved info and HttpStatus 'CREATED' and saves new info to DB
+     */
+    @PostMapping
+    @PreAuthorize("hasAuthority('SAVE_PLATFORM_INFORMATION')")
+    @ApiOperation(value = "Save a chapter of information about the platform",
+            authorizations = {@Authorization(value = "Authorization")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = HttpStatuses.CREATED, response = PlatformInformationDTO.class),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+    })
+    public ResponseEntity<PlatformInformationDTO> saveInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Valid @RequestBody PlatformInformationDTO platformInformationDTO) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(platformInformationService.saveInfo(userPrincipal, platformInformationDTO));
+    }
 
-	/**
-	 * Updates a chapter of information about the platform by id.
-	 *
-	 * <p>Verifies whether a user possesses the authority to update information.</p>
-	 *
-	 * @param userPrincipal          the authorized user's data, in the current case it must be an administrator in
-	 *                               order to be able to perform the operation
-	 * @param platformInformationDTO a DTO that contains the information to be updated
-	 * @return the updated info and HttpStatus 'OK' and updates info in DB
-	 */
-	@PutMapping()
-	@PreAuthorize("hasAnyAuthority('UPDATE_PLATFORM_INFORMATION')")
-	@ApiOperation(value = "Update a chapter of information about the platform",
-			authorizations = {@Authorization(value = "Authorization")})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = HttpStatuses.OK, response = PlatformInformationDTO.class),
-			@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
-	})
-	public ResponseEntity<PlatformInformationDTO> updateInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
-			@Valid @RequestBody PlatformInformationDTO platformInformationDTO) {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(platformInformationService.updateInfo(userPrincipal, platformInformationDTO));
-	}
+    /**
+     * Updates a chapter of information about the platform by id.
+     *
+     * <p>Verifies whether a user possesses the authority to update information.</p>
+     *
+     * @param userPrincipal          the authorized user's data, in the current case it must be an administrator in
+     *                               order to be able to perform the operation
+     * @param platformInformationDTO a DTO that contains the information to be updated
+     * @return the updated info and HttpStatus 'OK' and updates info in DB
+     */
+    @PutMapping()
+    @PreAuthorize("hasAnyAuthority('UPDATE_PLATFORM_INFORMATION')")
+    @ApiOperation(value = "Update a chapter of information about the platform",
+            authorizations = {@Authorization(value = "Authorization")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK, response = PlatformInformationDTO.class),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+    })
+    public ResponseEntity<PlatformInformationDTO> updateInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Valid @RequestBody PlatformInformationDTO platformInformationDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(platformInformationService.updateInfo(userPrincipal, platformInformationDTO));
+    }
 }

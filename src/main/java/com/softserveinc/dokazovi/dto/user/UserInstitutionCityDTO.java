@@ -11,7 +11,7 @@ import lombok.Data;
 @Builder
 public class UserInstitutionCityDTO {
 
-	private Integer id;
+    private Integer id;
 
-	private String name;
+    private String name;
 }

@@ -24,16 +24,16 @@ import java.util.Set;
 @Table(name = "tags")
 public class TagEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "tag_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tag_id")
+    private Integer id;
 
-	@Column(unique = true)
-	private String tag;
+    @Column(unique = true)
+    private String tag;
 
-	@ManyToMany(mappedBy = "tags")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<PostEntity> posts;
+    @ManyToMany(mappedBy = "tags")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<PostEntity> posts;
 }
