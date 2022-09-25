@@ -1,7 +1,5 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.service.AuthorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,18 +10,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
-import static com.softserveinc.dokazovi.controller.EndPoints.POST;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class AuthorControllerTest {
+class AuthorControllerTest {
 
     private MockMvc mockMvc;
 
@@ -31,10 +29,33 @@ public class AuthorControllerTest {
     private AuthorController authorController;
 
     @Mock
-    private AuthorService authorService;
-
-    @Mock
     private Validator validator;
+
+    private final String userDTOWithId = "{\n"
+            + "  \"authorId\": 1,\n"
+            + "  \"avatar\": \"link\",\n"
+            + "  \"bio\": \"some bio\",\n"
+            + "  \"email\": \"mail@mail.com\",\n"
+            + "  \"firstName\": \"John\",\n"
+            + "  \"lastName\": \"Doe\",\n"
+            + "  \"mainInstitutionId\": \"1\",\n"
+            + "  \"password\": \"password\",\n"
+            + "  \"qualification\": \"some direction\",\n"
+            + "  \"socialNetwork\": [\"some links\"]\n"
+            + "}";
+
+    private final String userDTOWithoutId = "{\n"
+            + "  \"authorId\": null,\n"
+            + "  \"avatar\": \"link\",\n"
+            + "  \"bio\": \"some bio\",\n"
+            + "  \"email\": \"mail@mail.com\",\n"
+            + "  \"firstName\": \"John\",\n"
+            + "  \"lastName\": \"Doe\",\n"
+            + "  \"mainInstitutionId\": \"1\",\n"
+            + "  \"password\": \"password\",\n"
+            + "  \"qualification\": \"some direction\",\n"
+            + "  \"socialNetwork\": [\"some links\"]\n"
+            + "}";
 
     @BeforeEach
     public void init() {
@@ -47,63 +68,23 @@ public class AuthorControllerTest {
 
     @Test
     void createAuthor() throws Exception {
-        String content = "{\n"
-                + "  \"authorId\": 1,\n"
-                + "  \"content\": \"string\",\n"
-                + "  \"directions\": [\n"
-                + "    {\n"
-                + "      \"id\": 0\n"
-                + "    }\n"
-                + "  ],\n"
-                + "  \"origins\": [\n"
-                + "    {\n"
-                + "      \"id\": 0\n"
-                + "    }\n"
-                + "  ],\n"
-                + "  \"preview\": \"string\",\n"
-                + "  \"previewImageUrl\": \"string\",\n"
-                + "  \"title\": \"string\",\n"
-                + "  \"type\": {\n"
-                + "    \"id\": 0\n"
-                + "  },\n"
-                + "  \"videoUrl\": \"string\"\n"
-                + "}";
-        ObjectMapper mapper = new ObjectMapper();
-        PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
-        mockMvc.perform(post(POST)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().is(404));
+        mockMvc.perform(post("/author")
+                    .contentType("application/json")
+                    .content(userDTOWithoutId))
+                .andExpect(status().isCreated());
     }
 
     @Test
     void updateAuthor() throws Exception {
-        String content = "{\n"
-                + "  \"authorId\": 1,\n"
-                + "  \"content\": \"string\",\n"
-                + "  \"directions\": [\n"
-                + "    {\n"
-                + "      \"id\": 0\n"
-                + "    }\n"
-                + "  ],\n"
-                + "  \"origins\": [\n"
-                + "    {\n"
-                + "      \"id\": 0\n"
-                + "    }\n"
-                + "  ],\n"
-                + "  \"preview\": \"string\",\n"
-                + "  \"previewImageUrl\": \"string\",\n"
-                + "  \"title\": \"string\",\n"
-                + "  \"type\": {\n"
-                + "    \"id\": 0\n"
-                + "  },\n"
-                + "  \"videoUrl\": \"string\"\n"
-                + "}";
-        ObjectMapper mapper = new ObjectMapper();
-        PostSaveFromUserDTO post = mapper.readValue(content, PostSaveFromUserDTO.class);
-        mockMvc.perform(post(POST)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().is(404));
+        mockMvc.perform(put("/author")
+                    .contentType("application/json")
+                    .content(userDTOWithId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteAuthor() throws Exception {
+        mockMvc.perform(delete("/author/{authorId}", "1"))
+                .andExpect(status().isOk());
     }
 }

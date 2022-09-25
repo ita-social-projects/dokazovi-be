@@ -8,6 +8,7 @@ import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
+import com.softserveinc.dokazovi.entity.RegionEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,13 +40,20 @@ class UserMapperTest {
     private CityEntity cityEntity1;
     private CityEntity cityEntity2;
     private PostEntity postEntity;
+    private RegionEntity regionEntity;
     private PostEntity latestPostEntity;
 
     @BeforeEach
     void init() {
+        regionEntity = RegionEntity.builder()
+                .id(1)
+                .name("some name")
+                .build();
+
         cityEntity1 = CityEntity.builder()
                 .id(1)
                 .name("City name 1")
+                .region(regionEntity)
                 .build();
 
         cityEntity2 = CityEntity.builder()
@@ -126,6 +134,7 @@ class UserMapperTest {
         assertEquals(userDTO.getPhone(), userEntity.getPhone());
         assertEquals(userDTO.getAvatar(), userEntity.getAvatar());
         assertEquals(userDTO.getBio(), userEntity.getDoctor().getBio());
+        assertEquals(userDTO.getRegion().getId(), userEntity.getDoctor().getMainInstitution().getCity().getRegion().getId());
 
         assertEquals(userDTO.getMainInstitution().getId(), userEntity.getDoctor().getMainInstitution().getId());
         assertEquals(userDTO.getMainInstitution().getName(), userEntity.getDoctor().getMainInstitution().getName());
@@ -231,7 +240,7 @@ class UserMapperTest {
     }
 
     @Test
-    public void tooUserDtoEmptyOrNullCases() {
+    void tooUserDtoEmptyOrNullCases() {
         userEntity.getDoctor().getMainInstitution().setCity(null);
         UserDTO userDTO = mapper.toUserDTO(userEntity);
         assertNull(userDTO.getMainInstitution().getCity());

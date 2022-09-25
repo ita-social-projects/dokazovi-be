@@ -59,7 +59,6 @@ public final class EndPoints {
     public static final String USER_EXPERT_ALL_POST_DIRECTIONS = "/experts/{expertId}/post-directions";
     public static final String AUTHOR_GET_AUTHOR_BY_ID = "/{authorId}";
     public static final String AUTHOR = "/author";
-    public static final String AUTHOR_UPDATE = "/{doctorId}";
 
     /**
      * Method that adds slash after each endpoint while calling

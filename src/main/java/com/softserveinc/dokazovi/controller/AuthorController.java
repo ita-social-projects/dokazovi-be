@@ -14,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +25,6 @@ import javax.validation.Valid;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR_GET_AUTHOR_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR;
-import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR_UPDATE;
 
 @RestController
 @RequestMapping(AUTHOR)
@@ -49,7 +48,7 @@ public class AuthorController {
                 .body(authorService.save(author, userPrincipal));
     }
 
-    @PatchMapping(AUTHOR_UPDATE)
+    @PutMapping()
     @PreAuthorize("hasAuthority('EDIT_AUTHOR')")
     @ApiOperation(value = "update author",
             authorizations = {@Authorization(value = "Authorization")})
@@ -57,13 +56,11 @@ public class AuthorController {
             @ApiResponse(code = 200, message = HttpStatuses.OK, response = AuthorDTO.class),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
-    public ResponseEntity<AuthorDTO> updateAuthor(
-            @PathVariable("doctorId") Integer doctorId,
-            @RequestBody AuthorDTO author,
+    public ResponseEntity<AuthorDTO> updateAuthor(@Valid @RequestBody AuthorDTO author,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         return ResponseEntity
                 .status(200)
-                .body(authorService.update(author, doctorId, userPrincipal));
+                .body(authorService.update(author, userPrincipal));
     }
 
     @DeleteMapping(AUTHOR_GET_AUTHOR_BY_ID)

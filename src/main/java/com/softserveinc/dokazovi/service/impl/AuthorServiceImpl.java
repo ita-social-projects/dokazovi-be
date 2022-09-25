@@ -33,18 +33,15 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDTO save(AuthorDTO authorDTO, UserPrincipal userPrincipal) {
         Optional<UserEntity> optionalUser = userRepository.findByEmail(authorDTO.getEmail());
-        if (optionalUser.isPresent()) {
-            DoctorEntity doctorEntity = doctorRepository.getByProfileId(optionalUser.get().getId());
-            return update(authorDTO, doctorEntity.getId(), userPrincipal);
+        if (optionalUser.isPresent() && authorDTO.getAuthorId() != null) {
+            return update(authorDTO, userPrincipal);
         }
-        AuthorDTO dto;
         if (hasEnoughAuthorities(userPrincipal)) {
             UserEntity userEntity = toUserEntity(authorDTO);
             userEntity = userRepository.save(userEntity);
             DoctorEntity doctorEntity = createDoctorEntity(authorDTO, userEntity);
             DoctorEntity doctor = doctorRepository.save(doctorEntity);
-            dto = toAuthorDTO(doctor.getProfile(), doctor);
-            return dto;
+            return toAuthorDTO(doctor.getProfile(), doctor);
         } else {
             throw new ForbiddenPermissionsException();
         }
@@ -96,41 +93,28 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorDTO update(AuthorDTO authorDTO, Integer doctorId, UserPrincipal userPrincipal) {
+    public AuthorDTO update(AuthorDTO authorDTO, UserPrincipal userPrincipal) {
+        if (authorDTO.getAuthorId() == null) {
+            throw new NoSuchElementException("Author ID is null");
+        }
         if (hasEnoughAuthorities(userPrincipal)) {
-            Optional<DoctorEntity> doctor = doctorRepository.findById(doctorId);
+            Optional<DoctorEntity> doctor = doctorRepository.findById(authorDTO.getAuthorId());
             if (doctor.isPresent()) {
                 DoctorEntity doctorToSave = doctor.get();
                 UserEntity userToSave = doctorToSave.getProfile();
-                if (authorDTO.getEmail() != null) {
-                    userToSave.setEmail(authorDTO.getEmail());
-                }
-                if (authorDTO.getFirstName() != null) {
-                    userToSave.setFirstName(authorDTO.getFirstName());
-                }
-                if (authorDTO.getLastName() != null) {
-                    userToSave.setLastName(authorDTO.getLastName());
-                }
-                if (authorDTO.getQualification() != null) {
-                    doctorToSave.setQualification(authorDTO.getQualification());
-                }
-                if (authorDTO.getMainInstitutionId() != null) {
-                    doctorToSave.setMainInstitution(institutionRepository.getOne(authorDTO.getMainInstitutionId()));
-                }
-                if (authorDTO.getAvatar() != null) {
-                    userToSave.setAvatar(authorDTO.getAvatar());
-                }
-                if (authorDTO.getBio() != null) {
-                    doctorToSave.setBio(authorDTO.getBio());
-                }
-                if (authorDTO.getSocialNetwork() != null) {
-                    userToSave.setSocialNetworks(authorDTO.getSocialNetwork());
-                }
+                userToSave.setEmail(authorDTO.getEmail());
+                userToSave.setFirstName(authorDTO.getFirstName());
+                userToSave.setLastName(authorDTO.getLastName());
+                doctorToSave.setQualification(authorDTO.getQualification());
+                doctorToSave.setMainInstitution(institutionRepository.getOne(authorDTO.getMainInstitutionId()));
+                userToSave.setAvatar(authorDTO.getAvatar());
+                doctorToSave.setBio(authorDTO.getBio());
+                userToSave.setSocialNetworks(authorDTO.getSocialNetwork());
                 userRepository.save(userToSave);
                 doctorRepository.save(doctorToSave);
                 return toAuthorDTO(userToSave, doctorToSave);
             } else {
-                throw new NoSuchElementException("Doctor with id " + doctorId + " not exists");
+                throw new NoSuchElementException("Doctor with id " + authorDTO.getAuthorId() + " not exists");
             }
         } else {
             throw new ForbiddenPermissionsException();
