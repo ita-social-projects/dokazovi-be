@@ -29,6 +29,9 @@ class AuthorControllerTest {
     private AuthorController authorController;
 
     @Mock
+    private AuthorService authorService;
+
+    @Mock
     private Validator validator;
 
     private final String userDTOWithId = "{\n"
