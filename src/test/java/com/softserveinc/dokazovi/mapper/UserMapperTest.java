@@ -134,7 +134,8 @@ class UserMapperTest {
         assertEquals(userDTO.getPhone(), userEntity.getPhone());
         assertEquals(userDTO.getAvatar(), userEntity.getAvatar());
         assertEquals(userDTO.getBio(), userEntity.getDoctor().getBio());
-        assertEquals(userDTO.getRegion().getId(), userEntity.getDoctor().getMainInstitution().getCity().getRegion().getId());
+        assertEquals(userDTO.getRegion().getId(),
+                userEntity.getDoctor().getMainInstitution().getCity().getRegion().getId());
 
         assertEquals(userDTO.getMainInstitution().getId(), userEntity.getDoctor().getMainInstitution().getId());
         assertEquals(userDTO.getMainInstitution().getName(), userEntity.getDoctor().getMainInstitution().getName());
