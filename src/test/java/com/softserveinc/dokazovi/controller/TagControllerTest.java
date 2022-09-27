@@ -28,44 +28,44 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoSettings(strictness = Strictness.LENIENT)
 class TagControllerTest {
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@InjectMocks
-	private TagController tagController;
-	@Mock
-	private TagService tagService;
+    @InjectMocks
+    private TagController tagController;
+    @Mock
+    private TagService tagService;
 
-	@Mock
-	private Validator validator;
+    @Mock
+    private Validator validator;
 
-	@BeforeEach
-	public void init() {
-		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(tagController)
-				.setValidator(validator)
-				.build();
-	}
+    @BeforeEach
+    public void init() {
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(tagController)
+                .setValidator(validator)
+                .build();
+    }
 
-	@Test
-	void findByValue() throws Exception {
-		String value = "a";
-		int limit = 5;
-		mockMvc.perform(get(TAG + TAG_FIND_BY_VALUE + "/?value=" + value + "&limit=" + limit))
-				.andExpect(status().isOk());
-		verify(tagService).findTagsByValue(value, limit);
-	}
+    @Test
+    void findByValue() throws Exception {
+        String value = "a";
+        int limit = 5;
+        mockMvc.perform(get(TAG + TAG_FIND_BY_VALUE + "/?value=" + value + "&limit=" + limit))
+                .andExpect(status().isOk());
+        verify(tagService).findTagsByValue(value, limit);
+    }
 
-	@Test
-	void saveTag() throws Exception {
-		String content = "{\n" +
-				"  \"tag\": \"someTag\"" +
-				"}";
-		ObjectMapper mapper = new ObjectMapper();
-		TagSaveDTO tagSaveDTO = mapper.readValue(content, TagSaveDTO.class);
-		mockMvc.perform(post(TAG)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content))
-				.andExpect(status().isCreated());
-		verify(tagService).save(eq(tagSaveDTO));
-	}
+    @Test
+    void saveTag() throws Exception {
+        String content = "{\n" +
+                "  \"tag\": \"someTag\"" +
+                "}";
+        ObjectMapper mapper = new ObjectMapper();
+        TagSaveDTO tagSaveDTO = mapper.readValue(content, TagSaveDTO.class);
+        mockMvc.perform(post(TAG)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isCreated());
+        verify(tagService).save(eq(tagSaveDTO));
+    }
 }

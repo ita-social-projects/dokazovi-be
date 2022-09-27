@@ -15,21 +15,21 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TagUniqueValidatorTest {
 
-	@Mock
-	private TagRepository tagRepository;
+    @Mock
+    private TagRepository tagRepository;
 
-	@InjectMocks
-	private TagUniqueValidator validator;
+    @InjectMocks
+    private TagUniqueValidator validator;
 
-	@Test
-	void isValid_WhenStringUnique_ReturnTrue() {
-		when(tagRepository.exists(any())).thenReturn(false);
-		assertTrue(validator.isValid("value", null));
-	}
+    @Test
+    void isValid_WhenStringUnique_ReturnTrue() {
+        when(tagRepository.exists(any())).thenReturn(false);
+        assertTrue(validator.isValid("value", null));
+    }
 
-	@Test
-	void isValid_WhenStringNotUnique_ReturnFalse() {
-		when(tagRepository.exists(any())).thenReturn(true);
-		assertFalse(validator.isValid("value", null));
-	}
+    @Test
+    void isValid_WhenStringNotUnique_ReturnFalse() {
+        when(tagRepository.exists(any())).thenReturn(true);
+        assertFalse(validator.isValid("value", null));
+    }
 }

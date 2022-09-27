@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface PostTypeMapper {
-	PostTypeDTO toPostTypeDTO(PostTypeEntity postTypeEntity);
+    PostTypeDTO toPostTypeDTO(PostTypeEntity postTypeEntity);
 }

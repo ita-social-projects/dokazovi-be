@@ -16,26 +16,26 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TagExistsValidatorTest {
 
-	@Mock
-	private TagRepository repository;
+    @Mock
+    private TagRepository repository;
 
-	@InjectMocks
-	private TagExistsValidator validator;
+    @InjectMocks
+    private TagExistsValidator validator;
 
-	@Test
-	void isValid_WhenIdNotNull_ReturnTrue() {
-		when(repository.existsById(anyInt())).thenReturn(true);
-		TagDTO dto = TagDTO.builder()
-				.id(1)
-				.build();
-		assertTrue(validator.isValid(dto, null));
-	}
+    @Test
+    void isValid_WhenIdNotNull_ReturnTrue() {
+        when(repository.existsById(anyInt())).thenReturn(true);
+        TagDTO dto = TagDTO.builder()
+                .id(1)
+                .build();
+        assertTrue(validator.isValid(dto, null));
+    }
 
-	@Test
-	void isValid_WhenIdIsNull_ReturnFalse() {
-		TagDTO dto = TagDTO.builder()
-				.id(null)
-				.build();
-		assertFalse(validator.isValid(dto, null));
-	}
+    @Test
+    void isValid_WhenIdIsNull_ReturnFalse() {
+        TagDTO dto = TagDTO.builder()
+                .id(null)
+                .build();
+        assertFalse(validator.isValid(dto, null));
+    }
 }

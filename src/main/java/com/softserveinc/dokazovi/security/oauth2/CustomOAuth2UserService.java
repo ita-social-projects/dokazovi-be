@@ -29,68 +29,68 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-	private final UserRepository userRepository;
-	private final ProviderRepository userProviderRepository;
-	private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final ProviderRepository userProviderRepository;
+    private final RoleRepository roleRepository;
 
-	@Override
-	public OAuth2User loadUser(OAuth2UserRequest oauth2UserRequest) throws OAuth2AuthenticationException {
-		OAuth2User oauth2User = super.loadUser(oauth2UserRequest);
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest oauth2UserRequest) throws OAuth2AuthenticationException {
+        OAuth2User oauth2User = super.loadUser(oauth2UserRequest);
 
-		try {
-			return processOAuth2User(oauth2UserRequest, oauth2User);
-		} catch (AuthenticationException ex) {
-			throw ex;
-		} catch (Exception ex) {
-			throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
-		}
-	}
+        try {
+            return processOAuth2User(oauth2UserRequest, oauth2User);
+        } catch (AuthenticationException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
+        }
+    }
 
-	private OAuth2User processOAuth2User(OAuth2UserRequest oauth2UserRequest, OAuth2User oauth2User) {
-		OAuth2UserInfo oauth2UserInfo = OAuth2UserInfoFactory
-				.getOAuth2UserInfo(oauth2UserRequest.getClientRegistration().getRegistrationId(),
-						oauth2User.getAttributes());
-		if (StringUtils.isEmpty(oauth2UserInfo.getEmail())) {
-			throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
-		}
+    private OAuth2User processOAuth2User(OAuth2UserRequest oauth2UserRequest, OAuth2User oauth2User) {
+        OAuth2UserInfo oauth2UserInfo = OAuth2UserInfoFactory
+                .getOAuth2UserInfo(oauth2UserRequest.getClientRegistration().getRegistrationId(),
+                        oauth2User.getAttributes());
+        if (StringUtils.isEmpty(oauth2UserInfo.getEmail())) {
+            throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
+        }
 
-		Optional<UserEntity> userOptional = userRepository.findByEmail(oauth2UserInfo.getEmail());
+        Optional<UserEntity> userOptional = userRepository.findByEmail(oauth2UserInfo.getEmail());
 
-		UserEntity user;
-		if (userOptional.isPresent()) {
-			user = userOptional.get();
-			user = updateExistingUser(user, oauth2UserInfo);
-		} else {
-			user = registerNewUser(oauth2UserRequest, oauth2UserInfo);
-		}
+        UserEntity user;
+        if (userOptional.isPresent()) {
+            user = userOptional.get();
+            user = updateExistingUser(user, oauth2UserInfo);
+        } else {
+            user = registerNewUser(oauth2UserRequest, oauth2UserInfo);
+        }
 
-		return UserPrincipal.create(user, oauth2User.getAttributes());
-	}
+        return UserPrincipal.create(user, oauth2User.getAttributes());
+    }
 
-	private UserEntity registerNewUser(OAuth2UserRequest oauth2UserRequest, OAuth2UserInfo oauth2UserInfo) {
-		ProviderEntity provider = new ProviderEntity();
-		provider.setName(oauth2UserRequest.getClientRegistration().getRegistrationId());
-		provider.setUserIdByProvider(oauth2UserInfo.getId());
-		UserEntity user = new UserEntity();
-		StringToNameParser.setUserNameFromRequest(oauth2UserInfo, user);
-		provider.setEmail(oauth2UserInfo.getEmail());
-		user.setEmail(oauth2UserInfo.getEmail());
-		user.setAvatar(oauth2UserInfo.getImageUrl());
-		user.setStatus(UserStatus.NEW);
-		Optional<RoleEntity> roleEntity = roleRepository.getRoleEntityByName("Doctor");
-		user.setRole(roleEntity.orElse(null));
-		user.setEnabled(true);
-		UserEntity savedUser = userRepository.save(user);
-		provider.setUser(savedUser);
-		userProviderRepository.save(provider);
-		return savedUser;
-	}
+    private UserEntity registerNewUser(OAuth2UserRequest oauth2UserRequest, OAuth2UserInfo oauth2UserInfo) {
+        ProviderEntity provider = new ProviderEntity();
+        provider.setName(oauth2UserRequest.getClientRegistration().getRegistrationId());
+        provider.setUserIdByProvider(oauth2UserInfo.getId());
+        UserEntity user = new UserEntity();
+        StringToNameParser.setUserNameFromRequest(oauth2UserInfo, user);
+        provider.setEmail(oauth2UserInfo.getEmail());
+        user.setEmail(oauth2UserInfo.getEmail());
+        user.setAvatar(oauth2UserInfo.getImageUrl());
+        user.setStatus(UserStatus.NEW);
+        Optional<RoleEntity> roleEntity = roleRepository.getRoleEntityByName("Doctor");
+        user.setRole(roleEntity.orElse(null));
+        user.setEnabled(true);
+        UserEntity savedUser = userRepository.save(user);
+        provider.setUser(savedUser);
+        userProviderRepository.save(provider);
+        return savedUser;
+    }
 
-	private UserEntity updateExistingUser(UserEntity existingUser, OAuth2UserInfo oauth2UserInfo) {
-		existingUser.setFirstName(oauth2UserInfo.getName().split(" ")[0]);
-		existingUser.setLastName(oauth2UserInfo.getName().split(" ")[1]);
-		existingUser.setAvatar(oauth2UserInfo.getImageUrl());
-		return userRepository.save(existingUser);
-	}
+    private UserEntity updateExistingUser(UserEntity existingUser, OAuth2UserInfo oauth2UserInfo) {
+        existingUser.setFirstName(oauth2UserInfo.getName().split(" ")[0]);
+        existingUser.setLastName(oauth2UserInfo.getName().split(" ")[1]);
+        existingUser.setAvatar(oauth2UserInfo.getImageUrl());
+        return userRepository.save(existingUser);
+    }
 
 }

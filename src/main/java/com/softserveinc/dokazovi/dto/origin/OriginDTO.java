@@ -17,12 +17,12 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class OriginDTO {
 
-	@NotNull(message = "Origin id are required")
-	private Integer id;
+    @NotNull(message = "Origin id are required")
+    private Integer id;
 
-	@NotBlank(message = "Origin name cannot be empty")
-	private String name;
+    @NotBlank(message = "Origin name cannot be empty")
+    private String name;
 
-	@NotBlank(message = "Origin parameters cannot be empty")
-	private String parameters;
+    @NotBlank(message = "Origin parameters cannot be empty")
+    private String parameters;
 }

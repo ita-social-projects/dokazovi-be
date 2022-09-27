@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface ProviderService {
 
-	Optional<ProviderEntity> createLocalProviderEntityForUser(UserEntity userEntity, String email);
+    Optional<ProviderEntity> createLocalProviderEntityForUser(UserEntity userEntity, String email);
 
-	boolean existsByLocalEmail(String email);
+    boolean existsByLocalEmail(String email);
 
 }

@@ -11,7 +11,7 @@ import lombok.Data;
 @Builder
 public class RegionDTO {
 
-	private Integer id;
-	private String name;
-	private Boolean usersPresent;
+    private Integer id;
+    private String name;
+    private Boolean usersPresent;
 }

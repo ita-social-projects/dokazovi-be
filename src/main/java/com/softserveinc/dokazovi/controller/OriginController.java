@@ -19,18 +19,18 @@ import static com.softserveinc.dokazovi.controller.EndPoints.ORIGIN;
 @RequestMapping(ORIGIN)
 @RequiredArgsConstructor
 public class OriginController {
-	private final OriginService originService;
+    private final OriginService originService;
 
-	/**
-	 * This method will get all origins from database.
-	 *
-	 * @return list of all origins and 'OK' HttpStatus
-	 */
-	@GetMapping
-	@ApiOperation(value = "Get all origins")
-	public ResponseEntity<List<OriginDTO>> getAllOrigins() {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(originService.findAllOrigins());
-	}
+    /**
+     * This method will get all origins from database.
+     *
+     * @return list of all origins and 'OK' HttpStatus
+     */
+    @GetMapping
+    @ApiOperation(value = "Get all origins")
+    public ResponseEntity<List<OriginDTO>> getAllOrigins() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(originService.findAllOrigins());
+    }
 }

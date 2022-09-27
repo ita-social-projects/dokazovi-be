@@ -17,53 +17,53 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
-	private MockHttpServletRequest request;
-	private MockHttpServletResponse response;
-	private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private MockHttpServletRequest request;
+    private MockHttpServletResponse response;
+    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-	@BeforeEach
-	void init() {
-		request = new MockHttpServletRequest();
-		response = new MockHttpServletResponse();
-		httpCookieOAuth2AuthorizationRequestRepository = new HttpCookieOAuth2AuthorizationRequestRepository();
-	}
+    @BeforeEach
+    void init() {
+        request = new MockHttpServletRequest();
+        response = new MockHttpServletResponse();
+        httpCookieOAuth2AuthorizationRequestRepository = new HttpCookieOAuth2AuthorizationRequestRepository();
+    }
 
-	@Test
-	void loadAuthorizationRequest() {
-		OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest
-				.authorizationCode()
-				.clientId("id")
-				.authorizationUri("test")
-				.build();
+    @Test
+    void loadAuthorizationRequest() {
+        OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest
+                .authorizationCode()
+                .clientId("id")
+                .authorizationUri("test")
+                .build();
 
-		httpCookieOAuth2AuthorizationRequestRepository
-				.saveAuthorizationRequest(authorizationRequest, request, response);
+        httpCookieOAuth2AuthorizationRequestRepository
+                .saveAuthorizationRequest(authorizationRequest, request, response);
 
-		Cookie cookie = response.getCookie(HttpCookieOAuth2AuthorizationRequestRepository
-				.OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-		request.setCookies(cookie);
+        Cookie cookie = response.getCookie(HttpCookieOAuth2AuthorizationRequestRepository
+                .OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
+        request.setCookies(cookie);
 
-		OAuth2AuthorizationRequest retrievedOauth = httpCookieOAuth2AuthorizationRequestRepository
-				.loadAuthorizationRequest(request);
-		String clientId = retrievedOauth.getClientId();
+        OAuth2AuthorizationRequest retrievedOauth = httpCookieOAuth2AuthorizationRequestRepository
+                .loadAuthorizationRequest(request);
+        String clientId = retrievedOauth.getClientId();
 
-		assertEquals("id", clientId);
-	}
+        assertEquals("id", clientId);
+    }
 
-	@Test
-	void saveAuthorizationRequest() {
-		Cookie cookie = new Cookie(HttpCookieOAuth2AuthorizationRequestRepository
-				.OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME, "test");
-		request.setCookies(cookie);
-		httpCookieOAuth2AuthorizationRequestRepository
-				.saveAuthorizationRequest(null, request, response);
+    @Test
+    void saveAuthorizationRequest() {
+        Cookie cookie = new Cookie(HttpCookieOAuth2AuthorizationRequestRepository
+                .OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME, "test");
+        request.setCookies(cookie);
+        httpCookieOAuth2AuthorizationRequestRepository
+                .saveAuthorizationRequest(null, request, response);
 
-		Cookie[] cookies = response.getCookies();
+        Cookie[] cookies = response.getCookies();
 
-		assertAll(
-				() -> assertEquals(1, cookies.length),
-				() -> assertEquals(0, cookies[0].getMaxAge()),
-				() -> assertTrue(cookies[0].getValue().isEmpty())
-		);
-	}
+        assertAll(
+                () -> assertEquals(1, cookies.length),
+                () -> assertEquals(0, cookies[0].getMaxAge()),
+                () -> assertTrue(cookies[0].getValue().isEmpty())
+        );
+    }
 }

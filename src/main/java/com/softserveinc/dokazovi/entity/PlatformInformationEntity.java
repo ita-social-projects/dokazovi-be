@@ -25,23 +25,23 @@ import javax.persistence.Table;
 @Table(name = "platform_information")
 public class PlatformInformationEntity {
 
-	/**
-	 * The identification number corresponds to the appropriate column in the DB's platform_information table.
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+    /**
+     * The identification number corresponds to the appropriate column in the DB's platform_information table.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	/**
-	 * The field "title" corresponds to the appropriate column in the DB's platform_information table and is intended
-	 * for holding a piece of information - a title of a chapter.
-	 */
-	private String title;
+    /**
+     * The field "title" corresponds to the appropriate column in the DB's platform_information table and is intended
+     * for holding a piece of information - a title of a chapter.
+     */
+    private String title;
 
-	/**
-	 * The field "text" corresponds to the "content" column in the DB's platform_information table and is intended for
-	 * holding a piece of information (the main content of a chapter) you are submitting or requesting for.
-	 */
-	@Column(name = "content",columnDefinition = "TEXT")
-	private String text;
+    /**
+     * The field "text" corresponds to the "content" column in the DB's platform_information table and is intended for
+     * holding a piece of information (the main content of a chapter) you are submitting or requesting for.
+     */
+    @Column(name = "content",columnDefinition = "TEXT")
+    private String text;
 }

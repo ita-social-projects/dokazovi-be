@@ -14,21 +14,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProviderServiceImpl implements ProviderService {
 
-	private final ProviderRepository providerRepository;
+    private final ProviderRepository providerRepository;
 
-	@Override
-	public Optional<ProviderEntity> createLocalProviderEntityForUser(UserEntity userEntity, String email) {
-		ProviderEntity providerEntity = ProviderEntity.builder()
-				.user(userEntity)
-				.email(email)
-				.userIdByProvider(userEntity.getId().toString())
-				.name(AuthProvider.LOCAL.toString())
-				.build();
-		return Optional.of(providerRepository.save(providerEntity));
-	}
+    @Override
+    public Optional<ProviderEntity> createLocalProviderEntityForUser(UserEntity userEntity, String email) {
+        ProviderEntity providerEntity = ProviderEntity.builder()
+                .user(userEntity)
+                .email(email)
+                .userIdByProvider(userEntity.getId().toString())
+                .name(AuthProvider.LOCAL.toString())
+                .build();
+        return Optional.of(providerRepository.save(providerEntity));
+    }
 
-	@Override
-	public boolean existsByLocalEmail(String email) {
-		return providerRepository.existsByEmailAndName(email, AuthProvider.LOCAL.name());
-	}
+    @Override
+    public boolean existsByLocalEmail(String email) {
+        return providerRepository.existsByEmailAndName(email, AuthProvider.LOCAL.name());
+    }
 }

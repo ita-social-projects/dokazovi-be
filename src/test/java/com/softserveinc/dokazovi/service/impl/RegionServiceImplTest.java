@@ -19,38 +19,38 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class RegionServiceImplTest {
 
-	@Mock
-	private RegionRepository regionRepository;
-	@Mock
-	private RegionMapper regionMapper;
-	@InjectMocks
-	private RegionServiceImpl regionService;
+    @Mock
+    private RegionRepository regionRepository;
+    @Mock
+    private RegionMapper regionMapper;
+    @InjectMocks
+    private RegionServiceImpl regionService;
 
-	@Test
-	void findAllRegions() {
-		List<RegionEntity> regions = List.of(new RegionEntity(), new RegionEntity());
+    @Test
+    void findAllRegions() {
+        List<RegionEntity> regions = List.of(new RegionEntity(), new RegionEntity());
 
-		when(regionRepository.findAll()).thenReturn(regions);
-		regionService.findAllRegions();
+        when(regionRepository.findAll()).thenReturn(regions);
+        regionService.findAllRegions();
 
-		verify(regionMapper, times(regions.size())).toRegionDTO(any(RegionEntity.class));
-	}
+        verify(regionMapper, times(regions.size())).toRegionDTO(any(RegionEntity.class));
+    }
 
-	@Test
-	void updateRegionsStatus() {
+    @Test
+    void updateRegionsStatus() {
 
-		regionService.updateRegionsStatus();
+        regionService.updateRegionsStatus();
 
-		verify(regionRepository, times(1)).updateRegionsStatus();
-	}
+        verify(regionRepository, times(1)).updateRegionsStatus();
+    }
 
     @Test
     void findRegionByCity() {
-		RegionEntity regionEntity = new RegionEntity();
-		when(regionRepository.findByCitiesId(any(Integer.class))).thenReturn(regionEntity);
+        RegionEntity regionEntity = new RegionEntity();
+        when(regionRepository.findByCitiesId(any(Integer.class))).thenReturn(regionEntity);
 
-		regionService.findRegionByCity(any(Integer.class));
+        regionService.findRegionByCity(any(Integer.class));
 
-		verify(regionMapper, times(1)).toRegionDTO(any(RegionEntity.class));
-	}
+        verify(regionMapper, times(1)).toRegionDTO(any(RegionEntity.class));
+    }
 }

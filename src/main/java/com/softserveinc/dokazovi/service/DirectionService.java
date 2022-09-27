@@ -8,22 +8,22 @@ import java.util.Set;
 
 public interface DirectionService {
 
-	List<DirectionDTO> findAllDirections();
+    List<DirectionDTO> findAllDirections();
 
-	List<DirectionDTO> findAllDirectionsByUserId(Integer userId);
+    List<DirectionDTO> findAllDirectionsByUserId(Integer userId);
 
-	List<DirectionDTO> findAllDirectionsByDoctorId(Integer userId);
+    List<DirectionDTO> findAllDirectionsByDoctorId(Integer userId);
 
-	List<DirectionDTO> findAllDirectionsOfPostsByUserId(Integer userId);
+    List<DirectionDTO> findAllDirectionsOfPostsByUserId(Integer userId);
 
-	List<DirectionDTO> findAllDirectionsOfPostsByDoctorId(Integer userId);
+    List<DirectionDTO> findAllDirectionsOfPostsByDoctorId(Integer userId);
 
-	DirectionEntity getById(Integer id);
+    DirectionEntity getById(Integer id);
 
-	void updateDirectionsHasDoctorsStatus();
+    void updateDirectionsHasDoctorsStatus();
 
-	void updateDirectionsHasPostsStatus(Set<Integer> directions);
+    void updateDirectionsHasPostsStatus(Set<Integer> directions);
 
-	void updateDirectionsHasPostsStatusByEntities(Set<DirectionEntity> directions);
+    void updateDirectionsHasPostsStatusByEntities(Set<DirectionEntity> directions);
 
 }

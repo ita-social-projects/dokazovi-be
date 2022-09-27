@@ -62,298 +62,298 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoSettings(strictness = Strictness.LENIENT)
 class UserControllerTest {
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@Mock
-	private UserPrincipal userPrincipal;
-	@Mock
-	private UserService userService;
-	@Mock
-	private DirectionService directionService;
-	@Mock
-	private PasswordResetTokenService passwordResetTokenService;
-	@Mock
-	private MailSenderService mailSenderService;
-	@InjectMocks
-	private UserController userController;
+    @Mock
+    private UserPrincipal userPrincipal;
+    @Mock
+    private UserService userService;
+    @Mock
+    private DirectionService directionService;
+    @Mock
+    private PasswordResetTokenService passwordResetTokenService;
+    @Mock
+    private MailSenderService mailSenderService;
+    @InjectMocks
+    private UserController userController;
 
-	private HandlerMethodArgumentResolver methodArgumentResolver = new HandlerMethodArgumentResolver() {
-		@Override
-		public boolean supportsParameter(MethodParameter parameter) {
-			return parameter.getParameterType().isAssignableFrom(UserPrincipal.class);
-		}
+    private final HandlerMethodArgumentResolver methodArgumentResolver = new HandlerMethodArgumentResolver() {
+        @Override
+        public boolean supportsParameter(MethodParameter parameter) {
+            return parameter.getParameterType().isAssignableFrom(UserPrincipal.class);
+        }
 
-		@Override
-		public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-				NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-			return userPrincipal;
-		}
-	};
+        @Override
+        public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+            return userPrincipal;
+        }
+    };
 
-	@BeforeEach
-	public void init() {
-		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(userController)
-				.setCustomArgumentResolvers(methodArgumentResolver, new PageableHandlerMethodArgumentResolver())
-				.build();
-	}
+    @BeforeEach
+    public void init() {
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(userController)
+                .setCustomArgumentResolvers(methodArgumentResolver, new PageableHandlerMethodArgumentResolver())
+                .build();
+    }
 
-	@Test
-	void getRandomExpertPreview_GetWithPagination_isOk() throws Exception {
-		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0";
+    @Test
+    void getRandomExpertPreview_GetWithPagination_isOk() throws Exception {
+        String uri = USER + USER_RANDOM_EXPERTS + "/?page=0";
 
-		Pageable pageable = PageRequest.of(0, 12);
+        Pageable pageable = PageRequest.of(0, 12);
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		verify(userService).findRandomExpertPreview(eq(null), eq(pageable));
-	}
+        verify(userService).findRandomExpertPreview(eq(null), eq(pageable));
+    }
 
-	@Test
-	void getRandomExpertPreview_GetWithPaginationByDirections_isOk() throws Exception {
-		String uri = USER + USER_RANDOM_EXPERTS + "/?page=0&directions=1,3,5";
+    @Test
+    void getRandomExpertPreview_GetWithPaginationByDirections_isOk() throws Exception {
+        String uri = USER + USER_RANDOM_EXPERTS + "/?page=0&directions=1,3,5";
 
-		Set<Integer> directionsIds = Set.of(1, 3, 5);
+        Set<Integer> directionsIds = Set.of(1, 3, 5);
 
-		Pageable pageable = PageRequest.of(0, 12);
+        Pageable pageable = PageRequest.of(0, 12);
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		verify(userService).findRandomExpertPreview(eq(directionsIds), eq(pageable));
-	}
+        verify(userService).findRandomExpertPreview(eq(directionsIds), eq(pageable));
+    }
 
-	@Test
-	void getExpertById_WhenExists_isOk() throws Exception {
-		Integer existingUserId = 1;
-		String uri = USER + "/" + existingUserId;
-		UserDTO userDTO = UserDTO.builder()
-				.id(existingUserId)
-				.build();
+    @Test
+    void getExpertById_WhenExists_isOk() throws Exception {
+        Integer existingUserId = 1;
+        String uri = USER + "/" + existingUserId;
+        UserDTO userDTO = UserDTO.builder()
+                .id(existingUserId)
+                .build();
 
-		when(userService.findExpertById(any(Integer.class))).thenReturn(userDTO);
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+        when(userService.findExpertById(any(Integer.class))).thenReturn(userDTO);
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		verify(userService).findExpertById(eq(existingUserId));
-	}
+        verify(userService).findExpertById(eq(existingUserId));
+    }
 
-	@Test
-	void getExpertById_WhenNotExists_NotFound() throws Exception {
-		Integer notExistingUserId = 1;
-		String uri = USER + "/" + notExistingUserId;
+    @Test
+    void getExpertById_WhenNotExists_NotFound() throws Exception {
+        Integer notExistingUserId = 1;
+        String uri = USER + "/" + notExistingUserId;
 
-		when(userService.findExpertById(any(Integer.class))).thenReturn(null);
+        when(userService.findExpertById(any(Integer.class))).thenReturn(null);
 
-		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+        mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 
-		verify(userService).findExpertById(eq(notExistingUserId));
-	}
+        verify(userService).findExpertById(eq(notExistingUserId));
+    }
 
-	@Test
-	void getAllExpertsByDirectionsAndByRegions_NotFiltered_isOk() throws Exception {
-		String uri = USER + USER_ALL_EXPERTS + "/?page=0";
+    @Test
+    void getAllExpertsByDirectionsAndByRegions_NotFiltered_isOk() throws Exception {
+        String uri = USER + USER_ALL_EXPERTS + "/?page=0";
 
-		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+        UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		Pageable pageable = PageRequest.of(0, 6);
+        Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(userSearchCriteria, pageable);
-	}
+        verify(userService).findAllExperts(userSearchCriteria, pageable);
+    }
 
-	@Test
-	void getAllExpertsByDirectionsAndByRegions_FilteredByRegionsOnly_isOk() throws Exception {
-		String uri = USER + USER_ALL_EXPERTS + "/?page=0&regions=1,4,6";
+    @Test
+    void getAllExpertsByDirectionsAndByRegions_FilteredByRegionsOnly_isOk() throws Exception {
+        String uri = USER + USER_ALL_EXPERTS + "/?page=0&regions=1,4,6";
 
-		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+        UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
 
-		Set<Integer> regionsIds = Set.of(1, 4, 6);
+        Set<Integer> regionsIds = Set.of(1, 4, 6);
 
-		userSearchCriteria.setRegions(regionsIds);
+        userSearchCriteria.setRegions(regionsIds);
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		Pageable pageable = PageRequest.of(0, 6);
+        Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(userSearchCriteria, pageable);
-	}
+        verify(userService).findAllExperts(userSearchCriteria, pageable);
+    }
 
-	@Test
-	void getAllExpertsByDirectionsAndByRegions_FilteredByDirectionsOnly_isOk() throws Exception {
-		String uri = USER + USER_ALL_EXPERTS + "/?page=0&directions=1,4,6";
+    @Test
+    void getAllExpertsByDirectionsAndByRegions_FilteredByDirectionsOnly_isOk() throws Exception {
+        String uri = USER + USER_ALL_EXPERTS + "/?page=0&directions=1,4,6";
 
-		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+        UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
 
-		Set<Integer> directionsIds = Set.of(1, 4, 6);
+        Set<Integer> directionsIds = Set.of(1, 4, 6);
 
-		userSearchCriteria.setDirections(directionsIds);
+        userSearchCriteria.setDirections(directionsIds);
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		Pageable pageable = PageRequest.of(0, 6);
+        Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(userSearchCriteria, pageable);
-	}
+        verify(userService).findAllExperts(userSearchCriteria, pageable);
+    }
 
-	@Test
-	void getAllExpertsByDirectionsAndByRegions_FilteredByDirectionsAndByRegions_isOk() throws Exception {
-		String uri = USER + USER_ALL_EXPERTS + "/?page=0&directions=1,4,6&regions=1,4,6";
+    @Test
+    void getAllExpertsByDirectionsAndByRegions_FilteredByDirectionsAndByRegions_isOk() throws Exception {
+        String uri = USER + USER_ALL_EXPERTS + "/?page=0&directions=1,4,6&regions=1,4,6";
 
-		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+        UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
 
-		Set<Integer> directionsIds = Set.of(1, 4, 6);
-		Set<Integer> regionsIds = Set.of(1, 4, 6);
+        Set<Integer> directionsIds = Set.of(1, 4, 6);
+        Set<Integer> regionsIds = Set.of(1, 4, 6);
 
-		userSearchCriteria.setDirections(directionsIds);
-		userSearchCriteria.setRegions(regionsIds);
+        userSearchCriteria.setDirections(directionsIds);
+        userSearchCriteria.setRegions(regionsIds);
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		Pageable pageable = PageRequest.of(0, 6);
+        Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(userSearchCriteria, pageable);
-	}
+        verify(userService).findAllExperts(userSearchCriteria, pageable);
+    }
 
-	@Test
-	void getAllExpertsByName_isOk() throws Exception {
-		String uri = USER + USER_ALL_EXPERTS + "/?userName=Ivan Ivanov";
+    @Test
+    void getAllExpertsByName_isOk() throws Exception {
+        String uri = USER + USER_ALL_EXPERTS + "/?userName=Ivan Ivanov";
 
-		UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
-		userSearchCriteria.setUserName("Ivan Ivanov");
+        UserSearchCriteria userSearchCriteria = new UserSearchCriteria();
+        userSearchCriteria.setUserName("Ivan Ivanov");
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		Pageable pageable = PageRequest.of(0, 6);
+        Pageable pageable = PageRequest.of(0, 6);
 
-		verify(userService).findAllExperts(userSearchCriteria, pageable);
-	}
+        verify(userService).findAllExperts(userSearchCriteria, pageable);
+    }
 
-	@Test
-	void getCurrentUser_notFound() throws Exception {
-		Integer existingUserId = 9;
-		String uri = USER + USER_GET_CURRENT_USER;
-		UserDTO userDTO = UserDTO.builder()
-				.id(existingUserId)
-				.build();
+    @Test
+    void getCurrentUser_notFound() throws Exception {
+        Integer existingUserId = 9;
+        String uri = USER + USER_GET_CURRENT_USER;
+        UserDTO userDTO = UserDTO.builder()
+                .id(existingUserId)
+                .build();
 
-		when(userService.findExpertById(any(Integer.class))).thenReturn(null);
-		when(userPrincipal.getId()).thenReturn(9);
-		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
-	}
+        when(userService.findExpertById(any(Integer.class))).thenReturn(null);
+        when(userPrincipal.getId()).thenReturn(9);
+        mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+    }
 
-	@Test
-	void resetPasswordTest() throws Exception {
-		String emailContent = "{\n"
-				+ "  \"email\": \"igor.zaharko@gmail.com\"\n"
-				+ "}";
-		UserEntity userEntity = UserEntity.builder()
-				.email("igor.zaharko@gmail.com")
-				.build();
-		when(userService.findUserEntityByEmail(any(String.class)))
-				.thenReturn(userEntity);
-		mockMvc.perform(post(USER + USER_RESET_PASSWORD)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(emailContent))
-				.andExpect(status().isOk());
-		verify(userService).findUserEntityByEmail(any(String.class));
-		verify(userService).sendPasswordResetToken(userEntity, null);
-	}
+    @Test
+    void resetPasswordTest() throws Exception {
+        String emailContent = "{\n"
+                + "  \"email\": \"igor.zaharko@gmail.com\"\n"
+                + "}";
+        UserEntity userEntity = UserEntity.builder()
+                .email("igor.zaharko@gmail.com")
+                .build();
+        when(userService.findUserEntityByEmail(any(String.class)))
+                .thenReturn(userEntity);
+        mockMvc.perform(post(USER + USER_RESET_PASSWORD)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(emailContent))
+                .andExpect(status().isOk());
+        verify(userService).findUserEntityByEmail(any(String.class));
+        verify(userService).sendPasswordResetToken(userEntity, null);
+    }
 
-	@Test
-	void updatePasswordTestIsOk () throws Exception {
-		String content = "{\n"
-				+ "  \"matchPassword\": \"qwerty12345\",\n"
-				+ "  \"newPassword\": \"qwerty12345\",\n"
-				+ "  \"token\": \"ef590bd8-e993-4153-8206-b963732bfeb9\"\n"
-				+ "}";
-		UserEntity user = UserEntity.builder()
-				.id(1)
-				.email("igor.zaharko@gmail.com")
-				.build();
-		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
-		PasswordResetTokenEntity tokenEntity = PasswordResetTokenEntity.builder()
-				.token("ef590bd8-e993-4153-8206-b963732bfeb9")
-				.dateExpiration(LocalDateTime.now().plusMinutes(60))
-				.userEntity(user)
-				.build();
-		when(passwordResetTokenService.getByToken(token)).thenReturn(tokenEntity);
-		mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content))
-				.andExpect(status().isOk());
-	}
+    @Test
+    void updatePasswordTestIsOk() throws Exception {
+        String content = "{\n"
+                + "  \"matchPassword\": \"qwerty12345\",\n"
+                + "  \"newPassword\": \"qwerty12345\",\n"
+                + "  \"token\": \"ef590bd8-e993-4153-8206-b963732bfeb9\"\n"
+                + "}";
+        UserEntity user = UserEntity.builder()
+                .id(1)
+                .email("igor.zaharko@gmail.com")
+                .build();
+        String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
+        PasswordResetTokenEntity tokenEntity = PasswordResetTokenEntity.builder()
+                .token("ef590bd8-e993-4153-8206-b963732bfeb9")
+                .dateExpiration(LocalDateTime.now().plusMinutes(60))
+                .userEntity(user)
+                .build();
+        when(passwordResetTokenService.getByToken(token)).thenReturn(tokenEntity);
+        mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isOk());
+    }
 
-	@Test
-	void changePasswordTest() throws Exception {
-		String content = "{\n"
-				+ "  \"email\": \"igor.zaharko@gmail.com\",\n"
-				+ "  \"password\": \"qwerty12345\"\n"
-				+ "}";
-		UserEntity userEntity = UserEntity.builder()
-				.email("igor.zaharko@gmail.com")
-				.password("qwerty12345")
-				.build();
-		when(userService.findUserEntityByEmail(any(String.class)))
-				.thenReturn(userEntity);
-		mockMvc.perform(post(USER + USER_CHANGE_PASSWORD)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content))
-				.andExpect(status().isOk());
-		verify(userService).findUserEntityByEmail(any(String.class));
-	}
+    @Test
+    void changePasswordTest() throws Exception {
+        String content = "{\n"
+                + "  \"email\": \"igor.zaharko@gmail.com\",\n"
+                + "  \"password\": \"qwerty12345\"\n"
+                + "}";
+        UserEntity userEntity = UserEntity.builder()
+                .email("igor.zaharko@gmail.com")
+                .password("qwerty12345")
+                .build();
+        when(userService.findUserEntityByEmail(any(String.class)))
+                .thenReturn(userEntity);
+        mockMvc.perform(post(USER + USER_CHANGE_PASSWORD)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isOk());
+        verify(userService).findUserEntityByEmail(any(String.class));
+    }
 
-	@Test
-	void updatePasswordTestNotFound () throws Exception {
-		String content = "{\n"
-				+ "  \"matchPassword\": \"qwerty12345\",\n"
-				+ "  \"newPassword\": \"qwerty12345\",\n"
-				+ "  \"token\": \"ef590bd8-e993-4153-8206-b963732bfeb9\"\n"
-				+ "}";
-		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
-		when(passwordResetTokenService.getByToken(token)).thenReturn(null);
-		mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(content))
-				.andExpect(status().isNotFound());
-	}
+    @Test
+    void updatePasswordTestNotFound() throws Exception {
+        String content = "{\n"
+                + "  \"matchPassword\": \"qwerty12345\",\n"
+                + "  \"newPassword\": \"qwerty12345\",\n"
+                + "  \"token\": \"ef590bd8-e993-4153-8206-b963732bfeb9\"\n"
+                + "}";
+        String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
+        when(passwordResetTokenService.getByToken(token)).thenReturn(null);
+        mockMvc.perform(post(USER + USER_UPDATE_PASSWORD)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isNotFound());
+    }
 
-	@Test
-	void checkTokenTest() throws Exception {
-		String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
-		String uri = USER + USER_CHECK_TOKEN + "?token=" + token;
-		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
-		when(passwordResetTokenService.validatePasswordResetToken(token)).thenReturn(true);
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
-	}
+    @Test
+    void checkTokenTest() throws Exception {
+        String token = "ef590bd8-e993-4153-8206-b963732bfeb9";
+        String uri = USER + USER_CHECK_TOKEN + "?token=" + token;
+        mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+        when(passwordResetTokenService.validatePasswordResetToken(token)).thenReturn(true);
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
+    }
 
-	@Test
-	void getAuthoritiesTestNotFound() throws Exception {
-		String uri = USER + USER_GET_AUTHORITIES;
-		when(userPrincipal.getAuthorities()).thenReturn(null);
-		mockMvc.perform(get(uri)).andExpect(status().isForbidden());
-		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
-		Assertions.assertNull(actual);
-	}
+    @Test
+    void getAuthoritiesTestNotFound() throws Exception {
+        String uri = USER + USER_GET_AUTHORITIES;
+        when(userPrincipal.getAuthorities()).thenReturn(null);
+        mockMvc.perform(get(uri)).andExpect(status().isForbidden());
+        Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
+        Assertions.assertNull(actual);
+    }
 
-	@Test
-	void getAuthoritiesTestIsOk() throws Exception {
-		Collection<? extends GrantedAuthority> expected = Set.of(SAVE_OWN_PUBLICATION,
-				SAVE_TAG,
-				DELETE_POST);
-		String uri = USER + USER_GET_AUTHORITIES;
-		doReturn(expected).when(userPrincipal).getAuthorities();
-		Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
-		Assertions.assertNotNull(actual);
-		Assertions.assertNotNull(userPrincipal);
-		Assertions.assertEquals(expected, actual);
-	}
+    @Test
+    void getAuthoritiesTestIsOk() throws Exception {
+        Collection<? extends GrantedAuthority> expected = Set.of(SAVE_OWN_PUBLICATION,
+                SAVE_TAG,
+                DELETE_POST);
+        String uri = USER + USER_GET_AUTHORITIES;
+        doReturn(expected).when(userPrincipal).getAuthorities();
+        Collection<? extends GrantedAuthority> actual = userPrincipal.getAuthorities();
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
+        Assertions.assertNotNull(actual);
+        Assertions.assertNotNull(userPrincipal);
+        Assertions.assertEquals(expected, actual);
+    }
 
-	@Test
-	void getAllDirectionsOfUserPostsTest() throws Exception {
-		when(directionService.findAllDirectionsOfPostsByUserId(1)).thenReturn(Collections.emptyList());
-		mockMvc.perform(get(USER + "/experts/" + "1" + "/post-directions"))
-				.andExpect(status().isOk());
-		verify(directionService, times(1)).findAllDirectionsOfPostsByUserId(1);
-	}
+    @Test
+    void getAllDirectionsOfUserPostsTest() throws Exception {
+        when(directionService.findAllDirectionsOfPostsByUserId(1)).thenReturn(Collections.emptyList());
+        mockMvc.perform(get(USER + "/experts/" + "1" + "/post-directions"))
+                .andExpect(status().isOk());
+        verify(directionService, times(1)).findAllDirectionsOfPostsByUserId(1);
+    }
 }

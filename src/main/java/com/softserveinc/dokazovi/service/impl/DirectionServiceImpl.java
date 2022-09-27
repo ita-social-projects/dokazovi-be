@@ -24,112 +24,112 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DirectionServiceImpl implements DirectionService {
 
-	private final DirectionRepository directionRepository;
-	private final DirectionMapper directionMapper;
+    private final DirectionRepository directionRepository;
+    private final DirectionMapper directionMapper;
 
-	/**
-	 * Gets all directions.
-	 *
-	 * @return all found directions
-	 */
-	@Override
-	public List<DirectionDTO> findAllDirections() {
-		return directionRepository.findAll().stream()
-				.map(directionMapper::toDirectionDTO)
-				.collect(Collectors.toList());
-	}
+    /**
+     * Gets all directions.
+     *
+     * @return all found directions
+     */
+    @Override
+    public List<DirectionDTO> findAllDirections() {
+        return directionRepository.findAll().stream()
+                .map(directionMapper::toDirectionDTO)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 * Gets all directions by user id.
-	 *
-	 * @param userId received from Directions controller
-	 * @return found directions by user id from directions repository
-	 */
-	@Override
-	public List<DirectionDTO> findAllDirectionsByUserId(Integer userId) {
-		return directionRepository.findAllDirectionsByUserId(userId).stream()
-				.map(directionMapper::toDirectionDTO)
-				.collect(Collectors.toList());
-	}
+    /**
+     * Gets all directions by user id.
+     *
+     * @param userId received from Directions controller
+     * @return found directions by user id from directions repository
+     */
+    @Override
+    public List<DirectionDTO> findAllDirectionsByUserId(Integer userId) {
+        return directionRepository.findAllDirectionsByUserId(userId).stream()
+                .map(directionMapper::toDirectionDTO)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 * Gets all directions by doctor id.
-	 *
-	 * @param doctorId received from Directions controller
-	 * @return found directions by user id from directions repository
-	 */
-	@Override
-	public List<DirectionDTO> findAllDirectionsByDoctorId(Integer doctorId) {
-		return directionRepository.findAllDirectionsByDoctorId(doctorId).stream()
-				.map(directionMapper::toDirectionDTO)
-				.collect(Collectors.toList());
-	}
+    /**
+     * Gets all directions by doctor id.
+     *
+     * @param doctorId received from Directions controller
+     * @return found directions by user id from directions repository
+     */
+    @Override
+    public List<DirectionDTO> findAllDirectionsByDoctorId(Integer doctorId) {
+        return directionRepository.findAllDirectionsByDoctorId(doctorId).stream()
+                .map(directionMapper::toDirectionDTO)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 *
-	 * @param userId id of user
-	 * @return list of directions from all user posts
-	 */
-	@Override
-	public List<DirectionDTO> findAllDirectionsOfPostsByUserId(Integer userId) {
-		return directionRepository.findAllDirectionsOfPostsByUserId(userId).stream()
-				.map(directionMapper::toDirectionDTO)
-				.collect(Collectors.toList());
-	}
+    /**
+     *
+     * @param userId id of user
+     * @return list of directions from all user posts
+     */
+    @Override
+    public List<DirectionDTO> findAllDirectionsOfPostsByUserId(Integer userId) {
+        return directionRepository.findAllDirectionsOfPostsByUserId(userId).stream()
+                .map(directionMapper::toDirectionDTO)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 *
-	 * @param doctorId id of user
-	 * @return list of directions from all user posts
-	 */
-	@Override
-	public List<DirectionDTO> findAllDirectionsOfPostsByDoctorId(Integer doctorId) {
-		return directionRepository.findAllDirectionsOfPostsByDoctorId(doctorId).stream()
-				.map(directionMapper::toDirectionDTO)
-				.collect(Collectors.toList());
-	}
+    /**
+     *
+     * @param doctorId id of user
+     * @return list of directions from all user posts
+     */
+    @Override
+    public List<DirectionDTO> findAllDirectionsOfPostsByDoctorId(Integer doctorId) {
+        return directionRepository.findAllDirectionsOfPostsByDoctorId(doctorId).stream()
+                .map(directionMapper::toDirectionDTO)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 * Gets direction by id
-	 *
-	 * @param id direction id
-	 * @return direction with appropriate id
-	 */
-	@Override
-	public DirectionEntity getById(Integer id) {
-		return directionRepository.findById(id).orElse(null);
-	}
+    /**
+     * Gets direction by id
+     *
+     * @param id direction id
+     * @return direction with appropriate id
+     */
+    @Override
+    public DirectionEntity getById(Integer id) {
+        return directionRepository.findById(id).orElse(null);
+    }
 
-	/**
-	 * Updates the directions status depending on the availability of doctors in it.
-	 * Runs every four hours
-	 */
-	@Override
-	@Transactional
-	@Scheduled(cron = "0 0 */4 * * *")
-	public void updateDirectionsHasDoctorsStatus() {
-		directionRepository.updateDirectionsHasDoctorsStatus();
-	}
+    /**
+     * Updates the directions status depending on the availability of doctors in it.
+     * Runs every four hours
+     */
+    @Override
+    @Transactional
+    @Scheduled(cron = "0 0 */4 * * *")
+    public void updateDirectionsHasDoctorsStatus() {
+        directionRepository.updateDirectionsHasDoctorsStatus();
+    }
 
-	/**
-	 * Updates the directions status depending on the availability of posts in it.
-	 * Runs every four hours
-	 */
-	@Override
-	@Transactional
-	public void updateDirectionsHasPostsStatus(Set<Integer> directions) {
-		directionRepository.updateDirectionsHasPostsStatus(directions);
-	}
+    /**
+     * Updates the directions status depending on the availability of posts in it.
+     * Runs every four hours
+     */
+    @Override
+    @Transactional
+    public void updateDirectionsHasPostsStatus(Set<Integer> directions) {
+        directionRepository.updateDirectionsHasPostsStatus(directions);
+    }
 
-	@Override
-	@Transactional
-	public void updateDirectionsHasPostsStatusByEntities(Set<DirectionEntity> directions) {
-		directionRepository.updateDirectionsHasPostsStatus(
-				directions
-					.stream()
-					.map(DirectionEntity::getId)
-					.collect(Collectors.toSet())
-		);
-	}
+    @Override
+    @Transactional
+    public void updateDirectionsHasPostsStatusByEntities(Set<DirectionEntity> directions) {
+        directionRepository.updateDirectionsHasPostsStatus(
+                directions
+                        .stream()
+                        .map(DirectionEntity::getId)
+                        .collect(Collectors.toSet())
+        );
+    }
 
 }

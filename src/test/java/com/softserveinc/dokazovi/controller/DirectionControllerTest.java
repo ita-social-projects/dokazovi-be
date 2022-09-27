@@ -22,36 +22,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoSettings(strictness = Strictness.LENIENT)
 class DirectionControllerTest {
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@Mock
-	private DirectionService directionService;
-	@InjectMocks
-	private DirectionController directionController;
+    @Mock
+    private DirectionService directionService;
+    @InjectMocks
+    private DirectionController directionController;
 
-	@BeforeEach
-	void setUp() {
-		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(directionController)
-				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-				.build();
-	}
+    @BeforeEach
+    void setUp() {
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(directionController)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
+    }
 
-	@Test
-	void getAllDirections() throws Exception {
-		mockMvc.perform(get(DIRECTION)).andExpect(status().isOk());
+    @Test
+    void getAllDirections() throws Exception {
+        mockMvc.perform(get(DIRECTION)).andExpect(status().isOk());
 
-		verify(directionService).findAllDirections();
-	}
+        verify(directionService).findAllDirections();
+    }
 
-	@Test
-	void getAllDirectionsByUserId() throws Exception {
-		String uri = DIRECTION + "/1";
+    @Test
+    void getAllDirectionsByUserId() throws Exception {
+        String uri = DIRECTION + "/1";
 
-		mockMvc.perform(get(uri)).andExpect(status().isOk());
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
 
-		verify(directionService).findAllDirectionsByUserId(1);
+        verify(directionService).findAllDirectionsByUserId(1);
 
-	}
+    }
 
 }

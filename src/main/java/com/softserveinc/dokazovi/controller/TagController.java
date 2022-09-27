@@ -30,39 +30,39 @@ import static com.softserveinc.dokazovi.controller.EndPoints.TAG_FIND_BY_VALUE;
 @RequiredArgsConstructor
 public class TagController {
 
-	private final TagService tagService;
+    private final TagService tagService;
 
-	/**
-	 * Find tag by its name (or by several letters it contains).
-	 *
-	 * @param value the name of tag
-	 * @param limit the limit of results amount
-	 * @return list with limited amount of found tags and 'OK' http status
-	 */
-	@GetMapping(TAG_FIND_BY_VALUE)
-	public ResponseEntity<List<TagDTO>> findByValue(
-			@RequestParam String value,
-			@RequestParam(defaultValue = "5") Integer limit) {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(tagService.findTagsByValue(value, limit));
-	}
+    /**
+     * Find tag by its name (or by several letters it contains).
+     *
+     * @param value the name of tag
+     * @param limit the limit of results amount
+     * @return list with limited amount of found tags and 'OK' http status
+     */
+    @GetMapping(TAG_FIND_BY_VALUE)
+    public ResponseEntity<List<TagDTO>> findByValue(
+            @RequestParam String value,
+            @RequestParam(defaultValue = "5") Integer limit) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(tagService.findTagsByValue(value, limit));
+    }
 
-	/**
-	 * Saves (creates) new tag.
-	 *
-	 * <p>Checks if user has authority to save new tag.</p>
-	 *
-	 * @param tagSaveDTO DTO that contains new tag info.
-	 * @return saved tag and 'CREATED' http status.
-	 */
-	@PostMapping
-	@PreAuthorize("hasAuthority('SAVE_TAG')")
-	@ApiOperation(value = "Save tag",
-			authorizations = {@Authorization(value = "Authorization")})
-	public ResponseEntity<TagDTO> saveTag(@Valid @RequestBody TagSaveDTO tagSaveDTO) {
-		return ResponseEntity
-				.status(HttpStatus.CREATED)
-				.body(tagService.save(tagSaveDTO));
-	}
+    /**
+     * Saves (creates) new tag.
+     *
+     * <p>Checks if user has authority to save new tag.</p>
+     *
+     * @param tagSaveDTO DTO that contains new tag info.
+     * @return saved tag and 'CREATED' http status.
+     */
+    @PostMapping
+    @PreAuthorize("hasAuthority('SAVE_TAG')")
+    @ApiOperation(value = "Save tag",
+            authorizations = {@Authorization(value = "Authorization")})
+    public ResponseEntity<TagDTO> saveTag(@Valid @RequestBody TagSaveDTO tagSaveDTO) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(tagService.save(tagSaveDTO));
+    }
 }

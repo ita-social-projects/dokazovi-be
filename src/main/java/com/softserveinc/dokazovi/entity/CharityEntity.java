@@ -25,22 +25,22 @@ import java.sql.Timestamp;
 @Table(name = "charities")
 public class CharityEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "charity_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "charity_id")
+    private Integer id;
 
-	@Column(name = "body", columnDefinition = "TEXT")
-	private String body;
+    @Column(name = "body", columnDefinition = "TEXT")
+    private String body;
 
-	@ManyToOne
-	@JoinColumn(name = "author_id")
-	private DoctorEntity author;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private DoctorEntity author;
 
-	@CreationTimestamp
-	private Timestamp createdAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
 
-	@UpdateTimestamp
-	private Timestamp modifiedAt;
+    @UpdateTimestamp
+    private Timestamp modifiedAt;
 
 }

@@ -12,5 +12,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface RegionMapper {
 
-	RegionDTO toRegionDTO(RegionEntity regionEntity);
+    RegionDTO toRegionDTO(RegionEntity regionEntity);
 }

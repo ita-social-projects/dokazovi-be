@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface RegionService {
 
-	List<RegionDTO> findAllRegions();
+    List<RegionDTO> findAllRegions();
 
-	public void updateRegionsStatus();
+    public void updateRegionsStatus();
 
-	RegionDTO findRegionByCity(Integer cityId);
+    RegionDTO findRegionByCity(Integer cityId);
 }

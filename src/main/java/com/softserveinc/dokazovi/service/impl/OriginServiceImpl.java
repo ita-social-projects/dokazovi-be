@@ -18,18 +18,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OriginServiceImpl implements OriginService {
 
-	private final OriginRepository originRepository;
-	private final OriginMapper originMapper;
+    private final OriginRepository originRepository;
+    private final OriginMapper originMapper;
 
-	/**
-	 * Find all origins.
-	 *
-	 * @return list of all origins
-	 */
-	@Override
-	public List<OriginDTO> findAllOrigins() {
-		return originRepository.findAll().stream()
-				.map(originMapper::toOriginDTO)
-				.collect(Collectors.toList());
-	}
+    /**
+     * Find all origins.
+     *
+     * @return list of all origins
+     */
+    @Override
+    public List<OriginDTO> findAllOrigins() {
+        return originRepository.findAll().stream()
+                .map(originMapper::toOriginDTO)
+                .collect(Collectors.toList());
+    }
 }

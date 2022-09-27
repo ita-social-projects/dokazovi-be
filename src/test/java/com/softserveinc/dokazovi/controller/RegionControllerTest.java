@@ -23,32 +23,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoSettings(strictness = Strictness.LENIENT)
 class RegionControllerTest {
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@Mock
-	private RegionService regionService;
-	@InjectMocks
-	private RegionController regionController;
+    @Mock
+    private RegionService regionService;
+    @InjectMocks
+    private RegionController regionController;
 
-	@BeforeEach
-	void setUp() {
-		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(regionController)
-				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-				.build();
-	}
+    @BeforeEach
+    void setUp() {
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(regionController)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
+    }
 
-	@Test
-	void getAllRegions() throws Exception {
-		mockMvc.perform(get(REGION)).andExpect(status().isOk());
+    @Test
+    void getAllRegions() throws Exception {
+        mockMvc.perform(get(REGION)).andExpect(status().isOk());
 
-		verify(regionService).findAllRegions();
-	}
+        verify(regionService).findAllRegions();
+    }
 
     @Test
     void getRegionByCity() throws Exception {
-		mockMvc.perform(get(REGION + "/" + any(Integer.class))).andExpect(status().isOk());
+        mockMvc.perform(get(REGION + "/" + any(Integer.class))).andExpect(status().isOk());
 
-		verify(regionService).findRegionByCity(any(Integer.class));
+        verify(regionService).findRegionByCity(any(Integer.class));
     }
 }

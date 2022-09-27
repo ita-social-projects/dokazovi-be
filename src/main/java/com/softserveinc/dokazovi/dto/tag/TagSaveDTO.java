@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagSaveDTO {
-	@TagUnique
-	@NotBlank(message = "Tag field cannot be empty")
-	private String tag;
+    @TagUnique
+    @NotBlank(message = "Tag field cannot be empty")
+    private String tag;
 }

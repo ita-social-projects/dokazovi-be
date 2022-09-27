@@ -15,11 +15,11 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class UserPasswordDTO {
 
-	@NotBlank
-	private String token;
-	@NotBlank
-	private String newPassword;
-	@NotBlank
-	private String matchPassword;
+    @NotBlank
+    private String token;
+    @NotBlank
+    private String newPassword;
+    @NotBlank
+    private String matchPassword;
 
 }

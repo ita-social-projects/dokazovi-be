@@ -11,21 +11,21 @@ import java.util.List;
 @Repository
 public interface PostTypeRepository extends JpaRepository<PostTypeEntity, Integer> {
 
-	@Query(nativeQuery = true,
-			value = " SELECT * "
-					+ " FROM POST_TYPES"
-					+ " WHERE (TYPE_ID IN (SELECT DISTINCT P.TYPE_ID "
-					+ "                   FROM POSTS P "
-					+ "                   WHERE P.AUTHOR_ID = :userId"
-					+ "                     AND P.STATUS = 'PUBLISHED')) ")
-	List<PostTypeEntity> findAllPostTypesByUserId(Integer userId);
+    @Query(nativeQuery = true,
+            value = " SELECT * "
+                    + " FROM POST_TYPES"
+                    + " WHERE (TYPE_ID IN (SELECT DISTINCT P.TYPE_ID "
+                    + "                   FROM POSTS P "
+                    + "                   WHERE P.AUTHOR_ID = :userId"
+                    + "                     AND P.STATUS = 'PUBLISHED')) ")
+    List<PostTypeEntity> findAllPostTypesByUserId(Integer userId);
 
-	@Query(nativeQuery = true,
-			value = " SELECT * "
-					+ " FROM POST_TYPES"
-					+ " WHERE TYPE_ID IN (SELECT DISTINCT P.TYPE_ID "
-					+ "                   FROM POSTS P "
-					+ "                   WHERE P.AUTHOR_ID = :userId "
-					+ "                     AND P.status = :#{#postStatus?.name()}) ")
-	List<PostTypeEntity> findAllPostTypesByUserIdAndStatus(Integer userId, PostStatus postStatus);
+    @Query(nativeQuery = true,
+            value = " SELECT * "
+                    + " FROM POST_TYPES"
+                    + " WHERE TYPE_ID IN (SELECT DISTINCT P.TYPE_ID "
+                    + "                   FROM POSTS P "
+                    + "                   WHERE P.AUTHOR_ID = :userId "
+                    + "                     AND P.status = :#{#postStatus?.name()}) ")
+    List<PostTypeEntity> findAllPostTypesByUserIdAndStatus(Integer userId, PostStatus postStatus);
 }

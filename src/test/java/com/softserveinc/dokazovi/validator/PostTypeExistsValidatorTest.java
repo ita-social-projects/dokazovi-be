@@ -16,26 +16,26 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PostTypeExistsValidatorTest {
 
-	@Mock
-	private PostTypeRepository repository;
+    @Mock
+    private PostTypeRepository repository;
 
-	@InjectMocks
-	private PostTypeExistsValidator validator;
+    @InjectMocks
+    private PostTypeExistsValidator validator;
 
-	@Test
-	void isValid_WhenIdNotNull_ReturnTrue() {
-		when(repository.existsById(anyInt())).thenReturn(true);
-		PostTypeIdOnlyDTO dto = PostTypeIdOnlyDTO.builder()
-				.id(1)
-				.build();
-		assertTrue(validator.isValid(dto, null));
-	}
+    @Test
+    void isValid_WhenIdNotNull_ReturnTrue() {
+        when(repository.existsById(anyInt())).thenReturn(true);
+        PostTypeIdOnlyDTO dto = PostTypeIdOnlyDTO.builder()
+                .id(1)
+                .build();
+        assertTrue(validator.isValid(dto, null));
+    }
 
-	@Test
-	void isValid_WhenIdIsNull_ReturnFalse() {
-		PostTypeIdOnlyDTO dto = PostTypeIdOnlyDTO.builder()
-				.id(null)
-				.build();
-		assertFalse(validator.isValid(dto, null));
-	}
+    @Test
+    void isValid_WhenIdIsNull_ReturnFalse() {
+        PostTypeIdOnlyDTO dto = PostTypeIdOnlyDTO.builder()
+                .id(null)
+                .build();
+        assertFalse(validator.isValid(dto, null));
+    }
 }

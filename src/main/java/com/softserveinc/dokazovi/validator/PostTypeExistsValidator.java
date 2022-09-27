@@ -11,17 +11,17 @@ import javax.validation.ConstraintValidatorContext;
 @RequiredArgsConstructor
 public class PostTypeExistsValidator implements ConstraintValidator<PostTypeExists, PostTypeIdOnlyDTO> {
 
-	private final PostTypeRepository repository;
+    private final PostTypeRepository repository;
 
-	@Override
-	public boolean isValid(PostTypeIdOnlyDTO value, ConstraintValidatorContext context) {
-		if (value == null) {
-			return true;
-		}
-		Integer id = value.getId();
-		if (id == null) {
-			return false;
-		}
-		return repository.existsById(id);
-	}
+    @Override
+    public boolean isValid(PostTypeIdOnlyDTO value, ConstraintValidatorContext context) {
+        if (value == null) {
+            return true;
+        }
+        Integer id = value.getId();
+        if (id == null) {
+            return false;
+        }
+        return repository.existsById(id);
+    }
 }

@@ -13,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PostMainPageDTO {
 
-	private String fieldName;
-	private List<PostDTO> postDTOS;
+    private String fieldName;
+    private List<PostDTO> postDTOS;
 }

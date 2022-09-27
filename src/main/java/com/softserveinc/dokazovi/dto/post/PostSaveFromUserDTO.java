@@ -23,45 +23,45 @@ import java.util.Set;
 @AllArgsConstructor
 public class PostSaveFromUserDTO {
 
-	private Integer id;
+    private Integer id;
 
-	@NotNull(message = "Author id is required")
-	private Integer authorId;
+    @NotNull(message = "Author id is required")
+    private Integer authorId;
 
-	private String title;
+    private String title;
 
-	private String videoUrl;
+    private String videoUrl;
 
-	private String previewImageUrl;
+    private String previewImageUrl;
 
-	private String importantImageUrl;
+    private String importantImageUrl;
 
-	private String importantMobileImageUrl;
+    private String importantMobileImageUrl;
 
-	@NotBlank(message = "Preview field cannot be empty")
-	private String preview;
+    @NotBlank(message = "Preview field cannot be empty")
+    private String preview;
 
-	@NotBlank(message = "Content field cannot be empty")
-	private String content;
+    @NotBlank(message = "Content field cannot be empty")
+    private String content;
 
-	@NotNull(message = "PostType are required")
-	@PostTypeExists
-	private PostTypeIdOnlyDTO type;
+    @NotNull(message = "PostType are required")
+    @PostTypeExists
+    private PostTypeIdOnlyDTO type;
 
-	@NotNull(message = "PostStatus are required")
-	@Min(value = 0)
-	@Max(value = 6)
-	private Integer postStatus;
+    @NotNull(message = "PostStatus are required")
+    @Min(value = 0)
+    @Max(value = 6)
+    private Integer postStatus;
 
-	@NotNull(message = "At least one topic are required")
-	@Size(min = 1, max = 3, message = "Number of chosen topics is from 1 to 3. ")
-	private Set<@DirectionExists DirectionDTOForSavingPost> directions;
+    @NotNull(message = "At least one topic are required")
+    @Size(min = 1, max = 3, message = "Number of chosen topics is from 1 to 3. ")
+    private Set<@DirectionExists DirectionDTOForSavingPost> directions;
 
-	private Set<@OriginExists OriginDTOForSavingPost> origins;
+    private Set<@OriginExists OriginDTOForSavingPost> origins;
 
-	private Integer views;
+    private Integer views;
 
-	private Integer realViews;
+    private Integer realViews;
 
-	private Integer fakeViews;
+    private Integer fakeViews;
 }

@@ -27,28 +27,28 @@ import java.util.Set;
 @Table(name = "institutions")
 public class InstitutionEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "institution_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "institution_id")
+    private Integer id;
 
-	@Column(name = "name", nullable = false)
-	private String name;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-	@ManyToOne
-	@JoinColumn(name = "city_id", nullable = false)
-	private CityEntity city;
+    @ManyToOne
+    @JoinColumn(name = "city_id", nullable = false)
+    private CityEntity city;
 
-	@Column(name = "address", nullable = false)
-	private String address;
+    @Column(name = "address", nullable = false)
+    private String address;
 
-	@OneToMany(mappedBy = "mainInstitution")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<DoctorEntity> mainDoctorsInstitution;
+    @OneToMany(mappedBy = "mainInstitution")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<DoctorEntity> mainDoctorsInstitution;
 
-	@ManyToMany(mappedBy = "institutions")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<DoctorEntity> doctors;
+    @ManyToMany(mappedBy = "institutions")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<DoctorEntity> doctors;
 }

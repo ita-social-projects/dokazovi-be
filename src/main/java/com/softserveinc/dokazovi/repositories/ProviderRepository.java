@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProviderRepository extends JpaRepository<ProviderEntity, Integer> {
 
-	Boolean existsByEmailAndName(String email, String name);
+    Boolean existsByEmailAndName(String email, String name);
 }

@@ -13,38 +13,38 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 class UserSearchCriteriaTest {
 
-	@InjectMocks
-	private UserSearchCriteria userSearchCriteria;
+    @InjectMocks
+    private UserSearchCriteria userSearchCriteria;
 
-	@Test
-	void hasDirections() {
+    @Test
+    void hasDirections() {
 
-		Set<Integer> directionsIds = Set.of(1, 4, 6);
+        Set<Integer> directionsIds = Set.of(1, 4, 6);
 
-		userSearchCriteria.setDirections(directionsIds);
+        userSearchCriteria.setDirections(directionsIds);
 
-		assertTrue(userSearchCriteria.hasDirections());
-	}
+        assertTrue(userSearchCriteria.hasDirections());
+    }
 
-	@Test
-	void hasNotDirections() {
+    @Test
+    void hasNotDirections() {
 
-		assertFalse(userSearchCriteria.hasDirections());
-	}
+        assertFalse(userSearchCriteria.hasDirections());
+    }
 
-	@Test
-	void hasRegions() {
+    @Test
+    void hasRegions() {
 
-		Set<Integer> regionsIds = Set.of(1, 4, 6);
+        Set<Integer> regionsIds = Set.of(1, 4, 6);
 
-		userSearchCriteria.setRegions(regionsIds);
+        userSearchCriteria.setRegions(regionsIds);
 
-		assertTrue(userSearchCriteria.hasRegions());
-	}
+        assertTrue(userSearchCriteria.hasRegions());
+    }
 
-	@Test
-	void hasNotRegions() {
+    @Test
+    void hasNotRegions() {
 
-		assertFalse(userSearchCriteria.hasRegions());
-	}
+        assertFalse(userSearchCriteria.hasRegions());
+    }
 }
