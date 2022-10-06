@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.dto.user;
 
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusesDTO;
 import com.softserveinc.dokazovi.dto.region.RegionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,8 @@ public class UserDTO {
     private RegionDTO region;
 
     private Set<String> socialNetworks;
+
+    private Set<PostStatusesDTO> postStatuses;
 
     private Set<DirectionDTO> directions;
 
