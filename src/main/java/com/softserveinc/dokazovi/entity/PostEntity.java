@@ -38,96 +38,96 @@ import java.util.Set;
 @Table(name = "posts")
 public class PostEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "post_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
+    private Integer id;
 
-	private String title;
+    private String title;
 
-	@Column(columnDefinition = "TEXT")
-	private String content;
+    @Column(columnDefinition = "TEXT")
+    private String content;
 
-	@Column(columnDefinition = "TEXT")
-	private String preview;
+    @Column(columnDefinition = "TEXT")
+    private String preview;
 
-	@Column(name = "video_url")
-	private String videoUrl;
+    @Column(name = "video_url")
+    private String videoUrl;
 
-	@Column(name = "preview_image_url")
-	private String previewImageUrl;
+    @Column(name = "preview_image_url")
+    private String previewImageUrl;
 
-	@Column(name = "important_mobile_image_url")
-	private String importantMobileImageUrl;
+    @Column(name = "important_mobile_image_url")
+    private String importantMobileImageUrl;
 
-	@ColumnDefault("false")
-	private Boolean important;
+    @ColumnDefault("false")
+    private Boolean important;
 
-	@ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-	@JoinColumn(name = "author_id")
-	private UserEntity author;
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinColumn(name = "author_id")
+    private UserEntity author;
 
-	@ManyToOne
-	@JoinColumn(name = "type_id")
-	private PostTypeEntity type;
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private PostTypeEntity type;
 
-	@Enumerated(EnumType.STRING)
-	private PostStatus status;
+    @Enumerated(EnumType.STRING)
+    private PostStatus status;
 
-	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "posts_directions",
-			joinColumns = {@JoinColumn(name = "post_id")},
-			inverseJoinColumns = {@JoinColumn(name = "direction_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<DirectionEntity> directions;
+    @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "posts_directions",
+            joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "direction_id")}
+    )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<DirectionEntity> directions;
 
-	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "posts_tags",
-			joinColumns = {@JoinColumn(name = "post_id")},
-			inverseJoinColumns = {@JoinColumn(name = "tag_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<TagEntity> tags;
+    @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "posts_tags",
+            joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id")}
+    )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<TagEntity> tags;
 
-	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "posts_origins",
-			joinColumns = {@JoinColumn(name = "post_id")},
-			inverseJoinColumns = {@JoinColumn(name = "origin_id")}
-	)
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<OriginEntity> origins;
+    @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "posts_origins",
+            joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "origin_id")}
+    )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<OriginEntity> origins;
 
-	@CreationTimestamp
-	private Timestamp createdAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
 
-	@UpdateTimestamp
-	@Column(name = "modified_at")
-	private Timestamp modifiedAt;
+    @UpdateTimestamp
+    @Column(name = "modified_at")
+    private Timestamp modifiedAt;
 
-	@CreationTimestamp
-	private Timestamp publishedAt;
+    @CreationTimestamp
+    private Timestamp publishedAt;
 
-	@ColumnDefault("null")
-	private Integer importanceOrder;
+    @ColumnDefault("null")
+    private Integer importanceOrder;
 
-	@Column(name = "important_image_url")
-	private String importantImageUrl;
+    @Column(name = "important_image_url")
+    private String importantImageUrl;
 
-	@Column(name = "views")
-	@Setter(AccessLevel.NONE)
-	private Integer views;
+    @Column(name = "views")
+    @Setter(AccessLevel.NONE)
+    private Integer views;
 
-	@Column(name = "real_views")
-	private Integer realViews;
+    @Column(name = "real_views")
+    private Integer realViews;
 
-	@Column(name = "fake_views")
-	@ColumnDefault(value = "0")
-	private Integer fakeViews;
+    @Column(name = "fake_views")
+    @ColumnDefault(value = "0")
+    private Integer fakeViews;
 }

@@ -26,73 +26,73 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class DirectionServiceImplTest {
 
-	@Mock
-	private DirectionRepository directionRepository;
-	@Mock
-	private DirectionMapper directionMapper;
-	@InjectMocks
-	private DirectionServiceImpl directionService;
+    @Mock
+    private DirectionRepository directionRepository;
+    @Mock
+    private DirectionMapper directionMapper;
+    @InjectMocks
+    private DirectionServiceImpl directionService;
 
-	@Test
-	void findAllDirections() {
-		List<DirectionEntity> directions = List.of(new DirectionEntity(), new DirectionEntity());
+    @Test
+    void findAllDirections() {
+        List<DirectionEntity> directions = List.of(new DirectionEntity(), new DirectionEntity());
 
-		when(directionRepository.findAll()).thenReturn(directions);
-		directionService.findAllDirections();
+        when(directionRepository.findAll()).thenReturn(directions);
+        directionService.findAllDirections();
 
-		verify(directionMapper, times(directions.size())).toDirectionDTO(any(DirectionEntity.class));
-	}
+        verify(directionMapper, times(directions.size())).toDirectionDTO(any(DirectionEntity.class));
+    }
 
-	@Test
-	void findAllDirectionsByUserId() {
-		List<DirectionEntity> directions = List.of(new DirectionEntity(), new DirectionEntity());
+    @Test
+    void findAllDirectionsByUserId() {
+        List<DirectionEntity> directions = List.of(new DirectionEntity(), new DirectionEntity());
 
-		when(directionRepository.findAllDirectionsByUserId(1)).thenReturn(directions);
-		directionService.findAllDirectionsByUserId(1);
+        when(directionRepository.findAllDirectionsByUserId(1)).thenReturn(directions);
+        directionService.findAllDirectionsByUserId(1);
 
-		verify(directionMapper, times(directions.size())).toDirectionDTO(any(DirectionEntity.class));
-	}
+        verify(directionMapper, times(directions.size())).toDirectionDTO(any(DirectionEntity.class));
+    }
 
-	@Test
-	void updateDirectionsHasDoctorsStatusTest() {
-		directionService.updateDirectionsHasDoctorsStatus();
-		verify(directionRepository, times(1))
-				.updateDirectionsHasDoctorsStatus();
-	}
+    @Test
+    void updateDirectionsHasDoctorsStatusTest() {
+        directionService.updateDirectionsHasDoctorsStatus();
+        verify(directionRepository, times(1))
+                .updateDirectionsHasDoctorsStatus();
+    }
 
-	@Test
-	void updateDirectionsHasPostsByEntitiesStatusTest() {
-		List<DirectionEntity> entities = directionRepository.findAll();
-		directionService.updateDirectionsHasPostsStatusByEntities(new HashSet(entities));
-		verify(directionRepository, times(1))
-				.updateDirectionsHasPostsStatus(any());
-	}
+    @Test
+    void updateDirectionsHasPostsByEntitiesStatusTest() {
+        List<DirectionEntity> entities = directionRepository.findAll();
+        directionService.updateDirectionsHasPostsStatusByEntities(new HashSet(entities));
+        verify(directionRepository, times(1))
+                .updateDirectionsHasPostsStatus(any());
+    }
 
-	@Test
-	void updateDirectionsHasPostsStatusTest() {
-		Set<Integer> entities = directionRepository.findAll()
-				.stream()
-				.map(DirectionEntity::getId)
-				.collect(Collectors.toSet());
-		directionService.updateDirectionsHasPostsStatus(entities);
-		verify(directionRepository, times(1))
-				.updateDirectionsHasPostsStatus(any());
-	}
+    @Test
+    void updateDirectionsHasPostsStatusTest() {
+        Set<Integer> entities = directionRepository.findAll()
+                .stream()
+                .map(DirectionEntity::getId)
+                .collect(Collectors.toSet());
+        directionService.updateDirectionsHasPostsStatus(entities);
+        verify(directionRepository, times(1))
+                .updateDirectionsHasPostsStatus(any());
+    }
 
-	@Test
-	void getByIdTest() {
-		when(directionRepository.findById(3)).thenReturn(Optional.of(new DirectionEntity()));
-		DirectionEntity expected = directionService.getById(3);
-		DirectionEntity actual = new DirectionEntity();
-		Assertions.assertEquals(expected, actual);
-	}
+    @Test
+    void getByIdTest() {
+        when(directionRepository.findById(3)).thenReturn(Optional.of(new DirectionEntity()));
+        DirectionEntity expected = directionService.getById(3);
+        DirectionEntity actual = new DirectionEntity();
+        Assertions.assertEquals(expected, actual);
+    }
 
-	@Test
-	void findAllDirectionsOfPostsByUserIdTest() {
-		when(directionRepository.findAllDirectionsOfPostsByUserId(1)).thenReturn(
-				Collections.singletonList(new DirectionEntity()));
-		List<DirectionDTO> list = directionService.findAllDirectionsOfPostsByUserId(1);
-		Assertions.assertEquals(list.size(), 1);
-		verify(directionRepository, times(1)).findAllDirectionsOfPostsByUserId(1);
-	}
+    @Test
+    void findAllDirectionsOfPostsByUserIdTest() {
+        when(directionRepository.findAllDirectionsOfPostsByUserId(1)).thenReturn(
+                Collections.singletonList(new DirectionEntity()));
+        List<DirectionDTO> list = directionService.findAllDirectionsOfPostsByUserId(1);
+        Assertions.assertEquals(list.size(), 1);
+        verify(directionRepository, times(1)).findAllDirectionsOfPostsByUserId(1);
+    }
 }

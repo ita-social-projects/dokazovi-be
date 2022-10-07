@@ -24,17 +24,17 @@ import javax.persistence.Table;
 @Table(name = "cities")
 public class CityEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "city_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "city_id")
+    private Integer id;
 
-	private String name;
+    private String name;
 
-	@ManyToOne
-	@JoinColumn(name = "region_id", nullable = false)
-	@JsonIdentityInfo(
-			property = "id",
-			generator = ObjectIdGenerators.PropertyGenerator.class)
-	private RegionEntity region;
+    @ManyToOne
+    @JoinColumn(name = "region_id", nullable = false)
+    @JsonIdentityInfo(
+            property = "id",
+            generator = ObjectIdGenerators.PropertyGenerator.class)
+    private RegionEntity region;
 }

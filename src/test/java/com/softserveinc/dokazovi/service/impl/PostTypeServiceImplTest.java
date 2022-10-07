@@ -21,47 +21,47 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PostTypeServiceImplTest {
 
-	@Mock
-	private PostTypeRepository postTypeRepository;
+    @Mock
+    private PostTypeRepository postTypeRepository;
 
-	@Mock
-	private PostTypeMapper postTypeMapper;
+    @Mock
+    private PostTypeMapper postTypeMapper;
 
-	@InjectMocks
-	private PostTypeServiceImpl postTypeService;
+    @InjectMocks
+    private PostTypeServiceImpl postTypeService;
 
-	private List<PostTypeEntity> postTypeEntities;
+    private List<PostTypeEntity> postTypeEntities;
 
-	@BeforeEach
-	void init() {
-		postTypeEntities = List.of(new PostTypeEntity(), new PostTypeEntity());
-	}
+    @BeforeEach
+    void init() {
+        postTypeEntities = List.of(new PostTypeEntity(), new PostTypeEntity());
+    }
 
-	@Test
-	void findAll() {
-		when(postTypeRepository.findAll()).thenReturn(postTypeEntities);
-		postTypeService.findAll();
-		verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
-	}
+    @Test
+    void findAll() {
+        when(postTypeRepository.findAll()).thenReturn(postTypeEntities);
+        postTypeService.findAll();
+        verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
+    }
 
-	@Test
-	void findAllPostTypesByUserId() {
-		when(postTypeRepository.findAllPostTypesByUserId(2)).thenReturn(postTypeEntities);
-		postTypeService.findAllPostTypesByUserId(2);
-		verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
-	}
+    @Test
+    void findAllPostTypesByUserId() {
+        when(postTypeRepository.findAllPostTypesByUserId(2)).thenReturn(postTypeEntities);
+        postTypeService.findAllPostTypesByUserId(2);
+        verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
+    }
 
-	@Test
-	void findAllPostTypesByUserIdAndStatus_WhenStatusIsPresent_IsOk() {
-		when(postTypeRepository.findAllPostTypesByUserIdAndStatus(2, PostStatus.DRAFT)).thenReturn(postTypeEntities);
-		postTypeService.findAllPostTypesByUserIdAndStatus(2, PostStatus.DRAFT);
-		verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
-	}
+    @Test
+    void findAllPostTypesByUserIdAndStatus_WhenStatusIsPresent_IsOk() {
+        when(postTypeRepository.findAllPostTypesByUserIdAndStatus(2, PostStatus.DRAFT)).thenReturn(postTypeEntities);
+        postTypeService.findAllPostTypesByUserIdAndStatus(2, PostStatus.DRAFT);
+        verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
+    }
 
-	@Test
-	void findAllPostTypesByUserIdAndStatus_WhenStatusIsEmpty_IsOk() {
-		when(postTypeRepository.findAllPostTypesByUserId(2)).thenReturn(postTypeEntities);
-		postTypeService.findAllPostTypesByUserIdAndStatus(2, null);
-		verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
-	}
+    @Test
+    void findAllPostTypesByUserIdAndStatus_WhenStatusIsEmpty_IsOk() {
+        when(postTypeRepository.findAllPostTypesByUserId(2)).thenReturn(postTypeEntities);
+        postTypeService.findAllPostTypesByUserIdAndStatus(2, null);
+        verify(postTypeMapper, times(postTypeEntities.size())).toPostTypeDTO(any(PostTypeEntity.class));
+    }
 }

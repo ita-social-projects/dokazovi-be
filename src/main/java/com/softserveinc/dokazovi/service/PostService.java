@@ -14,53 +14,53 @@ import java.util.Set;
 
 public interface PostService {
 
-	PostDTO findPostById(Integer postId);
+    PostDTO findPostById(Integer postId);
 
-	Page<PostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable);
+    Page<PostDTO> findAllByStatus(PostStatus postStatus, Pageable pageable);
 
-	Page<PostDTO> findImportantPosts(Pageable pageable);
+    Page<PostDTO> findImportantPosts(Pageable pageable);
 
-	Page<PostDTO> findAllByDirection(
-			Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);
+    Page<PostDTO> findAllByDirection(
+            Integer directionId, Set<Integer> typeId, Set<Integer> tagId, PostStatus postStatus, Pageable pageable);
 
-	PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
+    PostDTO saveFromUser(PostSaveFromUserDTO postSaveDTO, UserPrincipal user);
 
-	Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
-			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
-			String title, String author, Integer authorId, LocalDate startDate, LocalDate endDate,
-			Pageable pageable);
+    Page<PostDTO> findAllByTypesAndStatusAndDirectionsAndOriginsAndTitleAndAuthor(
+            Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Set<Integer> statuses,
+            String title, String author, Integer authorId, LocalDate startDate, LocalDate endDate,
+            Pageable pageable);
 
-	Page<PostDTO> findPostsByAuthorIdAndDirections(
-			Pageable pageable, Integer expertId, Set<Integer> directions);
+    Page<PostDTO> findPostsByAuthorIdAndDirections(
+            Pageable pageable, Integer expertId, Set<Integer> directions);
 
-	Boolean removePostById(UserPrincipal userId, Integer postId, boolean delete);
+    Boolean removePostById(UserPrincipal userId, Integer postId, boolean delete);
 
-	Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveDTO);
+    Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveDTO);
 
-	Page<PostMainPageDTO> findLatestByPostTypesAndOrigins(Pageable pageable);
+    Page<PostMainPageDTO> findLatestByPostTypesAndOrigins(Pageable pageable);
 
-	Page<PostMainPageDTO> findLatestByPostTypesAndOriginsForMobile(Pageable pageable);
+    Page<PostMainPageDTO> findLatestByPostTypesAndOriginsForMobile(Pageable pageable);
 
-	Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId, Set<Integer> directionId,
-			Pageable pageable);
+    Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId, Set<Integer> directionId,
+            Pageable pageable);
 
-	Page<PostDTO> findAllByExpertAndTypeAndStatus(Integer expertId, Set<Integer> typeId,
-			PostStatus postStatus, Pageable pageable);
+    Page<PostDTO> findAllByExpertAndTypeAndStatus(Integer expertId, Set<Integer> typeId,
+            PostStatus postStatus, Pageable pageable);
 
-	Boolean setPostsAsImportantWithOrder(Set<Integer> importantPostIds);
+    Boolean setPostsAsImportantWithOrder(Set<Integer> importantPostIds);
 
-	Integer getPostViewCount(String url);
+    Integer getPostViewCount(String url);
 
-	Integer getFakeViewsByPostUrl(String url);
+    Integer getFakeViewsByPostUrl(String url);
 
-	void setFakeViewsForPost(Integer postId, Integer view);
+    void setFakeViewsForPost(Integer postId, Integer view);
 
-	Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
-			Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
+    Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
+            Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
 
-	void updateRealViews();
+    void updateRealViews();
 
-	void updatePlannedStatus();
+    void updatePlannedStatus();
 
-	boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt);
+    boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt);
 }

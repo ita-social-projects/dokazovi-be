@@ -18,21 +18,21 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OriginServiceImplTest {
-	@Mock
-	private OriginRepository originRepository;
-	@Mock
-	private OriginMapper originMapper;
-	@InjectMocks
-	private OriginServiceImpl originService;
+    @Mock
+    private OriginRepository originRepository;
+    @Mock
+    private OriginMapper originMapper;
+    @InjectMocks
+    private OriginServiceImpl originService;
 
-	@Test
-	void findAllOrigins() {
-		List<OriginEntity> origins = List.of(new OriginEntity(), new OriginEntity());
+    @Test
+    void findAllOrigins() {
+        List<OriginEntity> origins = List.of(new OriginEntity(), new OriginEntity());
 
-		when(originRepository.findAll()).thenReturn(origins);
-		originService.findAllOrigins();
+        when(originRepository.findAll()).thenReturn(origins);
+        originService.findAllOrigins();
 
-		verify(originMapper, times(origins.size())).toOriginDTO(any(OriginEntity.class));
-		assertEquals(originService.findAllOrigins().size(), origins.size());
-	}
+        verify(originMapper, times(origins.size())).toOriginDTO(any(OriginEntity.class));
+        assertEquals(originService.findAllOrigins().size(), origins.size());
+    }
 }

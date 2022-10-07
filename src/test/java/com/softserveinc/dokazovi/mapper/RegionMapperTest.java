@@ -10,22 +10,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RegionMapperTest {
 
-	private final RegionMapper mapper = Mappers.getMapper(RegionMapper.class);
-	private RegionEntity regionEntity;
+    private final RegionMapper mapper = Mappers.getMapper(RegionMapper.class);
+    private RegionEntity regionEntity;
 
-	@BeforeEach
-	void init() {
-		regionEntity = RegionEntity.builder()
-				.id(1)
-				.name("Region 1")
-				.build();
-	}
+    @BeforeEach
+    void init() {
+        regionEntity = RegionEntity.builder()
+                .id(1)
+                .name("Region 1")
+                .build();
+    }
 
-	@Test
-	void toRegionDTO_whenMaps_thenCorrect() {
-		RegionDTO regionDTO = mapper.toRegionDTO(regionEntity);
+    @Test
+    void toRegionDTO_whenMaps_thenCorrect() {
+        RegionDTO regionDTO = mapper.toRegionDTO(regionEntity);
 
-		assertEquals(regionDTO.getId(), regionEntity.getId());
-		assertEquals(regionDTO.getName(), regionEntity.getName());
-	}
+        assertEquals(regionDTO.getId(), regionEntity.getId());
+        assertEquals(regionDTO.getName(), regionEntity.getName());
+    }
 }

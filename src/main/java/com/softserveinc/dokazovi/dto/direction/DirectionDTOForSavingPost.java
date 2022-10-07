@@ -17,6 +17,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DirectionDTOForSavingPost {
-	@NotNull(message = "Direction id are required")
-	private Integer id;
+    @NotNull(message = "Direction id are required")
+    private Integer id;
 }

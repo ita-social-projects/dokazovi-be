@@ -13,12 +13,13 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-	PostMapper POST_MAPPER = Mappers.getMapper(PostMapper.class);
+    PostMapper POST_MAPPER = Mappers.getMapper(PostMapper.class);
 
-	@Mapping(target = "id", source = "userEntity.id")
-	@Mapping(target = ".", source = "userEntity.doctor")
-	@Mapping(target = "region", source = "userEntity.doctor.mainInstitution.city.region")
-	@Mapping(target = "lastAddedPost",
-			expression = "java(POST_MAPPER.toLatestExpertPostDTO(userEntity.getLatestExpertPost()))")
-	UserDTO toUserDTO(UserEntity userEntity);
+    @Mapping(target = "id", source = "userEntity.id")
+    @Mapping(target = ".", source = "userEntity.doctor")
+    @Mapping(target = "region", source = "userEntity.doctor.mainInstitution.city.region")
+    @Mapping(target = "postStatuses", source = "posts")
+    @Mapping(target = "lastAddedPost",
+            expression = "java(POST_MAPPER.toLatestExpertPostDTO(userEntity.getLatestExpertPost()))")
+    UserDTO toUserDTO(UserEntity userEntity);
 }

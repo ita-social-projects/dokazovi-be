@@ -27,22 +27,22 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPES_ALL_TYPE
 @RequiredArgsConstructor
 public class PostTypesController {
 
-	private final PostTypeService postTypeService;
+    private final PostTypeService postTypeService;
 
-	/**
-	 * getAllPostTypesByUserId method returns all post types of posts published by certain user
-	 *
-	 * @param userId  Id of user whose materials we want to receive
-	 * @return 'OK' HttpStatus and method call from service
-	 */
-	@GetMapping(POST_TYPES_ALL_TYPES_BY_USER)
-	@ApiOperation(value = "Get all types of materials by userId")
-	public ResponseEntity<List<PostTypeDTO>> getAllPostTypesByUserId(
-			@PathVariable("userId") Integer userId,
-			@ApiParam(value = "Status")
-			@RequestParam(required = false) PostStatus status) {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(postTypeService.findAllPostTypesByUserIdAndStatus(userId, status));
-	}
+    /**
+     * getAllPostTypesByUserId method returns all post types of posts published by certain user
+     *
+     * @param userId Id of user whose materials we want to receive
+     * @return 'OK' HttpStatus and method call from service
+     */
+    @GetMapping(POST_TYPES_ALL_TYPES_BY_USER)
+    @ApiOperation(value = "Get all types of materials by userId")
+    public ResponseEntity<List<PostTypeDTO>> getAllPostTypesByUserId(
+            @PathVariable("userId") Integer userId,
+            @ApiParam(value = "Status")
+            @RequestParam(required = false) PostStatus status) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(postTypeService.findAllPostTypesByUserIdAndStatus(userId, status));
+    }
 }

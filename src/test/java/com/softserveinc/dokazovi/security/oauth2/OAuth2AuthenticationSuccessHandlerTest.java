@@ -22,65 +22,65 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OAuth2AuthenticationSuccessHandlerTest {
 
-	@Mock
-	private HttpServletRequest request;
-	@Mock
-	private HttpServletResponse response;
-	@Mock
-	private TokenProvider tokenProvider;
-	@Mock
-	private AppProperties appProperties;
-	@Mock
-	private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
+    private HttpServletResponse response;
+    @Mock
+    private TokenProvider tokenProvider;
+    @Mock
+    private AppProperties appProperties;
+    @Mock
+    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-	private OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandlerUnderTest;
-	private UserDTO userDTO;
+    private OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandlerUnderTest;
+    private UserDTO userDTO;
 
-	@BeforeEach
-	void init() {
-		oauth2AuthenticationSuccessHandlerUnderTest = new OAuth2AuthenticationSuccessHandler(
-				tokenProvider, appProperties, httpCookieOAuth2AuthorizationRequestRepository);
+    @BeforeEach
+    void init() {
+        oauth2AuthenticationSuccessHandlerUnderTest = new OAuth2AuthenticationSuccessHandler(
+                tokenProvider, appProperties, httpCookieOAuth2AuthorizationRequestRepository);
 
-		userDTO = UserDTO.builder()
-				.id(1)
-				.firstName("Admin")
-				.lastName("Admin")
-				.email("admin@mail.com")
-				.phone("+380951111111")
-				.avatar("imageUrl")
-				.build();
-	}
+        userDTO = UserDTO.builder()
+                .id(1)
+                .firstName("Admin")
+                .lastName("Admin")
+                .email("admin@mail.com")
+                .phone("+380951111111")
+                .avatar("imageUrl")
+                .build();
+    }
 
-	@Test
-	void onAuthenticationSuccess() throws Exception {
-		final Authentication authentication = new UsernamePasswordAuthenticationToken(userDTO, null);
+    @Test
+    void onAuthenticationSuccess() throws Exception {
+        final Authentication authentication = new UsernamePasswordAuthenticationToken(userDTO, null);
 
-		when(tokenProvider.createToken(authentication)).thenReturn("result");
+        when(tokenProvider.createToken(authentication)).thenReturn("result");
 
-		oauth2AuthenticationSuccessHandlerUnderTest.onAuthenticationSuccess(request, response, authentication);
+        oauth2AuthenticationSuccessHandlerUnderTest.onAuthenticationSuccess(request, response, authentication);
 
-		verify(httpCookieOAuth2AuthorizationRequestRepository)
-				.removeAuthorizationRequestCookies(any(HttpServletRequest.class),
-				any(HttpServletResponse.class));
-	}
+        verify(httpCookieOAuth2AuthorizationRequestRepository)
+                .removeAuthorizationRequestCookies(any(HttpServletRequest.class),
+                        any(HttpServletResponse.class));
+    }
 
-	@Test
-	void determineTargetUrl() {
-		final Authentication authentication = new UsernamePasswordAuthenticationToken(userDTO, null);
+    @Test
+    void determineTargetUrl() {
+        final Authentication authentication = new UsernamePasswordAuthenticationToken(userDTO, null);
 
-		when(tokenProvider.createToken(authentication)).thenReturn("result");
+        when(tokenProvider.createToken(authentication)).thenReturn("result");
 
-		final String result = oauth2AuthenticationSuccessHandlerUnderTest
-				.determineTargetUrl(request, response, authentication);
+        final String result = oauth2AuthenticationSuccessHandlerUnderTest
+                .determineTargetUrl(request, response, authentication);
 
-		assertEquals("/?token=result", result);
-	}
+        assertEquals("/?token=result", result);
+    }
 
-	@Test
-	void clearAuthenticationAttributes() {
-		oauth2AuthenticationSuccessHandlerUnderTest.clearAuthenticationAttributes(request, response);
+    @Test
+    void clearAuthenticationAttributes() {
+        oauth2AuthenticationSuccessHandlerUnderTest.clearAuthenticationAttributes(request, response);
 
-		verify(httpCookieOAuth2AuthorizationRequestRepository)
-				.removeAuthorizationRequestCookies(any(HttpServletRequest.class), any(HttpServletResponse.class));
-	}
+        verify(httpCookieOAuth2AuthorizationRequestRepository)
+                .removeAuthorizationRequestCookies(any(HttpServletRequest.class), any(HttpServletResponse.class));
+    }
 }

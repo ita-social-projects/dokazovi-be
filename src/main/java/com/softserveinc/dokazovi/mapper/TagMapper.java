@@ -9,9 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TagMapper {
 
-	TagDTO toTagDTO(TagEntity tagEntity);
+    TagDTO toTagDTO(TagEntity tagEntity);
 
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "posts", ignore = true)
-	TagEntity toTagEntity(TagSaveDTO tagSaveDTO);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "posts", ignore = true)
+    TagEntity toTagEntity(TagSaveDTO tagSaveDTO);
 }

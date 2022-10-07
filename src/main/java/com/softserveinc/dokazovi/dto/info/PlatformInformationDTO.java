@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PlatformInformationDTO {
 
-	private Integer id;
-	private String title;
-	private String text;
+    private Integer id;
+    private String title;
+    private String text;
 }

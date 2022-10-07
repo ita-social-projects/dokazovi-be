@@ -10,14 +10,14 @@ import javax.validation.ConstraintValidatorContext;
 
 @RequiredArgsConstructor
 public class OriginExistsValidator implements ConstraintValidator<OriginExists, OriginDTOForSavingPost> {
-	private final OriginRepository repository;
+    private final OriginRepository repository;
 
-	@Override
-	public boolean isValid(OriginDTOForSavingPost value, ConstraintValidatorContext context) {
-		Integer id = value.getId();
-		if (id == null) {
-			return false;
-		}
-		return repository.existsById(id);
-	}
+    @Override
+    public boolean isValid(OriginDTOForSavingPost value, ConstraintValidatorContext context) {
+        Integer id = value.getId();
+        if (id == null) {
+            return false;
+        }
+        return repository.existsById(id);
+    }
 }

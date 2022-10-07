@@ -15,33 +15,33 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostTypeServiceImpl implements PostTypeService {
 
-	private final PostTypeRepository postTypeRepository;
-	private final PostTypeMapper postTypeMapper;
+    private final PostTypeRepository postTypeRepository;
+    private final PostTypeMapper postTypeMapper;
 
-	@Override
-	public List<PostTypeDTO> findAll() {
-		return postTypeRepository.findAll()
-				.stream()
-				.map(postTypeMapper::toPostTypeDTO)
-				.collect(Collectors.toList());
-	}
+    @Override
+    public List<PostTypeDTO> findAll() {
+        return postTypeRepository.findAll()
+                .stream()
+                .map(postTypeMapper::toPostTypeDTO)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<PostTypeDTO> findAllPostTypesByUserId(Integer userId) {
-		return postTypeRepository.findAllPostTypesByUserId(userId)
-				.stream()
-				.map(postTypeMapper::toPostTypeDTO)
-				.collect(Collectors.toList());
-	}
+    @Override
+    public List<PostTypeDTO> findAllPostTypesByUserId(Integer userId) {
+        return postTypeRepository.findAllPostTypesByUserId(userId)
+                .stream()
+                .map(postTypeMapper::toPostTypeDTO)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<PostTypeDTO> findAllPostTypesByUserIdAndStatus(Integer userId, PostStatus postStatus) {
-		if (postStatus == null) {
-			return findAllPostTypesByUserId(userId);
-		}
-		return postTypeRepository.findAllPostTypesByUserIdAndStatus(userId, postStatus)
-				.stream()
-				.map(postTypeMapper::toPostTypeDTO)
-				.collect(Collectors.toList());
-	}
+    @Override
+    public List<PostTypeDTO> findAllPostTypesByUserIdAndStatus(Integer userId, PostStatus postStatus) {
+        if (postStatus == null) {
+            return findAllPostTypesByUserId(userId);
+        }
+        return postTypeRepository.findAllPostTypesByUserIdAndStatus(userId, postStatus)
+                .stream()
+                .map(postTypeMapper::toPostTypeDTO)
+                .collect(Collectors.toList());
+    }
 }

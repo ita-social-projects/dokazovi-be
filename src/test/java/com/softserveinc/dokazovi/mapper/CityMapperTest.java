@@ -12,37 +12,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CityMapperTest {
 
-	private final CityMapper mapper = Mappers.getMapper(CityMapper.class);
-	private CityEntity cityEntity;
+    private final CityMapper mapper = Mappers.getMapper(CityMapper.class);
+    private CityEntity cityEntity;
 
-	@BeforeEach
-	void init() {
-		cityEntity = CityEntity.builder()
-				.id(1)
-				.name("City name")
-				.build();
-	}
+    @BeforeEach
+    void init() {
+        cityEntity = CityEntity.builder()
+                .id(1)
+                .name("City name")
+                .build();
+    }
 
-	@Test
-	void toPostUserInstitutionCityDTO() {
-		PostUserInstitutionCityDTO postUserInstitutionCityDTO = mapper.toPostUserInstitutionCityDTO(cityEntity);
-		assertEquals(postUserInstitutionCityDTO.getId(), cityEntity.getId());
-		assertEquals(postUserInstitutionCityDTO.getName(), cityEntity.getName());
-	}
+    @Test
+    void toPostUserInstitutionCityDTO() {
+        PostUserInstitutionCityDTO postUserInstitutionCityDTO = mapper.toPostUserInstitutionCityDTO(cityEntity);
+        assertEquals(postUserInstitutionCityDTO.getId(), cityEntity.getId());
+        assertEquals(postUserInstitutionCityDTO.getName(), cityEntity.getName());
+    }
 
-	@Test
-	void toExpertInstitutionCityDTO_whenMaps_thenCorrect() {
-		UserInstitutionCityDTO userInstitutionCityDTO = mapper.toExpertInstitutionCityDTO(cityEntity);
+    @Test
+    void toExpertInstitutionCityDTO_whenMaps_thenCorrect() {
+        UserInstitutionCityDTO userInstitutionCityDTO = mapper.toExpertInstitutionCityDTO(cityEntity);
 
-		assertEquals(userInstitutionCityDTO.getId(), cityEntity.getId());
-		assertEquals(userInstitutionCityDTO.getName(), cityEntity.getName());
-	}
+        assertEquals(userInstitutionCityDTO.getId(), cityEntity.getId());
+        assertEquals(userInstitutionCityDTO.getName(), cityEntity.getName());
+    }
 
-	@Test
-	void toCityDTO() {
-		CityDTO cityDTO = mapper.toCityDTO(cityEntity);
+    @Test
+    void toCityDTO() {
+        CityDTO cityDTO = mapper.toCityDTO(cityEntity);
 
-		assertEquals(cityDTO.getId(), cityEntity.getId());
-		assertEquals(cityDTO.getName(), cityEntity.getName());
-	}
+        assertEquals(cityDTO.getId(), cityEntity.getId());
+        assertEquals(cityDTO.getName(), cityEntity.getName());
+    }
 }

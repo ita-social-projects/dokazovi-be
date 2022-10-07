@@ -14,26 +14,26 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-	private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-	@Override
-	@Transactional
-	public UserDetails loadUserByUsername(String email)
-			throws UsernameNotFoundException {
-		UserEntity user = userRepository.findByEmail(email)
-				.orElseThrow(() ->
-						new UsernameNotFoundException("User not found with email : " + email)
-				);
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with email : " + email)
+                );
 
-		return UserPrincipal.create(user);
-	}
+        return UserPrincipal.create(user);
+    }
 
-	@Transactional
-	public UserDetails loadUserById(Integer id) {
-		UserEntity user = userRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("User", "id", id)
-		);
+    @Transactional
+    public UserDetails loadUserById(Integer id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id)
+        );
 
-		return UserPrincipal.create(user);
-	}
+        return UserPrincipal.create(user);
+    }
 }

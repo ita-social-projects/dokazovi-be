@@ -12,5 +12,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface DirectionMapper {
 
-	DirectionDTO toDirectionDTO(DirectionEntity directionEntity);
+    DirectionDTO toDirectionDTO(DirectionEntity directionEntity);
 }

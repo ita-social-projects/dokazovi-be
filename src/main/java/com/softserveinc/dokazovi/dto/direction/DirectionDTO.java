@@ -19,18 +19,18 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class DirectionDTO {
 
-	@NotNull(message = "Direction id are required")
-	private Integer id;
+    @NotNull(message = "Direction id are required")
+    private Integer id;
 
-	@NotBlank(message = "Direction name cannot be empty")
-	private String name;
+    @NotBlank(message = "Direction name cannot be empty")
+    private String name;
 
-	@NotBlank(message = "Direction label cannot be empty")
-	private String label;
+    @NotBlank(message = "Direction label cannot be empty")
+    private String label;
 
-	private String color;
+    private String color;
 
-	private Boolean hasDoctors;
+    private Boolean hasDoctors;
 
-	private Boolean hasPosts;
+    private Boolean hasPosts;
 }

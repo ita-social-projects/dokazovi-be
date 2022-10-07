@@ -14,9 +14,9 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class PostTypeDTO {
 
-	@NotNull(message = "PostType id are required")
-	private Integer id;
+    @NotNull(message = "PostType id are required")
+    private Integer id;
 
-	@NotBlank(message = "PostType name cannot be empty")
-	private String name;
+    @NotBlank(message = "PostType name cannot be empty")
+    private String name;
 }

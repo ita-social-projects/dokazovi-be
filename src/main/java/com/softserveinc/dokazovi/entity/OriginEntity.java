@@ -27,17 +27,17 @@ import java.util.Set;
 @Table(name = "origins")
 public class OriginEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "origin_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "origin_id")
+    private Integer id;
 
-	private String name;
+    private String name;
 
-	private String parameters;
+    private String parameters;
 
-	@ManyToMany(mappedBy = "origins")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<PostEntity> posts;
+    @ManyToMany(mappedBy = "origins")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<PostEntity> posts;
 }

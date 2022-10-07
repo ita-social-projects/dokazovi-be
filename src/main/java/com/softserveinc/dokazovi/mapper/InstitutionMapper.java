@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface InstitutionMapper {
 
-	PostUserInstitutionDTO toPostUserInstitutionDTO (InstitutionEntity institution);
+    PostUserInstitutionDTO toPostUserInstitutionDTO (InstitutionEntity institution);
 
-	UserInstitutionDTO toExpertInstitutionDTO (InstitutionEntity institution);
+    UserInstitutionDTO toExpertInstitutionDTO (InstitutionEntity institution);
 }

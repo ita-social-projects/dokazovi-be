@@ -13,8 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableConfigurationProperties(AppProperties.class)
 public class DokazoviApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(DokazoviApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(DokazoviApplication.class, args);
+    }
 
 }

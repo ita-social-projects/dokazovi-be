@@ -9,5 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface DoctorRepository extends JpaRepository<DoctorEntity, Integer> {
 
-	DoctorEntity getByProfileId(Integer profileId);
+    DoctorEntity getByProfileId(Integer profileId);
 }

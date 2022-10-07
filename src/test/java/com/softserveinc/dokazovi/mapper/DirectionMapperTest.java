@@ -10,26 +10,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DirectionMapperTest {
 
-	private final DirectionMapper mapper = Mappers.getMapper(DirectionMapper.class);
-	private DirectionEntity directionEntity;
+    private final DirectionMapper mapper = Mappers.getMapper(DirectionMapper.class);
+    private DirectionEntity directionEntity;
 
-	@BeforeEach
-	void init() {
-		directionEntity = DirectionEntity.builder()
-				.id(1)
-				.name("Some name")
-				.label("Some label")
-				.color("#ef5350")
-				.build();
-	}
+    @BeforeEach
+    void init() {
+        directionEntity = DirectionEntity.builder()
+                .id(1)
+                .name("Some name")
+                .label("Some label")
+                .color("#ef5350")
+                .build();
+    }
 
-	@Test
-	void toDirectionDTO_whenMaps_thenCorrect() {
-		DirectionDTO directionDTO = mapper.toDirectionDTO(directionEntity);
+    @Test
+    void toDirectionDTO_whenMaps_thenCorrect() {
+        DirectionDTO directionDTO = mapper.toDirectionDTO(directionEntity);
 
-		assertEquals(directionDTO.getId(), directionEntity.getId());
-		assertEquals(directionDTO.getName(), directionEntity.getName());
-		assertEquals(directionDTO.getLabel(), directionEntity.getLabel());
-		assertEquals(directionDTO.getColor(), directionEntity.getColor());
-	}
+        assertEquals(directionDTO.getId(), directionEntity.getId());
+        assertEquals(directionDTO.getName(), directionEntity.getName());
+        assertEquals(directionDTO.getLabel(), directionEntity.getLabel());
+        assertEquals(directionDTO.getColor(), directionEntity.getColor());
+    }
 }

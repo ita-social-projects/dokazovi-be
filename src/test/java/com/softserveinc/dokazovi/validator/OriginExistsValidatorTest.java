@@ -16,26 +16,26 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class OriginExistsValidatorTest {
 
-	@Mock
-	private OriginRepository repository;
+    @Mock
+    private OriginRepository repository;
 
-	@InjectMocks
-	private OriginExistsValidator validator;
+    @InjectMocks
+    private OriginExistsValidator validator;
 
-	@Test
-	void isValid_WhenIdNotNull_ReturnTrue() {
-		when(repository.existsById(anyInt())).thenReturn(true);
-		OriginDTOForSavingPost dto = OriginDTOForSavingPost.builder()
-				.id(1)
-				.build();
-		assertTrue(validator.isValid(dto, null));
-	}
+    @Test
+    void isValid_WhenIdNotNull_ReturnTrue() {
+        when(repository.existsById(anyInt())).thenReturn(true);
+        OriginDTOForSavingPost dto = OriginDTOForSavingPost.builder()
+                .id(1)
+                .build();
+        assertTrue(validator.isValid(dto, null));
+    }
 
-	@Test
-	void isValid_WhenIdIsNull_ReturnFalse() {
-		OriginDTOForSavingPost dto = OriginDTOForSavingPost.builder()
-				.id(null)
-				.build();
-		assertFalse(validator.isValid(dto, null));
-	}
+    @Test
+    void isValid_WhenIdIsNull_ReturnFalse() {
+        OriginDTOForSavingPost dto = OriginDTOForSavingPost.builder()
+                .id(null)
+                .build();
+        assertFalse(validator.isValid(dto, null));
+    }
 }

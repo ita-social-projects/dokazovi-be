@@ -22,25 +22,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoSettings(strictness = Strictness.LENIENT)
 class OriginControllerTest {
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@Mock
-	private OriginService originService;
-	@InjectMocks
-	private OriginController originController;
+    @Mock
+    private OriginService originService;
+    @InjectMocks
+    private OriginController originController;
 
-	@BeforeEach
-	void setUp() {
-		this.mockMvc = MockMvcBuilders
-				.standaloneSetup(originController)
-				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-				.build();
-	}
+    @BeforeEach
+    void setUp() {
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(originController)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
+    }
 
-	@Test
-	void getAllOrigins() throws Exception {
-		mockMvc.perform(get(ORIGIN)).andExpect(status().isOk());
+    @Test
+    void getAllOrigins() throws Exception {
+        mockMvc.perform(get(ORIGIN)).andExpect(status().isOk());
 
-		verify(originService).findAllOrigins();
-	}
+        verify(originService).findAllOrigins();
+    }
 }

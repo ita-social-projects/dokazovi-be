@@ -24,15 +24,15 @@ import java.util.Set;
 @Table(name = "post_types")
 public class PostTypeEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "type_id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "type_id")
+    private Integer id;
 
-	private String name;
+    private String name;
 
-	@OneToMany(mappedBy = "type")
-	@EqualsAndHashCode.Exclude
-	@ToString.Exclude
-	private Set<PostEntity> posts;
+    @OneToMany(mappedBy = "type")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<PostEntity> posts;
 }

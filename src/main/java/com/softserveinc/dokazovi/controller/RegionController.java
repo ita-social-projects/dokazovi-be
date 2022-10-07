@@ -24,26 +24,26 @@ import static com.softserveinc.dokazovi.controller.EndPoints.REGION_BY_CITY;
 @RequiredArgsConstructor
 public class RegionController {
 
-	private final RegionService regionService;
+    private final RegionService regionService;
 
-	/**
-	 * Gets all regions method returns all regions from db.
-	 *
-	 * @return all regions and HttpStatus 'OK'
-	 */
-	@GetMapping
-	@ApiOperation(value = "Get all regions")
-	public ResponseEntity<List<RegionDTO>> getAllRegions() {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(regionService.findAllRegions());
-	}
+    /**
+     * Gets all regions method returns all regions from db.
+     *
+     * @return all regions and HttpStatus 'OK'
+     */
+    @GetMapping
+    @ApiOperation(value = "Get all regions")
+    public ResponseEntity<List<RegionDTO>> getAllRegions() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(regionService.findAllRegions());
+    }
 
-	@GetMapping(REGION_BY_CITY)
-	@ApiOperation("Get region by city")
-	public ResponseEntity<RegionDTO> getRegionByCity(@PathVariable Integer cityId) {
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(regionService.findRegionByCity(cityId));
-	}
+    @GetMapping(REGION_BY_CITY)
+    @ApiOperation("Get region by city")
+    public ResponseEntity<RegionDTO> getRegionByCity(@PathVariable Integer cityId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(regionService.findRegionByCity(cityId));
+    }
 }

@@ -13,6 +13,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostPublishedAtDTO {
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-	private Timestamp publishedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    private Timestamp publishedAt;
 }

@@ -7,10 +7,10 @@ import lombok.Data;
 @Builder
 public class PostUserDTO {
 
-	private Integer id;
-	private String firstName;
-	private String lastName;
-	private String avatar;
-	private String bio;
-	private PostUserInstitutionDTO mainInstitution;
+    private Integer id;
+    private String firstName;
+    private String lastName;
+    private String avatar;
+    private String bio;
+    private PostUserInstitutionDTO mainInstitution;
 }

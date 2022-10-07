@@ -12,10 +12,10 @@ import lombok.Data;
 @Builder
 public class UserInstitutionDTO {
 
-	private Integer id;
+    private Integer id;
 
-	private UserInstitutionCityDTO city;
+    private UserInstitutionCityDTO city;
 
-	private String name;
+    private String name;
 
 }

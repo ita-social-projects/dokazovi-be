@@ -11,20 +11,20 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring",
-		unmappedTargetPolicy = ReportingPolicy.IGNORE,
-		collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
 public interface PostMapper {
 
-	@Mapping(target = "author.mainInstitution", source = "author.doctor.mainInstitution")
-	@Mapping(target = "author.bio", source = "author.doctor.bio")
-	PostDTO toPostDTO(PostEntity postEntity);
+    @Mapping(target = "author.mainInstitution", source = "author.doctor.mainInstitution")
+    @Mapping(target = "author.bio", source = "author.doctor.bio")
+    PostDTO toPostDTO(PostEntity postEntity);
 
-	@Mapping(target = "views", defaultValue = "0")
-	@Mapping(target = "realViews", defaultValue = "0")
-	@Mapping(target = "fakeViews", defaultValue = "0")
-	PostEntity toPostEntity(PostSaveFromUserDTO postSaveFromUserDTO);
+    @Mapping(target = "views", defaultValue = "0")
+    @Mapping(target = "realViews", defaultValue = "0")
+    @Mapping(target = "fakeViews", defaultValue = "0")
+    PostEntity toPostEntity(PostSaveFromUserDTO postSaveFromUserDTO);
 
-	PostEntity updatePostEntityFromDTO(PostSaveFromUserDTO postSaveFromUserDTO, @MappingTarget PostEntity postEntity);
+    PostEntity updatePostEntityFromDTO(PostSaveFromUserDTO postSaveFromUserDTO, @MappingTarget PostEntity postEntity);
 
-	LatestUserPostDTO toLatestExpertPostDTO(PostEntity post);
+    LatestUserPostDTO toLatestExpertPostDTO(PostEntity post);
 }

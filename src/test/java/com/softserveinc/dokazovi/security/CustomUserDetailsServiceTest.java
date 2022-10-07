@@ -25,62 +25,62 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CustomUserDetailsServiceTest {
 
-	@Mock
-	private UserEntity userEntity;
+    @Mock
+    private UserEntity userEntity;
 
-	@Mock
-	private UserRepository userRepository;
+    @Mock
+    private UserRepository userRepository;
 
-	@Mock
-	private UserPrincipal userPrincipal;
+    @Mock
+    private UserPrincipal userPrincipal;
 
-	@InjectMocks
-	private CustomUserDetailsService customUserDetailsService;
+    @InjectMocks
+    private CustomUserDetailsService customUserDetailsService;
 
 
-	@Test
-	void loadUserByUsername() {
-		String email = "test@test.com";
-		RoleEntity roleEntity = RoleEntity.builder().id(1).name("ROLE_DOCTOR").build();
-		UserEntity user = UserEntity.builder()
-				.id(1)
-				.status(UserStatus.ACTIVE)
-				.email(email)
-				.role(roleEntity)
-				.enabled(true)
-				.build();
-		ProviderEntity providerEntity = ProviderEntity.builder().id(1).email(email).name("LOCAL").userIdByProvider("1")
-				.user(user).build();
-		Set<ProviderEntity> providerEntities = new HashSet<>();
-		providerEntities.add(providerEntity);
-		user.setUserProviderEntities(providerEntities);
-		when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
-		UserDetails resultUser = customUserDetailsService.loadUserByUsername(email);
-		verify(userRepository, times(1)).findByEmail(email);
-		assertEquals(email, resultUser.getUsername());
-	}
+    @Test
+    void loadUserByUsername() {
+        String email = "test@test.com";
+        RoleEntity roleEntity = RoleEntity.builder().id(1).name("ROLE_DOCTOR").build();
+        UserEntity user = UserEntity.builder()
+                .id(1)
+                .status(UserStatus.ACTIVE)
+                .email(email)
+                .role(roleEntity)
+                .enabled(true)
+                .build();
+        ProviderEntity providerEntity = ProviderEntity.builder().id(1).email(email).name("LOCAL").userIdByProvider("1")
+                .user(user).build();
+        Set<ProviderEntity> providerEntities = new HashSet<>();
+        providerEntities.add(providerEntity);
+        user.setUserProviderEntities(providerEntities);
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+        UserDetails resultUser = customUserDetailsService.loadUserByUsername(email);
+        verify(userRepository, times(1)).findByEmail(email);
+        assertEquals(email, resultUser.getUsername());
+    }
 
-	@Test
-	void loadUserById() {
-		Integer id = 1;
-		String email = "test@test.com";
-		RoleEntity roleEntity = RoleEntity.builder().id(1).name("ROLE_DOCTOR").build();
-		UserEntity userEntity = UserEntity.builder()
-				.id(1)
-				.status(UserStatus.ACTIVE)
-				.email(email)
-				.role(roleEntity)
-				.enabled(true)
-				.build();
-		ProviderEntity providerEntity = ProviderEntity.builder().id(1).email(email).name("LOCAL").userIdByProvider("1")
-				.user(userEntity).build();
-		Set<ProviderEntity> providerEntities = new HashSet<>();
-		providerEntities.add(providerEntity);
-		userEntity.setUserProviderEntities(providerEntities);
-		when(userRepository.findById(id))
-				.thenReturn(Optional.of(userEntity));
-		UserDetails resultUser = customUserDetailsService.loadUserById(id);
-		verify(userRepository, times(1)).findById(id);
-		assertEquals(email, resultUser.getUsername());
-	}
+    @Test
+    void loadUserById() {
+        Integer id = 1;
+        String email = "test@test.com";
+        RoleEntity roleEntity = RoleEntity.builder().id(1).name("ROLE_DOCTOR").build();
+        UserEntity userEntity = UserEntity.builder()
+                .id(1)
+                .status(UserStatus.ACTIVE)
+                .email(email)
+                .role(roleEntity)
+                .enabled(true)
+                .build();
+        ProviderEntity providerEntity = ProviderEntity.builder().id(1).email(email).name("LOCAL").userIdByProvider("1")
+                .user(userEntity).build();
+        Set<ProviderEntity> providerEntities = new HashSet<>();
+        providerEntities.add(providerEntity);
+        userEntity.setUserProviderEntities(providerEntities);
+        when(userRepository.findById(id))
+                .thenReturn(Optional.of(userEntity));
+        UserDetails resultUser = customUserDetailsService.loadUserById(id);
+        verify(userRepository, times(1)).findById(id);
+        assertEquals(email, resultUser.getUsername());
+    }
 }
