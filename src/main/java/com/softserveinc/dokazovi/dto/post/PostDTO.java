@@ -31,11 +31,11 @@ public class PostDTO {
     private PostTypeDTO type;
     private String status;
     private Set<OriginDTO> origins;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd.MM.yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Timestamp createdAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Timestamp modifiedAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM.dd.yyyy HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Timestamp publishedAt;
     private Integer importanceOrder;
     private String importantImageUrl;
