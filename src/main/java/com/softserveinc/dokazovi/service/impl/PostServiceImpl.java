@@ -394,7 +394,16 @@ public class PostServiceImpl implements PostService {
         } else {
             PostEntity byId = postRepository.findById(postId)
                     .orElseThrow(EntityNotFoundException::new);
+            Integer fakeViewsById = byId.getFakeViews();
+            Integer realViewsById = byId.getRealViews();
             mappedEntity = postMapper.updatePostEntityFromDTO(postDTO, byId);
+
+            if (postDTO.getFakeViews() == null) {
+                mappedEntity.setFakeViews(fakeViewsById);
+            }
+            if (postDTO.getRealViews() == null) {
+                mappedEntity.setRealViews(realViewsById);
+            }
         }
 
         mappedEntity.setStatus(PostStatus.values()[postDTO.getPostStatus()]);
