@@ -20,8 +20,10 @@ public class LogServiceImpl implements LogService {
 
     private final LogRepository logRepository;
     private final LogMapper logMapper;
+
     @Override
-    public Page<PostLogDTO> findAllPostLogs(Pageable pageable, String username, String title, LocalDate startDate, LocalDate endDate) {
+    public Page<PostLogDTO> findAllPostLogs(Pageable pageable, String username, String title,
+            LocalDate startDate, LocalDate endDate) {
         if (startDate != null || endDate != null) {
             LocalDate startLocalDate = Optional.ofNullable(startDate).orElse(LocalDate.EPOCH);
             LocalDate endLocalDate = Optional.ofNullable(endDate).orElse(LocalDate.now());

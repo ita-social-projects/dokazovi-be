@@ -12,7 +12,10 @@ import java.sql.Timestamp;
 public interface LogRepository extends JpaRepository<LogEntity, Integer> {
 
     Page<LogEntity> findAll(Pageable pageable);
+
     Page<LogEntity> findAllByNameOfChangerContainingIgnoreCase(Pageable pageable, String nameOfChanger);
+
     Page<LogEntity> findAllByTitleContainingIgnoreCase(Pageable pageable, String title);
+
     Page<LogEntity> findByDateOfChangeBetween(Pageable pageable, Timestamp startDate, Timestamp endDate);
 }

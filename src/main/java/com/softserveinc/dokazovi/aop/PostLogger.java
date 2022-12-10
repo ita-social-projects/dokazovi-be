@@ -63,7 +63,7 @@ public class PostLogger {
             }
         }
         String postEntityBeforeExecutingStatus = postRepository.getOne(postId).getStatus().name();
-        Boolean joinPoint = (Boolean) proceedingJoinPoint.proceed();
+        final Boolean joinPoint = (Boolean) proceedingJoinPoint.proceed();
         UserPrincipal userPrincipal = null;
         PostSaveFromUserDTO postSaveFromUserDTO = null;
         for (Object obj : arguments) {
@@ -76,7 +76,7 @@ public class PostLogger {
         }
         String postEntityChangedStatus = PostStatus.values()[postSaveFromUserDTO.getPostStatus()].name();
         UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail()).get();
-        String changes = "N/A";
+        String changes;
         if (postEntityBeforeExecutingStatus.equals(postEntityChangedStatus)) {
             changes = "Оновлено матеріал";
         } else {
@@ -96,6 +96,7 @@ public class PostLogger {
                 case "PUBLISHED":
                     changes = "Опубліковано";
                     break;
+                default: changes = "N/A";
             }
         }
         LogEntity log = LogEntity.builder()
