@@ -41,14 +41,7 @@ public class PostLogger {
                 userPrincipal = (UserPrincipal) obj;
             }
         }
-        UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail()).get();
-        LogEntity log = LogEntity.builder()
-                .title(postSaveFromUserDTO.getTitle())
-                .changes("Створено матеріал")
-                .nameOfChanger(userEntity.getLastName() + " " + userEntity.getFirstName())
-                .build();
-
-        logRepository.save(log);
+        makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, "Створено матеріал");
     }
 
     @Around("execution(* com.softserveinc.dokazovi.service.impl.PostServiceImpl.updatePostById("
@@ -75,7 +68,6 @@ public class PostLogger {
             }
         }
         String postEntityChangedStatus = PostStatus.values()[postSaveFromUserDTO.getPostStatus()].name();
-        UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail()).get();
         String changes;
         if (postEntityBeforeExecutingStatus.equals(postEntityChangedStatus)) {
             changes = "Оновлено матеріал";
@@ -96,16 +88,11 @@ public class PostLogger {
                 case "PUBLISHED":
                     changes = "Опубліковано";
                     break;
-                default: changes = "N/A";
+                default:
+                    changes = "N/A";
             }
         }
-        LogEntity log = LogEntity.builder()
-                .title(postSaveFromUserDTO.getTitle())
-                .changes(changes)
-                .nameOfChanger(userEntity.getLastName() + " " + userEntity.getFirstName())
-                .build();
-
-        logRepository.save(log);
+        makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, changes);
         return joinPoint;
     }
 
@@ -132,13 +119,16 @@ public class PostLogger {
             return;
         }
         PostEntity postEntity = postRepository.getOne(postId);
+        makeEntryInLogs(postEntity.getTitle(), userPrincipal, "Матеріал видалено");
+    }
+
+    private void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes) {
         UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail()).get();
         LogEntity log = LogEntity.builder()
-                .title(postEntity.getTitle())
-                .changes("Матеріал видалено")
+                .title(title)
+                .changes(changes)
                 .nameOfChanger(userEntity.getLastName() + " " + userEntity.getFirstName())
                 .build();
-
         logRepository.save(log);
     }
 }
