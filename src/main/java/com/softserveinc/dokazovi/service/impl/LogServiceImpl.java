@@ -43,4 +43,9 @@ public class LogServiceImpl implements LogService {
         return logRepository.findAll(pageable)
                 .map(logMapper::toPostLogDTO);
     }
+
+    @Override
+    public PostLogDTO getLogById(Integer id) {
+        return logMapper.toPostLogDTO(logRepository.getOne(id));
+    }
 }
