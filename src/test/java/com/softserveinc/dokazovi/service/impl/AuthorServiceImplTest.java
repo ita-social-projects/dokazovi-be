@@ -151,13 +151,13 @@ class AuthorServiceImplTest {
 
     @Test
     void update() {
-        UserPrincipal userPrincipal = UserPrincipal.builder()
-                .role(adminRole)
-                .build();
-
         when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
         when(userRepository.getOne(anyInt())).thenReturn(userEntity);
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(cityEntity));
+
+        UserPrincipal userPrincipal = UserPrincipal.builder()
+                .role(adminRole)
+                .build();
 
         authorService.update(1, authorRequestDTO, userPrincipal);
 
@@ -178,6 +178,10 @@ class AuthorServiceImplTest {
 
     @Test
     void save() {
+
+
+        when(cityRepository.findById(anyInt())).thenReturn(Optional.of(cityEntity));
+
         UserPrincipal userPrincipal = UserPrincipal.builder()
                 .role(adminRole)
                 .build();
@@ -198,8 +202,6 @@ class AuthorServiceImplTest {
                 .profile(user)
                 .bio(authorRequestDTO.getBio())
                 .build();
-
-        when(cityRepository.findById(anyInt())).thenReturn(Optional.of(cityEntity));
 
         authorService.save(authorRequestDTO, userPrincipal);
 
