@@ -110,9 +110,8 @@ public class PostLogger {
     }
 
     private static Integer getPostIdFromArray(Object[] arguments) {
-        return Arrays.stream(arguments)
-                .filter(obj -> obj instanceof PostSaveFromUserDTO)
-                .map(obj -> ((PostSaveFromUserDTO) obj).getId())
+        return (Integer) Arrays.stream(arguments)
+                .filter(obj -> obj instanceof Integer)
                 .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
     }
 
