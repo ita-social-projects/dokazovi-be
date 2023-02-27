@@ -11,9 +11,12 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -42,6 +45,8 @@ class PostLoggerTest {
     private PostRepository postRepository;
     @InjectMocks
     private PostLogger postLogger;
+    @Captor
+    private ArgumentCaptor<LogEntity> logEntityArgumentCaptor;
 
     private PostSaveFromUserDTO postSaveFromUserDTO;
     private UserPrincipal userPrincipal;
@@ -90,6 +95,8 @@ class PostLoggerTest {
         postLogger.updatePost(mock);
 
         verify(logRepository).save(any(LogEntity.class));
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "Оновлено матеріал");
     }
 
     @Test

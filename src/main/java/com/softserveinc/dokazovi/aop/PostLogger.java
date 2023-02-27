@@ -17,6 +17,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+
 @Component
 @Aspect
 @RequiredArgsConstructor
@@ -31,16 +34,8 @@ public class PostLogger {
             + "com.softserveinc.dokazovi.security.UserPrincipal))")
     public void saveNewPost(JoinPoint joinPoint) {
         Object[] arguments = joinPoint.getArgs();
-        PostSaveFromUserDTO postSaveFromUserDTO = null;
-        UserPrincipal userPrincipal = null;
-        for (Object obj : arguments) {
-            if (obj instanceof PostSaveFromUserDTO) {
-                postSaveFromUserDTO = (PostSaveFromUserDTO) obj;
-            }
-            if (obj instanceof UserPrincipal) {
-                userPrincipal = (UserPrincipal) obj;
-            }
-        }
+        PostSaveFromUserDTO postSaveFromUserDTO = getPostSaveFromUserDTOFromArray(arguments);
+        UserPrincipal userPrincipal = getUserPrincipalFromArray(arguments);
         makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, "Створено матеріал");
     }
 
@@ -49,24 +44,11 @@ public class PostLogger {
             + "com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO))")
     public Boolean updatePost(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object[] arguments = proceedingJoinPoint.getArgs();
-        Integer postId = null;
-        for (Object obj : arguments) {
-            if (obj instanceof PostSaveFromUserDTO) {
-                postId = ((PostSaveFromUserDTO) obj).getId();
-            }
-        }
+        Integer postId = getPostIdFromArray(arguments);
         String postEntityBeforeExecutingStatus = postRepository.getOne(postId).getStatus().name();
         final Boolean joinPoint = (Boolean) proceedingJoinPoint.proceed();
-        UserPrincipal userPrincipal = null;
-        PostSaveFromUserDTO postSaveFromUserDTO = null;
-        for (Object obj : arguments) {
-            if (obj instanceof PostSaveFromUserDTO) {
-                postSaveFromUserDTO = (PostSaveFromUserDTO) obj;
-            }
-            if (obj instanceof UserPrincipal) {
-                userPrincipal = (UserPrincipal) obj;
-            }
-        }
+        UserPrincipal userPrincipal = getUserPrincipalFromArray(arguments);
+        PostSaveFromUserDTO postSaveFromUserDTO = getPostSaveFromUserDTOFromArray(arguments);
         String postEntityChangedStatus = PostStatus.values()[postSaveFromUserDTO.getPostStatus()].name();
         String changes;
         if (postEntityBeforeExecutingStatus.equals(postEntityChangedStatus)) {
@@ -101,20 +83,9 @@ public class PostLogger {
             + "Integer, boolean))")
     public void deletePost(JoinPoint joinPoint) {
         Object[] arguments = joinPoint.getArgs();
-        UserPrincipal userPrincipal = null;
-        Integer postId = null;
-        boolean flag = false;
-        for (Object obj : arguments) {
-            if (obj instanceof UserPrincipal) {
-                userPrincipal = (UserPrincipal) obj;
-            }
-            if (obj instanceof Integer) {
-                postId = (Integer) obj;
-            }
-            if (obj instanceof Boolean) {
-                flag = (boolean) obj;
-            }
-        }
+        UserPrincipal userPrincipal = getUserPrincipalFromArray(arguments);
+        Integer postId = getPostIdFromArray(arguments);
+        boolean flag = getBooleanFromArray(arguments);
         if (!flag) {
             return;
         }
@@ -130,5 +101,30 @@ public class PostLogger {
                 .nameOfChanger(userEntity.getLastName() + " " + userEntity.getFirstName())
                 .build();
         logRepository.save(log);
+    }
+
+    private static boolean getBooleanFromArray(Object[] arguments) {
+        return (boolean) Arrays.stream(arguments)
+                .filter(obj -> obj instanceof Boolean)
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
+    }
+
+    private static Integer getPostIdFromArray(Object[] arguments) {
+        return Arrays.stream(arguments)
+                .filter(obj -> obj instanceof PostSaveFromUserDTO)
+                .map(obj -> ((PostSaveFromUserDTO) obj).getId())
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
+    }
+
+    private static UserPrincipal getUserPrincipalFromArray(Object[] arguments) {
+        return (UserPrincipal) Arrays.stream(arguments)
+                .filter(obj -> obj instanceof UserPrincipal)
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
+    }
+
+    private static PostSaveFromUserDTO getPostSaveFromUserDTOFromArray(Object[] arguments) {
+        return (PostSaveFromUserDTO) Arrays.stream(arguments)
+                .filter(obj -> obj instanceof PostSaveFromUserDTO)
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
     }
 }
