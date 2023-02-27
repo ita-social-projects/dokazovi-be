@@ -186,13 +186,14 @@ class AuthorServiceImplTest {
                 .role(adminRole)
                 .build();
 
+        authorService.save(authorRequestDTO, userPrincipal);
+
         UserEntity user = UserEntity.builder()
                 .firstName(authorRequestDTO.getFirstName())
                 .lastName(authorRequestDTO.getLastName())
                 .avatar(authorRequestDTO.getAvatar())
                 .socialNetworks(authorRequestDTO.getSocialNetworks())
                 .build();
-
 
         AuthorEntity author = AuthorEntity.builder()
                 .publishedPosts(0L)
@@ -203,12 +204,10 @@ class AuthorServiceImplTest {
                 .bio(authorRequestDTO.getBio())
                 .build();
 
-        authorService.save(authorRequestDTO, userPrincipal);
-
         verify(userRepository).save(userEntityArgumentCaptor.capture());
         verify(authorRepository).save(authorEntityArgumentCaptor.capture());
-        Assertions.assertEquals(userEntityArgumentCaptor.getValue(), user);
         Assertions.assertEquals(authorEntityArgumentCaptor.getValue(), author);
+        Assertions.assertEquals(userEntityArgumentCaptor.getValue(), user);
     }
 
     @Test
