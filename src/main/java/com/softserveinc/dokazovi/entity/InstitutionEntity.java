@@ -45,10 +45,10 @@ public class InstitutionEntity {
     @OneToMany(mappedBy = "mainInstitution")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Set<DoctorEntity> mainDoctorsInstitution;
+    private Set<AuthorEntity> mainDoctorsInstitution;
 
     @ManyToMany(mappedBy = "institutions")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Set<DoctorEntity> doctors;
+    private Set<AuthorEntity> doctors;
 }

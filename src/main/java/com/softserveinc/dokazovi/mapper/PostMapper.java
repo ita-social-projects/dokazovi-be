@@ -15,8 +15,8 @@ import org.mapstruct.ReportingPolicy;
         collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
 public interface PostMapper {
 
-    @Mapping(target = "author.mainInstitution", source = "author.doctor.mainInstitution")
-    @Mapping(target = "author.bio", source = "author.doctor.bio")
+    @Mapping(target = "author.mainInstitution", source = "author.author.mainInstitution")
+    @Mapping(target = "author.bio", source = "author.author.bio")
     PostDTO toPostDTO(PostEntity postEntity);
 
     @Mapping(target = "views", defaultValue = "0")

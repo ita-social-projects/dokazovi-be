@@ -25,8 +25,8 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
      */
     @Query(nativeQuery = true,
             value = " UPDATE DIRECTIONS"
-                    + " SET HAS_DOCTORS = TRUE"
-                    + " WHERE DIRECTION_ID IN (SELECT DISTINCT DIRECTION_ID FROM DOCTORS_DIRECTIONS) ")
+                    + " SET HAS_AUTHORS = TRUE"
+                    + " WHERE DIRECTION_ID IN (SELECT DISTINCT DIRECTION_ID FROM AUTHORS_DIRECTIONS) ")
     @Modifying
     void updateDirectionsHasDoctorsStatus();
 
@@ -38,7 +38,7 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
     @Query(nativeQuery = true,
             value = "UPDATE DIRECTIONS d "
                     + " SET HAS_POSTS = (SELECT EXISTS "
-                    + "	    (SELECT 1 FROM DOCTOR_POST_DIRECTIONS "
+                    + "	    (SELECT 1 FROM AUTHOR_POST_DIRECTIONS "
                     + "	        WHERE DIRECTION_ID = d.DIRECTION_ID "
                     + "           AND VISIBLE = TRUE "
                     + "	        LIMIT 1)) "
@@ -54,8 +54,8 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
      */
     @Query(nativeQuery = true,
             value = "SELECT d.* FROM public.directions d "
-                    + "  LEFT JOIN public.doctors_directions dd ON d.direction_id = dd.direction_id "
-                    + "  WHERE dd.doctor_id = (SELECT doctor_id FROM public.doctors d WHERE user_id = :userId)")
+                    + "  LEFT JOIN public.AUTHORs_directions dd ON d.direction_id = dd.direction_id "
+                    + "  WHERE dd.AUTHOR_id = (SELECT AUTHOR_id FROM public.AUTHORs d WHERE user_id = :userId)")
     List<DirectionEntity> findAllDirectionsByUserId(Integer userId);
 
     /**
@@ -66,8 +66,8 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
      */
     @Query(nativeQuery = true,
             value = "SELECT d.* FROM public.directions d "
-                    + "  LEFT JOIN public.doctors_directions dd ON d.direction_id = dd.direction_id "
-                    + "  WHERE dd.doctor_id = :doctorId")
+                    + "  LEFT JOIN public.AUTHORs_directions dd ON d.direction_id = dd.direction_id "
+                    + "  WHERE dd.AUTHOR_id = :doctorId")
     List<DirectionEntity> findAllDirectionsByDoctorId(Integer doctorId);
 
     /**
@@ -78,7 +78,7 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
      */
     @Query(nativeQuery = true,
             value = "SELECT d.* FROM public.directions d "
-                    + "  LEFT JOIN public.doctor_post_directions dpd ON dpd.direction_id = d.direction_id "
+                    + "  LEFT JOIN public.AUTHOR_post_directions dpd ON dpd.direction_id = d.direction_id "
                     + "  WHERE dpd.user_id = :userId AND dpd.visible = TRUE")
     List<DirectionEntity> findAllDirectionsOfPostsByUserId(Integer userId);
 
@@ -89,8 +89,8 @@ public interface DirectionRepository extends JpaRepository<DirectionEntity, Inte
      * @return list of directions
      */
     @Query(nativeQuery = true, value = "SELECT d.* FROM public.directions d "
-            + "  LEFT JOIN public.doctor_post_directions dpd ON dpd.direction_id = d.direction_id "
-            + "  WHERE dpd.doctor_id = :doctorId AND dpd.visible = TRUE")
+            + "  LEFT JOIN public.AUTHOR_post_directions dpd ON dpd.direction_id = d.direction_id "
+            + "  WHERE dpd.AUTHOR_id = :doctorId AND dpd.visible = TRUE")
     List<DirectionEntity> findAllDirectionsOfPostsByDoctorId(@Param("doctorId") Integer id);
 }
 

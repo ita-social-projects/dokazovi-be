@@ -16,8 +16,8 @@ public interface UserMapper {
     PostMapper POST_MAPPER = Mappers.getMapper(PostMapper.class);
 
     @Mapping(target = "id", source = "userEntity.id")
-    @Mapping(target = ".", source = "userEntity.doctor")
-    @Mapping(target = "region", source = "userEntity.doctor.mainInstitution.city.region")
+    @Mapping(target = ".", source = "userEntity.author")
+    @Mapping(target = "region", source = "userEntity.author.mainInstitution.city.region")
     @Mapping(target = "postStatuses", source = "posts")
     @Mapping(target = "lastAddedPost",
             expression = "java(POST_MAPPER.toLatestExpertPostDTO(userEntity.getLatestExpertPost()))")

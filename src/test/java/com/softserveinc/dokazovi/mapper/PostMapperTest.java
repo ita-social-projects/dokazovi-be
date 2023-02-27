@@ -9,9 +9,9 @@ import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeIdOnlyDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
 import com.softserveinc.dokazovi.dto.user.LatestUserPostDTO;
+import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
-import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.OriginEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
@@ -41,7 +41,7 @@ class PostMapperTest {
     private final PostMapper postMapper = Mappers.getMapper(PostMapper.class);
 
     private PostEntity post;
-    private DoctorEntity doctor;
+    private AuthorEntity doctor;
     private UserEntity author;
     private PostTypeEntity type;
     private InstitutionEntity mainInstitution;
@@ -75,14 +75,14 @@ class PostMapperTest {
                 .avatar("Some avatar url")
                 .build();
 
-        doctor = DoctorEntity.builder()
+        doctor = AuthorEntity.builder()
                 .id(2)
                 .mainInstitution(mainInstitution)
                 .profile(author)
                 .bio("Some bio")
                 .build();
 
-        author.setDoctor(doctor);
+        author.setAuthor(doctor);
 
         type = PostTypeEntity.builder()
                 .id(1)
@@ -178,15 +178,15 @@ class PostMapperTest {
         assertEquals(postDTO.getAuthor().getFirstName(), author.getFirstName());
         assertEquals(postDTO.getAuthor().getLastName(), author.getLastName());
         assertEquals(postDTO.getAuthor().getAvatar(), author.getAvatar());
-        assertEquals(postDTO.getAuthor().getBio(), author.getDoctor().getBio());
+        assertEquals(postDTO.getAuthor().getBio(), author.getAuthor().getBio());
         assertEquals(postDTO.getAuthor().getMainInstitution().getId(),
-                author.getDoctor().getMainInstitution().getId());
+                author.getAuthor().getMainInstitution().getId());
         assertEquals(postDTO.getAuthor().getMainInstitution().getName(),
-                author.getDoctor().getMainInstitution().getName());
+                author.getAuthor().getMainInstitution().getName());
         assertEquals(postDTO.getAuthor().getMainInstitution().getCity().getId(),
-                author.getDoctor().getMainInstitution().getCity().getId());
+                author.getAuthor().getMainInstitution().getCity().getId());
         assertEquals(postDTO.getAuthor().getMainInstitution().getCity().getName(),
-                author.getDoctor().getMainInstitution().getCity().getName());
+                author.getAuthor().getMainInstitution().getCity().getName());
         assertEquals(postDTO.getType().getId(), type.getId());
         assertEquals(postDTO.getType().getName(), type.getName());
         assertEquals(postDTO.getCreatedAt(), post.getCreatedAt());
@@ -226,7 +226,7 @@ class PostMapperTest {
         checkToDtoOrigins(postDTO, post);
         checkToDtoTags(postDTO, post);
 
-        author.setDoctor(new DoctorEntity());
+        author.setAuthor(new AuthorEntity());
         post.setAuthor(author);
         postDTO = postMapper.toPostDTO(post);
         assertNull(postDTO.getAuthor().getBio());
@@ -311,7 +311,7 @@ class PostMapperTest {
 
     private void checkToDtoDirections(@Nonnull PostDTO postDTO, @Nonnull PostEntity post) {
 
-        if (post.getAuthor() == null || post.getAuthor().getDoctor() == null) {
+        if (post.getAuthor() == null || post.getAuthor().getAuthor() == null) {
             return;
         }
 
@@ -346,7 +346,7 @@ class PostMapperTest {
             assertEquals(dtoList.get(i).getId(), entityList.get(i).getId());
             assertEquals(dtoList.get(i).getName(), entityList.get(i).getName());
             assertEquals(dtoList.get(i).getColor(), entityList.get(i).getColor());
-            assertEquals(dtoList.get(i).getHasDoctors(), entityList.get(i).getHasDoctors());
+            assertEquals(dtoList.get(i).getHasAuthors(), entityList.get(i).getHasAuthors());
             assertEquals(dtoList.get(i).getHasPosts(), entityList.get(i).getHasPosts());
             assertEquals(dtoList.get(i).getLabel(), entityList.get(i).getLabel());
         }
@@ -462,7 +462,7 @@ class PostMapperTest {
 
     private void checkToEntityDirections(@Nonnull PostSaveFromUserDTO postDTO, @Nonnull PostEntity post) {
 
-        if (post.getAuthor() == null || post.getAuthor().getDoctor() == null) {
+        if (post.getAuthor() == null || post.getAuthor().getAuthor() == null) {
             return;
         }
 
