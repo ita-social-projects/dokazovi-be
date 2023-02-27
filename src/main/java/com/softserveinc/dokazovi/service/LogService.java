@@ -10,4 +10,6 @@ public interface LogService {
 
     Page<PostLogDTO> findAllPostLogs(Pageable pageable, String surname, String title,
             LocalDate startDate, LocalDate endDate);
+
+    PostLogDTO getLogById(Integer id);
 }
