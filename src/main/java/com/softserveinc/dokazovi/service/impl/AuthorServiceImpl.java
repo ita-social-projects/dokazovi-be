@@ -47,8 +47,8 @@ public class AuthorServiceImpl implements AuthorService {
                 .promotionScale(1.0)
                 .mainWorkingPlace(authorRequestDTO.getMainWorkingPlace())
                 .city(cityRepository.findById(authorRequestDTO.getCityId())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find city with id: "
-                                + authorRequestDTO.getCityId())))
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Unable to find city with id: " + authorRequestDTO.getCityId())))
                 .profile(user)
                 .bio(authorRequestDTO.getBio())
                 .build();
@@ -76,8 +76,8 @@ public class AuthorServiceImpl implements AuthorService {
                 .promotionScale(oldAuthor.getPromotionScale())
                 .mainWorkingPlace(authorRequestDTO.getMainWorkingPlace())
                 .city(cityRepository.findById(authorRequestDTO.getCityId())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find city with id: "
-                                + authorRequestDTO.getCityId())))
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Unable to find city with id: " + authorRequestDTO.getCityId())))
                 .profile(newUser)
                 .bio(authorRequestDTO.getBio())
                 .build();
