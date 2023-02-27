@@ -44,7 +44,7 @@ public class PostLogger {
             + "com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO))")
     public Boolean updatePost(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object[] arguments = proceedingJoinPoint.getArgs();
-        Integer postId = getPostIdFromArray(arguments);
+        Integer postId = getPostIdFromObjectInArray(arguments);
         String postEntityBeforeExecutingStatus = postRepository.getOne(postId).getStatus().name();
         final Boolean joinPoint = (Boolean) proceedingJoinPoint.proceed();
         UserPrincipal userPrincipal = getUserPrincipalFromArray(arguments);
@@ -112,6 +112,13 @@ public class PostLogger {
     private static Integer getPostIdFromArray(Object[] arguments) {
         return (Integer) Arrays.stream(arguments)
                 .filter(obj -> obj instanceof Integer)
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
+    }
+
+    private static Integer getPostIdFromObjectInArray(Object[] arguments) {
+        return Arrays.stream(arguments)
+                .filter(obj -> obj instanceof PostSaveFromUserDTO)
+                .map(obj -> ((PostSaveFromUserDTO) obj).getId())
                 .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
     }
 
