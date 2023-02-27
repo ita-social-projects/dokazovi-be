@@ -81,6 +81,8 @@ class PostServiceImplTest {
     private UserEntity userEntity;
     @Mock
     private GoogleAnalytics googleAnalytics;
+    @Mock
+    private DirectionServiceImpl directionService;
 
     @BeforeEach
     void init() {
