@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.LOG;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LOGS;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_LOG_BY_ID;
 
 @RestController
 @RequestMapping(LOG)
@@ -53,5 +55,15 @@ public class LogController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(logService.findAllPostLogs(pageable, surname, title, startDate, endDate));
+    }
+
+    @GetMapping(POST_LOG_BY_ID)
+    @PreAuthorize("hasAuthority('EDIT_AUTHOR')")
+    @ApiOperation(value = "get log by id",
+            authorizations = {@Authorization(value = "Authorization")})
+    public ResponseEntity<PostLogDTO> getPostById(@PathVariable("logId") Integer id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(logService.getLogById(id));
     }
 }
