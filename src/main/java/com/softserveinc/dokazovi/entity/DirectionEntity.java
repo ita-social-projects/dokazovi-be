@@ -42,7 +42,7 @@ public class DirectionEntity {
     private String color;
 
     @ColumnDefault("false")
-    private Boolean hasDoctors;
+    private Boolean hasAuthors;
 
     @ColumnDefault("false")
     private Boolean hasPosts;
@@ -55,5 +55,5 @@ public class DirectionEntity {
     @ManyToMany(mappedBy = "directions")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Set<DoctorEntity> users;
+    private Set<AuthorEntity> users;
 }

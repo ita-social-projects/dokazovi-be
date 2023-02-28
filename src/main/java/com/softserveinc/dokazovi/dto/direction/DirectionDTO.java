@@ -30,7 +30,7 @@ public class DirectionDTO {
 
     private String color;
 
-    private Boolean hasDoctors;
+    private Boolean hasAuthors;
 
     private Boolean hasPosts;
 }

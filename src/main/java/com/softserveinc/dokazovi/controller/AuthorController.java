@@ -1,7 +1,9 @@
 package com.softserveinc.dokazovi.controller;
 
-import com.softserveinc.dokazovi.dto.author.AuthorDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorResponseDTO;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
+import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
 import io.swagger.annotations.ApiOperation;
@@ -32,35 +34,37 @@ import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR;
 public class AuthorController {
 
     private final AuthorService authorService;
+    private final AuthorMapper authorMapper;
 
     @PostMapping()
     @PreAuthorize("hasAuthority('EDIT_AUTHOR')")
     @ApiOperation(value = "Create author",
             authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = HttpStatuses.CREATED, response = AuthorDTO.class),
+            @ApiResponse(code = 201, message = HttpStatuses.CREATED, response = AuthorRequestDTO.class),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
-    public ResponseEntity<AuthorDTO> createAuthor(@Valid @RequestBody AuthorDTO author,
+    public ResponseEntity<AuthorResponseDTO> createAuthor(@Valid @RequestBody AuthorRequestDTO author,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(authorService.save(author, userPrincipal));
+                .body(authorMapper.toAuthorResponseDTO(authorService.save(author, userPrincipal)));
     }
 
-    @PutMapping()
+    @PutMapping(AUTHOR_GET_AUTHOR_BY_ID)
     @PreAuthorize("hasAuthority('EDIT_AUTHOR')")
     @ApiOperation(value = "update author",
             authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = HttpStatuses.OK, response = AuthorDTO.class),
+            @ApiResponse(code = 200, message = HttpStatuses.OK, response = AuthorRequestDTO.class),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
-    public ResponseEntity<AuthorDTO> updateAuthor(@Valid @RequestBody AuthorDTO author,
+    public ResponseEntity<AuthorResponseDTO> updateAuthor(@PathVariable Integer authorId,
+            @Valid @RequestBody AuthorRequestDTO author,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         return ResponseEntity
                 .status(200)
-                .body(authorService.update(author, userPrincipal));
+                .body(authorMapper.toAuthorResponseDTO(authorService.update(authorId, author, userPrincipal)));
     }
 
     @DeleteMapping(AUTHOR_GET_AUTHOR_BY_ID)
@@ -71,13 +75,10 @@ public class AuthorController {
             @ApiResponse(code = 200, message = HttpStatuses.OK, response = ApiResponseMessage.class),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
-    public ResponseEntity<ApiResponseMessage> deleteAuthor(@PathVariable("authorId") Integer authorId,
+    public ResponseEntity<Integer> deleteAuthor(@PathVariable Integer authorId,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        ApiResponseMessage apiResponseMessage;
-        apiResponseMessage = ApiResponseMessage.builder()
-                .success(authorService.delete(authorId, userPrincipal))
-                .message(String.format("Doctor %s deleted successfully", authorId))
-                .build();
-        return ResponseEntity.ok().body(apiResponseMessage);
+        return ResponseEntity
+                .status(200)
+                .body(authorService.delete(authorId, userPrincipal));
     }
 }

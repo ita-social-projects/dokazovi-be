@@ -37,13 +37,13 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "doctor_entity")
-@Table(name = "doctors")
-public class DoctorEntity {
+@Entity(name = "author_entity")
+@Table(name = "authors")
+public class AuthorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "doctor_id")
+    @Column(name = "author_id")
     private Integer id;
 
     private String qualification;
@@ -64,13 +64,20 @@ public class DoctorEntity {
     private UserPromotionLevel promotionLevel;
 
     @ManyToOne
+    @JoinColumn(name = "city_id", nullable = false)
+    private CityEntity city;
+
+    @Column(columnDefinition = "TEXT")
+    private String mainWorkingPlace;
+
+    @ManyToOne
     @JoinColumn(name = "institution_id")
     @JsonIdentityInfo(
             property = "id",
             generator = ObjectIdGenerators.PropertyGenerator.class)
     private InstitutionEntity mainInstitution;
 
-    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -89,8 +96,8 @@ public class DoctorEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "doctors_institutions",
-            joinColumns = {@JoinColumn(name = "doctor_id")},
+            name = "authors_institutions",
+            joinColumns = {@JoinColumn(name = "author_id")},
             inverseJoinColumns = {@JoinColumn(name = "institution_id")}
     )
     @EqualsAndHashCode.Exclude
@@ -102,8 +109,8 @@ public class DoctorEntity {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "doctors_directions",
-            joinColumns = {@JoinColumn(name = "doctor_id")},
+            name = "authors_directions",
+            joinColumns = {@JoinColumn(name = "author_id")},
             inverseJoinColumns = {@JoinColumn(name = "direction_id")}
     )
     @EqualsAndHashCode.Exclude
