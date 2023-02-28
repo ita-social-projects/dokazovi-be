@@ -23,7 +23,7 @@ public interface RegionRepository extends JpaRepository<RegionEntity, Integer> {
             + "SET USERS_PRESENT=TRUE "
             + "          WHERE REGION_ID IN (SELECT DISTINCT REGION_ID FROM CITIES"
             + "          WHERE CITY_ID IN (SELECT DISTINCT CITY_ID FROM INSTITUTIONS"
-            + "          WHERE INSTITUTION_ID IN (SELECT DISTINCT INSTITUTION_ID FROM DOCTORS)))")
+            + "          WHERE INSTITUTION_ID IN (SELECT DISTINCT INSTITUTION_ID FROM AUTHORS)))")
     @Modifying
     void updateRegionsStatus();
 

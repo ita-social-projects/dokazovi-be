@@ -1,13 +1,16 @@
 package com.softserveinc.dokazovi.service;
 
-import com.softserveinc.dokazovi.dto.author.AuthorDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
+import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 
 public interface AuthorService {
 
-    AuthorDTO save(AuthorDTO authorDTO, UserPrincipal userPrincipal);
+    AuthorEntity findAuthorById(Integer authorId);
 
-    AuthorDTO update(AuthorDTO authorDTO, UserPrincipal userPrincipal);
+    AuthorEntity save(AuthorRequestDTO authorRequestDTO, UserPrincipal userPrincipal);
 
-    Boolean delete(Integer authorId, UserPrincipal userPrincipal);
+    AuthorEntity update(Integer authorId, AuthorRequestDTO authorRequestDTO, UserPrincipal userPrincipal);
+
+    Integer delete(Integer authorId, UserPrincipal userPrincipal);
 }

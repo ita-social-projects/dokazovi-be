@@ -3,9 +3,9 @@ package com.softserveinc.dokazovi.mapper;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserInstitutionDTO;
+import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.CityEntity;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
-import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.RegionEntity;
@@ -32,7 +32,7 @@ class UserMapperTest {
     private final Timestamp latestCreatedAt = Timestamp.valueOf("1992-05-22 10:10:10.0");
     private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
     private UserEntity userEntity;
-    private DoctorEntity doctorEntity;
+    private AuthorEntity authorEntity;
     private InstitutionEntity mainInstitution;
     private InstitutionEntity institution1;
     private DirectionEntity direction1;
@@ -93,13 +93,13 @@ class UserMapperTest {
                 .socialNetworks(Set.of("Facebook", "Twitter"))
                 .build();
 
-        doctorEntity = DoctorEntity.builder()
+        authorEntity = AuthorEntity.builder()
                 .qualification("qualification 1")
                 .bio("bio 1")
                 .mainInstitution(mainInstitution)
                 .build();
 
-        userEntity.setDoctor(doctorEntity);
+        userEntity.setAuthor(authorEntity);
 
         postEntity = PostEntity.builder()
                 .id(1)
@@ -118,8 +118,8 @@ class UserMapperTest {
                 .build();
 
         userEntity.setPosts(Set.of(postEntity, latestPostEntity));
-        doctorEntity.setDirections(Set.of(direction1, direction2));
-        doctorEntity.setInstitutions(Set.of(mainInstitution, institution1));
+        authorEntity.setDirections(Set.of(direction1, direction2));
+        authorEntity.setInstitutions(Set.of(mainInstitution, institution1));
     }
 
     @Test
@@ -130,19 +130,19 @@ class UserMapperTest {
         assertEquals(userDTO.getFirstName(), userEntity.getFirstName());
         assertEquals(userDTO.getLastName(), userEntity.getLastName());
         assertEquals(userDTO.getEmail(), userEntity.getEmail());
-        assertEquals(userDTO.getQualification(), userEntity.getDoctor().getQualification());
+        assertEquals(userDTO.getQualification(), userEntity.getAuthor().getQualification());
         assertEquals(userDTO.getPhone(), userEntity.getPhone());
         assertEquals(userDTO.getAvatar(), userEntity.getAvatar());
-        assertEquals(userDTO.getBio(), userEntity.getDoctor().getBio());
+        assertEquals(userDTO.getBio(), userEntity.getAuthor().getBio());
         assertEquals(userDTO.getRegion().getId(),
-                userEntity.getDoctor().getMainInstitution().getCity().getRegion().getId());
+                userEntity.getAuthor().getMainInstitution().getCity().getRegion().getId());
 
-        assertEquals(userDTO.getMainInstitution().getId(), userEntity.getDoctor().getMainInstitution().getId());
-        assertEquals(userDTO.getMainInstitution().getName(), userEntity.getDoctor().getMainInstitution().getName());
+        assertEquals(userDTO.getMainInstitution().getId(), userEntity.getAuthor().getMainInstitution().getId());
+        assertEquals(userDTO.getMainInstitution().getName(), userEntity.getAuthor().getMainInstitution().getName());
         assertEquals(userDTO.getMainInstitution().getCity().getName(),
-                userEntity.getDoctor().getMainInstitution().getCity().getName());
+                userEntity.getAuthor().getMainInstitution().getCity().getName());
         assertEquals(userDTO.getMainInstitution().getCity().getName(),
-                userEntity.getDoctor().getMainInstitution().getCity().getName());
+                userEntity.getAuthor().getMainInstitution().getCity().getName());
 
         assertEquals(userDTO.getLastAddedPost().getId(), userEntity.getLatestExpertPost().getId());
         assertEquals(userDTO.getLastAddedPost().getTitle(), userEntity.getLatestExpertPost().getTitle());
@@ -158,14 +158,14 @@ class UserMapperTest {
 
     private void toUserDtoInstitutionsTest(@Nonnull UserDTO userDTO, @Nonnull UserEntity userEntity) {
 
-        if (userEntity.getDoctor() == null) {
+        if (userEntity.getAuthor() == null) {
             return;
         }
 
         final UserInstitutionDTO emptyInstitutionDTO = UserInstitutionDTO.builder().build();
         final InstitutionEntity emptyInstitutionEntity = new InstitutionEntity();
         final Set<UserInstitutionDTO> dtoSet = userDTO.getInstitutions();
-        final Set<InstitutionEntity> entitySet = userEntity.getDoctor().getInstitutions();
+        final Set<InstitutionEntity> entitySet = userEntity.getAuthor().getInstitutions();
 
         if (dtoSet == null || entitySet == null) {
             assertNull(dtoSet);
@@ -199,14 +199,14 @@ class UserMapperTest {
 
     private void toUserDtoDirections(@Nonnull UserDTO userDTO, @Nonnull UserEntity userEntity) {
 
-        if (userEntity.getDoctor() == null) {
+        if (userEntity.getAuthor() == null) {
             return;
         }
 
         final DirectionDTO emptyDirectionDTO = DirectionDTO.builder().build();
         final DirectionEntity emptyDirectionEntity = new DirectionEntity();
         final Set<DirectionDTO> dtoSet = userDTO.getDirections();
-        final Set<DirectionEntity> entitySet = userEntity.getDoctor().getDirections();
+        final Set<DirectionEntity> entitySet = userEntity.getAuthor().getDirections();
 
         if (dtoSet == null || entitySet == null) {
             assertNull(dtoSet);
@@ -234,7 +234,7 @@ class UserMapperTest {
             assertEquals(dtoList.get(i).getId(), entityList.get(i).getId());
             assertEquals(dtoList.get(i).getName(), entityList.get(i).getName());
             assertEquals(dtoList.get(i).getColor(), entityList.get(i).getColor());
-            assertEquals(dtoList.get(i).getHasDoctors(), entityList.get(i).getHasDoctors());
+            assertEquals(dtoList.get(i).getHasAuthors(), entityList.get(i).getHasAuthors());
             assertEquals(dtoList.get(i).getHasPosts(), entityList.get(i).getHasPosts());
             assertEquals(dtoList.get(i).getLabel(), entityList.get(i).getLabel());
         }
@@ -242,7 +242,7 @@ class UserMapperTest {
 
     @Test
     void tooUserDtoEmptyOrNullCases() {
-        userEntity.getDoctor().getMainInstitution().setCity(null);
+        userEntity.getAuthor().getMainInstitution().setCity(null);
         UserDTO userDTO = mapper.toUserDTO(userEntity);
         assertNull(userDTO.getMainInstitution().getCity());
 
@@ -256,7 +256,7 @@ class UserMapperTest {
         toUserDtoInstitutionsTest(userDTO, userEntity1);
         toUserDtoDirections(userDTO, userEntity1);
 
-        userEntity.setDoctor(new DoctorEntity());
+        userEntity.setAuthor(new AuthorEntity());
         userDTO = mapper.toUserDTO(userEntity);
         assertEquals(userDTO.getId(), userEntity.getId());
         assertNull(userDTO.getBio());
