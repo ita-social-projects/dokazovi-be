@@ -12,8 +12,8 @@ import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeIdOnlyDTO;
 import com.softserveinc.dokazovi.dto.tag.TagDTO;
+import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
-import com.softserveinc.dokazovi.entity.DoctorEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -23,8 +23,6 @@ import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
-import com.softserveinc.dokazovi.repositories.DirectionRepository;
-import com.softserveinc.dokazovi.repositories.DoctorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -74,25 +72,17 @@ class PostServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private DoctorRepository doctorRepository;
-    @Mock
-    private DirectionRepository directionRepository;
-    @Mock
     private PostMapper postMapper;
     @Mock
     private Pageable pageable;
-    @Mock
-    private DirectionServiceImpl directionService;
-
     @InjectMocks
     private PostServiceImpl postService;
-
     private Page<PostEntity> postEntityPage;
-
     private UserEntity userEntity;
-
     @Mock
     private GoogleAnalytics googleAnalytics;
+    @Mock
+    private DirectionServiceImpl directionService;
 
     @BeforeEach
     void init() {
@@ -144,7 +134,7 @@ class PostServiceImplTest {
                 .avatar("test")
                 .status(UserStatus.ACTIVE)
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                .doctor(new DoctorEntity())
+                .author(new AuthorEntity())
                 .phone("test")
                 .userProviderEntities(new HashSet<>())
                 .enabled(true)
@@ -194,7 +184,7 @@ class PostServiceImplTest {
                 .avatar("test")
                 .status(UserStatus.ACTIVE)
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                .doctor(new DoctorEntity())
+                .author(new AuthorEntity())
                 .phone("test")
                 .userProviderEntities(new HashSet<>())
                 .enabled(true)
@@ -244,7 +234,7 @@ class PostServiceImplTest {
                 .avatar("test")
                 .status(UserStatus.ACTIVE)
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                .doctor(new DoctorEntity())
+                .author(new AuthorEntity())
                 .phone("test")
                 .userProviderEntities(new HashSet<>())
                 .enabled(true)

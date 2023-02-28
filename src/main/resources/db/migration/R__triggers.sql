@@ -16,13 +16,13 @@ BEGIN
         WHERE p.post_id = NEW.post_id INTO VAR_USER_ID;
 
     -- If there is a doctor with such a user_id
-    IF (SELECT EXISTS(SELECT 1 FROM public.doctors d WHERE d.user_id = VAR_USER_ID)) THEN
+    IF (SELECT EXISTS(SELECT 1 FROM public.authors d WHERE d.user_id = VAR_USER_ID)) THEN
         -- Get his doctor_id
-        SELECT doctor_id
-            FROM public.doctors d
+        SELECT author_id
+            FROM public.authors d
             WHERE d.user_id = VAR_USER_ID INTO VAR_DOCTOR_ID;
         -- Add a corresponding entry to our table
-        INSERT INTO public.doctor_post_directions (doctor_id, post_id, direction_id)
+        INSERT INTO public.author_post_directions (author_id, post_id, direction_id)
             VALUES (VAR_DOCTOR_ID, NEW.post_id, NEW.direction_id) ON CONFLICT DO NOTHING;
     END IF;
     RETURN NEW;
@@ -54,16 +54,16 @@ BEGIN
         WHERE p.post_id = OLD.post_id INTO VAR_USER_ID;
 
     -- If there is a doctor with such a user_id
-    IF (SELECT EXISTS(SELECT 1 FROM public.doctors d WHERE d.user_id = VAR_USER_ID)) THEN
+    IF (SELECT EXISTS(SELECT 1 FROM public.authors d WHERE d.user_id = VAR_USER_ID)) THEN
         -- Get his doctor_id
-        SELECT doctor_id
-            FROM public.doctors d
+        SELECT author_id
+            FROM public.authors d
             WHERE d.user_id = VAR_USER_ID INTO VAR_DOCTOR_ID;
 
         -- And remove the corresponding entry from our table
         DELETE
-            FROM public.doctor_post_directions dpd
-            WHERE dpd.doctor_id = VAR_DOCTOR_ID
+            FROM public.author_post_directions dpd
+            WHERE dpd.author_id = VAR_DOCTOR_ID
               AND dpd.post_id = OLD.post_id
               AND dpd.direction_id = OLD.direction_id;
     END IF;
@@ -92,13 +92,13 @@ BEGIN
     -- Do not do anything if the author id is unchanged
     IF NOT (OLD.author_id = NEW.author_id) THEN
         -- Get the doctor_id
-        SELECT doctor_id
-            FROM public.doctors d
+        SELECT author_id
+            FROM public.authors d
             WHERE d.user_id = NEW.author_id INTO VAR_NEW_DOCTOR_ID;
 
         -- Update all entries in our table with our post_id with the new doctor_id
-        UPDATE public.doctor_post_directions dpd
-            SET doctor_id = VAR_NEW_DOCTOR_ID
+        UPDATE public.author_post_directions dpd
+            SET author_id = VAR_NEW_DOCTOR_ID
             WHERE dpd.post_id = NEW.post_id;
     END IF;
     RETURN NEW;
@@ -127,10 +127,10 @@ $$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS dpdv_handle_insert_check_visible_trigger
-    ON public.doctor_post_directions;
+    ON public.author_post_directions;
 CREATE TRIGGER dpdv_handle_insert_check_visible_trigger
     BEFORE INSERT
-    ON public.doctor_post_directions
+    ON public.author_post_directions
     FOR EACH ROW EXECUTE PROCEDURE dpdv_handle_insert_check_visible();
 
 --
@@ -140,7 +140,7 @@ CREATE TRIGGER dpdv_handle_insert_check_visible_trigger
 CREATE OR REPLACE FUNCTION dpdv_handle_update_post_status_for_visible() RETURNS TRIGGER
 AS $$
 BEGIN
-    UPDATE public.doctor_post_directions
+    UPDATE public.author_post_directions
     SET visible = (NEW.status = 'PUBLISHED')
     WHERE post_id = NEW.post_id;
     RETURN NEW;
@@ -162,17 +162,17 @@ CREATE TRIGGER dpdv_handle_update_post_status_for_visible_trigger
 CREATE OR REPLACE FUNCTION dpdv_handle_insert_set_user_id() RETURNS TRIGGER
 AS $$
 BEGIN
-    NEW.user_id = (SELECT user_id FROM public.doctors WHERE doctor_id = NEW.doctor_id LIMIT 1);
+    NEW.user_id = (SELECT user_id FROM public.authors WHERE author_id = NEW.author_id LIMIT 1);
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS dpdv_handle_insert_set_user_id_trigger
-    ON public.doctor_post_directions;
+    ON public.author_post_directions;
 CREATE TRIGGER dpdv_handle_insert_set_user_id_trigger
     BEFORE INSERT
-    ON public.doctor_post_directions
+    ON public.author_post_directions
     FOR EACH ROW EXECUTE PROCEDURE dpdv_handle_insert_set_user_id();
 
 --
@@ -184,7 +184,7 @@ AS $$
 BEGIN
     -- Do not do anything if the author id is unchanged
     IF NOT (OLD.author_id = NEW.author_id) THEN
-        UPDATE public.doctor_post_directions dpd
+        UPDATE public.author_post_directions dpd
         SET user_id = NEW.author_id
         WHERE dpd.post_id = NEW.post_id;
     END IF;
