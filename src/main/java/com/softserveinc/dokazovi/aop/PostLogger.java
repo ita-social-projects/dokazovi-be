@@ -106,7 +106,8 @@ public class PostLogger {
     private static <T> T getArgumentFromArrayByClassType(Object[] arguments, Class<T> clazz) {
         return (T) Arrays.stream(arguments)
                 .filter(clazz::isInstance)
-                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable to find argument")); }
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable to find argument"));
+    }
 
     private static Integer getPostIdFromObjectInArray(Object[] arguments) {
         return Arrays.stream(arguments)
