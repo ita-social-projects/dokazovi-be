@@ -34,8 +34,8 @@ public class PostLogger {
             + "com.softserveinc.dokazovi.security.UserPrincipal))")
     public void saveNewPost(JoinPoint joinPoint) {
         Object[] arguments = joinPoint.getArgs();
-        PostSaveFromUserDTO postSaveFromUserDTO = getPostSaveFromUserDTOFromArray(arguments);
-        UserPrincipal userPrincipal = getUserPrincipalFromArray(arguments);
+        PostSaveFromUserDTO postSaveFromUserDTO = getArgumentFromArrayByClassType(arguments, PostSaveFromUserDTO.class);
+        UserPrincipal userPrincipal = getArgumentFromArrayByClassType(arguments, UserPrincipal.class);
         makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, "Створено матеріал");
     }
 
@@ -47,8 +47,8 @@ public class PostLogger {
         Integer postId = getPostIdFromObjectInArray(arguments);
         String postEntityBeforeExecutingStatus = postRepository.getOne(postId).getStatus().name();
         final Boolean joinPoint = (Boolean) proceedingJoinPoint.proceed();
-        UserPrincipal userPrincipal = getUserPrincipalFromArray(arguments);
-        PostSaveFromUserDTO postSaveFromUserDTO = getPostSaveFromUserDTOFromArray(arguments);
+        UserPrincipal userPrincipal = getArgumentFromArrayByClassType(arguments, UserPrincipal.class);
+        PostSaveFromUserDTO postSaveFromUserDTO = getArgumentFromArrayByClassType(arguments, PostSaveFromUserDTO.class);
         String postEntityChangedStatus = PostStatus.values()[postSaveFromUserDTO.getPostStatus()].name();
         String changes;
         if (postEntityBeforeExecutingStatus.equals(postEntityChangedStatus)) {
@@ -83,9 +83,9 @@ public class PostLogger {
             + "Integer, boolean))")
     public void deletePost(JoinPoint joinPoint) {
         Object[] arguments = joinPoint.getArgs();
-        UserPrincipal userPrincipal = getUserPrincipalFromArray(arguments);
-        Integer postId = getPostIdFromArray(arguments);
-        boolean flag = getBooleanFromArray(arguments);
+        UserPrincipal userPrincipal = getArgumentFromArrayByClassType(arguments, UserPrincipal.class);
+        Integer postId = getArgumentFromArrayByClassType(arguments, Integer.class);
+        boolean flag = getArgumentFromArrayByClassType(arguments, Boolean.class);
         if (!flag) {
             return;
         }
@@ -103,34 +103,15 @@ public class PostLogger {
         logRepository.save(log);
     }
 
-    private static boolean getBooleanFromArray(Object[] arguments) {
-        return (boolean) Arrays.stream(arguments)
-                .filter(obj -> obj instanceof Boolean)
-                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
-    }
-
-    private static Integer getPostIdFromArray(Object[] arguments) {
-        return (Integer) Arrays.stream(arguments)
-                .filter(obj -> obj instanceof Integer)
-                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
-    }
+    private static <T> T getArgumentFromArrayByClassType(Object[] arguments, Class<T> clazz) {
+        return (T) Arrays.stream(arguments)
+                .filter(clazz::isInstance)
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable to find argument")); }
 
     private static Integer getPostIdFromObjectInArray(Object[] arguments) {
         return Arrays.stream(arguments)
                 .filter(obj -> obj instanceof PostSaveFromUserDTO)
                 .map(obj -> ((PostSaveFromUserDTO) obj).getId())
-                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
-    }
-
-    private static UserPrincipal getUserPrincipalFromArray(Object[] arguments) {
-        return (UserPrincipal) Arrays.stream(arguments)
-                .filter(obj -> obj instanceof UserPrincipal)
-                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
-    }
-
-    private static PostSaveFromUserDTO getPostSaveFromUserDTOFromArray(Object[] arguments) {
-        return (PostSaveFromUserDTO) Arrays.stream(arguments)
-                .filter(obj -> obj instanceof PostSaveFromUserDTO)
                 .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
     }
 }

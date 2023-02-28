@@ -80,7 +80,8 @@ class PostLoggerTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(userEntity));
         postLogger.saveNewPost(mock);
 
-        verify(logRepository).save(any(LogEntity.class));
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "Створено матеріал");
     }
 
     @Test
@@ -94,7 +95,6 @@ class PostLoggerTest {
 
         postLogger.updatePost(mock);
 
-        verify(logRepository).save(any(LogEntity.class));
         verify(logRepository).save(logEntityArgumentCaptor.capture());
         Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "Оновлено матеріал");
     }
@@ -112,7 +112,8 @@ class PostLoggerTest {
 
         postLogger.updatePost(mock);
 
-        verify(logRepository).save(any(LogEntity.class));
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "Заархівовано");
     }
 
     @Test
@@ -128,7 +129,8 @@ class PostLoggerTest {
 
         postLogger.updatePost(mock);
 
-        verify(logRepository).save(any(LogEntity.class));
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "Відправлено на модерацію");
     }
 
     @Test
@@ -144,7 +146,10 @@ class PostLoggerTest {
 
         postLogger.updatePost(mock);
 
-        verify(logRepository).save(any(LogEntity.class));
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(
+                logEntityArgumentCaptor.getValue().getChanges(),
+                "Повернуто автору на редагування");
     }
 
     @Test
@@ -160,7 +165,8 @@ class PostLoggerTest {
 
         postLogger.updatePost(mock);
 
-        verify(logRepository).save(any(LogEntity.class));
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "Опубліковано");
     }
 
     @Test
@@ -176,7 +182,8 @@ class PostLoggerTest {
 
         postLogger.updatePost(mock);
 
-        verify(logRepository).save(any(LogEntity.class));
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "N/A");
     }
 
     @Test
@@ -190,7 +197,8 @@ class PostLoggerTest {
 
         postLogger.deletePost(mock);
 
-        verify(logRepository).save(any(LogEntity.class));
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "Матеріал видалено");
     }
 
     @Test
