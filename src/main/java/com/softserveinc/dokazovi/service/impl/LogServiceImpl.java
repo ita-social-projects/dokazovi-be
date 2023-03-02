@@ -32,11 +32,11 @@ public class LogServiceImpl implements LogService {
             return logRepository.findByDateOfChangeBetween(pageable, startDateTimestamp, endDateTimestamp)
                     .map(logMapper::toPostLogDTO);
         }
-        if (title.trim().length() > 0) {
-            return logRepository.findAllByTitleContainingIgnoreCase(pageable, username)
+        if (title != null && title.trim().length() > 0) {
+            return logRepository.findAllByTitleContainingIgnoreCase(pageable, title)
                     .map(logMapper::toPostLogDTO);
         }
-        if (username.trim().length() > 0) {
+        if (username != null && username.trim().length() > 0) {
             return logRepository.findAllByNameOfChangerContainingIgnoreCase(pageable, username)
                     .map(logMapper::toPostLogDTO);
         }
