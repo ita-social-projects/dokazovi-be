@@ -36,7 +36,8 @@ public class PostLogger {
         Object[] arguments = joinPoint.getArgs();
         PostSaveFromUserDTO postSaveFromUserDTO = getArgumentFromArrayByClassType(arguments, PostSaveFromUserDTO.class);
         UserPrincipal userPrincipal = getArgumentFromArrayByClassType(arguments, UserPrincipal.class);
-        makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, "Створено матеріал");
+        makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, "Створено матеріал",
+                postSaveFromUserDTO.getId());
     }
 
     @Around("execution(* com.softserveinc.dokazovi.service.impl.PostServiceImpl.updatePostById("
@@ -74,7 +75,7 @@ public class PostLogger {
                     changes = "N/A";
             }
         }
-        makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, changes);
+        makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, changes, postSaveFromUserDTO.getId());
         return joinPoint;
     }
 
@@ -90,14 +91,15 @@ public class PostLogger {
             return;
         }
         PostEntity postEntity = postRepository.getOne(postId);
-        makeEntryInLogs(postEntity.getTitle(), userPrincipal, "Матеріал видалено");
+        makeEntryInLogs(postEntity.getTitle(), userPrincipal, "Матеріал видалено", null);
     }
 
-    private void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes) {
+    private void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes, Integer postId) {
         UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail()).get();
         LogEntity log = LogEntity.builder()
                 .title(title)
                 .changes(changes)
+                .idOfChangedPost(postId)
                 .nameOfChanger(userEntity.getLastName() + " " + userEntity.getFirstName())
                 .build();
         logRepository.save(log);

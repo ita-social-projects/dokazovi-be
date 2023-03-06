@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 public class PostLogDTO {
 
     private Integer id;
+    private Integer idOfChangedPost;
     private String title;
     private Timestamp dateOfChange;
     private String changes;
