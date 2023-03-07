@@ -68,7 +68,7 @@ public class UserEntity {
     private RoleEntity role;
 
     @OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
-    private DoctorEntity doctor;
+    private AuthorEntity author;
 
     @CreationTimestamp
     private Timestamp createdAt;

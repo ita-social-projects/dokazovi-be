@@ -7,7 +7,9 @@ import com.softserveinc.dokazovi.service.LogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -32,11 +34,11 @@ public class LogServiceImpl implements LogService {
             return logRepository.findByDateOfChangeBetween(pageable, startDateTimestamp, endDateTimestamp)
                     .map(logMapper::toPostLogDTO);
         }
-        if (title.trim().length() > 0) {
-            return logRepository.findAllByTitleContainingIgnoreCase(pageable, username)
+        if (title != null && title.trim().length() > 0) {
+            return logRepository.findAllByTitleContainingIgnoreCase(pageable, title)
                     .map(logMapper::toPostLogDTO);
         }
-        if (username.trim().length() > 0) {
+        if (username != null && username.trim().length() > 0) {
             return logRepository.findAllByNameOfChangerContainingIgnoreCase(pageable, username)
                     .map(logMapper::toPostLogDTO);
         }
@@ -46,6 +48,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public PostLogDTO getLogById(Integer id) {
-        return logMapper.toPostLogDTO(logRepository.getOne(id));
+        return logMapper.toPostLogDTO(logRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Unable to find log with id:" + id)));
     }
 }

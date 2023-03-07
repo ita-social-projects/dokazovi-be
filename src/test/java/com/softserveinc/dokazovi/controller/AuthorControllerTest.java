@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.controller;
 
+import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.service.AuthorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,34 +30,20 @@ class AuthorControllerTest {
     private AuthorController authorController;
 
     @Mock
+    private AuthorMapper authorMapper;
+    @Mock
     private AuthorService authorService;
 
     @Mock
     private Validator validator;
 
-    private final String userDTOWithId = "{\n"
-            + "  \"authorId\": 1,\n"
-            + "  \"avatar\": \"link\",\n"
-            + "  \"bio\": \"some bio\",\n"
-            + "  \"email\": \"mail@mail.com\",\n"
-            + "  \"firstName\": \"John\",\n"
-            + "  \"lastName\": \"Doe\",\n"
-            + "  \"mainInstitutionId\": \"1\",\n"
-            + "  \"password\": \"password\",\n"
-            + "  \"qualification\": \"some direction\",\n"
-            + "  \"socialNetwork\": [\"some links\"]\n"
-            + "}";
-
-    private final String userDTOWithoutId = "{\n"
-            + "  \"authorId\": null,\n"
-            + "  \"avatar\": \"link\",\n"
-            + "  \"bio\": \"some bio\",\n"
-            + "  \"email\": \"mail@mail.com\",\n"
-            + "  \"firstName\": \"John\",\n"
-            + "  \"lastName\": \"Doe\",\n"
-            + "  \"mainInstitutionId\": \"1\",\n"
-            + "  \"password\": \"password\",\n"
-            + "  \"qualification\": \"some direction\",\n"
+    private final String userDTO = "{\n"
+            + "  \"firstName\": \"testName\",\n"
+            + "  \"lastName\": \"testLastNAme\",\n"
+            + "  \"cityId\": \"190\",\n"
+            + "  \"avatar\": \"avatar\",\n"
+            + "  \"mainWorkingPlace\": \"Hospital\",\n"
+            + "  \"bio\": \"bio\",\n"
             + "  \"socialNetwork\": [\"some links\"]\n"
             + "}";
 
@@ -73,15 +60,15 @@ class AuthorControllerTest {
     void createAuthor() throws Exception {
         mockMvc.perform(post("/author")
                     .contentType("application/json")
-                    .content(userDTOWithoutId))
+                    .content(userDTO))
                 .andExpect(status().isCreated());
     }
 
     @Test
     void updateAuthor() throws Exception {
-        mockMvc.perform(put("/author")
+        mockMvc.perform(put("/author/{authorId}","1")
                     .contentType("application/json")
-                    .content(userDTOWithId))
+                    .content(userDTO))
                 .andExpect(status().isOk());
     }
 

@@ -17,6 +17,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+
 @Component
 @Aspect
 @RequiredArgsConstructor
@@ -31,24 +34,10 @@ public class PostLogger {
             + "com.softserveinc.dokazovi.security.UserPrincipal))")
     public void saveNewPost(JoinPoint joinPoint) {
         Object[] arguments = joinPoint.getArgs();
-        PostSaveFromUserDTO postSaveFromUserDTO = null;
-        UserPrincipal userPrincipal = null;
-        for (Object obj : arguments) {
-            if (obj instanceof PostSaveFromUserDTO) {
-                postSaveFromUserDTO = (PostSaveFromUserDTO) obj;
-            }
-            if (obj instanceof UserPrincipal) {
-                userPrincipal = (UserPrincipal) obj;
-            }
-        }
-        UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail()).get();
-        LogEntity log = LogEntity.builder()
-                .title(postSaveFromUserDTO.getTitle())
-                .changes("Створено матеріал")
-                .nameOfChanger(userEntity.getLastName() + " " + userEntity.getFirstName())
-                .build();
-
-        logRepository.save(log);
+        PostSaveFromUserDTO postSaveFromUserDTO = getArgumentFromArrayByClassType(arguments, PostSaveFromUserDTO.class);
+        UserPrincipal userPrincipal = getArgumentFromArrayByClassType(arguments, UserPrincipal.class);
+        makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, "Створено матеріал",
+                postSaveFromUserDTO.getId());
     }
 
     @Around("execution(* com.softserveinc.dokazovi.service.impl.PostServiceImpl.updatePostById("
@@ -56,26 +45,12 @@ public class PostLogger {
             + "com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO))")
     public Boolean updatePost(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object[] arguments = proceedingJoinPoint.getArgs();
-        Integer postId = null;
-        for (Object obj : arguments) {
-            if (obj instanceof PostSaveFromUserDTO) {
-                postId = ((PostSaveFromUserDTO) obj).getId();
-            }
-        }
+        Integer postId = getPostIdFromObjectInArray(arguments);
         String postEntityBeforeExecutingStatus = postRepository.getOne(postId).getStatus().name();
         final Boolean joinPoint = (Boolean) proceedingJoinPoint.proceed();
-        UserPrincipal userPrincipal = null;
-        PostSaveFromUserDTO postSaveFromUserDTO = null;
-        for (Object obj : arguments) {
-            if (obj instanceof PostSaveFromUserDTO) {
-                postSaveFromUserDTO = (PostSaveFromUserDTO) obj;
-            }
-            if (obj instanceof UserPrincipal) {
-                userPrincipal = (UserPrincipal) obj;
-            }
-        }
+        UserPrincipal userPrincipal = getArgumentFromArrayByClassType(arguments, UserPrincipal.class);
+        PostSaveFromUserDTO postSaveFromUserDTO = getArgumentFromArrayByClassType(arguments, PostSaveFromUserDTO.class);
         String postEntityChangedStatus = PostStatus.values()[postSaveFromUserDTO.getPostStatus()].name();
-        UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail()).get();
         String changes;
         if (postEntityBeforeExecutingStatus.equals(postEntityChangedStatus)) {
             changes = "Оновлено матеріал";
@@ -96,16 +71,11 @@ public class PostLogger {
                 case "PUBLISHED":
                     changes = "Опубліковано";
                     break;
-                default: changes = "N/A";
+                default:
+                    changes = "N/A";
             }
         }
-        LogEntity log = LogEntity.builder()
-                .title(postSaveFromUserDTO.getTitle())
-                .changes(changes)
-                .nameOfChanger(userEntity.getLastName() + " " + userEntity.getFirstName())
-                .build();
-
-        logRepository.save(log);
+        makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, changes, postSaveFromUserDTO.getId());
         return joinPoint;
     }
 
@@ -114,31 +84,37 @@ public class PostLogger {
             + "Integer, boolean))")
     public void deletePost(JoinPoint joinPoint) {
         Object[] arguments = joinPoint.getArgs();
-        UserPrincipal userPrincipal = null;
-        Integer postId = null;
-        boolean flag = false;
-        for (Object obj : arguments) {
-            if (obj instanceof UserPrincipal) {
-                userPrincipal = (UserPrincipal) obj;
-            }
-            if (obj instanceof Integer) {
-                postId = (Integer) obj;
-            }
-            if (obj instanceof Boolean) {
-                flag = (boolean) obj;
-            }
-        }
+        UserPrincipal userPrincipal = getArgumentFromArrayByClassType(arguments, UserPrincipal.class);
+        Integer postId = getArgumentFromArrayByClassType(arguments, Integer.class);
+        boolean flag = getArgumentFromArrayByClassType(arguments, Boolean.class);
         if (!flag) {
             return;
         }
         PostEntity postEntity = postRepository.getOne(postId);
+        makeEntryInLogs(postEntity.getTitle(), userPrincipal, "Матеріал видалено", null);
+    }
+
+    private void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes, Integer postId) {
         UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail()).get();
         LogEntity log = LogEntity.builder()
-                .title(postEntity.getTitle())
-                .changes("Матеріал видалено")
+                .title(title)
+                .changes(changes)
+                .idOfChangedPost(postId)
                 .nameOfChanger(userEntity.getLastName() + " " + userEntity.getFirstName())
                 .build();
-
         logRepository.save(log);
+    }
+
+    private static <T> T getArgumentFromArrayByClassType(Object[] arguments, Class<T> clazz) {
+        return (T) Arrays.stream(arguments)
+                .filter(clazz::isInstance)
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable to find argument"));
+    }
+
+    private static Integer getPostIdFromObjectInArray(Object[] arguments) {
+        return Arrays.stream(arguments)
+                .filter(obj -> obj instanceof PostSaveFromUserDTO)
+                .map(obj -> ((PostSaveFromUserDTO) obj).getId())
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Unable find argument"));
     }
 }
