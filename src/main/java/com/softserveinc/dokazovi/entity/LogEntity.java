@@ -28,6 +28,8 @@ public class LogEntity {
     @Column(name = "log_id")
     private Integer id;
 
+    private Integer idOfChangedPost;
+
     @NotBlank
     private String title;
 
