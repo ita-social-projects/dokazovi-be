@@ -75,7 +75,7 @@ public class AuthController {
             ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken.getToken())
                     .httpOnly(true)
                     .secure(true)
-                    .domain("dokazovi-fe-release.herokuapp.com")
+                    .domain("dokazovi-sb-fe.herokuapp.com")
                     .sameSite("none")
                     .build();
             response.setHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
