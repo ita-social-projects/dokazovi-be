@@ -76,6 +76,7 @@ public class UserController {
      * @param directions direction id
      * @return page with found posts and 'OK' httpStatus
      */
+
     @GetMapping(USER_RANDOM_EXPERTS)
     @ApiPageable
     @ApiOperation(value = "Get preview of random experts, filtered by directions. Default 12 max per page.")
