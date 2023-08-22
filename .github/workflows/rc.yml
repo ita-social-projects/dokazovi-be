@@ -3,7 +3,7 @@ name: Bump version, build and push to heroku
 on:
   push:
     branches:
-      - develop
+      - release
 
 jobs:
   build:
