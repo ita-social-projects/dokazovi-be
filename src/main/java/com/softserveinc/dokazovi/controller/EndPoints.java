@@ -62,6 +62,7 @@ public final class EndPoints {
     public static final String LOG = "/log";
     public static final String POST_LOGS = "/post-logs";
     public static final String POST_LOG_BY_ID = "/{logId}";
+    public static final String POST_GET_POST_DATE_BY_ID = "/{postId}/date";
 
     /**
      * Method that adds slash after each endpoint while calling

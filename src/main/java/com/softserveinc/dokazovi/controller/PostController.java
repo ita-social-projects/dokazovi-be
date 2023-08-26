@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_FAKE_VIEW_COUN
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_BY_IMPORTANT_IMAGE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_BY_ID;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_GET_POST_DATE_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_DIRECTION;
@@ -527,5 +529,21 @@ public class PostController {
         return postService.getFakeViewsByPostUrl(url) + postService.getPostViewCount(url);
     }
 
+    /**
+     * Gets post date by its id.
+     *
+     * <p> Checks if found post exists, if no - returns HttpStatus 'NOT FOUND'.</p>
+     *
+     * @param postId id of post that we want to get
+     * @return found post date and HttpStatus 'OK'
+     */
+    @GetMapping(POST_GET_POST_DATE_BY_ID)
+    @ApiOperation(value = "Get post date by Id, as a path variable.")
+    public ResponseEntity<Timestamp> getPostDateById(@PathVariable("postId") Integer postId) {
+        PostDTO postDTO = postService.findPostById(postId);
+        return ResponseEntity
+                .status((postDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+                .body(postDTO.getPublishedAt());
+    }
 
 }
