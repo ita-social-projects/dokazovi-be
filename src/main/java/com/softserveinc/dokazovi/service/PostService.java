@@ -63,4 +63,6 @@ public interface PostService {
     void updatePlannedStatus();
 
     boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt);
+
+    void setPostStatusToNeedsEditing(Integer postId);
 }

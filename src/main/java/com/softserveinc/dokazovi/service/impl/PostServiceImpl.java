@@ -493,4 +493,17 @@ public class PostServiceImpl implements PostService {
                 .filter(postEntity -> postEntity.getPublishedAt().before(date))
                 .forEach(postEntity -> postEntity.setStatus(PostStatus.PUBLISHED));
     }
+
+    @Override
+    @Transactional
+    public void setPostStatusToNeedsEditing(Integer postId) {
+        Optional<PostEntity> post = postRepository.findById(postId);
+        if (post.isPresent()) {
+            PostEntity postEntity = post.get();
+            postEntity.setStatus(PostStatus.NEEDS_EDITING);
+            postRepository.save(postEntity);
+        } else {
+            throw new EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
+        }
+    }
 }

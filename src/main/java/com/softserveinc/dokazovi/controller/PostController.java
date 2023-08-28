@@ -61,6 +61,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_FAKE_VIEW;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_STATUS_NEEDS_EDITING;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
 
@@ -546,4 +547,12 @@ public class PostController {
                 .body(postDTO.getPublishedAt());
     }
 
+    @ApiPageable
+    @ApiOperation(value = "Change status of post to NEEDS_EDITING",
+            authorizations = {@Authorization(value = "Authorization")})
+    @PatchMapping(POST_SET_STATUS_NEEDS_EDITING)
+    @PreAuthorize("hasAuthority('UPDATE_POST')")
+    public void setPostStatusToNeedsEditing(@ApiParam("Post's id") @PathVariable("postId") Integer postId) {
+        postService.setPostStatusToNeedsEditing(postId);
+    }
 }
