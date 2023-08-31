@@ -473,9 +473,21 @@ public class PostServiceImpl implements PostService {
     public boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt) {
         Optional<PostEntity> post = postRepository.findById(postId);
         if (post.isPresent()) {
-            postRepository.setPublishedAt(postId, publishedAt.getPublishedAt());
             PostEntity postEntity = post.get();
-            postEntity.setStatus(PostStatus.PLANNED);
+            Timestamp newPublishedAt = publishedAt.getPublishedAt();
+            postEntity.setPublishedAt(newPublishedAt);
+            if (postEntity.getStatus() != null) {
+                if (newPublishedAt.before(new Timestamp(System.currentTimeMillis()))) {
+                    if (postEntity.getStatus().equals(PostStatus.PLANNED)) {
+                        postEntity.setStatus(PostStatus.PUBLISHED);
+                    }
+                } else if (postEntity.getStatus().equals(PostStatus.PUBLISHED) ||
+                        postEntity.getStatus().equals(PostStatus.ARCHIVED) ||
+                        postEntity.getStatus().equals(PostStatus.MODERATION_FIRST_SIGN) ||
+                        postEntity.getStatus().equals(PostStatus.MODERATION_SECOND_SIGN)) {
+                    postEntity.setStatus(PostStatus.PLANNED);
+                }
+            }
             postRepository.save(postEntity);
             return true;
         } else {
