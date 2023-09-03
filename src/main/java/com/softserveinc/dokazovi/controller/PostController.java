@@ -6,6 +6,7 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusDTO;
 import com.softserveinc.dokazovi.dto.post.PostTypeDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -61,7 +62,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_FAKE_VIEW;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_STATUS_NEEDS_EDITING;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_VIEW_COUNT;
 
@@ -101,7 +102,7 @@ public class PostController {
     }
 
     /**
-     * Finds latest published published posts.
+     * Finds latest published posts.
      *
      * @param pageable interface for pagination information
      * @return page with found posts and 'OK' httpStatus
@@ -548,11 +549,15 @@ public class PostController {
     }
 
     @ApiPageable
-    @ApiOperation(value = "Change status of post to NEEDS_EDITING",
+    @ApiOperation(value = "Change status of post by ID",
             authorizations = {@Authorization(value = "Authorization")})
-    @PatchMapping(POST_SET_STATUS_NEEDS_EDITING)
+    @PatchMapping(POST_SET_STATUS)
     @PreAuthorize("hasAuthority('UPDATE_POST')")
-    public void setPostStatusToNeedsEditing(@ApiParam("Post's id") @PathVariable("postId") Integer postId) {
-        postService.setPostStatusToNeedsEditing(postId);
+    public void setPostStatus(@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @ApiParam("Post's ID") @PathVariable("postId") Integer postId,
+            @ApiParam("New status of the post")
+            @Valid
+            @RequestBody PostStatusDTO postStatusDTO) {
+        postService.setPostStatus(userPrincipal, postId, postStatusDTO);
     }
 }

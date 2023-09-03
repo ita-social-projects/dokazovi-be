@@ -5,12 +5,14 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
+import com.softserveinc.dokazovi.exception.StatusNotFoundException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -35,6 +37,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -508,14 +511,38 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void setPostStatusToNeedsEditing(Integer postId) {
+    public void setPostStatus(UserPrincipal userPrincipal, Integer postId, PostStatusDTO postStatusDTO)
+            throws EntityNotFoundException {
+        Integer userId = userPrincipal.getId();
+
         Optional<PostEntity> post = postRepository.findById(postId);
         if (post.isPresent()) {
             PostEntity postEntity = post.get();
-            postEntity.setStatus(PostStatus.NEEDS_EDITING);
-            postRepository.save(postEntity);
+
+            Integer authorId = postEntity.getAuthor().getId();
+
+            String newStatus = postStatusDTO.getStatus();
+
+            if ((userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_OWN_POST")) ||
+                    (!userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_POST"))) {
+                if (isValidStatus(newStatus)) {
+                    postEntity.setStatus(PostStatus.valueOf(newStatus));
+                    postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+                    saveEntity(postEntity);
+                } else {
+                    throw new StatusNotFoundException("Status '" + newStatus + "' does not exist");
+                }
+            } else {
+                throw new ForbiddenPermissionsException();
+            }
         } else {
-            throw new EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
+            throw new EntityNotFoundException("Post with id " + postId + " does not exist");
         }
+    }
+
+    public boolean isValidStatus(String status) {
+        return EnumSet.allOf(PostStatus.class)
+                .stream()
+                .anyMatch(e -> e.name().equals(status));
     }
 }
