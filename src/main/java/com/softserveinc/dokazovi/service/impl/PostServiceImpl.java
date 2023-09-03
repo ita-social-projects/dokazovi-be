@@ -513,18 +513,14 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void setPostStatus(UserPrincipal userPrincipal, Integer postId, PostStatusDTO postStatusDTO)
             throws EntityNotFoundException {
-        Integer userId = userPrincipal.getId();
 
         Optional<PostEntity> post = postRepository.findById(postId);
         if (post.isPresent()) {
             PostEntity postEntity = post.get();
 
-            Integer authorId = postEntity.getAuthor().getId();
-
             String newStatus = postStatusDTO.getStatus();
 
-            if ((userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_OWN_POST")) ||
-                    (!userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_POST"))) {
+            if (checkAuthority(userPrincipal, "UPDATE_POST")) {
                 if (isValidStatus(newStatus)) {
                     postEntity.setStatus(PostStatus.valueOf(newStatus));
                     postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
