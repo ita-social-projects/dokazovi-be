@@ -89,7 +89,7 @@ public class PostLogger {
         if (!flag) {
             return;
         }
-        makeEntryInLogs("postEntity with id "+ postId+  " was deleted", userPrincipal, "Матеріал видалено", null);
+        makeEntryInLogs("postEntity with id " + postId + " was deleted", userPrincipal, "Матеріал видалено", null);
     }
 
     private void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes, Integer postId) {
