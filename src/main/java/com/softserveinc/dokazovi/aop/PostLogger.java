@@ -90,8 +90,7 @@ public class PostLogger {
         if (!flag) {
             return;
         }
-        PostEntity postEntity = postRepository.getOne(postId);
-        makeEntryInLogs(postEntity.getTitle(), userPrincipal, "Матеріал видалено", null);
+        makeEntryInLogs("postEntity with id "+ postId+  " was deleted", userPrincipal, "Матеріал видалено", null);
     }
 
     private void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes, Integer postId) {
