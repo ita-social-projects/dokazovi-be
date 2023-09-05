@@ -17,7 +17,7 @@ public final class EndPoints {
     public static final String POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE = "/latestMobile";
     public static final String POST_IMPORTANT = "/important";
     public static final String POST_SET_IMPORTANT = "/set-important";
-    public static final String POST_SET_FAKE_VIEW = "/set-fake-view/{postId}";
+    public static final String POST_SET_DESIRED_VIEWS = "/set-desired-views/{postId}";
     public static final String POST_SET_STATUS = "/{postId}/status";
     public static final String POST_GET_POST_BY_ID = "/{postId}";
     public static final String POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS = "/by-authorid-and-directions";

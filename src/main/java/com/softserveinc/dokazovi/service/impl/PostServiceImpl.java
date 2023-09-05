@@ -428,17 +428,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void setFakeViewsForPost(Integer postId, Integer view) {
-        Optional<PostEntity> post;
-        if ((post = postRepository.findById(postId)).isPresent()) {
-            post.get().setFakeViews(view);
-            postRepository.save(post.get());
-        } else {
-            throw new EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
-        }
-    }
-
-    @Override
     public Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
             Set<Integer> directions, Set<Integer> types, Set<Integer> origins, Pageable pageable) {
         return postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
@@ -540,5 +529,28 @@ public class PostServiceImpl implements PostService {
         return EnumSet.allOf(PostStatus.class)
                 .stream()
                 .anyMatch(e -> e.name().equals(status));
+    }
+
+    @Override
+    @Transactional
+    public void setPostViews(UserPrincipal userPrincipal, Integer postId, Integer desiredViews)
+            throws EntityNotFoundException {
+
+        Optional<PostEntity> post = postRepository.findById(postId);
+        if (post.isPresent()) {
+            PostEntity postEntity = post.get();
+
+            if (checkAuthority(userPrincipal, "UPDATE_POST")) {
+                int realViews = postEntity.getRealViews();
+                int fakeViews = desiredViews - realViews;
+                postEntity.setFakeViews(fakeViews);
+                postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+                saveEntity(postEntity);
+            } else {
+                throw new ForbiddenPermissionsException();
+            }
+        } else {
+            throw new EntityNotFoundException("Post with id " + postId + " does not exist");
+        }
     }
 }

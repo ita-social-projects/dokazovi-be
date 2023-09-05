@@ -54,8 +54,6 @@ public interface PostService {
 
     Integer getFakeViewsByPostUrl(String url);
 
-    void setFakeViewsForPost(Integer postId, Integer view);
-
     Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
             Set<Integer> directionIds, Set<Integer> typeIds, Set<Integer> originIds, Pageable pageable);
 
@@ -66,4 +64,6 @@ public interface PostService {
     boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt);
 
     void setPostStatus(UserPrincipal userPrincipal, Integer postId, PostStatusDTO postStatusDTO);
+
+    void setPostViews(UserPrincipal userPrincipal, Integer postId, Integer desiredViews);
 }
