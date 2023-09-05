@@ -12,6 +12,7 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
+import com.softserveinc.dokazovi.exception.InvalidViewNumberException;
 import com.softserveinc.dokazovi.exception.StatusNotFoundException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -535,6 +536,9 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void setPostViews(UserPrincipal userPrincipal, Integer postId, Integer desiredViews)
             throws EntityNotFoundException {
+        if (desiredViews < 0) {
+            throw new InvalidViewNumberException();
+        }
 
         Optional<PostEntity> post = postRepository.findById(postId);
         if (post.isPresent()) {
