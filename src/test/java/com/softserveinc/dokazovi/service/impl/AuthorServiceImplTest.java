@@ -9,6 +9,7 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
+import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.CityRepository;
 import com.softserveinc.dokazovi.repositories.InstitutionRepository;
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -53,6 +55,8 @@ class AuthorServiceImplTest {
     private InstitutionRepository institutionRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private AuthorMapper authorMapper;
     @InjectMocks
     private AuthorServiceImpl authorService;
     @Captor
@@ -232,5 +236,15 @@ class AuthorServiceImplTest {
 
         assertThatThrownBy(() -> authorService.delete(1, userPrincipal))
                 .isInstanceOf(ForbiddenPermissionsException.class);
+    }
+
+    @Test
+    void findAllAuthors() {
+        List<AuthorEntity> authors = List.of(new AuthorEntity(), new AuthorEntity());
+
+        when(authorRepository.findAll()).thenReturn(authors);
+        authorService.findAllAuthors();
+
+        verify(authorMapper, times(authors.size())).toAuthorResponseDTO(any(AuthorEntity.class));
     }
 }

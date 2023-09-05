@@ -483,4 +483,15 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+    @Test
+    void setPostAuthor() throws Exception {
+        String uri = POST + "/11/author";
+        String content = "{\n"
+                + "  \"id\": 20\n"
+                + "}";
+        mockMvc.perform(patch(uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isOk());
+    }
 }

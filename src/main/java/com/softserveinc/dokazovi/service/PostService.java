@@ -66,4 +66,6 @@ public interface PostService {
     boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt);
 
     void setPostStatus(UserPrincipal userPrincipal, Integer postId, PostStatusDTO postStatusDTO);
+
+    void setAuthor(Integer postId, Integer authorId);
 }

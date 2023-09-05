@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -75,6 +76,12 @@ class AuthorControllerTest {
     @Test
     void deleteAuthor() throws Exception {
         mockMvc.perform(delete("/author/{authorId}", "1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getAllAuthors() throws Exception {
+        mockMvc.perform(get("/author"))
                 .andExpect(status().isOk());
     }
 }

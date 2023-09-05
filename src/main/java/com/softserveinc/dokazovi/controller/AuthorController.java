@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR_GET_AUTHOR_BY_ID;
 import static com.softserveinc.dokazovi.controller.EndPoints.AUTHOR;
@@ -81,4 +84,18 @@ public class AuthorController {
                 .status(200)
                 .body(authorService.delete(authorId, userPrincipal));
     }
+
+    /**
+     * Finds all authors.
+     *
+     * @return list of found authors and 'OK' httpStatus
+     */
+    @GetMapping
+    @ApiOperation(value = "Find all authors")
+    public ResponseEntity<List<AuthorResponseDTO>> getAllAuthors() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(authorService.findAllAuthors());
+    }
+
 }
