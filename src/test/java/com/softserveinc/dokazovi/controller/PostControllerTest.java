@@ -36,7 +36,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -483,5 +485,16 @@ class PostControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void getPostDateById() throws Exception {
+        String uri = POST + "/11/date";
+        PostDTO post = PostDTO.builder().id(1).publishedAt(Timestamp.valueOf(
+                        LocalDateTime.now())).build();
+        when(postService.findPostById(11)).thenReturn(post);
+        mockMvc.perform(get(uri))
+                .andExpect(status().isOk());
+        verify(postService, times(1)).findPostById(11);
     }
 }

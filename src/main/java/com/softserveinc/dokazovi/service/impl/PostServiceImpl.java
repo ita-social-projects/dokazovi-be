@@ -64,7 +64,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO findPostById(Integer postId) {
-        return postMapper.toPostDTO(postRepository.findById(postId).orElse(null));
+        return postMapper.toPostDTO(postRepository.findById(postId)
+                .orElseThrow(EntityNotFoundException::new));
     }
 
     @Override
