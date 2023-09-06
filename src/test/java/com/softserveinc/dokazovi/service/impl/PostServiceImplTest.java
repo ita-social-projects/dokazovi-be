@@ -1590,23 +1590,6 @@ class PostServiceImplTest {
     }
 
     @Test
-    void setFakeViewsForPost_withExistPostId() {
-        PostEntity postEntity = PostEntity.builder().id(10).build();
-        when(postRepository.findById(10))
-                .thenReturn(Optional.of(postEntity));
-        postService.setFakeViewsForPost(10, 110);
-        assertEquals(110, postEntity.getFakeViews());
-    }
-
-
-    @Test
-    void setFakeViewsForPost_withNotExistPostId() {
-        Optional<PostEntity> post = Optional.of(PostEntity.builder().id(11).build());
-        when(postRepository.findById(11)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> postService.setFakeViewsForPost(11, 110));
-    }
-
-    @Test
     void checkUpdateRealViews() {
         Map<Integer, Integer> idsWithViews = new HashMap<>();
         idsWithViews.put(1, 1);

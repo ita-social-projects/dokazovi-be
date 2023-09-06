@@ -13,6 +13,7 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
+import com.softserveinc.dokazovi.exception.InvalidViewNumberException;
 import com.softserveinc.dokazovi.exception.StatusNotFoundException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
@@ -431,17 +432,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void setFakeViewsForPost(Integer postId, Integer view) {
-        Optional<PostEntity> post;
-        if ((post = postRepository.findById(postId)).isPresent()) {
-            post.get().setFakeViews(view);
-            postRepository.save(post.get());
-        } else {
-            throw new EntityNotFoundException("Post with this id=" + postId + " doesn't exist");
-        }
-    }
-
-    @Override
     public Page<PostDTO> findPublishedNotImportantPostsWithFiltersSortedByImportantImagePresence(
             Set<Integer> directions, Set<Integer> types, Set<Integer> origins, Pageable pageable) {
         return postRepository.findByDirectionsAndTypesAndOriginsAndStatusAndImportantSortedByImportantImagePresence(
@@ -561,6 +551,32 @@ public class PostServiceImpl implements PostService {
                 saveEntity(postEntity);
             } else {
                 throw new EntityNotFoundException("Author with id " + authorId + " does not exist");
+            }
+        } else {
+            throw new EntityNotFoundException("Post with id " + postId + " does not exist");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void setPostViews(UserPrincipal userPrincipal, Integer postId, Integer desiredViews)
+            throws EntityNotFoundException {
+        if (desiredViews < 0) {
+            throw new InvalidViewNumberException();
+        }
+
+        Optional<PostEntity> post = postRepository.findById(postId);
+        if (post.isPresent()) {
+            PostEntity postEntity = post.get();
+
+            if (checkAuthority(userPrincipal, "UPDATE_POST")) {
+                int realViews = postEntity.getRealViews();
+                int fakeViews = desiredViews - realViews;
+                postEntity.setFakeViews(fakeViews);
+                postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+                saveEntity(postEntity);
+            } else {
+                throw new ForbiddenPermissionsException();
             }
         } else {
             throw new EntityNotFoundException("Post with id " + postId + " does not exist");

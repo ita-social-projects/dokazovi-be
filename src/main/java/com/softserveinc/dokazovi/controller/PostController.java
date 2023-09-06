@@ -62,7 +62,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_AUTHOR;
-import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_FAKE_VIEW;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_DESIRED_VIEWS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_TYPE;
@@ -491,22 +491,6 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
-    /**
-     * Set a number for fake views
-     *
-     * @param postId id of post for which set fake views
-     * @param views number of fake views
-     */
-    @ApiPageable
-    @ApiOperation(value = "Set fake views for post by post id",
-            authorizations = {@Authorization(value = "Authorization")})
-    @PostMapping(POST_SET_FAKE_VIEW)
-    @PreAuthorize("hasAuthority('UPDATE_POST')")
-    public void setFakeViewsForPost(@ApiParam("Post's id") @PathVariable("postId") Integer postId,
-            @ApiParam("Number of fake views") @RequestParam(name = "views", defaultValue = "0") Integer views) {
-        postService.setFakeViewsForPost(postId, views);
-    }
-
     @ApiPageable
     @ApiOperation(value = "Set published_at for post by post id",
             authorizations = {@Authorization(value = "Authorization")})
@@ -573,5 +557,16 @@ public class PostController {
             @Valid
             @RequestBody AuthorDTOForUpdatingPost newAuthor) {
         postService.setAuthor(postId, newAuthor.getId());
+    }
+
+    @ApiPageable
+    @ApiOperation(value = "Change quantity of views of post by ID",
+            authorizations = {@Authorization(value = "Authorization")})
+    @PostMapping(POST_SET_DESIRED_VIEWS)
+    @PreAuthorize("hasAuthority('UPDATE_POST')")
+    public void setDesiredViewsForPost(@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @ApiParam("Post's ID") @PathVariable("postId") Integer postId,
+            @ApiParam("Number of desired views") @RequestParam(name = "views", defaultValue = "0") Integer views) {
+        postService.setPostViews(userPrincipal, postId, views);
     }
 }
