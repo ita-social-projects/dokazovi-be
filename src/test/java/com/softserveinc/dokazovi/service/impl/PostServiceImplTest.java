@@ -23,6 +23,7 @@ import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -71,6 +72,8 @@ class PostServiceImplTest {
     private PostRepository postRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private AuthorRepository authorRepository;
     @Mock
     private PostMapper postMapper;
     @Mock
@@ -1699,5 +1702,27 @@ class PostServiceImplTest {
         PostEntity postEntity = PostEntity.builder().id(1).publishedAt(publishedAt).build();
         Mockito.when(postRepository.findById(1)).thenReturn(Optional.of(postEntity));
         assertTrue(postService.setPublishedAt(1, postPublishedAtDTO));
+    }
+
+    @Test
+    void setAuthor() {
+        AuthorEntity oldAuthor = AuthorEntity.builder().id(1).publishedPosts(1L).build();
+        UserEntity oldUser = UserEntity.builder()
+                .id(1)
+                .author(oldAuthor)
+                .build();
+        UserEntity newUser = UserEntity.builder()
+                .id(2)
+                .build();
+        AuthorEntity newAuthor = AuthorEntity.builder().id(2).publishedPosts(0L).profile(newUser).build();
+        PostEntity postEntity = PostEntity.builder().id(1).author(oldUser).build();
+
+        Mockito.when(postRepository.findById(1)).thenReturn(Optional.of(postEntity));
+        Mockito.when(authorRepository.findById(2)).thenReturn(Optional.of(newAuthor));
+
+        postService.setAuthor(1, 2);
+        assertEquals(postEntity.getAuthor().getId(), newAuthor.getId());
+        assertEquals(oldAuthor.getPublishedPosts(), 0L);
+        assertEquals(newAuthor.getPublishedPosts(), 1L);
     }
 }

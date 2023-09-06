@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.controller;
 
 import com.softserveinc.dokazovi.annotations.ApiPageable;
+import com.softserveinc.dokazovi.dto.author.AuthorDTOForUpdatingPost;
 import com.softserveinc.dokazovi.dto.payload.ApiResponseMessage;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
@@ -60,6 +61,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPE
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_EXPERT_AND_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_LATEST_BY_POST_TYPES_AND_ORIGINS_FOR_MOBILE;
+import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_AUTHOR;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_DESIRED_VIEWS;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_IMPORTANT;
 import static com.softserveinc.dokazovi.controller.EndPoints.POST_SET_STATUS;
@@ -543,6 +545,18 @@ public class PostController {
             @Valid
             @RequestBody PostStatusDTO postStatusDTO) {
         postService.setPostStatus(userPrincipal, postId, postStatusDTO);
+    }
+
+    @ApiPageable
+    @ApiOperation(value = "Change author of post by ID",
+            authorizations = {@Authorization(value = "Authorization")})
+    @PatchMapping(POST_SET_AUTHOR)
+    @PreAuthorize("hasAuthority('UPDATE_POST')")
+    public void setPostAuthor(@ApiParam("Post's ID") @PathVariable("postId") Integer postId,
+            @ApiParam("New author of the post")
+            @Valid
+            @RequestBody AuthorDTOForUpdatingPost newAuthor) {
+        postService.setAuthor(postId, newAuthor.getId());
     }
 
     @ApiPageable

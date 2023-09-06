@@ -65,5 +65,7 @@ public interface PostService {
 
     void setPostStatus(UserPrincipal userPrincipal, Integer postId, PostStatusDTO postStatusDTO);
 
+    void setAuthor(Integer postId, Integer authorId);
+
     void setPostViews(UserPrincipal userPrincipal, Integer postId, Integer desiredViews);
 }

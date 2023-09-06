@@ -1,10 +1,12 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorResponseDTO;
 import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
+import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.CityRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -15,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
@@ -22,6 +27,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
+    private final AuthorMapper authorMapper;
 
     @Override
     public AuthorEntity findAuthorById(Integer authorId) {
@@ -99,5 +105,12 @@ public class AuthorServiceImpl implements AuthorService {
         return userPrincipal.getAuthorities().stream()
                 .anyMatch(grantedAuthority ->
                         grantedAuthority.getAuthority().equals(RolePermission.EDIT_AUTHOR.getAuthority()));
+    }
+
+    @Override
+    public List<AuthorResponseDTO> findAllAuthors() {
+        return authorRepository.findAll().stream()
+                .map(authorMapper::toAuthorResponseDTO)
+                .collect(Collectors.toList());
     }
 }

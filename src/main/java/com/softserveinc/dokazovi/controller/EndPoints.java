@@ -19,6 +19,7 @@ public final class EndPoints {
     public static final String POST_SET_IMPORTANT = "/set-important";
     public static final String POST_SET_DESIRED_VIEWS = "/set-desired-views/{postId}";
     public static final String POST_SET_STATUS = "/{postId}/status";
+    public static final String POST_SET_AUTHOR = "/{postId}/author";
     public static final String POST_GET_POST_BY_ID = "/{postId}";
     public static final String POST_GET_POST_BY_AUTHOR_ID_AND_DIRECTIONS = "/by-authorid-and-directions";
     public static final String POST_ALL_POSTS = "/all-posts";

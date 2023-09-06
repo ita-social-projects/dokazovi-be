@@ -6,6 +6,7 @@ import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostStatusDTO;
+import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -15,6 +16,7 @@ import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.exception.InvalidViewNumberException;
 import com.softserveinc.dokazovi.exception.StatusNotFoundException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -58,6 +60,7 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final DirectionServiceImpl directionService;
     private final GoogleAnalytics googleAnalytics;
+    private final AuthorRepository authorRepository;
 
     @Override
     public PostDTO findPostById(Integer postId) {
@@ -530,6 +533,28 @@ public class PostServiceImpl implements PostService {
         return EnumSet.allOf(PostStatus.class)
                 .stream()
                 .anyMatch(e -> e.name().equals(status));
+    }
+
+    @Override
+    @Transactional
+    public void setAuthor(Integer postId, Integer authorId) {
+        Optional<PostEntity> post = postRepository.findById(postId);
+        Optional<AuthorEntity> author = authorRepository.findById(authorId);
+        if (post.isPresent()) {
+            if (author.isPresent()) {
+                PostEntity postEntity = post.get();
+                AuthorEntity oldAuthor = postEntity.getAuthor().getAuthor();
+                AuthorEntity newAuthor = author.get();
+                oldAuthor.setPublishedPosts(oldAuthor.getPublishedPosts() - 1);
+                newAuthor.setPublishedPosts(newAuthor.getPublishedPosts() + 1);
+                postEntity.setAuthor(newAuthor.getProfile());
+                saveEntity(postEntity);
+            } else {
+                throw new EntityNotFoundException("Author with id " + authorId + " does not exist");
+            }
+        } else {
+            throw new EntityNotFoundException("Post with id " + postId + " does not exist");
+        }
     }
 
     @Override
