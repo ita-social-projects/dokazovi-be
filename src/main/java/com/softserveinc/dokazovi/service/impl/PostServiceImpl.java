@@ -5,10 +5,12 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostTitleDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.events.PostDeleteEvent;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
@@ -19,6 +21,7 @@ import com.softserveinc.dokazovi.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -54,6 +57,7 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final DirectionServiceImpl directionService;
     private final GoogleAnalytics googleAnalytics;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public PostDTO findPostById(Integer postId) {
@@ -220,7 +224,6 @@ public class PostServiceImpl implements PostService {
         PostEntity mappedEntity = postRepository
                 .findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
-
         Integer userId = userPrincipal.getId();
         Integer authorId = mappedEntity.getAuthor().getId();
 
@@ -235,6 +238,8 @@ public class PostServiceImpl implements PostService {
                         grantedAuthority.getAuthority().equals("DELETE_POST")))) {
             if (delete) {
                 postRepository.delete(mappedEntity);
+                applicationEventPublisher.publishEvent(new PostDeleteEvent(this, PostTitleDTO.builder().title(
+                        mappedEntity.getTitle()).build()));
             } else {
                 mappedEntity.setStatus(PostStatus.ARCHIVED);
                 mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));

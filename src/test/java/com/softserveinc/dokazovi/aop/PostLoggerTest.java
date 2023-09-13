@@ -1,10 +1,13 @@
 package com.softserveinc.dokazovi.aop;
 
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostTitleDTO;
 import com.softserveinc.dokazovi.entity.LogEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.events.PostDeleteEvent;
+import com.softserveinc.dokazovi.handlers.PostDeleteEventHandler;
 import com.softserveinc.dokazovi.repositories.LogRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -23,6 +26,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Optional;
 
@@ -43,6 +47,8 @@ class PostLoggerTest {
     private UserRepository userRepository;
     @Mock
     private PostRepository postRepository;
+    @Mock
+    private PostDeleteEventHandler postDeleteEventHandler;
     @InjectMocks
     private PostLogger postLogger;
     @Captor
@@ -68,7 +74,8 @@ class PostLoggerTest {
                 .lastName("testLastName").build();
 
         postEntity = PostEntity.builder()
-                .status(PostStatus.DRAFT).build();
+                .status(PostStatus.DRAFT)
+                .title(" ").build();
     }
 
     @Test
@@ -187,18 +194,52 @@ class PostLoggerTest {
     }
 
     @Test
-    void deletePost() {
+    void deletePostBlankTitle(){
         JoinPoint mock = Mockito.mock(JoinPoint.class);
 
-        Object[] args = new Object[]{userPrincipal, 1, true};
+        Object[] args = new Object[]{userPrincipal, 2, true};
         when(mock.getArgs()).thenReturn(args);
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(userEntity));
         when(postRepository.getOne(anyInt())).thenReturn(postEntity);
 
+        when(postDeleteEventHandler.getPostTitleDTO()).thenReturn(PostTitleDTO.builder().title(" ").build());
+
         postLogger.deletePost(mock);
 
         verify(logRepository).save(logEntityArgumentCaptor.capture());
-        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "Матеріал видалено");
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getTitle(), "The title is blank");
+    }
+    @Test
+    void deletePostEmptyTitle(){
+        JoinPoint mock = Mockito.mock(JoinPoint.class);
+
+        Object[] args = new Object[]{userPrincipal, 2, true};
+        when(mock.getArgs()).thenReturn(args);
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(userEntity));
+        when(postRepository.getOne(anyInt())).thenReturn(postEntity);
+
+        when(postDeleteEventHandler.getPostTitleDTO()).thenReturn(PostTitleDTO.builder().title("").build());
+
+        postLogger.deletePost(mock);
+
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getTitle(), "The title is blank");
+    }
+    @Test
+    void deletePostNotBlankTitle(){
+        JoinPoint mock = Mockito.mock(JoinPoint.class);
+
+        Object[] args = new Object[]{userPrincipal, 2, true};
+        when(mock.getArgs()).thenReturn(args);
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(userEntity));
+        when(postRepository.getOne(anyInt())).thenReturn(postEntity);
+
+        when(postDeleteEventHandler.getPostTitleDTO()).thenReturn(PostTitleDTO.builder().title("The title is not blank").build());
+
+        postLogger.deletePost(mock);
+
+        verify(logRepository).save(logEntityArgumentCaptor.capture());
+        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getTitle(), "The title is not blank");
     }
 
     @Test
