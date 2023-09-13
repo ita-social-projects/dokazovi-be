@@ -93,11 +93,11 @@ public class PostLogger {
             return;
         }
         PostTitleDTO postTitleDTO = postDeleteEventHandler.getPostTitleDTO();
-        if(postTitleDTO.getTitle().isEmpty() || postTitleDTO.getTitle().isBlank()){
+        if (postTitleDTO.getTitle().isEmpty() || postTitleDTO.getTitle().isBlank()) {
             makeEntryInLogs("The title is blank", userPrincipal, "Матеріал видалено", postId);
-        }
-        else
+        } else {
             makeEntryInLogs(postTitleDTO.getTitle(), userPrincipal, "Матеріал видалено", postId);
+        }
     }
 
     private void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes, Integer postId) {
