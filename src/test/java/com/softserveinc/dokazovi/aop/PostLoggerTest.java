@@ -194,7 +194,7 @@ class PostLoggerTest {
     }
 
     @Test
-    void deletePostBlankTitle(){
+    void deletePostBlankTitle() {
         JoinPoint mock = Mockito.mock(JoinPoint.class);
 
         Object[] args = new Object[]{userPrincipal, 2, true};
@@ -209,8 +209,9 @@ class PostLoggerTest {
         verify(logRepository).save(logEntityArgumentCaptor.capture());
         Assertions.assertEquals(logEntityArgumentCaptor.getValue().getTitle(), "The title is blank");
     }
+
     @Test
-    void deletePostEmptyTitle(){
+    void deletePostEmptyTitle() {
         JoinPoint mock = Mockito.mock(JoinPoint.class);
 
         Object[] args = new Object[]{userPrincipal, 2, true};
@@ -225,8 +226,9 @@ class PostLoggerTest {
         verify(logRepository).save(logEntityArgumentCaptor.capture());
         Assertions.assertEquals(logEntityArgumentCaptor.getValue().getTitle(), "The title is blank");
     }
+
     @Test
-    void deletePostNotBlankTitle(){
+    void deletePostNotBlankTitle() {
         JoinPoint mock = Mockito.mock(JoinPoint.class);
 
         Object[] args = new Object[]{userPrincipal, 2, true};
@@ -234,7 +236,8 @@ class PostLoggerTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(userEntity));
         when(postRepository.getOne(anyInt())).thenReturn(postEntity);
 
-        when(postDeleteEventHandler.getPostTitleDTO()).thenReturn(PostTitleDTO.builder().title("The title is not blank").build());
+        when(postDeleteEventHandler.getPostTitleDTO()).thenReturn(
+                PostTitleDTO.builder().title("The title is not blank").build());
 
         postLogger.deletePost(mock);
 

@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationEvent;
 public class PostDeleteEvent extends ApplicationEvent {
 
     private final PostTitleDTO postTitleDTO;
+
     /**
      * Create a new PostDeleteEvent.
      *

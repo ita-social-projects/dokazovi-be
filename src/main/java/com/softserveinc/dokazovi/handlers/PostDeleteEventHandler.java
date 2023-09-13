@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PostDeleteEventHandler implements ApplicationListener<PostDeleteEvent> {
+
     private PostTitleDTO postTitleDTO;
+
     @Override
     public void onApplicationEvent(PostDeleteEvent event) {
         this.postTitleDTO = event.getPostTitleDTO();
