@@ -6,7 +6,6 @@ import com.softserveinc.dokazovi.entity.LogEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.events.PostDeleteEvent;
 import com.softserveinc.dokazovi.handlers.PostDeleteEventHandler;
 import com.softserveinc.dokazovi.repositories.LogRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -26,7 +25,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Optional;
 
