@@ -1,7 +1,6 @@
 package com.softserveinc.dokazovi.aop;
 
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.dto.post.DeletePostDTO;
 import com.softserveinc.dokazovi.entity.LogEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -28,10 +27,8 @@ import org.mockito.quality.Strictness;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
