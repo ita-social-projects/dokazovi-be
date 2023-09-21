@@ -5,7 +5,7 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.dto.post.PostTitleDTO;
+import com.softserveinc.dokazovi.dto.post.DeletePostDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -238,8 +238,8 @@ public class PostServiceImpl implements PostService {
                         grantedAuthority.getAuthority().equals("DELETE_POST")))) {
             if (delete) {
                 postRepository.delete(mappedEntity);
-                applicationEventPublisher.publishEvent(new PostDeleteEvent(this, PostTitleDTO.builder().title(
-                        mappedEntity.getTitle()).build()));
+                applicationEventPublisher.publishEvent(new PostDeleteEvent(this, DeletePostDTO.builder().title(
+                        mappedEntity.getTitle()).userPrincipal(userPrincipal).postId(postId).build()));
             } else {
                 mappedEntity.setStatus(PostStatus.ARCHIVED);
                 mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));

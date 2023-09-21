@@ -1,11 +1,11 @@
 package com.softserveinc.dokazovi.events;
 
-import com.softserveinc.dokazovi.dto.post.PostTitleDTO;
+import com.softserveinc.dokazovi.dto.post.DeletePostDTO;
 import org.springframework.context.ApplicationEvent;
 
 public class PostDeleteEvent extends ApplicationEvent {
 
-    private final PostTitleDTO postTitleDTO;
+    private final DeletePostDTO deletePostDTO;
 
     /**
      * Create a new PostDeleteEvent.
@@ -13,12 +13,12 @@ public class PostDeleteEvent extends ApplicationEvent {
      * @param source the object on which the event initially occurred or with which the event is associated (never
      *               {@code null})
      */
-    public PostDeleteEvent(Object source, PostTitleDTO postTitleDTO) {
+    public PostDeleteEvent(Object source, DeletePostDTO deletePostDTO) {
         super(source);
-        this.postTitleDTO = postTitleDTO;
+        this.deletePostDTO = deletePostDTO;
     }
 
-    public PostTitleDTO getPostTitleDTO() {
-        return postTitleDTO;
+    public DeletePostDTO getPostTitleDTO() {
+        return deletePostDTO;
     }
 }

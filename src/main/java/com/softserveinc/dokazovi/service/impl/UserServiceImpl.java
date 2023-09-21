@@ -26,8 +26,7 @@ import java.util.UUID;
 
 
 /**
- * The UserServiceImpl is responsible for doing any required logic
- * with the user data received by the User Controller.
+ * The UserServiceImpl is responsible for doing any required logic with the user data received by the User Controller.
  * It provides logic to operate on the data sent to and from the User repository.
  */
 
@@ -92,12 +91,11 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Gets doctors by search criteria.
-     * For example, if directions, regions and user name fields
-     * are empty, the findDoctorsProfiles method without parameters is called
+     * Gets doctors by search criteria. For example, if directions, regions and user name fields are empty, the
+     * findDoctorsProfiles method without parameters is called
      *
      * @param userSearchCriteria received from User controller
-     * @param pageable received from User controller
+     * @param pageable           received from User controller
      * @return found doctor by criteria
      */
     @Override
@@ -163,11 +161,10 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Gets random experts by directions.
-     * If directions are empty, gets random experts without filters
+     * Gets random experts by directions. If directions are empty, gets random experts without filters
      *
      * @param directionsIds the directions ids received from User controller
-     * @param pageable received from User controller
+     * @param pageable      received from User controller
      * @return found doctor by directions
      */
     @Override
@@ -210,7 +207,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Gets the verification token received from tokenRepository.
      *
-     * @param user user received from Mail Sender
+     * @param user  user received from Mail Sender
      * @param token token received from Mail Sender
      */
     @Override
@@ -223,7 +220,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity getById (Integer userId) {
+    public UserEntity getById(Integer userId) {
         return userRepository.findById(userId).orElse(null);
     }
 

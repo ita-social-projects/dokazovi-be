@@ -1,21 +1,27 @@
 package com.softserveinc.dokazovi.handlers;
 
-import com.softserveinc.dokazovi.dto.post.PostTitleDTO;
 import com.softserveinc.dokazovi.events.PostDeleteEvent;
+import com.softserveinc.dokazovi.service.LogService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class PostDeleteEventHandler implements ApplicationListener<PostDeleteEvent> {
 
-    private PostTitleDTO postTitleDTO;
+    private final LogService logService;
 
+    @Async
     @Override
     public void onApplicationEvent(PostDeleteEvent event) {
-        this.postTitleDTO = event.getPostTitleDTO();
-    }
-
-    public PostTitleDTO getPostTitleDTO() {
-        return postTitleDTO;
+        if (event.getPostTitleDTO().getTitle().isEmpty() || event.getPostTitleDTO().getTitle().isBlank()) {
+            logService.makeEntryInLogs("The title is blank", event.getPostTitleDTO().getUserPrincipal(),
+                    "Матеріал видалено", event.getPostTitleDTO().getPostId());
+        } else {
+            logService.makeEntryInLogs(event.getPostTitleDTO().getTitle(), event.getPostTitleDTO().getUserPrincipal(),
+                    "Матеріал видалено", event.getPostTitleDTO().getPostId());
+        }
     }
 }

@@ -1,11 +1,9 @@
 package com.softserveinc.dokazovi.aop;
 
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
-import com.softserveinc.dokazovi.dto.post.PostTitleDTO;
 import com.softserveinc.dokazovi.entity.LogEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
-import com.softserveinc.dokazovi.handlers.PostDeleteEventHandler;
 import com.softserveinc.dokazovi.repositories.LogRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -29,7 +27,6 @@ public class PostLogger {
     private final LogRepository logRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final PostDeleteEventHandler postDeleteEventHandler;
 
     @AfterReturning("execution(* com.softserveinc.dokazovi.service.impl.PostServiceImpl.saveFromUser("
             + "com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO,"
@@ -79,25 +76,6 @@ public class PostLogger {
         }
         makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, changes, postSaveFromUserDTO.getId());
         return joinPoint;
-    }
-
-    @AfterReturning("execution(* com.softserveinc.dokazovi.service.impl.PostServiceImpl.removePostById("
-            + "com.softserveinc.dokazovi.security.UserPrincipal,"
-            + "Integer, boolean))")
-    public void deletePost(JoinPoint joinPoint) {
-        Object[] arguments = joinPoint.getArgs();
-        UserPrincipal userPrincipal = getArgumentFromArrayByClassType(arguments, UserPrincipal.class);
-        Integer postId = getArgumentFromArrayByClassType(arguments, Integer.class);
-        boolean flag = getArgumentFromArrayByClassType(arguments, Boolean.class);
-        if (!flag) {
-            return;
-        }
-        PostTitleDTO postTitleDTO = postDeleteEventHandler.getPostTitleDTO();
-        if (postTitleDTO.getTitle().isEmpty() || postTitleDTO.getTitle().isBlank()) {
-            makeEntryInLogs("The title is blank", userPrincipal, "Матеріал видалено", postId);
-        } else {
-            makeEntryInLogs(postTitleDTO.getTitle(), userPrincipal, "Матеріал видалено", postId);
-        }
     }
 
     private void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes, Integer postId) {
