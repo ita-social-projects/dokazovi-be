@@ -1,8 +1,11 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.entity.LogEntity;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.LogMapper;
 import com.softserveinc.dokazovi.repositories.LogRepository;
+import com.softserveinc.dokazovi.repositories.UserRepository;
+import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +21,9 @@ import org.springframework.data.domain.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -33,6 +38,8 @@ class LogServiceImplTest {
     private LogRepository logRepository;
     @Mock
     private LogMapper logMapper;
+    @Mock
+    private UserRepository userRepository;
     @Mock
     private Pageable pageable;
     @InjectMocks
@@ -88,5 +95,30 @@ class LogServiceImplTest {
         verify(logRepository).findByDateOfChangeBetween(any(Pageable.class),
                 any(Timestamp.class), any(Timestamp.class));
         verify(logMapper, times(2)).toPostLogDTO(any(LogEntity.class));
+    }
+
+    @Test
+    void makeEntryInLogs() {
+        UserEntity expected = UserEntity.builder()
+                .id(1)
+                .firstName("First Name")
+                .lastName("Last Name")
+                .email("admin@mail.com")
+                .password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
+                .build();
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(expected));
+        LogEntity log = LogEntity.builder()
+                .title("Test")
+                .changes("Матеріал видалено")
+                .idOfChangedPost(1)
+                .nameOfChanger(expected.getLastName() + " " + expected.getFirstName())
+                .build();
+        when(logRepository.save(any(LogEntity.class))).thenReturn(log);
+        logService.makeEntryInLogs(log.getTitle(), UserPrincipal.create(expected), log.getChanges(),
+                log.getIdOfChangedPost());
+        verify(logRepository, times(1))
+                .save(any(LogEntity.class));
+        assertEquals(1, log.getIdOfChangedPost());
+        assertEquals(expected.getLastName() + " " + expected.getFirstName(), log.getNameOfChanger());
     }
 }

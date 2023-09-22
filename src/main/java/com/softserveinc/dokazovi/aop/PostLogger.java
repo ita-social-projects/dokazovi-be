@@ -2,7 +2,6 @@ package com.softserveinc.dokazovi.aop;
 
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.entity.LogEntity;
-import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.repositories.LogRepository;
@@ -77,21 +76,6 @@ public class PostLogger {
         }
         makeEntryInLogs(postSaveFromUserDTO.getTitle(), userPrincipal, changes, postSaveFromUserDTO.getId());
         return joinPoint;
-    }
-
-    @AfterReturning("execution(* com.softserveinc.dokazovi.service.impl.PostServiceImpl.removePostById("
-            + "com.softserveinc.dokazovi.security.UserPrincipal,"
-            + "Integer, boolean))")
-    public void deletePost(JoinPoint joinPoint) {
-        Object[] arguments = joinPoint.getArgs();
-        UserPrincipal userPrincipal = getArgumentFromArrayByClassType(arguments, UserPrincipal.class);
-        Integer postId = getArgumentFromArrayByClassType(arguments, Integer.class);
-        boolean flag = getArgumentFromArrayByClassType(arguments, Boolean.class);
-        if (!flag) {
-            return;
-        }
-        PostEntity postEntity = postRepository.getOne(postId);
-        makeEntryInLogs(postEntity.getTitle(), userPrincipal, "Матеріал видалено", null);
     }
 
     private void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes, Integer postId) {
