@@ -34,6 +34,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -83,6 +84,8 @@ class PostServiceImplTest {
     private GoogleAnalytics googleAnalytics;
     @Mock
     private DirectionServiceImpl directionService;
+    @Mock
+    private ApplicationEventPublisher publisher;
 
     @BeforeEach
     void init() {
@@ -965,6 +968,7 @@ class PostServiceImplTest {
                 .build();
 
         when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+
         Assertions.assertThat(postService.removePostById(userPrincipal, id, true)).isTrue();
     }
 

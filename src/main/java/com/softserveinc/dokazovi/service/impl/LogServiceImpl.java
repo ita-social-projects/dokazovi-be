@@ -1,8 +1,12 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.log.PostLogDTO;
+import com.softserveinc.dokazovi.entity.LogEntity;
+import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.mapper.LogMapper;
 import com.softserveinc.dokazovi.repositories.LogRepository;
+import com.softserveinc.dokazovi.repositories.UserRepository;
+import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.LogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +26,7 @@ public class LogServiceImpl implements LogService {
 
     private final LogRepository logRepository;
     private final LogMapper logMapper;
+    private final UserRepository userRepository;
 
     @Override
     public Page<PostLogDTO> findAllPostLogs(Pageable pageable, String username, String title,
@@ -50,5 +55,17 @@ public class LogServiceImpl implements LogService {
     public PostLogDTO getLogById(Integer id) {
         return logMapper.toPostLogDTO(logRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Unable to find log with id:" + id)));
+    }
+
+    @Override
+    public void makeEntryInLogs(String title, UserPrincipal userPrincipal, String changes, Integer postId) {
+        UserEntity userEntity = userRepository.findByEmail(userPrincipal.getEmail()).get();
+        LogEntity log = LogEntity.builder()
+                .title(title)
+                .changes(changes)
+                .idOfChangedPost(postId)
+                .nameOfChanger(userEntity.getLastName() + " " + userEntity.getFirstName())
+                .build();
+        logRepository.save(log);
     }
 }

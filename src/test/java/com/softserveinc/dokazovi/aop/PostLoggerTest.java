@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.entity.LogEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.handlers.PostDeleteEventHandler;
 import com.softserveinc.dokazovi.repositories.LogRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -26,10 +27,8 @@ import org.mockito.quality.Strictness;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +42,8 @@ class PostLoggerTest {
     private UserRepository userRepository;
     @Mock
     private PostRepository postRepository;
+    @Mock
+    private PostDeleteEventHandler postDeleteEventHandler;
     @InjectMocks
     private PostLogger postLogger;
     @Captor
@@ -68,7 +69,8 @@ class PostLoggerTest {
                 .lastName("testLastName").build();
 
         postEntity = PostEntity.builder()
-                .status(PostStatus.DRAFT).build();
+                .status(PostStatus.DRAFT)
+                .title(" ").build();
     }
 
     @Test
@@ -184,34 +186,5 @@ class PostLoggerTest {
 
         verify(logRepository).save(logEntityArgumentCaptor.capture());
         Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "N/A");
-    }
-
-    @Test
-    void deletePost() {
-        JoinPoint mock = Mockito.mock(JoinPoint.class);
-
-        Object[] args = new Object[]{userPrincipal, 1, true};
-        when(mock.getArgs()).thenReturn(args);
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(userEntity));
-        when(postRepository.getOne(anyInt())).thenReturn(postEntity);
-
-        postLogger.deletePost(mock);
-
-        verify(logRepository).save(logEntityArgumentCaptor.capture());
-        Assertions.assertEquals(logEntityArgumentCaptor.getValue().getChanges(), "Матеріал видалено");
-    }
-
-    @Test
-    void archivePost() {
-        JoinPoint mock = Mockito.mock(JoinPoint.class);
-
-        Object[] args = new Object[]{userPrincipal, 1, false};
-        when(mock.getArgs()).thenReturn(args);
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(userEntity));
-        when(postRepository.getOne(anyInt())).thenReturn(postEntity);
-
-        postLogger.deletePost(mock);
-
-        verify(logRepository, never()).save(any(LogEntity.class));
     }
 }

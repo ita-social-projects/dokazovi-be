@@ -1,19 +1,25 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorResponseDTO;
 import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
+import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.CityRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +28,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
+    private final AuthorMapper authorMapper;
 
     @Override
     public AuthorEntity findAuthorById(Integer authorId) {
@@ -93,6 +100,13 @@ public class AuthorServiceImpl implements AuthorService {
         AuthorEntity author = findAuthorById(authorId);
         authorRepository.delete(author);
         return authorId;
+    }
+
+    @Override
+    @Transactional
+    public Page<AuthorResponseDTO> findAllAuthors(Pageable pageable) {
+        return authorRepository.findAll(pageable)
+                .map(authorMapper::toAuthorResponseDTO);
     }
 
     private boolean hasEnoughAuthorities(UserPrincipal userPrincipal) {
