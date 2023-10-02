@@ -33,7 +33,7 @@ public interface PostService {
     Page<PostDTO> findPostsByAuthorIdAndDirections(
             Pageable pageable, Integer expertId, Set<Integer> directions);
 
-    Boolean removePostById(UserPrincipal userId, Integer postId, boolean delete);
+    Boolean removePostById(UserPrincipal userId, Integer postId);
 
     Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveDTO);
 
