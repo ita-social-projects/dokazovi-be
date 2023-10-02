@@ -14,6 +14,7 @@ import com.softserveinc.dokazovi.events.PostDeleteEvent;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -55,6 +56,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final UserRepository userRepository;
+    private final AuthorRepository authorRepository;
     private final DirectionServiceImpl directionService;
     private final GoogleAnalytics googleAnalytics;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -216,45 +218,34 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Boolean removePostById(UserPrincipal userPrincipal, Integer postId, boolean delete)
+    public Boolean removePostById(UserPrincipal userPrincipal, Integer postId)
             throws EntityNotFoundException {
 
-        Optional<PostEntity> oldEntity = postRepository.findById(postId);
+        Optional<PostEntity> postToDelete = postRepository.findById(postId);
 
-        PostEntity mappedEntity = postRepository
-                .findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
-        Integer userId = userPrincipal.getId();
-        Integer authorId = mappedEntity.getAuthor().getId();
+        if (postToDelete.isPresent()) {
+            PostEntity mappedEntity = postToDelete.get();
 
-        final Set<DirectionEntity> directionsToUpdate = getDirectionsFromPostsEntities(
-                oldEntity,
-                mappedEntity
-        );
+            Integer userId = userPrincipal.getId();
+            Integer authorId = authorRepository.getByProfileId(userId).getId();
 
-        if ((userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) ||
-                (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-                        grantedAuthority.getAuthority().equals("DELETE_POST")))) {
-            if (delete) {
+            final Set<DirectionEntity> directionsToUpdate = getDirectionsFromPostsEntities(
+                    postToDelete,
+                    mappedEntity
+            );
+
+            if ((authorId.equals(mappedEntity.getAuthor().getId()) &&
+                    checkAuthority(userPrincipal,"DELETE_OWN_POST")) ||
+                    checkAuthority(userPrincipal,"DELETE_POST")) {
                 postRepository.delete(mappedEntity);
-                applicationEventPublisher.publishEvent(new PostDeleteEvent(this, DeletePostDTO.builder().title(
-                        mappedEntity.getTitle()).userPrincipal(userPrincipal).postId(postId).build()));
             } else {
-                mappedEntity.setStatus(PostStatus.ARCHIVED);
-                mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-                postRepository.save(mappedEntity);
+                throw new ForbiddenPermissionsException();
             }
-
+            directionService.updateDirectionsHasPostsStatusByEntities(directionsToUpdate);
+        } else {
+            throw new EntityNotFoundException("Post with id " + postId + " does not exist");
         }
 
-        if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals("DELETE_OWN_POST")))
-                && userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals("DELETE_POST"))) {
-            throw new ForbiddenPermissionsException();
-        }
-        directionService.updateDirectionsHasPostsStatusByEntities(directionsToUpdate);
         return true;
     }
 
@@ -268,10 +259,6 @@ public class PostServiceImpl implements PostService {
 
         Integer userId = userPrincipal.getId();
         Integer authorId = mappedEntity.getAuthor().getId();
-
-        if (mappedEntity.getStatus().equals(PostStatus.ARCHIVED)) {
-            return removePostById(userPrincipal, mappedEntity.getId(), false);
-        }
 
         if (userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_OWN_POST")) {
             saveEntity(mappedEntity);

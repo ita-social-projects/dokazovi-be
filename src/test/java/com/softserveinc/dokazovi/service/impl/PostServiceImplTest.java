@@ -969,7 +969,7 @@ class PostServiceImplTest {
 
         when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
 
-        Assertions.assertThat(postService.removePostById(userPrincipal, id, true)).isTrue();
+        Assertions.assertThat(postService.removePostById(userPrincipal, id)).isTrue();
     }
 
     @Test
@@ -1014,7 +1014,7 @@ class PostServiceImplTest {
                 .build();
 
         when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
-        Assertions.assertThat(postService.removePostById(userPrincipal, id, true)).isTrue();
+        Assertions.assertThat(postService.removePostById(userPrincipal, id)).isTrue();
     }
 
     @Test
@@ -1058,7 +1058,7 @@ class PostServiceImplTest {
                 .build();
 
         when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
-        assertThrows(ForbiddenPermissionsException.class, () -> postService.removePostById(userPrincipal, id, true));
+        assertThrows(ForbiddenPermissionsException.class, () -> postService.removePostById(userPrincipal, id));
     }
 
     @Test
@@ -1378,7 +1378,7 @@ class PostServiceImplTest {
                 .build();
 
         when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
-        assertThrows(EntityNotFoundException.class, () -> postService.removePostById(userPrincipal, id, true));
+        assertThrows(EntityNotFoundException.class, () -> postService.removePostById(userPrincipal, id));
     }
 
     @Test
@@ -1410,7 +1410,7 @@ class PostServiceImplTest {
                 .build();
 
         when(postRepository.findById(-1)).thenThrow(EntityNotFoundException.class);
-        assertThrows(EntityNotFoundException.class, () -> postService.removePostById(userPrincipal, id, true));
+        assertThrows(EntityNotFoundException.class, () -> postService.removePostById(userPrincipal, id));
     }
 
     @Test

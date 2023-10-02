@@ -357,7 +357,7 @@ public class PostController {
         ApiResponseMessage apiResponseMessage;
 
         apiResponseMessage = ApiResponseMessage.builder()
-                .success(postService.removePostById(userPrincipal, postId, true))
+                .success(postService.removePostById(userPrincipal, postId))
                 .message(String.format("post %s deleted successfully", postId))
                 .build();
 
