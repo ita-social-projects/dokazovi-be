@@ -188,17 +188,18 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Sets the user is enabled.
+     * Sets enabled status for user.
      *
-     * @param user user received from Auth controller
+     * @param userId    received from User controller
+     * @param isEnabled received from User controller
      */
     @Override
-    public void changeEnable(UserEntity user) {
-        UserEntity userEntity = userRepository.findById(user.getId()).orElse(null);
+    public void setEnabled(Integer userId, boolean isEnabled) {
+        UserEntity userEntity = userRepository.findById(userId).orElse(null);
         if (userEntity == null) {
-            throw new BadRequestException("Something went wrong!!!");
+            throw new EntityNotFoundException("User not found");
         }
-        userEntity.setEnabled(!userEntity.getEnabled());
+        userEntity.setEnabled(isEnabled);
         userRepository.save(userEntity);
     }
 
@@ -267,12 +268,13 @@ public class UserServiceImpl implements UserService {
     public void sendActivationToken(Integer userId, String email, String origin) {
         String token = UUID.randomUUID().toString();
         UserEntity user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            user.setEmail(email);
-            user.setStatus(UserStatus.NEW);
-            createVerificationToken(user, token);
-            mailSenderService.sendEmailWithActivationToken(origin, token, user);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
         }
+        user.setEmail(email);
+        user.setStatus(UserStatus.NEW);
+        createVerificationToken(user, token);
+        mailSenderService.sendEmailWithActivationToken(origin, token, user);
     }
 
     @Override

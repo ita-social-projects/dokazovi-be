@@ -27,7 +27,7 @@ public interface UserService {
 
     Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
-    void changeEnable(UserEntity user);
+    void setEnabled(Integer userId, boolean isEnabled);
 
     void createVerificationToken(UserEntity user, String token);
 

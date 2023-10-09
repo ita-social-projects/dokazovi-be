@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
+import com.softserveinc.dokazovi.dto.user.UserEnabledDTO;
 import com.softserveinc.dokazovi.dto.user.UserIdEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
@@ -256,11 +257,8 @@ public class UserController {
     @ApiOperation(value = "Change enabled of user",
             authorizations = {@Authorization(value = "Authorization")})
     public ResponseEntity<UserEntity> changeEnabled(
-            @PathVariable("userId") Integer userId) {
-        UserEntity user = userService.getById(userId);
-        if (user != null) {
-            userService.changeEnable(user);
-        }
+            @RequestBody UserEnabledDTO userEnabledDTO) {
+        userService.setEnabled(userEnabledDTO.getId(), userEnabledDTO.isEnabled());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
