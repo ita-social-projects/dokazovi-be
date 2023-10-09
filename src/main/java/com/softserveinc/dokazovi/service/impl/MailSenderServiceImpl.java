@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_ACTIVATE_USER_ACCOUNT;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWORD;
 
 @Service
@@ -26,8 +27,13 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     @Override
-    public void sendEmailWithToken (String contextPath, String token, UserEntity user) {
+    public void sendEmailWithToken(String contextPath, String token, UserEntity user) {
         mailSender.send(constructResetTokenEmail(contextPath, token, user));
+    }
+
+    @Override
+    public void sendEmailWithActivationToken(String contextPath, String token, UserEntity user) {
+        mailSender.send(constructActivateTokenEmail(contextPath, token, user));
     }
 
     public String readHtmlFile(String fileName) throws IOException {
@@ -41,6 +47,14 @@ public class MailSenderServiceImpl implements MailSenderService {
         String message = "Change your password after clicking reference below."
                 + "If you didn't request to change password, please won't do anything";
         return constructEmail("Reset password", message + "\r\n" + url, user);
+    }
+
+    private SimpleMailMessage constructActivateTokenEmail(
+            String contextPath, String token, UserEntity user) {
+        String url = contextPath + USER + USER_ACTIVATE_USER_ACCOUNT + "?token=" + token;
+        String message = "Activate your account after clicking reference below."
+                + "If you didn't request to activate account, please won't do anything";
+        return constructEmail("Activate account", message + "\r\n" + url, user);
     }
 
     private SimpleMailMessage constructEmail(String subject, String body, UserEntity user) {

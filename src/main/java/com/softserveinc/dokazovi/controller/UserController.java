@@ -5,7 +5,10 @@ import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
+import com.softserveinc.dokazovi.dto.user.UserIdEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
+import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
+import com.softserveinc.dokazovi.dto.user.UserStatusDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
@@ -31,6 +34,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,8 +47,12 @@ import java.util.List;
 import java.util.Set;
 
 import static com.softserveinc.dokazovi.controller.EndPoints.USER;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_ACTIVATE_ACCOUNT;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_ACTIVATE_USER_ACCOUNT;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EMAILS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_ALL_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_PASSWORD;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHANGE_STATUS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_CHECK_TOKEN;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_EXPERT_ALL_POST_DIRECTIONS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_AUTHORITIES;
@@ -68,11 +76,9 @@ public class UserController {
     private final PasswordResetTokenService passwordResetTokenService;
 
     /**
-     * Gets preview of random experts,
-     * filtered by directions.
-     * Default 12 max per page.
+     * Gets preview of random experts, filtered by directions. Default 12 max per page.
      *
-     * @param pageable interface for pagination information
+     * @param pageable   interface for pagination information
      * @param directions direction id
      * @return page with found posts and 'OK' httpStatus
      */
@@ -89,11 +95,10 @@ public class UserController {
     }
 
     /**
-     * Gets all experts depending on the parameters coming through the request,
-     * ordered by relevance.
-     * Default 6 max per page.
+     * Gets all experts depending on the parameters coming through the request, ordered by relevance. Default 6 max per
+     * page.
      *
-     * @param pageable interface for pagination information
+     * @param pageable           interface for pagination information
      * @param userSearchCriteria binds request parameters to an object
      * @return page with found experts and 'OK' httpStatus
      */
@@ -119,8 +124,7 @@ public class UserController {
     }
 
     /**
-     * Gets the user by its id.
-     * Checks if the user exists. If no - returns HttpStatus 'NOT FOUND'.
+     * Gets the user by its id. Checks if the user exists. If no - returns HttpStatus 'NOT FOUND'.
      *
      * @param userId id of user that we want to get
      * @return found user and HttpStatus 'OK'
@@ -135,9 +139,8 @@ public class UserController {
     }
 
     /**
-     * Gets current user.
-     * Checks if userPrincipal exists via findExpertById method.
-     * If no - returns HttpStatus 'NOT FOUND'.
+     * Gets current user. Checks if userPrincipal exists via findExpertById method. If no - returns HttpStatus 'NOT
+     * FOUND'.
      *
      * @param userPrincipal id of user that we want to get
      * @return found user and HttpStatus 'OK'
@@ -156,8 +159,8 @@ public class UserController {
     }
 
     /**
-     * Post request with email for reset user password and send verification email
-     * Checks if user with email exists in DB.
+     * Post request with email for reset user password and send verification email Checks if user with email exists in
+     * DB.
      *
      * @param email to find user that we want to reset password
      * @return HttpStatus 'OK'
@@ -175,8 +178,7 @@ public class UserController {
     }
 
     /**
-     * Get request with token for validate one
-     * Checks if token exists in DB and not expired.
+     * Get request with token for validate one Checks if token exists in DB and not expired.
      *
      * @param token token which we have to validate or not
      * @return HttpStatus 'OK' and token value if token is available and not expired
@@ -188,7 +190,7 @@ public class UserController {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
     })
-    public ResponseEntity<String> checkToken (
+    public ResponseEntity<String> checkToken(
             @RequestParam String token) {
         CacheControl cacheControl = CacheControl.noCache();
         if (passwordResetTokenService.validatePasswordResetToken(token)) {
@@ -229,10 +231,47 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @PostMapping(USER_ACTIVATE_ACCOUNT)
+    @ApiOperation(value = "Send activation token to user")
+    public ResponseEntity<String> activateUser(
+            @RequestHeader HttpHeaders headers,
+            @Valid @RequestBody UserIdEmailDTO userIdEmailDTO) {
+        userService.sendActivationToken(userIdEmailDTO.getId(), userIdEmailDTO.getEmail(), headers.getOrigin());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping(USER_ACTIVATE_USER_ACCOUNT)
+    @ApiOperation(value = "Activate user account")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    public ResponseEntity<String> activateUserAccount(
+            @RequestBody UserPasswordDTO passwordDTO) {
+        userService.activateUser(passwordDTO);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PutMapping(USER_GET_USER_BY_ID)
+    @ApiOperation(value = "Change enabled of user",
+            authorizations = {@Authorization(value = "Authorization")})
+    public ResponseEntity<UserEntity> changeEnabled(
+            @PathVariable("userId") Integer userId) {
+        UserEntity user = userService.getById(userId);
+        if (user != null) {
+            userService.changeEnable(user);
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping(USER_ALL_EMAILS)
+    @ApiOperation(value = "Get all public and private emails")
+    public ResponseEntity<UserPublicAndPrivateEmailDTO> getAllPublicAndPrivateEmails() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllPublicAndPrivateEmails());
+    }
+
     /**
-     * Gets current user's authorities.
-     * Checks if userPrincipal not null.
-     * If no - returns HttpStatus 'NOT FOUND'.
+     * Gets current user's authorities. Checks if userPrincipal not null. If no - returns HttpStatus 'NOT FOUND'.
      *
      * @param userPrincipal authorities of user that we want to get
      * @return found user's authorities and HttpStatus 'OK'
@@ -249,5 +288,17 @@ public class UserController {
         }
         return ResponseEntity.status(authorities != null
                 ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(authorities);
+    }
+
+    @PutMapping(USER_CHANGE_STATUS)
+    @ApiOperation(value = "Change user status")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    public ResponseEntity<UserStatusDTO> changeUserStatus(
+            @RequestBody UserStatusDTO userStatusDTO) {
+        userService.changeStatus(userStatusDTO);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

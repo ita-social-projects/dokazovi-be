@@ -54,6 +54,8 @@ public class UserEntity {
     private String password;
     private String phone;
     private String avatar;
+    @Column(name = "public_email")
+    private String publicEmail;
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
