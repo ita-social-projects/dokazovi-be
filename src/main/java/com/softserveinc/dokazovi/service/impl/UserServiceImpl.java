@@ -266,11 +266,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendActivationToken(Integer userId, String email, String origin) {
-        String token = UUID.randomUUID().toString();
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             throw new EntityNotFoundException("User not found");
         }
+        String token = UUID.randomUUID().toString();
         user.setEmail(email);
         user.setStatus(UserStatus.NEW);
         createVerificationToken(user, token);
