@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.payload.LoginRequest;
 import com.softserveinc.dokazovi.dto.payload.RefreshToken;
 import com.softserveinc.dokazovi.dto.payload.RefreshTokenRequest;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.TokenRefreshException;
 import com.softserveinc.dokazovi.security.TokenProvider;
@@ -70,6 +71,12 @@ public class AuthController {
         UserEntity userEntity = userService.findByEmail(loginRequest.getEmail());
         if (!userEntity.getEnabled()) {
             throw new BadRequestException("Please confirm your email!");
+        } else if (userEntity.getStatus() != UserStatus.ACTIVE) {
+            if (userEntity.getStatus() == UserStatus.DELETED) {
+                throw new BadRequestException("User is blocked!");
+            } else {
+                throw new BadRequestException("Activate your account!");
+            }
         } else {
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userEntity.getId());
             ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken.getToken())

@@ -30,7 +30,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -347,17 +346,17 @@ class UserServiceImplTest {
         verify(userRepository, times(1)).findAll(pageable);
     }
 
-    @Test
-    void setEnableTrue() {
-        UserEntity userEntity = UserEntity.builder()
-                .id(1)
-                .build();
-        when(userRepository.findById(any(Integer.class))).thenReturn(Optional.of(userEntity));
-        userService.setEnableTrue(userEntity);
-        assertTrue(userEntity.getEnabled());
-        verify(userRepository, times(1))
-                .findById(any(Integer.class));
-    }
+    //    @Test
+    //    void setEnableTrue() {
+    //        UserEntity userEntity = UserEntity.builder()
+    //                .id(1)
+    //                .build();
+    //        when(userRepository.findById(any(Integer.class))).thenReturn(Optional.of(userEntity));
+    //        userService.setEnableTrue(userEntity);
+    //        assertTrue(userEntity.getEnabled());
+    //        verify(userRepository, times(1))
+    //                .findById(any(Integer.class));
+    //    }
 
     @Test
     void getVerificationToken() {

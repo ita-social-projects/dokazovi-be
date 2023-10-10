@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.author.AuthorResponseDTO;
 import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
@@ -46,6 +47,8 @@ public class AuthorServiceImpl implements AuthorService {
                 .firstName(authorRequestDTO.getFirstName())
                 .lastName(authorRequestDTO.getLastName())
                 .avatar(authorRequestDTO.getAvatar())
+                .enabled(false)
+                .status(UserStatus.NEW)
                 .socialNetworks(authorRequestDTO.getSocialNetworks())
                 .build();
         userRepository.save(user);

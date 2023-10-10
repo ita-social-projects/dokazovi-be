@@ -191,6 +191,8 @@ class AuthorServiceImplTest {
         UserEntity user = UserEntity.builder()
                 .firstName(authorRequestDTO.getFirstName())
                 .lastName(authorRequestDTO.getLastName())
+                .enabled(false)
+                .status(UserStatus.NEW)
                 .avatar(authorRequestDTO.getAvatar())
                 .socialNetworks(authorRequestDTO.getSocialNetworks())
                 .build();

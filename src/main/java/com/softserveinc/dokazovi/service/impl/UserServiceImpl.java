@@ -1,9 +1,13 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
+import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
+import com.softserveinc.dokazovi.dto.user.UserStatusDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
@@ -12,6 +16,7 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
+import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,8 +26,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 /**
@@ -40,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenService passwordResetTokenService;
     private final MailSenderService mailSenderService;
+    private final ProviderService providerService;
 
     private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
     private static final String HAS_NO_REGIONS = "hasNoRegions";
@@ -179,17 +188,18 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Sets the user is enabled.
+     * Sets enabled status for user.
      *
-     * @param user user received from Auth controller
+     * @param userId    received from User controller
+     * @param isEnabled received from User controller
      */
     @Override
-    public void setEnableTrue(UserEntity user) {
-        UserEntity userEntity = userRepository.findById(user.getId()).orElse(null);
+    public void setEnabled(Integer userId, boolean isEnabled) {
+        UserEntity userEntity = userRepository.findById(userId).orElse(null);
         if (userEntity == null) {
-            throw new BadRequestException("Something went wrong!!!");
+            throw new EntityNotFoundException("User not found");
         }
-        userEntity.setEnabled(true);
+        userEntity.setEnabled(isEnabled);
         userRepository.save(userEntity);
     }
 
@@ -252,5 +262,62 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isPasswordMatches(UserEntity user, String password) {
         return user != null && passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
+    public void sendActivationToken(Integer userId, String email, String origin) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        String token = UUID.randomUUID().toString();
+        user.setEmail(email);
+        user.setStatus(UserStatus.NEW);
+        createVerificationToken(user, token);
+        mailSenderService.sendEmailWithActivationToken(origin, token, user);
+    }
+
+    @Override
+    public void activateUser(UserPasswordDTO userPasswordDTO) {
+        VerificationToken token = getVerificationToken(userPasswordDTO.getToken());
+        UserEntity user = token.getUser();
+        if (user == null) {
+            throw new BadRequestException("User not found");
+        }
+        user.setEnabled(true);
+        user.setStatus(UserStatus.ACTIVE);
+        user.setPassword(passwordEncoder.encode(userPasswordDTO.getNewPassword()));
+        update(user);
+        tokenRepository.delete(token);
+    }
+
+    @Override
+    public UserPublicAndPrivateEmailDTO getAllPublicAndPrivateEmails() {
+        List<UserEntity> users = userRepository.findAll();
+        UserPublicAndPrivateEmailDTO userPublicAndPrivateEmailDTO = UserPublicAndPrivateEmailDTO.builder()
+                .publicEmail(Arrays.stream(users.toArray())
+                        .map(user -> ((UserEntity) user).getPublicEmail())
+                        .collect(Collectors.toList()))
+                .privateEmail(Arrays.stream(users.toArray())
+                        .map(user -> ((UserEntity) user).getEmail())
+                        .collect(Collectors.toList()))
+                .build();
+        return userPublicAndPrivateEmailDTO;
+    }
+
+    @Override
+    public void changeStatus(UserStatusDTO userStatusDTO) {
+        UserEntity user = userRepository.findById(userStatusDTO.getId()).orElse(null);
+        if (user != null) {
+            if (userStatusDTO.getStatus().equals("ACTIVE")) {
+                user.setStatus(UserStatus.ACTIVE);
+            } else if (userStatusDTO.getStatus().equals("DELETED")) {
+                user.setStatus(UserStatus.DELETED);
+            } else if (userStatusDTO.getStatus().equals("NEW")) {
+                user.setStatus(UserStatus.NEW);
+            } else {
+                throw new BadRequestException("Wrong status");
+            }
+        }
     }
 }
