@@ -23,6 +23,7 @@ import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -70,6 +71,9 @@ class PostServiceImplTest {
 
     @Mock
     private PostRepository postRepository;
+
+    @Mock
+    private AuthorRepository authorRepository;
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -927,137 +931,143 @@ class PostServiceImplTest {
     }
 
     @Test
-    void deletePostById_WhenExists_isOk_AdminRole() {
-        Set<RolePermission> permissions = new HashSet<>();
-        permissions.add(RolePermission.DELETE_POST);
+    void deletePostByIdFromAdminRole() {
 
-        RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setId(1);
-        roleEntity.setName("Administrator");
-        roleEntity.setPermissions(permissions);
 
-        PostTypeDTO postTypeDTO = new PostTypeDTO();
-        postTypeDTO.setId(1);
-        postTypeDTO.setName("type");
+        Set<RolePermission> adminPermissions = new HashSet<>();
+        adminPermissions.add(RolePermission.DELETE_POST);
 
-        DirectionDTO directionDTO = new DirectionDTO();
-        directionDTO.setId(1);
-        directionDTO.setName("name");
-        directionDTO.setLabel("label");
-        directionDTO.setColor("color");
+        Set<RolePermission> doctorPermissions = new HashSet<>();
+        doctorPermissions.add(RolePermission.DELETE_OWN_POST);
 
-        UserPrincipal userPrincipal = UserPrincipal.builder()
+        RoleEntity adminEntity = new RoleEntity();
+        adminEntity.setId(1);
+        adminEntity.setName("Administrator");
+        adminEntity.setPermissions(adminPermissions);
+
+        RoleEntity doctorEntity = new RoleEntity();
+        doctorEntity.setId(3);
+        doctorEntity.setName("Doctor");
+        doctorEntity.setPermissions(doctorPermissions);
+
+        final UserPrincipal userPrincipal = UserPrincipal.builder()
                 .id(27)
                 .email("admin@mail.com")
                 .password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
-                .role(roleEntity)
+                .role(adminEntity)
                 .build();
 
-        UserEntity adminUserEntity = UserEntity.builder()
+        UserEntity authorEntity = UserEntity.builder()
                 .id(28)
-                .email("admin@mail.com")
-                .password("$2y$10$GtQSp.P.EyAtCgUD2zWLW.01OBz409TGPl/Jo3U30Tig3YbbpIFv2")
-                .role(roleEntity)
+                .email("doctor@mail.com")
+                .password("$2y$10$VSWtNZs6WLP5FvAjK.B/JOSLkkcTet9EBHD.PCBbcE1NyyFiVHuA6")
+                .role(doctorEntity)
                 .build();
+
+        AuthorEntity author = AuthorEntity.builder()
+                .profile(authorEntity)
+                .id(28)
+                .build();
+
+        authorEntity.setAuthor(author);
 
         Integer id = 1;
         PostEntity postEntity = PostEntity
                 .builder()
                 .id(id)
-                .author(adminUserEntity)
+                .author(authorEntity)
                 .build();
 
         when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+        when(authorRepository.getByProfileId(any(Integer.class))).thenReturn(author);
 
         Assertions.assertThat(postService.removePostById(userPrincipal, id)).isTrue();
     }
 
     @Test
-    void deletePostById_WhenExists_isOk_DoctorRole() {
-        Set<RolePermission> permissions = new HashSet<>();
-        permissions.add(RolePermission.DELETE_OWN_POST);
+    void deletePostByIdFromDoctorRole() {
 
-        RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setId(3);
-        roleEntity.setName("Doctor");
-        roleEntity.setPermissions(permissions);
+        Set<RolePermission> doctorPermissions = new HashSet<>();
+        doctorPermissions.add(RolePermission.DELETE_OWN_POST);
 
-        PostTypeDTO postTypeDTO = new PostTypeDTO();
-        postTypeDTO.setId(1);
-        postTypeDTO.setName("type");
+        RoleEntity doctorEntity = new RoleEntity();
+        doctorEntity.setId(3);
+        doctorEntity.setName("Doctor");
+        doctorEntity.setPermissions(doctorPermissions);
 
-        DirectionDTO directionDTO = new DirectionDTO();
-        directionDTO.setId(1);
-        directionDTO.setName("name");
-        directionDTO.setLabel("label");
-        directionDTO.setColor("color");
-
-        UserPrincipal userPrincipal = UserPrincipal.builder()
-                .id(38)
+        final UserPrincipal userPrincipal = UserPrincipal.builder()
+                .id(28)
                 .email("doctor@mail.com")
-                .password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
-                .role(roleEntity)
+                .password("$2y$10$VSWtNZs6WLP5FvAjK.B/JOSLkkcTet9EBHD.PCBbcE1NyyFiVHuA6")
+                .role(doctorEntity)
                 .build();
 
-        UserEntity doctorUserEntity = UserEntity.builder()
-                .id(38)
+        UserEntity authorEntity = UserEntity.builder()
+                .id(28)
                 .email("doctor@mail.com")
-                .password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
-                .role(roleEntity)
+                .password("$2y$10$VSWtNZs6WLP5FvAjK.B/JOSLkkcTet9EBHD.PCBbcE1NyyFiVHuA6")
+                .role(doctorEntity)
                 .build();
+
+        AuthorEntity author = AuthorEntity.builder()
+                .profile(authorEntity)
+                .id(28)
+                .build();
+
+        authorEntity.setAuthor(author);
 
         Integer id = 1;
         PostEntity postEntity = PostEntity
                 .builder()
                 .id(id)
-                .author(doctorUserEntity)
+                .author(authorEntity)
                 .build();
 
         when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+        when(authorRepository.getByProfileId(any(Integer.class))).thenReturn(author);
+
         Assertions.assertThat(postService.removePostById(userPrincipal, id)).isTrue();
     }
 
     @Test
-    void deletePostById_WhenNotPermission_throwsException() {
-        Set<RolePermission> permissions = new HashSet<>();
+    void deletePostByIdFromDoctorRoleWithoutPermission() {
+        Set<RolePermission> doctorPermissions = new HashSet<>();
 
-        RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setId(3);
-        roleEntity.setName("Doctor");
-        roleEntity.setPermissions(permissions);
+        RoleEntity doctorEntity = new RoleEntity();
+        doctorEntity.setId(3);
+        doctorEntity.setName("Doctor");
+        doctorEntity.setPermissions(doctorPermissions);
 
-        PostTypeDTO postTypeDTO = new PostTypeDTO();
-        postTypeDTO.setId(1);
-        postTypeDTO.setName("type");
-
-        DirectionDTO directionDTO = new DirectionDTO();
-        directionDTO.setId(1);
-        directionDTO.setName("name");
-        directionDTO.setLabel("label");
-        directionDTO.setColor("color");
-
-        UserPrincipal userPrincipal = UserPrincipal.builder()
-                .id(38)
+        final UserPrincipal userPrincipal = UserPrincipal.builder()
+                .id(28)
                 .email("doctor@mail.com")
-                .password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
-                .role(roleEntity)
+                .password("$2y$10$VSWtNZs6WLP5FvAjK.B/JOSLkkcTet9EBHD.PCBbcE1NyyFiVHuA6")
+                .role(doctorEntity)
                 .build();
 
-        UserEntity doctorUserEntity = UserEntity.builder()
-                .id(38)
+        UserEntity authorEntity = UserEntity.builder()
+                .id(28)
                 .email("doctor@mail.com")
-                .password("$2a$10$ubeFvFhz0/P5js292OUaee9QxaBsI7cvoAmSp1inQ0MxI/gxazs8O")
-                .role(roleEntity)
+                .password("$2y$10$VSWtNZs6WLP5FvAjK.B/JOSLkkcTet9EBHD.PCBbcE1NyyFiVHuA6")
+                .role(doctorEntity)
                 .build();
+
+        AuthorEntity author = AuthorEntity.builder()
+                .profile(authorEntity)
+                .id(28)
+                .build();
+
+        authorEntity.setAuthor(author);
 
         Integer id = 1;
         PostEntity postEntity = PostEntity
                 .builder()
                 .id(id)
-                .author(doctorUserEntity)
+                .author(authorEntity)
                 .build();
 
         when(postRepository.findById(any(Integer.class))).thenReturn(Optional.of(postEntity));
+        when(authorRepository.getByProfileId(any(Integer.class))).thenReturn(author);
         assertThrows(ForbiddenPermissionsException.class, () -> postService.removePostById(userPrincipal, id));
     }
 
