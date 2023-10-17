@@ -1,6 +1,7 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
+import com.softserveinc.dokazovi.dto.post.DeletePostDTO;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
@@ -9,6 +10,7 @@ import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.events.PostDeleteEvent;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
@@ -227,7 +229,6 @@ public class PostServiceImpl implements PostService {
             Integer userId = userPrincipal.getId();
             Integer authorId = authorRepository.getByProfileId(userId).getId();
 
-
             final Set<DirectionEntity> directionsToUpdate = getDirectionsFromPostsEntities(
                     postToDelete,
                     mappedEntity
@@ -237,6 +238,11 @@ public class PostServiceImpl implements PostService {
                     checkAuthority(userPrincipal,"DELETE_OWN_POST")) ||
                     checkAuthority(userPrincipal,"DELETE_POST")) {
                 postRepository.delete(mappedEntity);
+                applicationEventPublisher.publishEvent(new PostDeleteEvent(this, DeletePostDTO.builder()
+                        .title(mappedEntity.getTitle())
+                        .userPrincipal(userPrincipal)
+                        .postId(postId)
+                        .build()));
             } else {
                 throw new ForbiddenPermissionsException();
             }
