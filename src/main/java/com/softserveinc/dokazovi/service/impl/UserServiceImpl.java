@@ -1,17 +1,22 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.dto.author.AuthorDTO;
+import com.softserveinc.dokazovi.dto.author.AuthorResponseDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserStatusDTO;
+import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
+import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
+import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.MailSenderService;
@@ -44,11 +49,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private AuthorMapper authorMapper;
     private final VerificationTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenService passwordResetTokenService;
     private final MailSenderService mailSenderService;
     private final ProviderService providerService;
+    private final AuthorRepository authorRepository;
 
     private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
     private static final String HAS_NO_REGIONS = "hasNoRegions";
@@ -97,6 +104,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findExpertById(Integer userId) {
         return userMapper.toUserDTO(userRepository.findById(userId).orElse(null));
+
     }
 
     /**
@@ -112,31 +120,76 @@ public class UserServiceImpl implements UserService {
     public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
         if (validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS, HAS_NO_USERNAME)) {
-            return userRepository.findAll(pageable).map(userMapper::toUserDTO);
+            Page<UserDTO> userDTOS = userRepository.findAll(pageable).map(userMapper::toUserDTO);
+            List<AuthorEntity> authors = authorRepository.findAll();
+            return userDTOS.map(userDTO -> {
+                for (AuthorEntity author : authors) {
+                    if (author.getProfile().getId().equals(userDTO.getId())) {
+                        userDTO.setId(author.getId());
+                    }
+                }
+                return userDTO;
+            });
         }
 
         final String name = userSearchCriteria.getUserName();
 
         if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS))) {
-            return userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
+            Page<UserDTO> userDTOS = userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
+            List<AuthorEntity> authors = authorRepository.findAll();
+            return userDTOS.map(userDTO -> {
+                for (AuthorEntity author : authors) {
+                    if (author.getProfile().getId().equals(userDTO.getId())) {
+                        userDTO.setId(author.getId());
+                    }
+                }
+                return userDTO;
+            });
         }
 
         if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_USERNAME))) {
-            return userRepository.findDoctorsProfilesByRegionsIds(
+            Page<UserDTO> userDTOS = userRepository.findDoctorsProfilesByRegionsIds(
                             userSearchCriteria.getRegions(), pageable)
                     .map(userMapper::toUserDTO);
+            List<AuthorEntity> authors = authorRepository.findAll();
+            return userDTOS.map(userDTO -> {
+                for (AuthorEntity author : authors) {
+                    if (author.getProfile().getId().equals(userDTO.getId())) {
+                        userDTO.setId(author.getId());
+                    }
+                }
+                return userDTO;
+            });
         }
 
         if ((validateParameters(userSearchCriteria, HAS_NO_REGIONS, HAS_NO_USERNAME))) {
-            return userRepository.findDoctorsProfilesByDirectionsIds(
+            Page<UserDTO> userDTOS = userRepository.findDoctorsProfilesByDirectionsIds(
                             userSearchCriteria.getDirections(), pageable)
                     .map(userMapper::toUserDTO);
+            List<AuthorEntity> authors = authorRepository.findAll();
+            return userDTOS.map(userDTO -> {
+                for (AuthorEntity author : authors) {
+                    if (author.getProfile().getId().equals(userDTO.getId())) {
+                        userDTO.setId(author.getId());
+                    }
+                }
+                return userDTO;
+            });
         }
 
         if ((validateParameters(userSearchCriteria, HAS_NO_USERNAME))) {
-            return userRepository
+            Page<UserDTO> userDTOS = userRepository
                     .findDoctorsProfiles(userSearchCriteria.getDirections(), userSearchCriteria.getRegions(), pageable)
                     .map(userMapper::toUserDTO);
+            List<AuthorEntity> authors = authorRepository.findAll();
+            return userDTOS.map(userDTO -> {
+                for (AuthorEntity author : authors) {
+                    if (author.getProfile().getId().equals(userDTO.getId())) {
+                        userDTO.setId(author.getId());
+                    }
+                }
+                return userDTO;
+            });
         }
 
         throw new EntityNotFoundException("Wrong search parameters");
@@ -179,23 +232,45 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable) {
         if (CollectionUtils.isEmpty(directionsIds)) {
-            return userRepository.findRandomExperts(pageable)
+            Page<UserDTO> userDTOS = userRepository.findRandomExperts(pageable)
                     .map(userMapper::toUserDTO);
+            List<AuthorEntity> authors = authorRepository.findAll();
+            return userDTOS.map(userDTO -> {
+                for (AuthorEntity author : authors) {
+                    if (author.getProfile().getId().equals(userDTO.getId())) {
+                        userDTO.setId(author.getId());
+                    }
+                }
+                return userDTO;
+            });
         }
 
-        return userRepository.findRandomExpertsByDirectionsIdIn(directionsIds, pageable)
+        Page<UserDTO> userDTOS = userRepository.findRandomExpertsByDirectionsIdIn(directionsIds, pageable)
                 .map(userMapper::toUserDTO);
+        List<AuthorEntity> authors = authorRepository.findAll();
+        return userDTOS.map(userDTO -> {
+            for (AuthorEntity author : authors) {
+                if (author.getProfile().getId().equals(userDTO.getId())) {
+                    userDTO.setId(author.getId());
+                }
+            }
+            return userDTO;
+        });
     }
 
     /**
      * Sets enabled status for user.
      *
-     * @param userId    received from User controller
+     * @param authorId    received from User controller
      * @param isEnabled received from User controller
      */
     @Override
-    public void setEnabled(Integer userId, boolean isEnabled) {
-        UserEntity userEntity = userRepository.findById(userId).orElse(null);
+    public void setEnabled(Integer authorId, boolean isEnabled) {
+        AuthorEntity author = authorRepository.findById(authorId).orElse(null);
+        if (author == null) {
+            throw new EntityNotFoundException("Author not found");
+        }
+        UserEntity userEntity = userRepository.findById(author.getProfile().getId()).orElse(null);
         if (userEntity == null) {
             throw new EntityNotFoundException("User not found");
         }
@@ -230,8 +305,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity getById(Integer userId) {
-        return userRepository.findById(userId).orElse(null);
+    public UserEntity getById(Integer authorId) {
+        AuthorEntity author = authorRepository.findById(authorId).orElse(null);
+        return userRepository.findById(author.getProfile().getId()).orElse(null);
     }
 
     @Override
@@ -307,6 +383,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeStatus(UserStatusDTO userStatusDTO) {
+        AuthorEntity author = authorRepository.findById(userStatusDTO.getId()).orElse(null);
+        if(author==null){
+            throw new EntityNotFoundException("Author not found");
+        }
         UserEntity user = userRepository.findById(userStatusDTO.getId()).orElse(null);
         if (user != null) {
             if (userStatusDTO.getStatus().equals("ACTIVE")) {
