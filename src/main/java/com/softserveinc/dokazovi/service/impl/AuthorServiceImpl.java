@@ -2,16 +2,12 @@ package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
 import com.softserveinc.dokazovi.dto.author.AuthorResponseDTO;
-import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
-import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.AuthorMapper;
-import com.softserveinc.dokazovi.mapper.UserMapper;
-import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.CityRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
@@ -36,6 +32,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
     private final AuthorMapper authorMapper;
+
     @Override
     public AuthorEntity findAuthorById(Integer authorId) {
         return authorRepository.findById(authorId)
