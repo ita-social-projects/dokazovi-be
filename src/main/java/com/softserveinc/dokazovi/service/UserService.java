@@ -35,6 +35,8 @@ public interface UserService {
 
     UserEntity getById(Integer authorId);
 
+    UserEntity getByUserId(Integer userId);
+
     UserEntity update(UserEntity user);
 
     void updatePassword(UserEntity user, String password, PasswordResetTokenEntity token);

@@ -1,7 +1,5 @@
 package com.softserveinc.dokazovi.service.impl;
 
-import com.softserveinc.dokazovi.dto.author.AuthorDTO;
-import com.softserveinc.dokazovi.dto.author.AuthorResponseDTO;
 import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
@@ -261,7 +259,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Sets enabled status for user.
      *
-     * @param authorId    received from User controller
+     * @param authorId  received from User controller
      * @param isEnabled received from User controller
      */
     @Override
@@ -311,9 +309,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity getByUserId(Integer userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    @Override
     public UserEntity update(UserEntity user) {
         if (user != null) {
-            UserEntity oldUser = getById(user.getId());
+            UserEntity oldUser = getByUserId(user.getId());
             if (oldUser != null) {
                 return userRepository.save(user);
             }
@@ -384,7 +387,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changeStatus(UserStatusDTO userStatusDTO) {
         AuthorEntity author = authorRepository.findById(userStatusDTO.getId()).orElse(null);
-        if(author==null){
+        if (author == null) {
             throw new EntityNotFoundException("Author not found");
         }
         UserEntity user = userRepository.findById(userStatusDTO.getId()).orElse(null);
