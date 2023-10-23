@@ -179,13 +179,10 @@ class AuthorServiceImplTest {
     @Test
     void save() {
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(cityEntity));
-
         UserPrincipal userPrincipal = UserPrincipal.builder()
                 .role(adminRole)
                 .build();
-
         authorService.save(authorRequestDTO, userPrincipal);
-
         UserEntity user = UserEntity.builder()
                 .firstName(authorRequestDTO.getFirstName())
                 .lastName(authorRequestDTO.getLastName())
@@ -197,8 +194,6 @@ class AuthorServiceImplTest {
                 .avatar(authorRequestDTO.getAvatar())
                 .socialNetworks(authorRequestDTO.getSocialNetworks())
                 .build();
-        verify(userRepository).save(userEntityArgumentCaptor.capture());
-        user.setCreatedAt(userEntityArgumentCaptor.getValue().getCreatedAt());
         AuthorEntity author = AuthorEntity.builder()
                 .publishedPosts(0L)
                 .promotionScale(1.0)
@@ -207,8 +202,10 @@ class AuthorServiceImplTest {
                 .profile(user)
                 .bio(authorRequestDTO.getBio())
                 .build();
+        verify(userRepository).save(userEntityArgumentCaptor.capture());
         verify(authorRepository).save(authorEntityArgumentCaptor.capture());
         Assertions.assertEquals(authorEntityArgumentCaptor.getValue(), author);
+        user.setCreatedAt(userEntityArgumentCaptor.getValue().getCreatedAt());
         Assertions.assertEquals(userEntityArgumentCaptor.getValue(), user);
     }
 
