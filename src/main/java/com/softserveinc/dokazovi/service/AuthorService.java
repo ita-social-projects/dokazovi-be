@@ -2,7 +2,9 @@ package com.softserveinc.dokazovi.service;
 
 import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
 import com.softserveinc.dokazovi.dto.author.AuthorResponseDTO;
+import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.entity.AuthorEntity;
+import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -18,4 +20,5 @@ public interface AuthorService {
     Integer delete(Integer authorId, UserPrincipal userPrincipal);
 
     Page<AuthorResponseDTO> findAllAuthors(Pageable pageable);
+
 }
