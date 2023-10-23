@@ -4,7 +4,6 @@ import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
 import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
-import com.softserveinc.dokazovi.entity.RoleEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.exception.BadRequestException;
@@ -70,7 +69,7 @@ class UserServiceImplTest {
 
 
     @BeforeEach
-    void init(){
+    void init() {
         authorRequestDTO = AuthorRequestDTO.builder()
                 .firstName("firstName")
                 .lastName("lastName")
@@ -88,6 +87,7 @@ class UserServiceImplTest {
                 .build();
         authorRepository.save(authorEntity);
     }
+
     @Test
     void findExpertById() {
         Integer id = 1;
