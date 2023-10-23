@@ -178,8 +178,6 @@ class AuthorServiceImplTest {
 
     @Test
     void save() {
-
-
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(cityEntity));
 
         UserPrincipal userPrincipal = UserPrincipal.builder()
