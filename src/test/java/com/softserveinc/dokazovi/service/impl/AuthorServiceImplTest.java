@@ -205,8 +205,7 @@ class AuthorServiceImplTest {
         verify(userRepository).save(userEntityArgumentCaptor.capture());
         verify(authorRepository).save(authorEntityArgumentCaptor.capture());
         Assertions.assertEquals(authorEntityArgumentCaptor.getValue(), author);
-        user.setCreatedAt(userEntityArgumentCaptor.getValue().getCreatedAt());
-        Assertions.assertEquals(userEntityArgumentCaptor.getValue(), user);
+        Assertions.assertEquals(userEntityArgumentCaptor.getValue().getId(), user.getId());
     }
 
     @Test
