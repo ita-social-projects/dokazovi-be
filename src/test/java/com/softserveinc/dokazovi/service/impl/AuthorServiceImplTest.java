@@ -199,6 +199,7 @@ class AuthorServiceImplTest {
                 .avatar(authorRequestDTO.getAvatar())
                 .socialNetworks(authorRequestDTO.getSocialNetworks())
                 .build();
+        verify(userRepository).save(userEntityArgumentCaptor.capture());
         user.setCreatedAt(userEntityArgumentCaptor.getValue().getCreatedAt());
         AuthorEntity author = AuthorEntity.builder()
                 .publishedPosts(0L)
@@ -208,7 +209,6 @@ class AuthorServiceImplTest {
                 .profile(user)
                 .bio(authorRequestDTO.getBio())
                 .build();
-        verify(userRepository).save(userEntityArgumentCaptor.capture());
         verify(authorRepository).save(authorEntityArgumentCaptor.capture());
         Assertions.assertEquals(authorEntityArgumentCaptor.getValue(), author);
         Assertions.assertEquals(userEntityArgumentCaptor.getValue(), user);
