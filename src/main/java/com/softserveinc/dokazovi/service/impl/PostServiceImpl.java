@@ -6,6 +6,7 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -13,6 +14,7 @@ import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.events.PostDeleteEvent;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
+import com.softserveinc.dokazovi.exception.StatusNotFoundException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
@@ -490,4 +492,35 @@ public class PostServiceImpl implements PostService {
                 .filter(postEntity -> postEntity.getPublishedAt().before(date))
                 .forEach(postEntity -> postEntity.setStatus(PostStatus.PUBLISHED));
     }
+
+    @Override
+    @Transactional
+    public void setPostStatus(UserPrincipal userPrincipal, Integer postId, PostStatusDTO postStatusDTO)
+            throws EntityNotFoundException {
+
+        Optional<PostEntity> post = postRepository.findById(postId);
+        if (post.isPresent()) {
+            PostEntity postEntity = post.get();
+
+            PostStatus newStatus = postStatusDTO.getStatus();
+
+            if (checkAuthority(userPrincipal, "UPDATE_POST")) {
+                if (newStatus != null) {
+                    postEntity.setStatus(newStatus);
+                    if (newStatus == PostStatus.PUBLISHED) {
+                        postEntity.setPublishedAt(Timestamp.valueOf(LocalDateTime.now()));
+                    }
+                    postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+                    saveEntity(postEntity);
+                } else {
+                    throw new StatusNotFoundException("Status is null");
+                }
+            } else {
+                throw new ForbiddenPermissionsException();
+            }
+        } else {
+            throw new EntityNotFoundException("Post with id " + postId + " does not exist");
+        }
+    }
+
 }
