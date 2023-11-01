@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserveinc.dokazovi.dto.payload.LoginRequest;
 import com.softserveinc.dokazovi.dto.payload.RefreshToken;
 import com.softserveinc.dokazovi.dto.payload.RefreshTokenRequest;
+import com.softserveinc.dokazovi.entity.LogForLoginEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.security.RefreshTokenService;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.LogForLoginService;
 import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.service.impl.MailSenderServiceImpl;
@@ -60,6 +62,8 @@ class AuthControllerTest {
     private ProviderService providerService;
     @Mock
     private UserService userService;
+    @Mock
+    private LogForLoginService logForLoginService;
     @InjectMocks
     private AuthController authController;
 
@@ -99,6 +103,7 @@ class AuthControllerTest {
         when(tokenProvider.createToken(any(Authentication.class))).thenReturn(token);
         when(userService.findByEmail(anyString())).thenReturn(user);
         when(refreshTokenService.createRefreshToken(anyInt())).thenReturn(refreshToken);
+        when(logForLoginService.save(any(LogForLoginEntity.class))).thenReturn(LogForLoginEntity.builder().build());
         String uri = AUTH + AUTH_LOGIN;
         mockMvc.perform(MockMvcRequestBuilders.post(uri)
                         .content(asJsonString(loginRequest))
