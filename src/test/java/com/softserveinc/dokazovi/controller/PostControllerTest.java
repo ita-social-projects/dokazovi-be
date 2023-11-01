@@ -280,7 +280,7 @@ class PostControllerTest {
                 "  }\n" +
                 "}";
 
-        Mockito.when(postService.removePostById(any(UserPrincipal.class), any(Integer.class), any(Boolean.class)))
+        Mockito.when(postService.removePostById(any(UserPrincipal.class), any(Integer.class)))
                 .thenReturn(true);
         mockMvc.perform(delete("/post/1").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andExpect(status().isOk()).andExpect(result ->
