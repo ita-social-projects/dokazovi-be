@@ -190,7 +190,6 @@ public class UserServiceImpl implements UserService {
             return userRepository.findRandomExperts(pageable)
                     .map(userMapper::toUserDTO);
         }
-
         return userRepository.findRandomExpertsByDirectionsIdIn(directionsIds, pageable)
                 .map(userMapper::toUserDTO);
     }
