@@ -1,5 +1,8 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
+import com.softserveinc.dokazovi.entity.AuthorEntity;
+import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
@@ -7,11 +10,13 @@ import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
+import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,7 +62,31 @@ class UserServiceImplTest {
     MailSenderService mailSenderService;
     @InjectMocks
     private UserServiceImpl userService;
+    private AuthorRequestDTO authorRequestDTO;
+    private AuthorEntity authorEntity;
+    @Mock
+    private AuthorRepository authorRepository;
 
+
+    @BeforeEach
+    void init() {
+        authorRequestDTO = AuthorRequestDTO.builder()
+                .firstName("firstName")
+                .lastName("lastName")
+                .cityId(190)
+                .avatar("avatar link")
+                .mainWorkingPlace("Hospital")
+                .bio("some text")
+                .socialNetworks(new HashSet<>())
+                .build();
+
+        authorEntity = AuthorEntity.builder()
+                .id(1)
+                .mainInstitution(InstitutionEntity.builder()
+                        .build())
+                .build();
+        authorRepository.save(authorEntity);
+    }
 
     @Test
     void findExpertById() {
@@ -76,7 +105,6 @@ class UserServiceImplTest {
     @Test
     void getRandomExpertPreview() {
         Page<UserEntity> userEntityPage = new PageImpl<>(List.of(new UserEntity(), new UserEntity()));
-
         when(userRepository.findRandomExperts(any(Pageable.class)))
                 .thenReturn(userEntityPage);
         userService.findRandomExpertPreview(null, pageable);
@@ -107,7 +135,7 @@ class UserServiceImplTest {
 
         Page<UserEntity> userEntityPage = Page.empty();
 
-        when(userRepository.findAll(pageable)).thenReturn(userEntityPage);
+        when(userRepository.findAllWithAuthor(pageable)).thenReturn(userEntityPage);
 
         assertEquals(userEntityPage, userService.findAllExperts(userSearchCriteria, pageable));
 
@@ -208,7 +236,7 @@ class UserServiceImplTest {
         userSearchCriteria.setDirections(set);
         userSearchCriteria.setRegions(set);
 
-        when(userRepository.findAll(any(Pageable.class)))
+        when(userRepository.findAllWithAuthor(any(Pageable.class)))
                 .thenReturn(userEntityPage);
 
         userService.findAllExperts(userSearchCriteria, pageable);
@@ -412,6 +440,8 @@ class UserServiceImplTest {
         Integer id = 1;
         UserEntity expected = UserEntity.builder().id(id).build();
         when(userRepository.findById(id)).thenReturn(Optional.of(expected));
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.ofNullable(authorEntity));
+        authorEntity.setProfile(expected);
         UserEntity actual = userService.getById(id);
         Assertions.assertEquals(expected, actual);
     }
@@ -436,7 +466,7 @@ class UserServiceImplTest {
                 .build();
         when(userRepository.findById(anyInt())).thenReturn(Optional.ofNullable(expected));
         String expectedEmail = "test@mail.com";
-        UserEntity userEntity = userService.getById(1);
+        UserEntity userEntity = userService.getByUserId(1);
         userEntity.setEmail(expectedEmail);
         when(userRepository.save(any(UserEntity.class))).thenReturn(expected);
         Assertions.assertNull(expected.getEditedAt());
@@ -455,7 +485,7 @@ class UserServiceImplTest {
         String expectedPassword = "qwerty12345";
         when(passwordEncoder.encode(any(String.class))).thenReturn(expectedPassword);
         when(userRepository.save(any(UserEntity.class))).thenReturn(expected);
-        UserEntity userEntity = userService.getById(1);
+        UserEntity userEntity = userService.getByUserId(1);
         PasswordResetTokenEntity tokenEntity = PasswordResetTokenEntity.builder()
                 .id(1L)
                 .userEntity(expected)

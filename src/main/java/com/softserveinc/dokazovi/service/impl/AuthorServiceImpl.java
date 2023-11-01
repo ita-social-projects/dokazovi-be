@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +51,9 @@ public class AuthorServiceImpl implements AuthorService {
                 .avatar(authorRequestDTO.getAvatar())
                 .enabled(false)
                 .status(UserStatus.NEW)
+                .publicEmail(authorRequestDTO.getPublicEmail())
                 .socialNetworks(authorRequestDTO.getSocialNetworks())
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         userRepository.save(user);
         AuthorEntity author = AuthorEntity.builder()
@@ -78,6 +82,15 @@ public class AuthorServiceImpl implements AuthorService {
                 .lastName(authorRequestDTO.getLastName())
                 .avatar(authorRequestDTO.getAvatar())
                 .socialNetworks(authorRequestDTO.getSocialNetworks())
+                .enabled(oldUser.getEnabled())
+                .status(oldUser.getStatus())
+                .email(oldUser.getEmail())
+                .password(oldUser.getPassword())
+                .phone(oldUser.getPhone())
+                .publicEmail(authorRequestDTO.getPublicEmail())
+                .role(oldUser.getRole())
+                .createdAt(oldUser.getCreatedAt())
+                .editedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         userRepository.save(newUser);
         AuthorEntity newAuthor = AuthorEntity.builder()
@@ -90,6 +103,9 @@ public class AuthorServiceImpl implements AuthorService {
                                 "Unable to find city with id: " + authorRequestDTO.getCityId())))
                 .profile(newUser)
                 .bio(authorRequestDTO.getBio())
+                .promotionScale(oldAuthor.getPromotionScale())
+                .qualification(oldAuthor.getQualification())
+                .institutions(oldAuthor.getInstitutions())
                 .build();
         authorRepository.save(newAuthor);
         return newAuthor;

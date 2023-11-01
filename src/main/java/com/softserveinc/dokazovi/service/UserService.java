@@ -25,15 +25,19 @@ public interface UserService {
 
     Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable);
 
+
+
     Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
-    void setEnabled(Integer userId, boolean isEnabled);
+    void setEnabled(Integer authorId, boolean isEnabled);
 
     void createVerificationToken(UserEntity user, String token);
 
     VerificationToken getVerificationToken(String verificationToken);
 
-    UserEntity getById(Integer userId);
+    UserEntity getById(Integer authorId);
+
+    UserEntity getByUserId(Integer userId);
 
     UserEntity update(UserEntity user);
 
