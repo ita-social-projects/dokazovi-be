@@ -4,10 +4,13 @@ import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusDTO;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -33,7 +36,7 @@ public interface PostService {
     Page<PostDTO> findPostsByAuthorIdAndDirections(
             Pageable pageable, Integer expertId, Set<Integer> directions);
 
-    Boolean removePostById(UserPrincipal userId, Integer postId, boolean delete);
+    Boolean removePostById(UserPrincipal userId, Integer postId);
 
     Boolean updatePostById(UserPrincipal userId, PostSaveFromUserDTO postSaveDTO);
 
@@ -63,4 +66,8 @@ public interface PostService {
     void updatePlannedStatus();
 
     boolean setPublishedAt(Integer postId, PostPublishedAtDTO publishedAt);
+
+    @Transactional
+    void setPostStatus(UserPrincipal userPrincipal, Integer postId, PostStatusDTO postStatusDTO)
+            throws EntityNotFoundException;
 }

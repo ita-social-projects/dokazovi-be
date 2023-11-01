@@ -18,4 +18,5 @@ public interface AuthorService {
     Integer delete(Integer authorId, UserPrincipal userPrincipal);
 
     Page<AuthorResponseDTO> findAllAuthors(Pageable pageable);
+
 }
