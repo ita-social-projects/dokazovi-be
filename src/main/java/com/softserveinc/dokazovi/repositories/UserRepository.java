@@ -48,8 +48,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @return the resulting user entity page
      */
     @Query(nativeQuery = true,
-            value = " SELECT U.* FROM AUTHORS D "
-                    + "     JOIN USERS U ON D.USER_ID = U.USER_ID "
+            value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
+                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, u.public_email, "
+                    + "D.author_id as \"user_id\" FROM AUTHORS D "
+                    + " JOIN USERS U ON D.USER_ID = U.USER_ID "
                     + " ORDER BY RANDOM() ")
     Page<UserEntity> findRandomExperts(Pageable pageable);
 
@@ -61,7 +63,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @return the resulting user entity page
      */
     @Query(nativeQuery = true,
-            value = " SELECT U.* FROM ( "
+            value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
+                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, "
+                    + "u.edited_at, u.public_email, D.author_id as \"user_id\" FROM ( "
                     + "     SELECT DD.AUTHOR_ID FROM AUTHORS_DIRECTIONS DD "
                     + "     WHERE DD.DIRECTION_ID IN (:directionsIds) "
                     + "     GROUP BY DD.AUTHOR_ID "
@@ -80,7 +84,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @return the resulting user entity page
      */
     @Query(nativeQuery = true,
-            value = " SELECT U.*, SN.LINK FROM AUTHORS D "
+            value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
+                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
+                    + "u.public_email, D.author_id as \"user_id\", SN.LINK FROM AUTHORS D "
                     + "     JOIN USERS U ON U.USER_ID = D.USER_ID "
                     + "     JOIN USERS_SOCIAL_NETWORKS SN ON D.USER_ID = SN.USER_ID"
                     + " ORDER BY D.PROMOTION_LEVEL DESC, D.RATING DESC, "
@@ -96,7 +102,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @return the resulting user entity page
      */
     @Query(nativeQuery = true,
-            value = " SELECT U.* FROM ( "
+            value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
+                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
+                    + "u.public_email, D.author_id as \"user_id\" FROM ( "
                     + "     SELECT AUTHOR_ID FROM AUTHORS D "
                     + "         JOIN INSTITUTIONS I ON D.INSTITUTION_ID=I.INSTITUTION_ID "
                     + "         JOIN CITIES C ON I.CITY_ID=C.CITY_ID "
@@ -133,13 +141,16 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @return the resulting user entity page
      */
     @Query(nativeQuery = true,
-            value = " SELECT U.* FROM ( "
+            value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
+                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
+                    + "u.public_email, D.author_id as \"user_id\" FROM ( "
                     + "     SELECT D.PROMOTION_LEVEL, D.RATING, D.USER_ID FROM AUTHORS D "
                     + "         JOIN INSTITUTIONS I ON D.INSTITUTION_ID=I.INSTITUTION_ID "
                     + "         JOIN CITIES C ON I.CITY_ID=C.CITY_ID "
                     + "     WHERE C.REGION_ID IN (:regionsIds) "
                     + " ) DOCS_REG "
                     + "     JOIN USERS U ON U.USER_ID = DOCS_REG.USER_ID "
+                    + "     JOIN AUTHORS D ON DOCS_REG.USER_ID=D.USER_ID "
                     + " ORDER BY DOCS_REG.PROMOTION_LEVEL DESC, DOCS_REG.RATING DESC, "
                     + "          U.LAST_NAME, U.FIRST_NAME ",
             countQuery = " SELECT COUNT(D.AUTHOR_ID) FROM AUTHORS D "
@@ -157,7 +168,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @return the resulting user entity page
      */
     @Query(nativeQuery = true,
-            value = " SELECT U.* FROM ( "
+            value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
+                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
+                    + "u.public_email, D.author_id as \"user_id\" FROM ( "
                     + "     SELECT DD.AUTHOR_ID, COUNT(DD.DIRECTION_ID) DIR_MATCHED"
                     + "     FROM AUTHORS_DIRECTIONS DD "
                     + "     WHERE DD.DIRECTION_ID IN (:directionsIds) "
@@ -180,7 +193,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @return the resulting user entity page
      */
     @Query(nativeQuery = true,
-            value = " SELECT U.* FROM USERS U "
+            value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
+                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
+                    + "u.public_email, D.author_id as \"user_id\" FROM USERS U "
+                    + "   JOIN AUTHORS D ON U.USER_ID=D.USER_ID "
                     + "     WHERE UPPER((U.FIRST_NAME || ' ' || U.LAST_NAME) COLLATE \"uk-ua-dokazovi-x-icu\")"
                     + "         LIKE UPPER((:name || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
                     + "        OR UPPER((U.LAST_NAME || ' ' || U.FIRST_NAME) COLLATE \"uk-ua-dokazovi-x-icu\")"
@@ -195,4 +211,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @return true or false
      */
     Boolean existsByEmail(String email);
+
+    @Query(nativeQuery = true,
+    value = "SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
+            + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
+            + "u.public_email, A.author_id as \"user_id\" from AUTHORS A\n"
+            + "JOIN USERS U ON A.user_id=U.user_id")
+    Page<UserEntity> findAllWithAuthor(Pageable pageable);
 }

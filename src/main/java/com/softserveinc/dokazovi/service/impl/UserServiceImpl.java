@@ -113,81 +113,38 @@ public class UserServiceImpl implements UserService {
      * @param pageable           received from User controller
      * @return found doctor by criteria
      */
+
+
     @Override
     @Transactional
     public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
         if (validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS, HAS_NO_USERNAME)) {
-            Page<UserDTO> userDTOS = userRepository.findAll(pageable).map(userMapper::toUserDTO);
-            List<AuthorEntity> authors = authorRepository.findAll();
-            return userDTOS.map(userDTO -> {
-                for (AuthorEntity author : authors) {
-                    if (author.getProfile().getId().equals(userDTO.getId())) {
-                        userDTO.setId(author.getId());
-                    }
-                }
-                return userDTO;
-            });
+            return userRepository.findAllWithAuthor(pageable).map(userMapper::toUserDTO);
         }
 
         final String name = userSearchCriteria.getUserName();
 
         if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS))) {
-            Page<UserDTO> userDTOS = userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
-            List<AuthorEntity> authors = authorRepository.findAll();
-            return userDTOS.map(userDTO -> {
-                for (AuthorEntity author : authors) {
-                    if (author.getProfile().getId().equals(userDTO.getId())) {
-                        userDTO.setId(author.getId());
-                    }
-                }
-                return userDTO;
-            });
+            return userRepository.findDoctorsByName(name, pageable).map(userMapper::toUserDTO);
         }
 
         if ((validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_USERNAME))) {
-            Page<UserDTO> userDTOS = userRepository.findDoctorsProfilesByRegionsIds(
+            return userRepository.findDoctorsProfilesByRegionsIds(
                             userSearchCriteria.getRegions(), pageable)
                     .map(userMapper::toUserDTO);
-            List<AuthorEntity> authors = authorRepository.findAll();
-            return userDTOS.map(userDTO -> {
-                for (AuthorEntity author : authors) {
-                    if (author.getProfile().getId().equals(userDTO.getId())) {
-                        userDTO.setId(author.getId());
-                    }
-                }
-                return userDTO;
-            });
         }
 
         if ((validateParameters(userSearchCriteria, HAS_NO_REGIONS, HAS_NO_USERNAME))) {
-            Page<UserDTO> userDTOS = userRepository.findDoctorsProfilesByDirectionsIds(
+            return userRepository.findDoctorsProfilesByDirectionsIds(
                             userSearchCriteria.getDirections(), pageable)
                     .map(userMapper::toUserDTO);
-            List<AuthorEntity> authors = authorRepository.findAll();
-            return userDTOS.map(userDTO -> {
-                for (AuthorEntity author : authors) {
-                    if (author.getProfile().getId().equals(userDTO.getId())) {
-                        userDTO.setId(author.getId());
-                    }
-                }
-                return userDTO;
-            });
         }
 
         if ((validateParameters(userSearchCriteria, HAS_NO_USERNAME))) {
-            Page<UserDTO> userDTOS = userRepository
+            return userRepository
                     .findDoctorsProfiles(userSearchCriteria.getDirections(), userSearchCriteria.getRegions(), pageable)
                     .map(userMapper::toUserDTO);
-            List<AuthorEntity> authors = authorRepository.findAll();
-            return userDTOS.map(userDTO -> {
-                for (AuthorEntity author : authors) {
-                    if (author.getProfile().getId().equals(userDTO.getId())) {
-                        userDTO.setId(author.getId());
-                    }
-                }
-                return userDTO;
-            });
         }
 
         throw new EntityNotFoundException("Wrong search parameters");
@@ -230,30 +187,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable) {
         if (CollectionUtils.isEmpty(directionsIds)) {
-            Page<UserDTO> userDTOS = userRepository.findRandomExperts(pageable)
+            return userRepository.findRandomExperts(pageable)
                     .map(userMapper::toUserDTO);
-            List<AuthorEntity> authors = authorRepository.findAll();
-            return userDTOS.map(userDTO -> {
-                for (AuthorEntity author : authors) {
-                    if (author.getProfile().getId().equals(userDTO.getId())) {
-                        userDTO.setId(author.getId());
-                    }
-                }
-                return userDTO;
-            });
         }
 
-        Page<UserDTO> userDTOS = userRepository.findRandomExpertsByDirectionsIdIn(directionsIds, pageable)
+        return userRepository.findRandomExpertsByDirectionsIdIn(directionsIds, pageable)
                 .map(userMapper::toUserDTO);
-        List<AuthorEntity> authors = authorRepository.findAll();
-        return userDTOS.map(userDTO -> {
-            for (AuthorEntity author : authors) {
-                if (author.getProfile().getId().equals(userDTO.getId())) {
-                    userDTO.setId(author.getId());
-                }
-            }
-            return userDTO;
-        });
     }
 
     /**

@@ -25,6 +25,8 @@ public interface UserService {
 
     Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable);
 
+
+
     Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
     void setEnabled(Integer authorId, boolean isEnabled);
