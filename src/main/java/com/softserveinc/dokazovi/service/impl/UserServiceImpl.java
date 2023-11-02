@@ -11,7 +11,6 @@ import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
-import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
@@ -19,7 +18,6 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
-import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,12 +45,10 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private AuthorMapper authorMapper;
     private final VerificationTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenService passwordResetTokenService;
     private final MailSenderService mailSenderService;
-    private final ProviderService providerService;
     private final AuthorRepository authorRepository;
 
     private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
