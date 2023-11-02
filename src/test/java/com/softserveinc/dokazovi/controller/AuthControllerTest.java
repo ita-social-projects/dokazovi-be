@@ -5,6 +5,7 @@ import com.softserveinc.dokazovi.dto.payload.LoginRequest;
 import com.softserveinc.dokazovi.dto.payload.RefreshToken;
 import com.softserveinc.dokazovi.dto.payload.RefreshTokenRequest;
 import com.softserveinc.dokazovi.entity.UserEntity;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.security.RefreshTokenService;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -83,6 +84,7 @@ class AuthControllerTest {
                 .email(email)
                 .password(password)
                 .enabled(true)
+                .status(UserStatus.ACTIVE)
                 .build();
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setId(1);

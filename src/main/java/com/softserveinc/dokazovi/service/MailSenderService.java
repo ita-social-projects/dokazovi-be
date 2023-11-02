@@ -6,4 +6,6 @@ public interface MailSenderService {
 
     void sendEmailWithToken (String contextPath, String token, UserEntity user);
 
+    void sendEmailWithActivationToken(String contextPath, String token, UserEntity user);
+
 }

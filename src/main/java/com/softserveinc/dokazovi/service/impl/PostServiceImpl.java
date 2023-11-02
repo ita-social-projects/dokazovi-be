@@ -1,17 +1,22 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.analytics.GoogleAnalytics;
+import com.softserveinc.dokazovi.dto.post.DeletePostDTO;
 import com.softserveinc.dokazovi.dto.post.PostDTO;
 import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
+import com.softserveinc.dokazovi.dto.post.PostStatusDTO;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
+import com.softserveinc.dokazovi.events.PostDeleteEvent;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
+import com.softserveinc.dokazovi.exception.StatusNotFoundException;
 import com.softserveinc.dokazovi.mapper.PostMapper;
+import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.PostRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
@@ -19,6 +24,7 @@ import com.softserveinc.dokazovi.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -52,8 +58,10 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final UserRepository userRepository;
+    private final AuthorRepository authorRepository;
     private final DirectionServiceImpl directionService;
     private final GoogleAnalytics googleAnalytics;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public PostDTO findPostById(Integer postId) {
@@ -212,44 +220,39 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Boolean removePostById(UserPrincipal userPrincipal, Integer postId, boolean delete)
+    public Boolean removePostById(UserPrincipal userPrincipal, Integer postId)
             throws EntityNotFoundException {
 
-        Optional<PostEntity> oldEntity = postRepository.findById(postId);
+        Optional<PostEntity> postToDelete = postRepository.findById(postId);
 
-        PostEntity mappedEntity = postRepository
-                .findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Post with %s not found", postId)));
+        if (postToDelete.isPresent()) {
+            PostEntity mappedEntity = postToDelete.get();
 
-        Integer userId = userPrincipal.getId();
-        Integer authorId = mappedEntity.getAuthor().getId();
+            Integer userId = userPrincipal.getId();
+            Integer authorId = authorRepository.getByProfileId(userId).getId();
 
-        final Set<DirectionEntity> directionsToUpdate = getDirectionsFromPostsEntities(
-                oldEntity,
-                mappedEntity
-        );
+            final Set<DirectionEntity> directionsToUpdate = getDirectionsFromPostsEntities(
+                    postToDelete,
+                    mappedEntity
+            );
 
-        if ((userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals("DELETE_OWN_POST"))) ||
-                (!userId.equals(authorId) && userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-                        grantedAuthority.getAuthority().equals("DELETE_POST")))) {
-            if (delete) {
+            if ((authorId.equals(mappedEntity.getAuthor().getAuthor().getId()) &&
+                    checkAuthority(userPrincipal,"DELETE_OWN_POST")) ||
+                    checkAuthority(userPrincipal,"DELETE_POST")) {
                 postRepository.delete(mappedEntity);
+                applicationEventPublisher.publishEvent(new PostDeleteEvent(this, DeletePostDTO.builder()
+                        .title(mappedEntity.getTitle())
+                        .userPrincipal(userPrincipal)
+                        .postId(postId)
+                        .build()));
             } else {
-                mappedEntity.setStatus(PostStatus.ARCHIVED);
-                mappedEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
-                postRepository.save(mappedEntity);
+                throw new ForbiddenPermissionsException();
             }
-
+            directionService.updateDirectionsHasPostsStatusByEntities(directionsToUpdate);
+        } else {
+            throw new EntityNotFoundException("Post with id " + postId + " does not exist");
         }
 
-        if ((!userId.equals(authorId) || userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals("DELETE_OWN_POST")))
-                && userPrincipal.getAuthorities().stream().noneMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals("DELETE_POST"))) {
-            throw new ForbiddenPermissionsException();
-        }
-        directionService.updateDirectionsHasPostsStatusByEntities(directionsToUpdate);
         return true;
     }
 
@@ -263,10 +266,6 @@ public class PostServiceImpl implements PostService {
 
         Integer userId = userPrincipal.getId();
         Integer authorId = mappedEntity.getAuthor().getId();
-
-        if (mappedEntity.getStatus().equals(PostStatus.ARCHIVED)) {
-            return removePostById(userPrincipal, mappedEntity.getId(), false);
-        }
 
         if (userId.equals(authorId) && checkAuthority(userPrincipal, "UPDATE_OWN_POST")) {
             saveEntity(mappedEntity);
@@ -493,4 +492,35 @@ public class PostServiceImpl implements PostService {
                 .filter(postEntity -> postEntity.getPublishedAt().before(date))
                 .forEach(postEntity -> postEntity.setStatus(PostStatus.PUBLISHED));
     }
+
+    @Override
+    @Transactional
+    public void setPostStatus(UserPrincipal userPrincipal, Integer postId, PostStatusDTO postStatusDTO)
+            throws EntityNotFoundException {
+
+        Optional<PostEntity> post = postRepository.findById(postId);
+        if (post.isPresent()) {
+            PostEntity postEntity = post.get();
+
+            PostStatus newStatus = postStatusDTO.getStatus();
+
+            if (checkAuthority(userPrincipal, "UPDATE_POST")) {
+                if (newStatus != null) {
+                    postEntity.setStatus(newStatus);
+                    if (newStatus == PostStatus.PUBLISHED) {
+                        postEntity.setPublishedAt(Timestamp.valueOf(LocalDateTime.now()));
+                    }
+                    postEntity.setModifiedAt(Timestamp.valueOf(LocalDateTime.now()));
+                    saveEntity(postEntity);
+                } else {
+                    throw new StatusNotFoundException("Status is null");
+                }
+            } else {
+                throw new ForbiddenPermissionsException();
+            }
+        } else {
+            throw new EntityNotFoundException("Post with id " + postId + " does not exist");
+        }
+    }
+
 }

@@ -1,6 +1,9 @@
 package com.softserveinc.dokazovi.service;
 
 import com.softserveinc.dokazovi.dto.user.UserDTO;
+import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
+import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
+import com.softserveinc.dokazovi.dto.user.UserStatusDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
@@ -22,15 +25,19 @@ public interface UserService {
 
     Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable);
 
+
+
     Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
-    void setEnableTrue(UserEntity user);
+    void setEnabled(Integer authorId, boolean isEnabled);
 
     void createVerificationToken(UserEntity user, String token);
 
     VerificationToken getVerificationToken(String verificationToken);
 
-    UserEntity getById(Integer userId);
+    UserEntity getById(Integer authorId);
+
+    UserEntity getByUserId(Integer userId);
 
     UserEntity update(UserEntity user);
 
@@ -39,4 +46,12 @@ public interface UserService {
     void sendPasswordResetToken(UserEntity user, String origin);
 
     boolean isPasswordMatches(UserEntity user, String password);
+
+    void sendActivationToken(Integer userId, String email, String origin);
+
+    void activateUser(UserPasswordDTO userPasswordDTO);
+
+    UserPublicAndPrivateEmailDTO getAllPublicAndPrivateEmails();
+
+    void changeStatus(UserStatusDTO userStatusDTO);
 }
