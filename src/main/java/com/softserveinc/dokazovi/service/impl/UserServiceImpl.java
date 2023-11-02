@@ -47,12 +47,10 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private AuthorMapper authorMapper;
     private final VerificationTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenService passwordResetTokenService;
     private final MailSenderService mailSenderService;
-    private final ProviderService providerService;
     private final AuthorRepository authorRepository;
 
     private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
