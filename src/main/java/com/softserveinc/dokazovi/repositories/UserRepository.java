@@ -85,8 +85,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      */
     @Query(nativeQuery = true,
             value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
-                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
-                    + "u.public_email, D.author_id as \"user_id\", SN.LINK FROM AUTHORS D "
+                    + "U.phone, U.created_at, U.avatar,U.enabled,U.role_id, U.edited_at, "
+                    + "U.public_email, D.author_id as \"user_id\", SN.LINK FROM AUTHORS D "
                     + "     JOIN USERS U ON U.USER_ID = D.USER_ID "
                     + "     JOIN USERS_SOCIAL_NETWORKS SN ON D.USER_ID = SN.USER_ID"
                     + " ORDER BY D.PROMOTION_LEVEL DESC, D.RATING DESC, "
@@ -103,8 +103,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      */
     @Query(nativeQuery = true,
             value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
-                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
-                    + "u.public_email, D.author_id as \"user_id\" FROM ( "
+                    + "U.phone, U.created_at, U.avatar,U.enabled,U.role_id, U.edited_at, "
+                    + "U.public_email, D.author_id as \"user_id\" FROM ( "
                     + "     SELECT AUTHOR_ID FROM AUTHORS D "
                     + "         JOIN INSTITUTIONS I ON D.INSTITUTION_ID=I.INSTITUTION_ID "
                     + "         JOIN CITIES C ON I.CITY_ID=C.CITY_ID "
@@ -142,8 +142,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      */
     @Query(nativeQuery = true,
             value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
-                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
-                    + "u.public_email, D.author_id as \"user_id\" FROM ( "
+                    + "U.phone, U.created_at, U.avatar,U.enabled,U.role_id, U.edited_at, "
+                    + "U.public_email, D.author_id as \"user_id\" FROM ( "
                     + "     SELECT D.PROMOTION_LEVEL, D.RATING, D.USER_ID FROM AUTHORS D "
                     + "         JOIN INSTITUTIONS I ON D.INSTITUTION_ID=I.INSTITUTION_ID "
                     + "         JOIN CITIES C ON I.CITY_ID=C.CITY_ID "
@@ -169,8 +169,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      */
     @Query(nativeQuery = true,
             value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
-                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
-                    + "u.public_email, D.author_id as \"user_id\" FROM ( "
+                    + "U.phone, U.created_at, U.avatar,U.enabled,U.role_id, U.edited_at, "
+                    + "U.public_email, D.author_id as \"user_id\" FROM ( "
                     + "     SELECT DD.AUTHOR_ID, COUNT(DD.DIRECTION_ID) DIR_MATCHED"
                     + "     FROM AUTHORS_DIRECTIONS DD "
                     + "     WHERE DD.DIRECTION_ID IN (:directionsIds) "
@@ -194,8 +194,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      */
     @Query(nativeQuery = true,
             value = " SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
-                    + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
-                    + "u.public_email, D.author_id as \"user_id\" FROM USERS U "
+                    + "U.phone, U.created_at, U.avatar,U.enabled,U.role_id, U.edited_at, "
+                    + "U.public_email, D.author_id as \"user_id\" FROM USERS U "
                     + "   JOIN AUTHORS D ON U.USER_ID=D.USER_ID "
                     + "     WHERE UPPER((U.FIRST_NAME || ' ' || U.LAST_NAME) COLLATE \"uk-ua-dokazovi-x-icu\")"
                     + "         LIKE UPPER((:name || '%') COLLATE \"uk-ua-dokazovi-x-icu\") "
@@ -214,8 +214,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     @Query(nativeQuery = true,
     value = "SELECT U.email,U.password, U.status, U.first_name, U.last_name, "
-            + "U.phone, U.created_at, U.avatar,u.enabled,u.role_id, u.edited_at, "
-            + "u.public_email, A.author_id as \"user_id\" from AUTHORS A\n"
-            + "JOIN USERS U ON A.user_id=U.user_id")
+            + "U.phone, U.created_at, U.avatar,U.enabled,U.role_id, U.edited_at, "
+            + "U.public_email, D.author_id as \"user_id\" from USERS U\n"
+            + "JOIN AUTHORS D ON U.user_id=D.user_id")
     Page<UserEntity> findAllWithAuthor(Pageable pageable);
 }
