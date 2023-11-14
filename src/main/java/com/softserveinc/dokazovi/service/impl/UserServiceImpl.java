@@ -11,7 +11,6 @@ import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
-import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
@@ -19,7 +18,6 @@ import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
-import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -99,7 +97,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO findExpertById(Integer userId) {
-        return userMapper.toUserDTO(userRepository.findById(userId).orElse(null));
+        AuthorEntity author = authorRepository.findById(userId).orElse(null);
+        if (author == null) {
+            throw new EntityNotFoundException("Author not found");
+        }
+        return userMapper.toUserDTO(userRepository.findById(author.getProfile().getId()).orElse(null));
 
     }
 
@@ -118,7 +120,7 @@ public class UserServiceImpl implements UserService {
     public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
         if (validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS, HAS_NO_USERNAME)) {
-            return userRepository.findAllWithAuthor(pageable).map(userMapper::toUserDTO);
+            return userRepository.findAll(pageable).map(userMapper::toUserDTO);
         }
 
         final String name = userSearchCriteria.getUserName();

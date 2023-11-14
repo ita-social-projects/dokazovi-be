@@ -92,11 +92,13 @@ class UserServiceImplTest {
     void findExpertById() {
         Integer id = 1;
         UserEntity userEntity = UserEntity.builder()
+                .author(authorEntity)
                 .id(id)
+                .enabled(false)
                 .build();
-
-        when(userRepository.findById(id))
-                .thenReturn(Optional.of(userEntity));
+        authorEntity.setProfile(userEntity);
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(userEntity));
         userService.findExpertById(id);
 
         verify(userMapper).toUserDTO(userEntity);
@@ -135,7 +137,7 @@ class UserServiceImplTest {
 
         Page<UserEntity> userEntityPage = Page.empty();
 
-        when(userRepository.findAllWithAuthor(pageable)).thenReturn(userEntityPage);
+        when(userRepository.findAll(pageable)).thenReturn(userEntityPage);
 
         assertEquals(userEntityPage, userService.findAllExperts(userSearchCriteria, pageable));
 
@@ -236,7 +238,7 @@ class UserServiceImplTest {
         userSearchCriteria.setDirections(set);
         userSearchCriteria.setRegions(set);
 
-        when(userRepository.findAllWithAuthor(any(Pageable.class)))
+        when(userRepository.findAll(any(Pageable.class)))
                 .thenReturn(userEntityPage);
 
         userService.findAllExperts(userSearchCriteria, pageable);

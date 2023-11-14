@@ -66,7 +66,7 @@ class AuthorControllerTest {
 
     @Test
     void updateAuthor() throws Exception {
-        mockMvc.perform(put("/author/{authorId}","1")
+        mockMvc.perform(put("/author")
                     .contentType("application/json")
                     .content(userDTO))
                 .andExpect(status().isOk());

@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.service.impl;
 import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
 import com.softserveinc.dokazovi.dto.author.AuthorResponseDTO;
 import com.softserveinc.dokazovi.entity.AuthorEntity;
+import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.RolePermission;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
@@ -10,6 +11,7 @@ import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.AuthorMapper;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.CityRepository;
+import com.softserveinc.dokazovi.repositories.InstitutionRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.AuthorService;
@@ -32,6 +34,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
     private final AuthorMapper authorMapper;
+    private final InstitutionRepository institutionRepository;
 
     @Override
     public AuthorEntity findAuthorById(Integer authorId) {
@@ -56,6 +59,13 @@ public class AuthorServiceImpl implements AuthorService {
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         userRepository.save(user);
+        InstitutionEntity institutionEntity = InstitutionEntity.builder()
+                .name(authorRequestDTO.getMainWorkingPlace())
+                .city(cityRepository.findById(authorRequestDTO.getCityId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Unable to find city with id: " + authorRequestDTO.getCityId())))
+                .build();
+        institutionRepository.save(institutionEntity);
         AuthorEntity author = AuthorEntity.builder()
                 .publishedPosts(0L)
                 .promotionScale(1.0)
@@ -64,17 +74,18 @@ public class AuthorServiceImpl implements AuthorService {
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                 "Unable to find city with id: " + authorRequestDTO.getCityId())))
                 .profile(user)
+                .mainInstitution(institutionEntity)
                 .bio(authorRequestDTO.getBio())
                 .build();
         return authorRepository.save(author);
     }
 
     @Override
-    public AuthorEntity update(Integer authorId, AuthorRequestDTO authorRequestDTO, UserPrincipal userPrincipal) {
+    public AuthorEntity update(AuthorRequestDTO authorRequestDTO, UserPrincipal userPrincipal) {
         if (!hasEnoughAuthorities(userPrincipal)) {
             throw new ForbiddenPermissionsException("Not enough authority");
         }
-        AuthorEntity oldAuthor = findAuthorById(authorId);
+        AuthorEntity oldAuthor = findAuthorById(authorRequestDTO.getAuthorId());
         UserEntity oldUser = userRepository.getOne(oldAuthor.getProfile().getId());
         UserEntity newUser = UserEntity.builder()
                 .id(oldUser.getId())
@@ -93,14 +104,24 @@ public class AuthorServiceImpl implements AuthorService {
                 .editedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         userRepository.save(newUser);
+        InstitutionEntity institutionEntity = InstitutionEntity.builder()
+                .id(oldAuthor.getMainInstitution().getId())
+                .name(authorRequestDTO.getMainWorkingPlace())
+                .city(cityRepository.findById(authorRequestDTO.getCityId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Unable to find city with id: " + authorRequestDTO.getCityId())))
+                .address(oldAuthor.getMainInstitution().getAddress())
+                .build();
+        institutionRepository.save(institutionEntity);
         AuthorEntity newAuthor = AuthorEntity.builder()
-                .id(authorId)
+                .id(authorRequestDTO.getAuthorId())
                 .publishedPosts(oldAuthor.getPublishedPosts())
                 .promotionScale(oldAuthor.getPromotionScale())
                 .mainWorkingPlace(authorRequestDTO.getMainWorkingPlace())
                 .city(cityRepository.findById(authorRequestDTO.getCityId())
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                 "Unable to find city with id: " + authorRequestDTO.getCityId())))
+                .mainInstitution(institutionEntity)
                 .profile(newUser)
                 .bio(authorRequestDTO.getBio())
                 .promotionScale(oldAuthor.getPromotionScale())

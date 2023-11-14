@@ -15,7 +15,7 @@ public interface UserMapper {
 
     PostMapper POST_MAPPER = Mappers.getMapper(PostMapper.class);
 
-    @Mapping(target = "id", source = "userEntity.id")
+    @Mapping(target = "id", source = "author.id")
     @Mapping(target = ".", source = "userEntity.author")
     @Mapping(target = "region", source = "userEntity.author.mainInstitution.city.region")
     @Mapping(target = "postStatuses", source = "posts")
