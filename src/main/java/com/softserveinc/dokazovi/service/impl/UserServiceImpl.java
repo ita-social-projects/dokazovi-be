@@ -97,11 +97,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO findExpertById(Integer userId) {
-        AuthorEntity author = authorRepository.findById(userId).orElse(null);
-        if (author == null) {
-            throw new EntityNotFoundException("Author not found");
-        }
-        return userMapper.toUserDTO(userRepository.findById(author.getProfile().getId()).orElse(null));
+        AuthorEntity author = authorRepository.findById(userId).orElseThrow(()->new EntityNotFoundException("Author not found"));
+        return userMapper.toUserDTO(userRepository.findById(author.getProfile().getId()).orElseThrow(()->new EntityNotFoundException("User not found")));
 
     }
 

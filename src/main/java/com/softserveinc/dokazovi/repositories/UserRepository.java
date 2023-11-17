@@ -198,6 +198,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Boolean existsByEmail(String email);
 
     @Query(nativeQuery = true,
-    value = "SELECT U.* from USERS U\n")
+    value = "SELECT U.* from USERS U")
     Page<UserEntity> findAllWithAuthor(Pageable pageable);
 }
