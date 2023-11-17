@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthorRequestDTO {
-
+    private Integer authorId;
     @NotBlank
     private String firstName;
     @NotBlank
