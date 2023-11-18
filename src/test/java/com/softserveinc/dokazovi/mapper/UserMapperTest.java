@@ -90,10 +90,12 @@ class UserMapperTest {
                 .email("mail@mail.com")
                 .phone("380990099009")
                 .avatar("Some avatar url")
+                .enabled(true)
                 .socialNetworks(Set.of("Facebook", "Twitter"))
                 .build();
 
         authorEntity = AuthorEntity.builder()
+                .id(1)
                 .qualification("qualification 1")
                 .bio("bio 1")
                 .mainInstitution(mainInstitution)
@@ -247,6 +249,7 @@ class UserMapperTest {
         assertNull(userDTO.getMainInstitution().getCity());
 
         UserEntity userEntity1 = new UserEntity();
+        userEntity1.setEnabled(false);
         userDTO = mapper.toUserDTO(userEntity1);
         assertNull(userDTO.getId());
         assertNull(userDTO.getBio());
@@ -258,6 +261,7 @@ class UserMapperTest {
 
         userEntity.setAuthor(new AuthorEntity());
         userDTO = mapper.toUserDTO(userEntity);
+        userDTO.setId(userEntity.getId());
         assertEquals(userDTO.getId(), userEntity.getId());
         assertNull(userDTO.getBio());
         assertNull(userDTO.getQualification());

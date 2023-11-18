@@ -3,6 +3,7 @@ package com.softserveinc.dokazovi.dto.user;
 import com.softserveinc.dokazovi.dto.direction.DirectionDTO;
 import com.softserveinc.dokazovi.dto.post.PostStatusesDTO;
 import com.softserveinc.dokazovi.dto.region.RegionDTO;
+import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +36,12 @@ public class UserDTO {
     private String avatar;
 
     private String bio;
+
+    private String publicEmail;
+
+    private UserStatus status;
+
+    private Boolean enabled;
 
     private RegionDTO region;
 

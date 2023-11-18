@@ -13,7 +13,7 @@ public interface AuthorService {
 
     AuthorEntity save(AuthorRequestDTO authorRequestDTO, UserPrincipal userPrincipal);
 
-    AuthorEntity update(Integer authorId, AuthorRequestDTO authorRequestDTO, UserPrincipal userPrincipal);
+    AuthorEntity update(AuthorRequestDTO authorRequestDTO, UserPrincipal userPrincipal);
 
     Integer delete(Integer authorId, UserPrincipal userPrincipal);
 

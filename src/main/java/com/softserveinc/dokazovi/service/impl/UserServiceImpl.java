@@ -97,7 +97,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO findExpertById(Integer userId) {
-        return userMapper.toUserDTO(userRepository.findById(userId).orElse(null));
+        AuthorEntity author = authorRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException("Author not found"));
+        return userMapper.toUserDTO(userRepository.findById(author.getProfile().getId()).orElseThrow(
+                () -> new EntityNotFoundException("User not found")));
 
     }
 
@@ -116,7 +119,7 @@ public class UserServiceImpl implements UserService {
     public Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
         if (validateParameters(userSearchCriteria, HAS_NO_DIRECTIONS, HAS_NO_REGIONS, HAS_NO_USERNAME)) {
-            return userRepository.findAllWithAuthor(pageable).map(userMapper::toUserDTO);
+            return userRepository.findAll(pageable).map(userMapper::toUserDTO);
         }
 
         final String name = userSearchCriteria.getUserName();

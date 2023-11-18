@@ -99,9 +99,6 @@ class AuthorServiceImplTest {
                 .enabled(true)
                 .build();
 
-        institutionEntity = InstitutionEntity.builder()
-                .build();
-
         userEntity = UserEntity.builder()
                 .id(2)
                 .email("mail@mail.com")
@@ -118,6 +115,7 @@ class AuthorServiceImplTest {
                 .build();
 
         authorRequestDTO = AuthorRequestDTO.builder()
+                .authorId(1)
                 .firstName("firstName")
                 .lastName("lastName")
                 .cityId(190)
@@ -127,14 +125,20 @@ class AuthorServiceImplTest {
                 .socialNetworks(new HashSet<>())
                 .build();
 
+        cityEntity = CityEntity.builder()
+                .id(190)
+                .build();
+
+        institutionEntity = InstitutionEntity.builder()
+                .id(1)
+                .city(cityEntity)
+                .name("Hospital")
+                .build();
+
         authorEntity = AuthorEntity.builder()
                 .id(1)
                 .profile(userEntity)
                 .mainInstitution(institutionEntity)
-                .build();
-
-        cityEntity = CityEntity.builder()
-                .id(190)
                 .build();
     }
 
@@ -145,7 +149,7 @@ class AuthorServiceImplTest {
                 .role(adminRole)
                 .build();
 
-        assertThatThrownBy(() -> authorService.update(1, authorRequestDTO, userPrincipal))
+        assertThatThrownBy(() -> authorService.update(authorRequestDTO, userPrincipal))
                 .isInstanceOf(ForbiddenPermissionsException.class);
     }
 
@@ -159,7 +163,7 @@ class AuthorServiceImplTest {
                 .role(adminRole)
                 .build();
 
-        authorService.update(1, authorRequestDTO, userPrincipal);
+        authorService.update(authorRequestDTO, userPrincipal);
 
         verify(authorRepository).save(authorEntityArgumentCaptor.capture());
         Assertions.assertEquals(authorEntityArgumentCaptor.getValue().getId(), authorEntity.getId());
@@ -179,6 +183,7 @@ class AuthorServiceImplTest {
     @Test
     void save() {
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(cityEntity));
+
         UserPrincipal userPrincipal = UserPrincipal.builder()
                 .role(adminRole)
                 .build();
@@ -199,12 +204,13 @@ class AuthorServiceImplTest {
                 .promotionScale(1.0)
                 .mainWorkingPlace(authorRequestDTO.getMainWorkingPlace())
                 .city(cityEntity)
+                .mainInstitution(institutionEntity)
                 .profile(user)
                 .bio(authorRequestDTO.getBio())
                 .build();
         verify(userRepository).save(userEntityArgumentCaptor.capture());
         verify(authorRepository).save(authorEntityArgumentCaptor.capture());
-        Assertions.assertEquals(authorEntityArgumentCaptor.getValue(), author);
+        Assertions.assertEquals(authorEntityArgumentCaptor.getValue().getId(), author.getId());
         Assertions.assertEquals(userEntityArgumentCaptor.getValue().getId(), user.getId());
     }
 

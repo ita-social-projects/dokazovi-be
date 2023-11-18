@@ -55,7 +55,7 @@ public class AuthorController {
                 .body(authorMapper.toAuthorResponseDTO(authorService.save(author, userPrincipal)));
     }
 
-    @PutMapping(AUTHOR_GET_AUTHOR_BY_ID)
+    @PutMapping()
     @PreAuthorize("hasAuthority('EDIT_AUTHOR')")
     @ApiOperation(value = "update author",
             authorizations = {@Authorization(value = "Authorization")})
@@ -63,12 +63,12 @@ public class AuthorController {
             @ApiResponse(code = 200, message = HttpStatuses.OK, response = AuthorRequestDTO.class),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
-    public ResponseEntity<AuthorResponseDTO> updateAuthor(@PathVariable Integer authorId,
+    public ResponseEntity<AuthorResponseDTO> updateAuthor(
             @Valid @RequestBody AuthorRequestDTO author,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         return ResponseEntity
                 .status(200)
-                .body(authorMapper.toAuthorResponseDTO(authorService.update(authorId, author, userPrincipal)));
+                .body(authorMapper.toAuthorResponseDTO(authorService.update(author, userPrincipal)));
     }
 
     @DeleteMapping(AUTHOR_GET_AUTHOR_BY_ID)
