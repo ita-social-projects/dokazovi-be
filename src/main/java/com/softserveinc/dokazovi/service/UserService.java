@@ -23,6 +23,8 @@ public interface UserService {
 
     UserDTO findExpertById(Integer userId);
 
+    UserDTO findExpertByUserId(Integer userId);
+
     Page<UserDTO> findAllExperts(UserSearchCriteria userSearchCriteria, Pageable pageable);
 
 
