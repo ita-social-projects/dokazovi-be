@@ -13,6 +13,7 @@ import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.LogForLoginService;
 import com.softserveinc.dokazovi.service.ProviderService;
+import com.softserveinc.dokazovi.service.UserLoginIpService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.service.impl.MailSenderServiceImpl;
 import com.softserveinc.dokazovi.security.RefreshTokenService;
@@ -57,6 +58,7 @@ public class AuthController {
     private final ProviderService providerService;
     private final RefreshTokenService refreshTokenService;
     private final LogForLoginService logForLoginService;
+    private final UserLoginIpService userLoginIpService;
 
     /**
      * Authenticates user using email and password.
@@ -84,6 +86,10 @@ public class AuthController {
                     )
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String userIp = request.getRemoteAddr();
+            userLoginIpService.saveUserIP(userEntity.getId(), userIp);
+
             if (!userEntity.getEnabled()) {
                 throw new BadRequestException("Please confirm your email!");
             } else if (userEntity.getStatus() != UserStatus.ACTIVE) {
