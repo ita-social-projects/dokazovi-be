@@ -8,6 +8,7 @@ import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserEnabledDTO;
 import com.softserveinc.dokazovi.dto.user.UserIdEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserIpWhitelistDTO;
+import com.softserveinc.dokazovi.dto.user.UserLoginIpResponseDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserStatusDTO;
@@ -19,6 +20,7 @@ import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserIpWhitelistService;
+import com.softserveinc.dokazovi.service.UserLoginIpService;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -64,6 +66,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_EXPERT_ALL_POS
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_AUTHORITIES;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_IP_LIST;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWORD;
@@ -83,6 +86,7 @@ public class UserController {
     private final DirectionService directionService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final UserIpWhitelistService userIpWhitelistService;
+    private final UserLoginIpService userLoginIpService;
 
     /**
      * Gets preview of random experts, filtered by directions. Default 12 max per page.
@@ -335,5 +339,21 @@ public class UserController {
     ) {
         userIpWhitelistService.updateUserIpWhitelist(userPrincipal, userIpWhitelistDTO);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping(USER_GET_USER_BY_ID + USER_IP_LIST)
+    @PreAuthorize("hasAuthority('EDIT_AUTHOR')")
+    @ApiOperation(value = "Gets all IPs that user used to log in")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    public ResponseEntity<UserLoginIpResponseDTO> getUserLoginIps(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Integer userId
+    ) {
+        List<String> ips = userLoginIpService.getAllUserIps(userPrincipal, userId);
+        UserLoginIpResponseDTO responseDTO = new UserLoginIpResponseDTO(ips);
+        return ResponseEntity.ok(responseDTO);
     }
 }

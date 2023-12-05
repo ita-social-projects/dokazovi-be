@@ -94,7 +94,7 @@ public class AuthController {
             String userIp = request.getRemoteAddr();
             userLoginIpService.saveUserIP(userEntity.getId(), userIp);
 
-            if (userEntity.getWhitelist() && userIpWhitelistService.isIpWhitelisted(userEntity.getId(), userIp)) {
+            if (userEntity.getWhitelist() && !userIpWhitelistService.isIpWhitelisted(userEntity.getId(), userIp)) {
                 throw new BadCredentialsException("You are not allowed to log in from this device");
             }
 
