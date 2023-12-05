@@ -116,6 +116,7 @@ public class UserEntity {
         return this.enabled;
     }
 
+    @Builder.Default
     @Column(name = "whitelist", nullable = false)
     private Boolean whitelist = false;
 }

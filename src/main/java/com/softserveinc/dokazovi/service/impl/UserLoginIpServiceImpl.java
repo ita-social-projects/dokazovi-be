@@ -19,6 +19,7 @@ public class UserLoginIpServiceImpl implements UserLoginIpService {
         this.userLoginIpRepository = userLoginIpRepository;
         this.userRepository = userRepository;
     }
+
     @Override
     public void saveUserIP(Integer userId, String ipAddress) {
         boolean exists = userLoginIpRepository.existsByUserIdAndIpAddress(userId, ipAddress);
@@ -34,8 +35,6 @@ public class UserLoginIpServiceImpl implements UserLoginIpService {
             }, () -> {
                 throw new EntityNotFoundException("There is no user with id " + userId);
             });
-
-
         }
     }
 }

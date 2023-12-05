@@ -30,6 +30,8 @@ public final class EndPoints {
     public static final String USER_CHANGE_PASSWORD = "/change-password";
     public static final String USER_UPDATE_PASSWORD = "/update-password";
     public static final String USER_CHECK_TOKEN = "/check-token";
+    public static final String USER_WHITELIST_STATUS = "/whitelist-status";
+    public static final String USER_WHITELIST = "/update-whitelist";
     public static final String USER_RANDOM_EXPERTS = "/random-experts";
     public static final String USER_ALL_EXPERTS = "/all-experts";
     public static final String USER_ALL_EMAILS = "/all-emails";
