@@ -12,6 +12,7 @@ import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.LogForLoginService;
 import com.softserveinc.dokazovi.service.ProviderService;
+import com.softserveinc.dokazovi.service.UserLoginIpService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.service.impl.MailSenderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +41,7 @@ import static com.softserveinc.dokazovi.controller.EndPoints.REFRESH_TOKEN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,6 +66,8 @@ class AuthControllerTest {
     private UserService userService;
     @Mock
     private LogForLoginService logForLoginService;
+    @Mock
+    private UserLoginIpService userLoginIpService;
     @InjectMocks
     private AuthController authController;
 
@@ -104,6 +108,7 @@ class AuthControllerTest {
         when(userService.findByEmail(anyString())).thenReturn(user);
         when(refreshTokenService.createRefreshToken(anyInt())).thenReturn(refreshToken);
         when(logForLoginService.save(any(LogForLoginEntity.class))).thenReturn(LogForLoginEntity.builder().build());
+        doNothing().when(userLoginIpService).saveUserIP(anyInt(), anyString()); //.thenReturn(LogForLoginEntity.builder().build());
         String uri = AUTH + AUTH_LOGIN;
         mockMvc.perform(MockMvcRequestBuilders.post(uri)
                         .content(asJsonString(loginRequest))

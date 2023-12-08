@@ -95,6 +95,7 @@ public class AuthController {
             userLoginIpService.saveUserIP(userEntity.getId(), userIp);
 
             if (userEntity.getWhitelist() && !userIpWhitelistService.isIpWhitelisted(userEntity.getId(), userIp)) {
+                status = "The IP wasn't found";
                 throw new BadCredentialsException("You are not allowed to log in from this device");
             }
 
