@@ -8,6 +8,7 @@ import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.repositories.UserIpWhitelistRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.CheckAuthorityService;
 import com.softserveinc.dokazovi.service.UserIpWhitelistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,24 +23,28 @@ public class UserIpWhitelistServiceImpl implements UserIpWhitelistService {
 
     UserRepository userRepository;
     UserIpWhitelistRepository userIpWhitelistRepository;
+    CheckAuthorityService checkAuthorityService;
 
     @Autowired
     public UserIpWhitelistServiceImpl(UserRepository userRepository,
-            UserIpWhitelistRepository userIpWhitelistRepository) {
+            UserIpWhitelistRepository userIpWhitelistRepository,
+            CheckAuthorityService checkAuthorityService) {
         this.userRepository = userRepository;
         this.userIpWhitelistRepository = userIpWhitelistRepository;
+        this.checkAuthorityService = checkAuthorityService;
     }
 
     @Override
     public void updateUserIpWhitelist(UserPrincipal userPrincipal, UserIpWhitelistDTO userIpWhitelistDTO) {
-        if (checkAuthority(userPrincipal, "EDIT_AUTHOR")) {
+        if (checkAuthorityService.checkAuthority(userPrincipal, "EDIT_AUTHOR")) {
 
             if (userIpWhitelistDTO.getWhitelistIps().size() > 10) {
                 throw new IllegalArgumentException("Cannot have more than 10 IPs in the whitelist");
             }
 
             UserEntity user = userRepository.findById(userIpWhitelistDTO.getId())
-                    .orElseThrow(() -> new EntityNotFoundException("User with id " + userIpWhitelistDTO.getId() + " not found"));
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "User with id " + userIpWhitelistDTO.getId() + " not found"));
 
             List<UserIpWhitelistEntity> existingEntries = userIpWhitelistRepository.findAllByUser(user);
             Set<String> existingWhitelistedIps = existingEntries.stream()
@@ -50,12 +55,10 @@ public class UserIpWhitelistServiceImpl implements UserIpWhitelistService {
 
             existingWhitelistedIps.stream()
                     .filter(ip -> !updatedIps.contains(ip))
-                    .forEach(ip -> {
-                        existingEntries.stream()
-                                .filter(entry -> entry.getWhitelistIp().equals(ip))
-                                .findFirst()
-                                .ifPresent(entryToRemove -> userIpWhitelistRepository.delete(entryToRemove));
-                    });
+                    .forEach(ip -> existingEntries.stream()
+                            .filter(entry -> entry.getWhitelistIp().equals(ip))
+                            .findFirst()
+                            .ifPresent(entryToRemove -> userIpWhitelistRepository.delete(entryToRemove)));
 
             updatedIps.stream()
                     .filter(ip -> !existingWhitelistedIps.contains(ip))
@@ -64,11 +67,6 @@ public class UserIpWhitelistServiceImpl implements UserIpWhitelistService {
         } else {
             throw new ForbiddenPermissionsException();
         }
-    }
-
-    private boolean checkAuthority(UserPrincipal userPrincipal, String authority) {
-        return userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals(authority));
     }
 
     @Override

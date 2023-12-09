@@ -9,18 +9,17 @@ import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.VerificationToken;
-import com.softserveinc.dokazovi.entity.enumerations.PostStatus;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
-import com.softserveinc.dokazovi.exception.StatusNotFoundException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.CheckAuthorityService;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.UserService;
@@ -32,8 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -57,6 +54,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetTokenService passwordResetTokenService;
     private final MailSenderService mailSenderService;
     private final AuthorRepository authorRepository;
+    private final CheckAuthorityService checkAuthorityService;
 
     private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
     private static final String HAS_NO_REGIONS = "hasNoRegions";
@@ -354,19 +352,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeWhitelistStatus(UserPrincipal userPrincipal, UserWhitelistStatusDTO userWhitelistStatusDTO) {
-        if (checkAuthority(userPrincipal, "EDIT_AUTHOR")) {
+        if (checkAuthorityService.checkAuthority(userPrincipal, "EDIT_AUTHOR")) {
             UserEntity user = userRepository.findById(userWhitelistStatusDTO.getId())
-                    .orElseThrow(() -> new EntityNotFoundException("User with id " + userWhitelistStatusDTO.getId() + " not found"));
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "User with id " + userWhitelistStatusDTO.getId() + " not found"));
 
             user.setWhitelist(userWhitelistStatusDTO.isWhitelistStatus());
             userRepository.save(user);
         } else {
             throw new ForbiddenPermissionsException();
         }
-    }
-
-    private boolean checkAuthority(UserPrincipal userPrincipal, String authority) {
-        return userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals(authority));
     }
 }

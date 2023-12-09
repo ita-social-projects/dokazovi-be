@@ -9,6 +9,7 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.TokenRefreshException;
+import com.softserveinc.dokazovi.security.RefreshTokenService;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.LogForLoginService;
@@ -17,7 +18,6 @@ import com.softserveinc.dokazovi.service.UserIpWhitelistService;
 import com.softserveinc.dokazovi.service.UserLoginIpService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.service.impl.MailSenderServiceImpl;
-import com.softserveinc.dokazovi.security.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -36,9 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
-import java.nio.channels.AcceptPendingException;
-import java.nio.file.AccessDeniedException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 

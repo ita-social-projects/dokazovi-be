@@ -6,6 +6,7 @@ import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.repositories.UserLoginIpRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.CheckAuthorityService;
 import com.softserveinc.dokazovi.service.UserLoginIpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,15 @@ public class UserLoginIpServiceImpl implements UserLoginIpService {
 
     UserLoginIpRepository userLoginIpRepository;
     UserRepository userRepository;
+    CheckAuthorityService checkAuthorityService;
 
     @Autowired
-    public UserLoginIpServiceImpl(UserLoginIpRepository userLoginIpRepository, UserRepository userRepository) {
+    public UserLoginIpServiceImpl(UserLoginIpRepository userLoginIpRepository,
+            UserRepository userRepository,
+            CheckAuthorityService checkAuthorityService) {
         this.userLoginIpRepository = userLoginIpRepository;
         this.userRepository = userRepository;
+        this.checkAuthorityService = checkAuthorityService;
     }
 
     @Override
@@ -45,7 +50,7 @@ public class UserLoginIpServiceImpl implements UserLoginIpService {
 
     @Override
     public List<String> getAllUserIps(UserPrincipal userPrincipal, Integer userId) {
-        if (checkAuthority(userPrincipal, "EDIT_AUTHOR")) {
+        if (checkAuthorityService.checkAuthority(userPrincipal, "EDIT_AUTHOR")) {
             List<UserLoginIpEntity> ipEntities = userLoginIpRepository.findAllByUserId(userId);
             return ipEntities.stream()
                     .map(UserLoginIpEntity::getIpAddress)
@@ -53,10 +58,5 @@ public class UserLoginIpServiceImpl implements UserLoginIpService {
         } else {
             throw new ForbiddenPermissionsException();
         }
-    }
-
-    private boolean checkAuthority(UserPrincipal userPrincipal, String authority) {
-        return userPrincipal.getAuthorities().stream().anyMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals(authority));
     }
 }

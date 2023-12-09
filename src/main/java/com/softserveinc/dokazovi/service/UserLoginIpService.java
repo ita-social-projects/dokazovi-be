@@ -1,6 +1,5 @@
 package com.softserveinc.dokazovi.service;
 
-import com.softserveinc.dokazovi.entity.UserLoginIpEntity;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.stereotype.Service;
 

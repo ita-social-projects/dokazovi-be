@@ -108,7 +108,7 @@ class AuthControllerTest {
         when(userService.findByEmail(anyString())).thenReturn(user);
         when(refreshTokenService.createRefreshToken(anyInt())).thenReturn(refreshToken);
         when(logForLoginService.save(any(LogForLoginEntity.class))).thenReturn(LogForLoginEntity.builder().build());
-        doNothing().when(userLoginIpService).saveUserIP(anyInt(), anyString()); //.thenReturn(LogForLoginEntity.builder().build());
+        doNothing().when(userLoginIpService).saveUserIP(anyInt(), anyString());
         String uri = AUTH + AUTH_LOGIN;
         mockMvc.perform(MockMvcRequestBuilders.post(uri)
                         .content(asJsonString(loginRequest))
