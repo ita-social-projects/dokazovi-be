@@ -109,6 +109,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public UserDTO findExpertByUserId(Integer userId) {
+        return userMapper.toUserDTO(userRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException("User not found")));
+    }
+
     /**
      * Gets doctors by search criteria. For example, if directions, regions and user name fields are empty, the
      * findDoctorsProfiles method without parameters is called

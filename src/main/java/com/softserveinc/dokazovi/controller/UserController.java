@@ -165,7 +165,7 @@ public class UserController {
         if (userPrincipal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        UserDTO userDTO = userService.findExpertById(userPrincipal.getId());
+        UserDTO userDTO = userService.findExpertByUserId(userPrincipal.getId());
         return ResponseEntity
                 .status((userDTO != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
                 .body(userDTO);
