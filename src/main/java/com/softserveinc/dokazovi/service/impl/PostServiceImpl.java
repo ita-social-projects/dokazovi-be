@@ -7,6 +7,7 @@ import com.softserveinc.dokazovi.dto.post.PostMainPageDTO;
 import com.softserveinc.dokazovi.dto.post.PostPublishedAtDTO;
 import com.softserveinc.dokazovi.dto.post.PostSaveFromUserDTO;
 import com.softserveinc.dokazovi.dto.post.PostStatusDTO;
+import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.DirectionEntity;
 import com.softserveinc.dokazovi.entity.PostEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -213,8 +214,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<PostDTO> findPostsByAuthorIdAndDirections(
             Pageable pageable, Integer authorId, Set<Integer> directions) {
-
-        return postRepository.findPostsByAuthorIdAndDirections(pageable, authorId, directions)
+        AuthorEntity author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id " + authorId + " not found"));
+        Integer userId = author.getProfile().getId();
+        return postRepository.findPostsByAuthorIdAndDirections(pageable, userId, directions)
                 .map(postMapper::toPostDTO);
     }
 
@@ -338,34 +341,40 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<PostDTO> findAllByExpertAndTypeAndDirections(Integer expertId, Set<Integer> typeId,
             Set<Integer> directionId, Pageable pageable) {
+        AuthorEntity author = authorRepository.findById(expertId)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id " + expertId + " not found"));
+        Integer userId = author.getProfile().getId();
         if (typeId == null && directionId == null) {
-            return postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(expertId, PostStatus.PUBLISHED,
+            return postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(userId, PostStatus.PUBLISHED,
                             pageable)
                     .map(postMapper::toPostDTO);
         }
         if (typeId == null) {
-            return postRepository.findPostsByAuthorIdAndDirections(pageable, expertId, directionId)
+            return postRepository.findPostsByAuthorIdAndDirections(pageable, userId, directionId)
                     .map(postMapper::toPostDTO);
         }
         if (directionId == null) {
             return postRepository
-                    .findAllByAuthorIdAndTypeIdInAndStatus(expertId, typeId, PostStatus.PUBLISHED, pageable)
+                    .findAllByAuthorIdAndTypeIdInAndStatus(userId, typeId, PostStatus.PUBLISHED, pageable)
                     .map(postMapper::toPostDTO);
         }
-        return postRepository.findAllByExpertAndByDirectionsAndByPostType(expertId, typeId, directionId, pageable)
+        return postRepository.findAllByExpertAndByDirectionsAndByPostType(userId, typeId, directionId, pageable)
                 .map(postMapper::toPostDTO);
     }
 
     @Override
     public Page<PostDTO> findAllByExpertAndTypeAndStatus(Integer expertId, Set<Integer> typeId,
             PostStatus postStatus, Pageable pageable) {
+        AuthorEntity author = authorRepository.findById(expertId)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id " + expertId + " not found"));
+        Integer userId = author.getProfile().getId();
         if (typeId == null) {
             return postRepository
-                    .findAllByAuthorIdAndStatusOrderByPublishedAtDesc(expertId, postStatus, pageable)
+                    .findAllByAuthorIdAndStatusOrderByPublishedAtDesc(userId, postStatus, pageable)
                     .map(postMapper::toPostDTO);
         }
         return postRepository
-                .findAllByAuthorIdAndTypeIdInAndStatus(expertId, typeId, postStatus, pageable)
+                .findAllByAuthorIdAndTypeIdInAndStatus(userId, typeId, postStatus, pageable)
                 .map(postMapper::toPostDTO);
     }
 
