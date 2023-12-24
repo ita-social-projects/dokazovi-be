@@ -1,5 +1,6 @@
 package com.softserveinc.dokazovi.service.impl;
 
+import com.softserveinc.dokazovi.config.AuthConfig;
 import com.softserveinc.dokazovi.entity.UserLoginIpEntity;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
@@ -11,6 +12,7 @@ import com.softserveinc.dokazovi.service.UserLoginIpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,14 +22,17 @@ public class UserLoginIpServiceImpl implements UserLoginIpService {
     UserLoginIpRepository userLoginIpRepository;
     UserRepository userRepository;
     CheckAuthorityService checkAuthorityService;
+    AuthConfig authConfig;
 
     @Autowired
     public UserLoginIpServiceImpl(UserLoginIpRepository userLoginIpRepository,
             UserRepository userRepository,
-            CheckAuthorityService checkAuthorityService) {
+            CheckAuthorityService checkAuthorityService,
+            AuthConfig authConfig) {
         this.userLoginIpRepository = userLoginIpRepository;
         this.userRepository = userRepository;
         this.checkAuthorityService = checkAuthorityService;
+        this.authConfig = authConfig;
     }
 
     @Override
@@ -58,5 +63,16 @@ public class UserLoginIpServiceImpl implements UserLoginIpService {
         } else {
             throw new ForbiddenPermissionsException();
         }
+    }
+
+    @Override
+    public String getClientIp(HttpServletRequest request) {
+        if (authConfig.isUseXForwardedFor()) {
+            String xForwardedForHeader = request.getHeader("X-Forwarded-For");
+            if (xForwardedForHeader != null) {
+                return xForwardedForHeader.split(",")[0].trim();
+            }
+        }
+        return request.getRemoteAddr();
     }
 }

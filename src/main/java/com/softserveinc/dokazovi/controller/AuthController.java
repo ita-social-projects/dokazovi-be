@@ -88,7 +88,7 @@ public class AuthController {
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            String userIp = request.getRemoteAddr();
+            String userIp = userLoginIpService.getClientIp(request);
             userLoginIpService.saveUserIP(userEntity.getId(), userIp);
 
             if (userEntity.getWhitelist() && !userIpWhitelistService.isIpWhitelisted(userEntity.getId(), userIp)) {
