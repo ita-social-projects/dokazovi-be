@@ -6,7 +6,6 @@ import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
 import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
@@ -400,35 +399,6 @@ class UserServiceImplTest {
     //        verify(userRepository, times(1))
     //                .findById(any(Integer.class));
     //    }
-
-    @Test
-    void getVerificationToken() {
-        String token = "950c9760-805e-449c-a966-2d0d5ebd86f4";
-        VerificationToken verificationToken = VerificationToken.builder()
-                .token(token)
-                .build();
-        when(tokenRepository.findByToken(any(String.class))).thenReturn(verificationToken);
-        verificationToken = userService.getVerificationToken(token);
-        assertEquals(token, verificationToken.getToken());
-        verify(tokenRepository, times(1))
-                .findByToken(any(String.class));
-    }
-
-    @Test
-    void createVerificationToken() {
-        String token = "950c9760-805e-449c-a966-2d0d5ebd86f4";
-        UserEntity userEntity = UserEntity.builder().build();
-        VerificationToken verificationToken = VerificationToken.builder()
-                .token(token)
-                .user(userEntity)
-                .build();
-        when(tokenRepository.save(any(VerificationToken.class))).thenReturn(verificationToken);
-        userService.createVerificationToken(userEntity, token);
-        verify(tokenRepository, times(1))
-                .save(any(VerificationToken.class));
-        assertEquals(token, verificationToken.getToken());
-        assertEquals(userEntity, verificationToken.getUser());
-    }
 
     @Test
     void findUserByEmail() {

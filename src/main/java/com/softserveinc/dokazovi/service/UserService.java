@@ -7,7 +7,6 @@ import com.softserveinc.dokazovi.dto.user.UserStatusDTO;
 import com.softserveinc.dokazovi.dto.user.UserWhitelistStatusDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
-import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Page;
@@ -34,10 +33,6 @@ public interface UserService {
     Page<UserDTO> findRandomExpertPreview(Set<Integer> directionsIds, Pageable pageable);
 
     void setEnabled(Integer authorId, boolean isEnabled);
-
-    void createVerificationToken(UserEntity user, String token);
-
-    VerificationToken getVerificationToken(String verificationToken);
 
     UserEntity getById(Integer authorId);
 

@@ -22,7 +22,9 @@ import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.CheckAuthorityService;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
+import com.softserveinc.dokazovi.service.ProviderService;
 import com.softserveinc.dokazovi.service.UserService;
+import com.softserveinc.dokazovi.service.VerificationTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,12 +51,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final VerificationTokenRepository tokenRepository;
+    private final VerificationTokenService tokenService;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenService passwordResetTokenService;
     private final MailSenderService mailSenderService;
     private final AuthorRepository authorRepository;
     private final CheckAuthorityService checkAuthorityService;
+    private final ProviderService providerService;
 
     private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
     private static final String HAS_NO_REGIONS = "hasNoRegions";
@@ -116,7 +119,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Gets doctors by search criteria. For example, if directions, regions and user name fields are empty, the
+     * Gets doctors by search criteria. For example, if directions, regions and username fields are empty, the
      * findDoctorsProfiles method without parameters is called
      *
      * @param userSearchCriteria received from User controller
@@ -212,42 +215,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void setEnabled(Integer authorId, boolean isEnabled) {
-        AuthorEntity author = authorRepository.findById(authorId).orElse(null);
-        if (author == null) {
-            throw new EntityNotFoundException("Author not found");
-        }
-        UserEntity userEntity = userRepository.findById(author.getProfile().getId()).orElse(null);
+        UserEntity userEntity = getById(authorId);
         if (userEntity == null) {
             throw new EntityNotFoundException("User not found");
         }
         userEntity.setEnabled(isEnabled);
         userRepository.save(userEntity);
-    }
-
-    /**
-     * Gets the verification token received from tokenRepository.
-     *
-     * @param verificationToken received from Auth controller
-     * @return found VerificationToken
-     */
-    @Override
-    public VerificationToken getVerificationToken(String verificationToken) {
-        return tokenRepository.findByToken(verificationToken);
-    }
-
-    /**
-     * Gets the verification token received from tokenRepository.
-     *
-     * @param user  user received from Mail Sender
-     * @param token token received from Mail Sender
-     */
-    @Override
-    public void createVerificationToken(UserEntity user, String token) {
-        VerificationToken myToken = VerificationToken.builder()
-                .user(user)
-                .token(token)
-                .build();
-        tokenRepository.save(myToken);
     }
 
     @Override
@@ -293,35 +266,41 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendActivationToken(Integer userId, String email, String origin) {
-        UserEntity user = userRepository.findById(userId).orElse(null);
+        UserEntity user = getById(userId);
         if (user == null) {
             throw new EntityNotFoundException("User not found");
         }
-        String token = UUID.randomUUID().toString();
         user.setEmail(email);
         user.setStatus(UserStatus.NEW);
-        createVerificationToken(user, token);
+        user.setEnabled(false);
+        update(user);
+        String token = UUID.randomUUID().toString();
+        tokenService.createVerificationTokenForUser(user, token);
         mailSenderService.sendEmailWithActivationToken(origin, token, user);
     }
 
     @Override
     public void activateUser(UserPasswordDTO userPasswordDTO) {
-        VerificationToken token = getVerificationToken(userPasswordDTO.getToken());
+        VerificationToken token = tokenService.getByToken(userPasswordDTO.getToken());
+        if (!tokenService.validateVerificationToken(userPasswordDTO.getToken())) {
+            throw new BadRequestException("Token is not valid");
+        }
         UserEntity user = token.getUser();
         if (user == null) {
-            throw new BadRequestException("User not found");
+            throw new EntityNotFoundException("User not found");
         }
         user.setEnabled(true);
         user.setStatus(UserStatus.ACTIVE);
         user.setPassword(passwordEncoder.encode(userPasswordDTO.getNewPassword()));
         update(user);
-        tokenRepository.delete(token);
+        providerService.createLocalProviderEntityForUser(user, user.getEmail());
+        tokenService.delete(token);
     }
 
     @Override
     public UserPublicAndPrivateEmailDTO getAllPublicAndPrivateEmails() {
         List<UserEntity> users = userRepository.findAll();
-        UserPublicAndPrivateEmailDTO userPublicAndPrivateEmailDTO = UserPublicAndPrivateEmailDTO.builder()
+        return UserPublicAndPrivateEmailDTO.builder()
                 .publicEmail(Arrays.stream(users.toArray())
                         .map(user -> ((UserEntity) user).getPublicEmail())
                         .collect(Collectors.toList()))
@@ -329,7 +308,6 @@ public class UserServiceImpl implements UserService {
                         .map(user -> ((UserEntity) user).getEmail())
                         .collect(Collectors.toList()))
                 .build();
-        return userPublicAndPrivateEmailDTO;
     }
 
     @Override
