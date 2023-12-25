@@ -68,9 +68,9 @@ public class UserLoginIpServiceImpl implements UserLoginIpService {
     @Override
     public String getClientIp(HttpServletRequest request) {
         if (authConfig.isUseXForwardedFor()) {
-            String xForwardedForHeader = request.getHeader("X-Forwarded-For");
-            if (xForwardedForHeader != null) {
-                return xForwardedForHeader.split(",")[0].trim();
+            String ipFromHeader = request.getHeader("X-Forwarded-For");
+            if (ipFromHeader != null) {
+                return ipFromHeader.split(",")[0].trim();
             }
         }
         return request.getRemoteAddr();

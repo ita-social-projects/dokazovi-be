@@ -17,7 +17,6 @@ import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
-import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.CheckAuthorityService;
 import com.softserveinc.dokazovi.service.MailSenderService;
