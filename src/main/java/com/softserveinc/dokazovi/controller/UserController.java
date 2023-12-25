@@ -7,15 +7,20 @@ import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserEmailPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserEnabledDTO;
 import com.softserveinc.dokazovi.dto.user.UserIdEmailDTO;
+import com.softserveinc.dokazovi.dto.user.UserIpWhitelistDTO;
+import com.softserveinc.dokazovi.dto.user.UserLoginIpResponseDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserStatusDTO;
+import com.softserveinc.dokazovi.dto.user.UserWhitelistStatusDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.DirectionService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
+import com.softserveinc.dokazovi.service.UserIpWhitelistService;
+import com.softserveinc.dokazovi.service.UserLoginIpService;
 import com.softserveinc.dokazovi.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -30,9 +35,11 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -59,9 +66,12 @@ import static com.softserveinc.dokazovi.controller.EndPoints.USER_EXPERT_ALL_POS
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_AUTHORITIES;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_CURRENT_USER;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_GET_USER_BY_ID;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_IP_LIST;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RANDOM_EXPERTS;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_RESET_PASSWORD;
 import static com.softserveinc.dokazovi.controller.EndPoints.USER_UPDATE_PASSWORD;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_WHITELIST;
+import static com.softserveinc.dokazovi.controller.EndPoints.USER_WHITELIST_STATUS;
 
 /**
  * The User controller is responsible for handling requests for users.
@@ -75,6 +85,8 @@ public class UserController {
     private final UserService userService;
     private final DirectionService directionService;
     private final PasswordResetTokenService passwordResetTokenService;
+    private final UserIpWhitelistService userIpWhitelistService;
+    private final UserLoginIpService userLoginIpService;
 
     /**
      * Gets preview of random experts, filtered by directions. Default 12 max per page.
@@ -298,5 +310,50 @@ public class UserController {
             @RequestBody UserStatusDTO userStatusDTO) {
         userService.changeStatus(userStatusDTO);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PatchMapping(USER_WHITELIST_STATUS)
+    @PreAuthorize("hasAuthority('EDIT_AUTHOR')")
+    @ApiOperation(value = "Enables ot disables whitelist option for a specific user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    public ResponseEntity<UserWhitelistStatusDTO> changeUserWhitelistStatus(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody UserWhitelistStatusDTO userWhitelistStatusDTO) {
+        userService.changeWhitelistStatus(userPrincipal, userWhitelistStatusDTO);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PutMapping(USER_WHITELIST)
+    @PreAuthorize("hasAuthority('EDIT_AUTHOR')")
+    @ApiOperation(value = "Updates whitelist for a specific user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    public ResponseEntity<UserIpWhitelistDTO> updateUserWhitelist(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody UserIpWhitelistDTO userIpWhitelistDTO
+    ) {
+        userIpWhitelistService.updateUserIpWhitelist(userPrincipal, userIpWhitelistDTO);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping(USER_GET_USER_BY_ID + USER_IP_LIST)
+    @PreAuthorize("hasAuthority('EDIT_AUTHOR')")
+    @ApiOperation(value = "Gets all IPs that user used to log in")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    public ResponseEntity<UserLoginIpResponseDTO> getUserLoginIps(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Integer userId
+    ) {
+        List<String> ips = userLoginIpService.getAllUserIps(userPrincipal, userId);
+        UserLoginIpResponseDTO responseDTO = new UserLoginIpResponseDTO(ips);
+        return ResponseEntity.ok(responseDTO);
     }
 }

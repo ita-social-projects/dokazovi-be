@@ -4,6 +4,7 @@ import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserStatusDTO;
+import com.softserveinc.dokazovi.dto.user.UserWhitelistStatusDTO;
 import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
@@ -11,10 +12,13 @@ import com.softserveinc.dokazovi.entity.VerificationToken;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
+import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
+import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.CheckAuthorityService;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import com.softserveinc.dokazovi.service.ProviderService;
@@ -51,6 +55,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetTokenService passwordResetTokenService;
     private final MailSenderService mailSenderService;
     private final AuthorRepository authorRepository;
+    private final CheckAuthorityService checkAuthorityService;
     private final ProviderService providerService;
 
     private static final String HAS_NO_DIRECTIONS = "hasNoDirections";
@@ -312,15 +317,33 @@ public class UserServiceImpl implements UserService {
         }
         UserEntity user = userRepository.findById(userStatusDTO.getId()).orElse(null);
         if (user != null) {
-            if (userStatusDTO.getStatus().equals("ACTIVE")) {
-                user.setStatus(UserStatus.ACTIVE);
-            } else if (userStatusDTO.getStatus().equals("DELETED")) {
-                user.setStatus(UserStatus.DELETED);
-            } else if (userStatusDTO.getStatus().equals("NEW")) {
-                user.setStatus(UserStatus.NEW);
-            } else {
-                throw new BadRequestException("Wrong status");
+            switch (userStatusDTO.getStatus()) {
+                case "ACTIVE":
+                    user.setStatus(UserStatus.ACTIVE);
+                    break;
+                case "DELETED":
+                    user.setStatus(UserStatus.DELETED);
+                    break;
+                case "NEW":
+                    user.setStatus(UserStatus.NEW);
+                    break;
+                default:
+                    throw new BadRequestException("Wrong status");
             }
+        }
+    }
+
+    @Override
+    public void changeWhitelistStatus(UserPrincipal userPrincipal, UserWhitelistStatusDTO userWhitelistStatusDTO) {
+        if (checkAuthorityService.checkAuthority(userPrincipal, "EDIT_AUTHOR")) {
+            UserEntity user = userRepository.findById(userWhitelistStatusDTO.getId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "User with id " + userWhitelistStatusDTO.getId() + " not found"));
+
+            user.setWhitelist(userWhitelistStatusDTO.isWhitelistStatus());
+            userRepository.save(user);
+        } else {
+            throw new ForbiddenPermissionsException();
         }
     }
 }

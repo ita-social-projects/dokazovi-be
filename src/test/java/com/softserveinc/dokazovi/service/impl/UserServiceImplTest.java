@@ -1,17 +1,21 @@
 package com.softserveinc.dokazovi.service.impl;
 
 import com.softserveinc.dokazovi.dto.author.AuthorRequestDTO;
+import com.softserveinc.dokazovi.dto.user.UserWhitelistStatusDTO;
 import com.softserveinc.dokazovi.entity.AuthorEntity;
 import com.softserveinc.dokazovi.entity.InstitutionEntity;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.EntityNotFoundException;
+import com.softserveinc.dokazovi.exception.ForbiddenPermissionsException;
 import com.softserveinc.dokazovi.mapper.UserMapper;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
 import com.softserveinc.dokazovi.repositories.AuthorRepository;
 import com.softserveinc.dokazovi.repositories.UserRepository;
 import com.softserveinc.dokazovi.repositories.VerificationTokenRepository;
+import com.softserveinc.dokazovi.security.UserPrincipal;
+import com.softserveinc.dokazovi.service.CheckAuthorityService;
 import com.softserveinc.dokazovi.service.MailSenderService;
 import com.softserveinc.dokazovi.service.PasswordResetTokenService;
 import org.junit.jupiter.api.Assertions;
@@ -34,10 +38,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -65,6 +71,13 @@ class UserServiceImplTest {
     private AuthorEntity authorEntity;
     @Mock
     private AuthorRepository authorRepository;
+
+    @Mock
+    private CheckAuthorityService checkAuthorityService;
+
+    private UserPrincipal mockUserPrincipal;
+    private UserWhitelistStatusDTO mockDTO;
+    private UserEntity mockUserEntity;
 
 
     @BeforeEach
@@ -491,5 +504,47 @@ class UserServiceImplTest {
         });
 
         assertEquals("Something went wrong!!!", exception.getMessage());
+    }
+
+    @BeforeEach
+    void setUp() {
+        mockUserPrincipal = mock(UserPrincipal.class);
+        mockDTO = UserWhitelistStatusDTO.builder()
+                .id(1)
+                .whitelistStatus(true)
+                .build();
+        mockUserEntity = new UserEntity();
+
+        mockUserEntity.setId(1);
+    }
+
+    @Test
+    void changeWhitelistStatus_UserHasAuthority_UserExists() {
+
+        when(checkAuthorityService.checkAuthority(mockUserPrincipal, "EDIT_AUTHOR")).thenReturn(true);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(mockUserEntity));
+
+        userService.changeWhitelistStatus(mockUserPrincipal, mockDTO);
+
+        verify(userRepository).save(any(UserEntity.class));
+
+        assertTrue(userRepository.findById(1).get().getWhitelist());
+    }
+
+    @Test
+    void changeWhitelistStatus_UserHasAuthority_UserDoesNotExist() {
+        when(checkAuthorityService.checkAuthority(mockUserPrincipal, "EDIT_AUTHOR")).thenReturn(true);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () ->
+                userService.changeWhitelistStatus(mockUserPrincipal, mockDTO));
+    }
+
+    @Test
+    void changeWhitelistStatus_UserDoesNotHaveAuthority() {
+        when(checkAuthorityService.checkAuthority(mockUserPrincipal, "EDIT_AUTHOR")).thenReturn(false);
+
+        assertThrows(ForbiddenPermissionsException.class, () ->
+                userService.changeWhitelistStatus(mockUserPrincipal, mockDTO));
     }
 }

@@ -4,9 +4,11 @@ import com.softserveinc.dokazovi.dto.user.UserDTO;
 import com.softserveinc.dokazovi.dto.user.UserPasswordDTO;
 import com.softserveinc.dokazovi.dto.user.UserPublicAndPrivateEmailDTO;
 import com.softserveinc.dokazovi.dto.user.UserStatusDTO;
+import com.softserveinc.dokazovi.dto.user.UserWhitelistStatusDTO;
 import com.softserveinc.dokazovi.entity.PasswordResetTokenEntity;
 import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.pojo.UserSearchCriteria;
+import com.softserveinc.dokazovi.security.UserPrincipal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -51,4 +53,6 @@ public interface UserService {
     UserPublicAndPrivateEmailDTO getAllPublicAndPrivateEmails();
 
     void changeStatus(UserStatusDTO userStatusDTO);
+
+    void changeWhitelistStatus(UserPrincipal userPrincipal, UserWhitelistStatusDTO userWhitelistStatusDTO);
 }

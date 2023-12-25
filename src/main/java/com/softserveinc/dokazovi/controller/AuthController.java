@@ -9,13 +9,15 @@ import com.softserveinc.dokazovi.entity.UserEntity;
 import com.softserveinc.dokazovi.entity.enumerations.UserStatus;
 import com.softserveinc.dokazovi.exception.BadRequestException;
 import com.softserveinc.dokazovi.exception.TokenRefreshException;
+import com.softserveinc.dokazovi.security.RefreshTokenService;
 import com.softserveinc.dokazovi.security.TokenProvider;
 import com.softserveinc.dokazovi.security.UserPrincipal;
 import com.softserveinc.dokazovi.service.LogForLoginService;
 import com.softserveinc.dokazovi.service.ProviderService;
+import com.softserveinc.dokazovi.service.UserIpWhitelistService;
+import com.softserveinc.dokazovi.service.UserLoginIpService;
 import com.softserveinc.dokazovi.service.UserService;
 import com.softserveinc.dokazovi.service.impl.MailSenderServiceImpl;
-import com.softserveinc.dokazovi.security.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -34,7 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -57,6 +58,8 @@ public class AuthController {
     private final ProviderService providerService;
     private final RefreshTokenService refreshTokenService;
     private final LogForLoginService logForLoginService;
+    private final UserLoginIpService userLoginIpService;
+    private final UserIpWhitelistService userIpWhitelistService;
 
     /**
      * Authenticates user using email and password.
@@ -84,6 +87,15 @@ public class AuthController {
                     )
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String userIp = userLoginIpService.getClientIp(request);
+            userLoginIpService.saveUserIP(userEntity.getId(), userIp);
+
+            if (userEntity.getWhitelist() && !userIpWhitelistService.isIpWhitelisted(userEntity.getId(), userIp)) {
+                status = "The IP wasn't found";
+                throw new BadCredentialsException("You are not allowed to log in from this device");
+            }
+
             if (!userEntity.getEnabled()) {
                 throw new BadRequestException("Please confirm your email!");
             } else if (userEntity.getStatus() != UserStatus.ACTIVE) {
@@ -116,7 +128,7 @@ public class AuthController {
             logForLoginService.save(LogForLoginEntity.builder()
                     .login(loginRequest.getEmail())
                     .dateOfLogin(Timestamp.valueOf(LocalDateTime.now()))
-                    .ip(request.getRemoteAddr())
+                    .ip(userLoginIpService.getClientIp(request))
                     .loginStatus(status)
                     .build());
         }
