@@ -128,7 +128,7 @@ public class AuthController {
             logForLoginService.save(LogForLoginEntity.builder()
                     .login(loginRequest.getEmail())
                     .dateOfLogin(Timestamp.valueOf(LocalDateTime.now()))
-                    .ip(request.getRemoteAddr())
+                    .ip(userLoginIpService.getClientIp(request))
                     .loginStatus(status)
                     .build());
         }
