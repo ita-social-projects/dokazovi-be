@@ -60,6 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -84,6 +85,7 @@ class PostServiceImplTest {
     private PostServiceImpl postService;
     private Page<PostEntity> postEntityPage;
     private UserEntity userEntity;
+    private AuthorEntity authorEntity;
     @Mock
     private GoogleAnalytics googleAnalytics;
     @Mock
@@ -106,6 +108,10 @@ class PostServiceImplTest {
                 .email("test@nail.com")
                 .password("12345")
                 .role(roleEntity)
+                .build();
+        authorEntity = AuthorEntity.builder()
+                .id(1)
+                .profile(userEntity)
                 .build();
     }
 
@@ -292,6 +298,7 @@ class PostServiceImplTest {
     void findPostsByAuthorIdAndDirections_WhenWrong_ThrowException() {
         Set<Integer> directions = Set.of(1, 4);
         Pageable pageable = PageRequest.of(0, 12);
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
         when(postRepository.findPostsByAuthorIdAndDirections(any(), any(), any()))
                 .thenThrow(new EntityNotFoundException("Id does not exist"));
         assertThrows(EntityNotFoundException.class, () -> postService
@@ -302,6 +309,7 @@ class PostServiceImplTest {
     void findPostsByAuthorIdAndDirections() {
         Set<Integer> directions = Set.of(1, 4);
         Pageable pageable = PageRequest.of(0, 12);
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
         when(postRepository.findPostsByAuthorIdAndDirections(any(), any(), any()))
                 .thenReturn(postEntityPage);
         postService.findPostsByAuthorIdAndDirections(pageable, 1, directions);
@@ -355,6 +363,7 @@ class PostServiceImplTest {
     @Test
     void findAllByExpert() {
         Integer expertId = 3;
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
         when(postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(
                 any(Integer.class), any(PostStatus.class), any(Pageable.class)))
                 .thenReturn(postEntityPage);
@@ -366,6 +375,7 @@ class PostServiceImplTest {
     void findAllByExpertAndType() {
         Integer expertId = 5;
         Set<Integer> typeId = Set.of(1, 2);
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
         when(postRepository.findAllByAuthorIdAndTypeIdInAndStatus(any(Integer.class),
                 anySet(), any(PostStatus.class), any(Pageable.class)))
                 .thenReturn(postEntityPage);
@@ -377,6 +387,7 @@ class PostServiceImplTest {
     void findAllByExpertAndDirections() {
         Integer expertId = 5;
         Set<Integer> directionId = Set.of(2, 3);
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
         when(postRepository.findPostsByAuthorIdAndDirections(any(Pageable.class), any(Integer.class),
                 anySet()))
                 .thenReturn(postEntityPage);
@@ -389,6 +400,7 @@ class PostServiceImplTest {
         Integer expertId = 5;
         Set<Integer> directionId = Set.of(2, 3);
         Set<Integer> typeId = Set.of(1, 2);
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
         when(postRepository.findAllByExpertAndByDirectionsAndByPostType(any(Integer.class),
                 anySet(), anySet(), any(Pageable.class)))
                 .thenReturn(postEntityPage);
@@ -400,6 +412,7 @@ class PostServiceImplTest {
     void findAllByExpertAndStatus() {
         Integer expertId = 3;
         PostStatus postStatus = PostStatus.DRAFT;
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
         when(postRepository.findAllByAuthorIdAndStatusOrderByPublishedAtDesc(
                 any(Integer.class), any(PostStatus.class), any(Pageable.class)))
                 .thenReturn(postEntityPage);
@@ -412,6 +425,7 @@ class PostServiceImplTest {
         Integer expertId = 5;
         Set<Integer> typeId = Set.of(1, 2);
         PostStatus postStatus = PostStatus.DRAFT;
+        when(authorRepository.findById(anyInt())).thenReturn(Optional.of(authorEntity));
         when(postRepository.findAllByAuthorIdAndTypeIdInAndStatus(any(Integer.class),
                 anySet(), any(PostStatus.class), any(Pageable.class)))
                 .thenReturn(postEntityPage);
